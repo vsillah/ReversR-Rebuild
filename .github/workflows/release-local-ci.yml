@@ -31,6 +31,9 @@ jobs:
       - name: Verify synthetic shadow coverage
         run: npm run iges:shadow:test
 
+      - name: Verify synthetic contact shadow
+        run: npm run iges:contact-shadow:test
+
       - name: Run local release CI
         run: npm run release:local-ci
 

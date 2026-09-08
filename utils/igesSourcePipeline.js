@@ -739,7 +739,7 @@ const renderSceneToPng = ({ scene, sourceBinding, outputDir }) => {
   const zBuffer = new Float64Array(width * height);
   zBuffer.fill(Number.NEGATIVE_INFINITY);
   // Filled geometry ownership excludes antialiased edge-only coverage.
-  const edgeCoverage = quality?.shadow ? new Uint8Array(width * height) : null;
+  const edgeCoverage = quality?.shadow || quality?.contactShadow ? new Uint8Array(width * height) : null;
   const pixelOwners = new Int32Array(width * height);
   pixelOwners.fill(-1);
   drawBackground(pixels, width, height, preset);
@@ -779,6 +779,12 @@ const renderSceneToPng = ({ scene, sourceBinding, outputDir }) => {
   };
 
   const lightingProjection = { ...preset.projection, modelYawDeg: 0, modelPitchDeg: 0, modelRollDeg: 0 };
+  // Contact plane basis needs subpixel affine coordinates. Geometry keeps its
+  // existing integer raster projection and therefore its exact prior pixels.
+  const contactToScreen = point => {
+    const projected=projectPointWithDepth(point,preset.projection);
+    return [projected.point[0]*scale+offsetX,projected.point[1]*scale+offsetY,projected.depth];
+  };
   const lightingView = cameraViewRay(lightingProjection);
   const triangles = [];
   for (const [meshIndex, mesh] of (scene.importResult.meshes || []).entries()) {
@@ -843,6 +849,16 @@ const renderSceneToPng = ({ scene, sourceBinding, outputDir }) => {
 
   const geometryOnlyPixels = quality ? Buffer.from(pixels) : null;
   let shadowEvidence = null;
+  if (quality?.contactShadow) {
+    const settings=quality.contactShadow,units=scene.sceneManifest.unitConversion;
+    if (!units || units.meshUnits!==settings.meshUnits || units.sourceUnits!==settings.sourceUnits) throw new Error('Contact plane units do not match admitted scene units');
+    const contact=renderQuality.contactMask({triangles:triangles.filter(t=>t.displayStyle.opacity===1&&t.displayStyle.mode==='shaded').map(t=>t.triangle),validationTriangles:triangles.map(t=>t.triangle),toScreen:contactToScreen,width,height,settings});
+    if(contact.clippedSupportPixels>0)throw new Error('Contact support is clipped by the viewport');
+    let affectedBackgroundPixels=0;
+    for(let i=0;i<contact.mask.length;i++)if(pixelOwners[i]<0&&!edgeCoverage[i]&&contact.mask[i]>0){const alpha=Math.round(contact.mask[i]*settings.opacity*255);if(alpha>0){blendPixel(pixels,i*4,[0,0,0,alpha]);affectedBackgroundPixels++;}}
+    const {mask,...evidence}=contact;
+    shadowEvidence={...settings,...evidence,approximation:'presentation contact cue, not ray-traced AO',affectedBackgroundPixels,contributesToGeometryCoverage:false,contributesToComponentVisibility:false};
+  }
   if (quality?.shadow) {
     const displayLight = preset.lightDirection || [-0.35, -0.45, 0.82];
     const shadowLight = renderQuality.sourceLight(displayLight, [[1,0,0],[0,1,0],[0,0,1]].map(axis => transformRenderPoint(axis, preset.projection)));
