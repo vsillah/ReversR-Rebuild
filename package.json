@@ -83,7 +83,8 @@
     "store:console:preflight:local": "node scripts/store-console-preflight.js --allow-pending",
     "store:preflight": "node scripts/store-preflight.js",
     "store:preflight:local": "node scripts/store-preflight.js --allow-placeholder",
-    "iges:shadow:test": "node scripts/iges-shadow-coverage-test.js && node scripts/iges-shadow-overlay-test.js"
+    "iges:shadow:test": "node scripts/iges-shadow-coverage-test.js && node scripts/iges-shadow-overlay-test.js",
+    "iges:contact-shadow:test": "node scripts/iges-contact-shadow-test.js"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
