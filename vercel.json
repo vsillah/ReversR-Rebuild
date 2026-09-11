@@ -1,6 +1,11 @@
 {
   "buildCommand": "npm run web:export",
   "outputDirectory": "dist",
+  "functions": {
+    "api/*.js": {
+      "includeFiles": "{server/**,node_modules/occt-import-js/dist/**}"
+    }
+  },
   "routes": [
     {
       "src": "^/api(?:/(.*))?$",
