@@ -133,7 +133,8 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (Buffer.byteLength(JSON.stringify(response)) > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
       return response;
     } catch (error) {
-      if (control.signal.aborted) { if (!sandbox) cleanupBlocked = true; fail(control.signal.reason); }
+      if (!sandbox) cleanupBlocked = true;
+      if (control.signal.aborted) fail(control.signal.reason);
       fail(error.code || 'RUNTIME_UNAVAILABLE');
     } finally {
       clearTimeout(timer);

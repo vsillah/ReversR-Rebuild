@@ -119,6 +119,14 @@ test('SDK and result failures always stop a created VM and return sanitized code
   }
 });
 
+test('ambiguous Sandbox creation rejection blocks retries without a handle', async () => {
+  const { calls, executor } = fake('create-error');
+  await assert.rejects(executor.convert(source()), { code: 'RUNTIME_UNAVAILABLE' });
+  assert.equal(executor.cleanupBlocked(), true);
+  await assert.rejects(executor.convert(source()), { code: 'CLEANUP_FAILED' });
+  assert.deepEqual(calls.map(call => call[0]), ['create']);
+});
+
 test('SDK event streams are accepted under the result cap', async () => {
   const { executor } = fake('event-stream');
   const response = await executor.convert(source());
