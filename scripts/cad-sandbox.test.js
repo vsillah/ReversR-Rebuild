@@ -77,6 +77,9 @@ test('fake Sandbox enforces fixed request, bounded output and confirmed stop thr
   const caps = await (await fetch(`${url}/capabilities`)).json();
   assert.equal(caps.enabled, true); assert.equal(caps.routeMounted, true); assert.equal(caps.configured, true);
   assert.equal(caps.sandbox.liveQualification, 'operator-attested');
+  assert.ok(caps.nextGate.includes('Broaden live qualification'));
+  assert.ok(!caps.nextGate.includes('configuring the protected route'));
+  assert.ok(!caps.unproven.some(value => value.includes('production smoke')));
   const response = await post(url, source());
   assert.equal(response.status, 200); assert.equal(response.body.triangleCount, 1);
   assert.equal(response.body.execution.cleanup, 'stopped');
