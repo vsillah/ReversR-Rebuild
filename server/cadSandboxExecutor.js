@@ -64,10 +64,13 @@ async function readJsonResult(sandbox, signal) {
   return JSON.parse((await readResult(sandbox, signal)).toString('utf8'));
 }
 function sandboxError(code, diagnostic) {
+  throw makeSandboxError(code, diagnostic);
+}
+function makeSandboxError(code, diagnostic) {
   const error = new Error(code);
   error.code = code;
   if (diagnostic && typeof diagnostic === 'object') error.diagnostic = diagnostic;
-  throw error;
+  return error;
 }
 function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs, onStage = () => {} } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
@@ -103,7 +106,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
     const timer = setTimeout(() => control.abort('TIMEOUT'), requestMs);
     const abort = () => control.abort('CANCELLED');
     signal?.addEventListener('abort', abort, { once: true });
-    let sandbox;
+    let sandbox, response, pendingError, cleanupError;
     try {
       if (signal?.aborted) abort();
       if (control.signal.aborted) fail('CANCELLED');
@@ -143,22 +146,23 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (raw.status === 'error') sandboxError(raw.code, raw.diagnostic);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
       if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0) fail('RUNTIME_UNAVAILABLE');
-      const response = { schemaVersion: 1, status: 'ready', mode: 'sandbox-stock-occt-mesh-beta', source: { sha256: source.sha256, bytes: source.bytes.length, format: 'iges' },
+      response = { schemaVersion: 1, status: 'ready', mode: 'sandbox-stock-occt-mesh-beta', source: { sha256: source.sha256, bytes: source.bytes.length, format: 'iges' },
         ...meshPayload(raw.meshes), requestedOutputUnit: 'millimeter',
         sourceConfidence: { status: 'unqualified', reason: 'Stock tessellation; source fidelity, dimensions and manufacturing use are not independently verified.' },
         execution: { boundary: 'sandbox-microvm', vcpus: reportedVcpus, memoryMb: reportedMemory, guestMemoryBytes: raw.guestMemoryBytes, cleanup: 'stopped' },
         unproven: ['STL export', 'render', 'source fidelity'] };
       if (Buffer.byteLength(JSON.stringify(response)) > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
-      return response;
     } catch (error) {
       if (!sandbox) cleanupBlocked = true;
-      if (control.signal.aborted) fail(control.signal.reason);
-      sandboxError(error.code || 'RUNTIME_UNAVAILABLE', error.diagnostic);
+      pendingError = makeSandboxError(control.signal.aborted ? control.signal.reason : error.code || 'RUNTIME_UNAVAILABLE', error.diagnostic);
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener('abort', abort);
-      try { if (sandbox) await stop(sandbox); } finally { active = false; }
+      try { if (sandbox) await stop(sandbox); } catch (error) { cleanupError = error; } finally { active = false; }
     }
+    if (pendingError) throw pendingError;
+    if (cleanupError) throw cleanupError;
+    return response;
   }
   return { convert, activeCount: () => Number(active), cleanupBlocked: () => cleanupBlocked };
 }
