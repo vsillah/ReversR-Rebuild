@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "scope": "local-http-real-occt-simulated-provider",
+  "generatedAt": "2026-09-11T23:43:00.952Z",
+  "packageVersion": "0.0.23",
+  "fixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+  "fixtureBytes": 11562,
+  "matrixSha256": "6c6afa2191864da3028d8a7aa5f77c90ca1416d4c9edd3fc47c25855c77cbc9f",
+  "providerCalls": 0,
+  "privateFilesRead": 0,
+  "checks": [
+    {
+      "id": "configured-capabilities",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
+      "id": "missing-auth",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "id": "invalid-auth",
+      "httpStatus": 401,
+      "passed": true
+    },
+    {
+      "id": "public-cube",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
+      "id": "public-cube-iges-extension",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
+      "id": "public-cube-crlf",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
+      "id": "malformed-iges",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "malformed-base64",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "missing-source",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "unsupported-extension",
+      "httpStatus": 415,
+      "passed": true
+    },
+    {
+      "id": "private-path-rejected",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "unsupported-transform",
+      "httpStatus": 415,
+      "passed": true
+    },
+    {
+      "id": "source-limit-plus-one",
+      "httpStatus": 413,
+      "passed": true
+    },
+    {
+      "id": "json-limit-plus-one",
+      "httpStatus": 413,
+      "passed": true
+    },
+    {
+      "id": "malformed-json",
+      "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "missing-executor",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "invalid-executor",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "missing-credentials",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "missing-qualification",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "missing-token",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "invalid-token",
+      "httpStatus": 503,
+      "passed": true
+    },
+    {
+      "id": "evidence-redaction",
+      "httpStatus": 200,
+      "passed": true
+    }
+  ],
+  "unproven": [
+    "Live hosted execution of this matrix",
+    "Provider isolation and cleanup",
+    "Additional independent IGES models",
+    "Render, STL and dimensional fidelity"
+  ],
+  "simulatedDispatches": 3
+}
