@@ -14,8 +14,9 @@ const { LIMITS, fail, failure, meshPayload } = require('./cadWorkerContract');
     if (!result.success) fail('CONVERSION_FAILED');
     if (!Array.isArray(result.meshes)) fail('NO_GEOMETRY');
     if (result.meshes.length > LIMITS.meshes) fail('OUTPUT_LIMIT');
+    const array = value => ArrayBuffer.isView(value) ? Array.from(value) : value;
     output = { status: 'ready', sourceSha256: crypto.createHash('sha256').update(bytes).digest('hex'),
-      ...meshPayload(result.meshes.map(mesh => ({ positions: mesh.attributes?.position?.array, indices: mesh.index?.array }))),
+      ...meshPayload(result.meshes.map(mesh => ({ positions: array(mesh.attributes?.position?.array), indices: array(mesh.index?.array) }))),
       guestMemoryBytes: os.totalmem() };
     if (Buffer.byteLength(JSON.stringify(output)) > LIMITS.outputBytes - 2048) fail('OUTPUT_LIMIT');
   } catch (error) { output = failure(error.code); }
