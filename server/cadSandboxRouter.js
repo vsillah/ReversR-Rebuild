@@ -27,15 +27,23 @@ function createSandboxRouter({ env = process.env, executor = createSandboxExecut
     res.status(ERRORS[payload.code][0]).json(payload);
   };
   router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
-  router.get('/capabilities', (req, res) => res.json({ ...getCadReadiness(),
-    enabled: readiness.configured && !executor.cleanupBlocked?.(), routeMounted: true, configured: readiness.configured,
-    mode: readiness.configured ? 'sandbox-stock-occt-mesh-beta' : 'sandbox-pending-qualification',
-    executor: { kind: 'sandbox', authentication: readiness.credentials, liveQualification: readiness.liveQualification },
-    unproven: ['Live Sandbox resource isolation, network denial and expiry', 'Hosted asset packaging and production smoke', 'Source fidelity, render and STL export'],
-    blocker: executor.cleanupBlocked?.() ? { code: 'CLEANUP_FAILED', reason: 'Cleanup or creation outcome is uncertain; this instance is blocked.' } : readiness.configured ? null : { code: 'SANDBOX_GATE_MISSING', reason: 'Sandbox execution requires operator configuration and an approved live qualification.', missing: readiness.missing },
-    sandbox: readiness,
-    nextGate: 'Approve and pass a live public-fixture diagnostic before attesting qualification, configuring the protected route and performing production smoke.',
-  }));
+  router.get('/capabilities', (req, res) => {
+    const cleanupBlocked = executor.cleanupBlocked?.();
+    const configured = readiness.configured;
+    res.json({ ...getCadReadiness(),
+      enabled: configured && !cleanupBlocked, routeMounted: true, configured,
+      mode: configured ? 'sandbox-stock-occt-mesh-beta' : 'sandbox-pending-qualification',
+      executor: { kind: 'sandbox', authentication: readiness.credentials, liveQualification: readiness.liveQualification },
+      unproven: configured
+        ? ['Broader public fixture matrix on live Sandbox', 'Independent IGES model coverage', 'Source fidelity, render and STL export']
+        : ['Live Sandbox resource isolation, network denial and expiry', 'Hosted asset packaging and production smoke', 'Source fidelity, render and STL export'],
+      blocker: cleanupBlocked ? { code: 'CLEANUP_FAILED', reason: 'Cleanup or creation outcome is uncertain; this instance is blocked.' } : configured ? null : { code: 'SANDBOX_GATE_MISSING', reason: 'Sandbox execution requires operator configuration and an approved live qualification.', missing: readiness.missing },
+      sandbox: readiness,
+      nextGate: configured
+        ? 'Broaden live qualification with public fixture matrices and independent IGES models before private CAD, visual/STL fidelity claims, or user-facing CAD exposure.'
+        : 'Approve and pass a live public-fixture diagnostic before attesting qualification, configuring the protected route and performing production smoke.',
+    });
+  });
   router.post('/import', (req, res, next) => {
     if (!readiness.configured) return sendError(res, 'DISABLED');
     if (!authorized(req.headers.authorization)) return sendError(res, 'UNAUTHORIZED');
