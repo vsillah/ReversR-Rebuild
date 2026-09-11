@@ -206,6 +206,15 @@ test('diagnostic defaults to skip with no SDK create and no output files', async
   assert.ok(logs.some(line => line.startsWith('SKIP:')));
 });
 
+test('Vercel function bundle includes CAD runtime assets', () => {
+  const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../vercel.json'), 'utf8'));
+  const pattern = Object.keys(config.functions || {}).find(key => key === 'api/*.js');
+  assert.ok(pattern);
+  assert.equal(pattern === 'api/*.js' && /^api\/[^/]+\.js$/.test('api/[...path].js'), true);
+  const includeFiles = config.functions[pattern].includeFiles;
+  assert.equal(includeFiles, '{server/**,node_modules/occt-import-js/dist/**}');
+});
+
 test('Sandbox graph permits only SDK provider access and fixed guest assets', () => {
   const allowed = {
     'cadSandboxConfig.js': ['node:fs', 'node:path', 'node:crypto'],
