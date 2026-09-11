@@ -38,6 +38,7 @@ function fake(mode, options = {}) {
       if (mode === 'geometry') data.meshes[0].indices = [0, 1, 99];
       if (mode === 'empty') data.meshes = [];
       if (mode === 'guest-diagnostic') return { status: 'error', code: 'CONVERSION_FAILED', diagnostic: { phase: 'read_iges', source: { bytes: 11562, sha256: '5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3' }, wasm: { bytes: 7604031, sha256: '33391fc9d94ea5c869a6718488bf0a9a464222bac9bdc764dfe1690cef281952' }, occtResult: { success: false, meshCount: 0 }, error: 'CONVERSION_FAILED' } };
+      if (mode === 'guest-error-no-diagnostic') return { status: 'error', code: 'CONVERSION_FAILED' };
       return data;
     },
     async readFile(value) {
@@ -140,6 +141,18 @@ test('primary conversion diagnostics are preserved when cleanup also fails', asy
   });
   assert.equal(executor.cleanupBlocked(), true);
   await assert.rejects(executor.convert(source()), { code: 'CLEANUP_FAILED' });
+});
+
+test('executor adds stage diagnostics when guest errors omit details', async () => {
+  const { executor } = fake('guest-error-no-diagnostic');
+  await assert.rejects(() => executor.convert(source()), error => {
+    assert.equal(error.code, 'CONVERSION_FAILED');
+    assert.equal(error.diagnostic.phase, 'executor_error');
+    assert.equal(error.diagnostic.code, 'CONVERSION_FAILED');
+    assert.ok(error.diagnostic.stages.some(stage => stage.name === 'command_finished'));
+    assert.ok(error.diagnostic.stages.some(stage => stage.name === 'result_read' && stage.status === 'error'));
+    return true;
+  });
 });
 
 test('authorized Sandbox conversion failures include bounded guest diagnostics without exposing tokens', async t => {

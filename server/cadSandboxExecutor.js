@@ -79,7 +79,6 @@ function createSandboxExecutor({ env = process.env, create = options => require(
   const policyMode = policy => typeof policy === 'string' ? policy : policy?.mode;
   const finite = value => Number.isFinite(value) ? value : undefined;
   const sessionFor = sandbox => typeof sandbox.currentSession === 'function' ? sandbox.currentSession() : sandbox;
-  const stage = (name, details = {}) => { try { onStage({ name, ...details }); } catch {} };
   function stop(sandbox) {
     if (!stops.has(sandbox)) stops.set(sandbox, (async () => {
       const control = new AbortController();
@@ -93,6 +92,13 @@ function createSandboxExecutor({ env = process.env, create = options => require(
     return stops.get(sandbox);
   }
   async function convert(body, signal) {
+    const stages = [];
+    const stage = (name, details = {}) => {
+      const event = { name, ...details };
+      stages.push(event);
+      try { onStage(event); } catch {}
+    };
+    const diagnosticFor = error => error.diagnostic || { phase: 'executor_error', code: error.code || 'RUNTIME_UNAVAILABLE', stages };
     const source = upload(body);
     stage('upload_accepted', { bytes: source.bytes.length });
     if (signal?.aborted) fail('CANCELLED');
@@ -154,7 +160,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (Buffer.byteLength(JSON.stringify(response)) > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
     } catch (error) {
       if (!sandbox) cleanupBlocked = true;
-      pendingError = makeSandboxError(control.signal.aborted ? control.signal.reason : error.code || 'RUNTIME_UNAVAILABLE', error.diagnostic);
+      pendingError = makeSandboxError(control.signal.aborted ? control.signal.reason : error.code || 'RUNTIME_UNAVAILABLE', diagnosticFor(error));
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener('abort', abort);
