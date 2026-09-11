@@ -5,7 +5,21 @@ function getCadReadiness() {
     schemaVersion: 1,
     enabled: false,
     routeMounted: false,
-    mode: 'metadata-qualified-only',
+    mode: 'worker-qualified-disabled',
+    blocker: {
+      code: 'WORKER_WASM_MEMORY_UNBOUNDED',
+      reason: 'Worker termination is locally qualified, but JavaScript resource limits do not bound WASM memory. Production memory isolation remains unqualified.',
+      qualification: 'Public package cube converted through the local Worker router. Timeout, cancellation and output checks passed; the production import route remains unmounted.',
+    },
+    workerQualification: {
+      localOnly: true,
+      output: 'triangle-mesh',
+      timeoutMs: 5000,
+      maxInputBytes: 65536,
+      wasmMemoryCapped: false,
+      sourceFidelityQualified: false,
+      hostedPackagingQualified: false,
+    },
     executor: {
       metadataQualified: true,
       implementationCommit: 'bf80b32777d22be822db0fca095af0e89ea515e5',

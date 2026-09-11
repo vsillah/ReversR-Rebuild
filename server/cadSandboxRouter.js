@@ -1,0 +1,45 @@
+const express = require('express');
+const crypto = require('node:crypto');
+const { LIMITS, ERRORS, failure } = require('./cadWorkerContract');
+const { getCadReadiness } = require('./cadReadiness');
+const { sandboxReadiness } = require('./cadSandboxConfig');
+const { createSandboxExecutor } = require('./cadSandboxExecutor');
+function createSandboxRouter({ env = process.env, executor = createSandboxExecutor({ env }) } = {}) {
+  const router = express.Router();
+  // Capture operator configuration once; requests cannot select or alter execution gates.
+  const readiness = sandboxReadiness(env);
+  const accessToken = env.CAD_SANDBOX_ACCESS_TOKEN || '';
+  const authorized = value => {
+    if (typeof value !== 'string' || value.length > 160) return false;
+    const actual = Buffer.from(value), expected = Buffer.from(`Bearer ${accessToken}`);
+    return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
+  };
+  const sendError = (res, code) => { const payload = failure(code); res.status(ERRORS[payload.code][0]).json(payload); };
+  router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+  router.get('/capabilities', (req, res) => res.json({ ...getCadReadiness(),
+    enabled: readiness.configured && !executor.cleanupBlocked?.(), routeMounted: true, configured: readiness.configured,
+    mode: readiness.configured ? 'sandbox-stock-occt-mesh-beta' : 'sandbox-pending-qualification',
+    executor: { kind: 'sandbox', authentication: readiness.credentials, liveQualification: readiness.liveQualification },
+    unproven: ['Live Sandbox resource isolation, network denial and expiry', 'Hosted asset packaging and production smoke', 'Source fidelity, render and STL export'],
+    blocker: executor.cleanupBlocked?.() ? { code: 'CLEANUP_FAILED', reason: 'Cleanup or creation outcome is uncertain; this instance is blocked.' } : readiness.configured ? null : { code: 'SANDBOX_GATE_MISSING', reason: 'Sandbox execution requires operator configuration and an approved live qualification.', missing: readiness.missing },
+    sandbox: readiness,
+    nextGate: 'Approve and pass a live public-fixture diagnostic before attesting qualification, configuring the protected route and performing production smoke.',
+  }));
+  router.post('/import', (req, res, next) => {
+    if (!readiness.configured) return sendError(res, 'DISABLED');
+    if (!authorized(req.headers.authorization)) return sendError(res, 'UNAUTHORIZED');
+    if (!req.is('application/json')) return sendError(res, 'UNSUPPORTED');
+    next();
+  }, express.json({ limit: LIMITS.jsonBytes, strict: true, inflate: false }), async (req, res) => {
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    req.once('aborted', abort); res.once('close', abort);
+    if (req.aborted || res.destroyed) abort();
+    try { const result = await executor.convert(req.body, controller.signal); if (!res.destroyed) res.json(result); }
+    catch (error) { if (!res.destroyed) sendError(res, error.code); }
+    finally { req.removeListener('aborted', abort); res.removeListener('close', abort); }
+  });
+  router.use((error, req, res, next) => sendError(res, error.type === 'entity.too.large' ? 'TOO_LARGE' : error.status === 415 ? 'UNSUPPORTED' : 'MALFORMED'));
+  return router;
+}
+module.exports = { createSandboxRouter };
