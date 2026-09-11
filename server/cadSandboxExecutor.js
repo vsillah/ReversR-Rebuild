@@ -60,6 +60,9 @@ async function readResult(sandbox, signal) {
   if (!stream) fail('CONVERSION_FAILED');
   return readBounded(stream, signal);
 }
+async function readJsonResult(sandbox, signal) {
+  return JSON.parse((await readResult(sandbox, signal)).toString('utf8'));
+}
 function sandboxError(code, diagnostic) {
   const error = new Error(code);
   error.code = code;
@@ -125,8 +128,17 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (control.signal.aborted) fail(control.signal.reason);
       const command = await abortable(sandbox.runCommand({ cmd: 'node', args: ['--max-old-space-size=128', '/vercel/sandbox/runner.js'], cwd: '/vercel/sandbox', env: {}, sudo: false, timeoutMs: SANDBOX_LIMITS.commandMs, signal: control.signal }), control.signal);
       stage('command_finished', { exitCode: command.exitCode });
-      if (command.exitCode !== 0) fail('CONVERSION_FAILED');
-      const raw = JSON.parse((await readResult(sandbox, control.signal)).toString('utf8'));
+      if (command.exitCode !== 0) {
+        try {
+          const failed = await readJsonResult(sandbox, control.signal);
+          stage('result_read', { status: failed.status, guestMemoryBytes: failed.guestMemoryBytes });
+          if (failed.status === 'error') sandboxError(failed.code, failed.diagnostic);
+        } catch (error) {
+          sandboxError('CONVERSION_FAILED', { phase: 'command_exit', exitCode: command.exitCode, resultReadError: error.code || 'MALFORMED_RESULT' });
+        }
+        sandboxError('CONVERSION_FAILED', { phase: 'command_exit', exitCode: command.exitCode });
+      }
+      const raw = await readJsonResult(sandbox, control.signal);
       stage('result_read', { status: raw.status, guestMemoryBytes: raw.guestMemoryBytes });
       if (raw.status === 'error') sandboxError(raw.code, raw.diagnostic);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');

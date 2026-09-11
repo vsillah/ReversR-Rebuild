@@ -120,6 +120,16 @@ test('SDK and result failures always stop a created VM and return sanitized code
   }
 });
 
+test('nonzero Sandbox commands include command-exit diagnostics', async () => {
+  const { executor } = fake('nonzero');
+  await assert.rejects(() => executor.convert(source()), error => {
+    assert.equal(error.code, 'CONVERSION_FAILED');
+    assert.equal(error.diagnostic.phase, 'command_exit');
+    assert.equal(error.diagnostic.exitCode, 1);
+    return true;
+  });
+});
+
 test('authorized Sandbox conversion failures include bounded guest diagnostics without exposing tokens', async t => {
   const { executor } = fake('guest-diagnostic');
   const url = await app(t, env, executor);
