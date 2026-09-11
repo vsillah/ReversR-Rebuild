@@ -72,7 +72,11 @@ function makeSandboxError(code, diagnostic) {
   if (diagnostic && typeof diagnostic === 'object') error.diagnostic = diagnostic;
   return error;
 }
-function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs, onStage = () => {} } = {}) {
+async function createDefaultSandbox(options) {
+  const { Sandbox } = await import('@vercel/sandbox');
+  return Sandbox.create(options);
+}
+function createSandboxExecutor({ env = process.env, create = createDefaultSandbox, loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs, onStage = () => {} } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
   const stops = new WeakMap();

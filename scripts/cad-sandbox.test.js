@@ -265,13 +265,16 @@ test('Vercel function bundle includes CAD runtime assets', () => {
 test('Sandbox graph permits only SDK provider access and fixed guest assets', () => {
   const allowed = {
     'cadSandboxConfig.js': ['node:fs', 'node:path', 'node:crypto'],
-    'cadSandboxExecutor.js': ['node:crypto', './cadWorkerContract', './cadSandboxConfig', '@vercel/sandbox'],
+    'cadSandboxExecutor.js': ['node:crypto', './cadWorkerContract', './cadSandboxConfig'],
     'cadSandboxRouter.js': ['express', 'node:crypto', './cadWorkerContract', './cadReadiness', './cadSandboxConfig', './cadSandboxExecutor'],
     'cadSandboxRunner.js': ['node:fs', 'node:os', 'node:crypto', './cadWorkerContract', './occt.js'],
   };
   for (const [file, expected] of Object.entries(allowed)) {
     const text = fs.readFileSync(path.join(__dirname, '../server', file), 'utf8');
     assert.deepEqual([...text.matchAll(/require\(['"]([^'"]+)['"]\)/g)].map(match => match[1]), expected);
-    assert.doesNotMatch(text, /child_process|\bDocker\b|fetch\s*\(|igesSourcePipeline|cadImportProcessor|\bimport\s*\(/);
+    assert.doesNotMatch(text, file === 'cadSandboxExecutor.js'
+      ? /child_process|\bDocker\b|fetch\s*\(|igesSourcePipeline|cadImportProcessor/
+      : /child_process|\bDocker\b|fetch\s*\(|igesSourcePipeline|cadImportProcessor|\bimport\s*\(/);
   }
+  assert.match(fs.readFileSync(path.join(__dirname, '../server/cadSandboxExecutor.js'), 'utf8'), /import\('@vercel\/sandbox'\)/);
 });
