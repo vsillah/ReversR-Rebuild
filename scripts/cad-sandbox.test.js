@@ -37,6 +37,7 @@ function fake(mode, options = {}) {
       if (mode === 'binding') data.sourceSha256 = 'wrong';
       if (mode === 'geometry') data.meshes[0].indices = [0, 1, 99];
       if (mode === 'empty') data.meshes = [];
+      if (mode === 'guest-diagnostic') return { status: 'error', code: 'CONVERSION_FAILED', diagnostic: { phase: 'read_iges', source: { bytes: 11562, sha256: '5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3' }, wasm: { bytes: 7604031, sha256: '33391fc9d94ea5c869a6718488bf0a9a464222bac9bdc764dfe1690cef281952' }, occtResult: { success: false, meshCount: 0 }, error: 'CONVERSION_FAILED' } };
       return data;
     },
     async readFile(value) {
@@ -117,6 +118,17 @@ test('SDK and result failures always stop a created VM and return sanitized code
     assert.equal(calls.filter(call => call[0] === 'stop').length, mode === 'create-error' ? 0 : 1);
     assert.equal(executor.activeCount(), 0);
   }
+});
+
+test('authorized Sandbox conversion failures include bounded guest diagnostics without exposing tokens', async t => {
+  const { executor } = fake('guest-diagnostic');
+  const url = await app(t, env, executor);
+  const response = await post(url, source());
+  assert.equal(response.status, 422);
+  assert.equal(response.body.code, 'CONVERSION_FAILED');
+  assert.equal(response.body.diagnostic.phase, 'read_iges');
+  assert.equal(response.body.diagnostic.source.sha256, '5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3');
+  assert.ok(!JSON.stringify(response.body).includes(env.CAD_SANDBOX_ACCESS_TOKEN));
 });
 
 test('ambiguous Sandbox creation rejection blocks retries without a handle', async () => {

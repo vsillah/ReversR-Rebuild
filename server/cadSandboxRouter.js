@@ -14,7 +14,18 @@ function createSandboxRouter({ env = process.env, executor = createSandboxExecut
     const actual = Buffer.from(value), expected = Buffer.from(`Bearer ${accessToken}`);
     return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
   };
-  const sendError = (res, code) => { const payload = failure(code); res.status(ERRORS[payload.code][0]).json(payload); };
+  const boundedDiagnostic = diagnostic => {
+    if (!diagnostic || typeof diagnostic !== 'object' || Array.isArray(diagnostic)) return undefined;
+    const serialized = JSON.stringify(diagnostic);
+    if (serialized.length > 4096) return { truncated: true, bytes: serialized.length };
+    return diagnostic;
+  };
+  const sendError = (res, code, diagnostic) => {
+    const payload = failure(code);
+    const safeDiagnostic = boundedDiagnostic(diagnostic);
+    if (safeDiagnostic) payload.diagnostic = safeDiagnostic;
+    res.status(ERRORS[payload.code][0]).json(payload);
+  };
   router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
   router.get('/capabilities', (req, res) => res.json({ ...getCadReadiness(),
     enabled: readiness.configured && !executor.cleanupBlocked?.(), routeMounted: true, configured: readiness.configured,
@@ -36,7 +47,7 @@ function createSandboxRouter({ env = process.env, executor = createSandboxExecut
     req.once('aborted', abort); res.once('close', abort);
     if (req.aborted || res.destroyed) abort();
     try { const result = await executor.convert(req.body, controller.signal); if (!res.destroyed) res.json(result); }
-    catch (error) { if (!res.destroyed) sendError(res, error.code); }
+    catch (error) { if (!res.destroyed) sendError(res, error.code, error.diagnostic); }
     finally { req.removeListener('aborted', abort); res.removeListener('close', abort); }
   });
   router.use((error, req, res, next) => sendError(res, error.type === 'entity.too.large' ? 'TOO_LARGE' : error.status === 415 ? 'UNSUPPORTED' : 'MALFORMED'));
