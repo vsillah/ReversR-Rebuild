@@ -33,6 +33,7 @@ function fake(mode, options = {}) {
       const bytes = files.find(file => file.path.endsWith('/source.bin')).content;
       const data = { status: 'ready', sourceSha256: crypto.createHash('sha256').update(bytes).digest('hex'), guestMemoryBytes: 1900 * 1024 * 1024,
         meshes: [{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2] }] };
+      if (mode === 'guest-memory-report') data.guestMemoryBytes = 2398654464;
       if (mode === 'binding') data.sourceSha256 = 'wrong';
       if (mode === 'geometry') data.meshes[0].indices = [0, 1, 99];
       if (mode === 'empty') data.meshes = [];
@@ -131,6 +132,14 @@ test('SDK buffer reads are preferred when available', async () => {
   assert.equal(response.triangleCount, 1);
   assert.ok(calls.some(call => call[0] === 'read-buffer'));
   assert.ok(!calls.some(call => call[0] === 'read'));
+});
+
+test('provider session memory is authoritative over guest os.totalmem report', async () => {
+  const { executor } = fake('guest-memory-report');
+  const response = await executor.convert(source());
+  assert.equal(response.triangleCount, 1);
+  assert.equal(response.execution.memoryMb, 2048);
+  assert.equal(response.execution.guestMemoryBytes, 2398654464);
 });
 
 test('timeout and cancellation stop VM with fresh cleanup signal; busy fails closed', async () => {

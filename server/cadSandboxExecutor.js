@@ -124,7 +124,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       stage('result_read', { status: raw.status, guestMemoryBytes: raw.guestMemoryBytes });
       if (raw.status === 'error') fail(raw.code);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
-      if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0 || raw.guestMemoryBytes > SANDBOX_LIMITS.memoryMb * 1024 * 1024 * 1.05) fail('RUNTIME_UNAVAILABLE');
+      if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0) fail('RUNTIME_UNAVAILABLE');
       const response = { schemaVersion: 1, status: 'ready', mode: 'sandbox-stock-occt-mesh-beta', source: { sha256: source.sha256, bytes: source.bytes.length, format: 'iges' },
         ...meshPayload(raw.meshes), requestedOutputUnit: 'millimeter',
         sourceConfidence: { status: 'unqualified', reason: 'Stock tessellation; source fidelity, dimensions and manufacturing use are not independently verified.' },
