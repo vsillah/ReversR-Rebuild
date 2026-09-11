@@ -34,3 +34,19 @@ Prepare a public-safe, bytes-in/validated-results-out core around the qualified 
 The shortest evidenced architecture to investigate is an authenticated API admission endpoint forwarding to an isolated executor using the reference hosted-job protocol. Implement real identity, entitlement, ownership, durable lease/store, executor and cleanup adapters. Qualify the pinned source-faithful runtime there with synthetic source geometry, hard resource limits, expiry and cleanup receipts. Return bounded validated results through the API. Worker provisioning, source transfer, runtime execution and production activation need their own scoped authorization; no provider has been selected or benchmarked here.
 
 Captain gate: review this no-go finding, choose the isolated worker path or fund the public-safe serverless extraction/qualification slice, and retain disabled production capabilities until actual conversion and hosted deployment evidence pass. This assessment makes no production configuration changes and does not claim a completed CAD import.
+
+## Stock package execution probe
+
+The follow-on offline probe now provides actual conversion evidence for stock `occt-import-js` version `0.0.23`. It reads only the package's public cube fixture (11,562 bytes), verifies its checksum, supplies the packaged WASM bytes directly, denies network transport, and converts twice. Both outputs contain 12 triangles with identical position/index hashes. This is a local geometry check; render, STL, source-confidence, arbitrary-source correctness and hosted packaging are still unqualified.
+
+Run `node scripts/cad-stock-qualification.js`. The observed result is exit code 1:
+
+```text
+IN_PROCESS_EXECUTION_LIMITS_UNENFORCEABLE: synchronous WASM prevents timer/abort callbacks during conversion; the stock loader ignores the supplied capped memory.
+```
+
+The first conversion took 47 ms while a scheduled 1 ms timer could not fire. Timing varies by machine; the synchronous call prevents timer callbacks until it returns. The probe also passed a memory with a 256 MiB maximum and verified that the importer's heap uses a different buffer. Inspection of this installed loader shows it obtains exported memory from the WASM instance and uses a 2 GiB heap ceiling. This does not show that the tiny fixture exhausts memory, nor that every possible isolation design fails. It shows that a request timer and supplied memory option do not enforce the proposed direct in-process limits.
+
+`node scripts/cad-stock-qualification.js --expect-blocked` validates the expected no-go result with exit code 0. It executes exactly two public-fixture conversions and writes no artifacts. The normal command deliberately fails the activation qualification gate; it is not a failing enabled-route test.
+
+The capabilities endpoint now exposes the stable blocker code with the limited local qualification result. POST import remains unmounted and returns 404, as tested by the existing route suite; no uploaded source is processed. No beta-enabled claim is made. An independently terminable worker (potentially a qualified Node worker-thread implementation) with separately enforced WASM memory limits is the next technical avenue within a no-subprocess design. That alternative has not been implemented or qualified here. The isolated external executor remains the other path.

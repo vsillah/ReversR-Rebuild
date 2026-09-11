@@ -6,6 +6,11 @@ function getCadReadiness() {
     enabled: false,
     routeMounted: false,
     mode: 'metadata-qualified-only',
+    blocker: {
+      code: 'IN_PROCESS_EXECUTION_LIMITS_UNENFORCEABLE',
+      reason: 'Stock WASM conversion blocks timer and abort callbacks and ignores a supplied capped memory. Hosted execution limits remain unqualified.',
+      qualification: 'Public package cube converted locally; no hosted import route is enabled.',
+    },
     executor: {
       metadataQualified: true,
       implementationCommit: 'bf80b32777d22be822db0fca095af0e89ea515e5',
