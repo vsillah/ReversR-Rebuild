@@ -28,7 +28,7 @@ function fake(mode, options = {}) {
   let files;
   const sandbox = { persistent: false, vcpus: 1, memory: 2048, timeout: SANDBOX_LIMITS.lifetimeMs,
     async writeFiles(value, opts) { calls.push(['write', value, opts]); files = value; if (mode === 'write-error') throw new Error('provider secret diagnostic'); },
-    async runCommand(value) { calls.push(['run', value]); if (mode === 'hang') return new Promise(() => {}); return { exitCode: mode === 'nonzero' ? 1 : 0 }; },
+    async runCommand(value) { calls.push(['run', value]); if (mode === 'hang') return new Promise(() => {}); return { exitCode: ['nonzero', 'nonzero-stop-error'].includes(mode) ? 1 : 0 }; },
     result() {
       const bytes = files.find(file => file.path.endsWith('/source.bin')).content;
       const data = { status: 'ready', sourceSha256: crypto.createHash('sha256').update(bytes).digest('hex'), guestMemoryBytes: 1900 * 1024 * 1024,
@@ -49,7 +49,7 @@ function fake(mode, options = {}) {
       if (mode === 'event-stream') return eventStream(JSON.stringify(data));
       return Readable.from([JSON.stringify(data)]);
     },
-    async stop(opts) { calls.push(['stop', opts]); if (mode === 'stop-error') throw new Error('cleanup failed'); if (mode === 'stop-hang') return new Promise(() => {}); return mode === 'snapshot' ? { status: 'stopped', snapshot: {} } : { status: 'stopped' }; },
+    async stop(opts) { calls.push(['stop', opts]); if (['stop-error', 'nonzero-stop-error'].includes(mode)) throw new Error('cleanup failed'); if (mode === 'stop-hang') return new Promise(() => {}); return mode === 'snapshot' ? { status: 'stopped', snapshot: {} } : { status: 'stopped' }; },
   };
   if (mode === 'buffer') sandbox.readFileToBuffer = async value => { calls.push(['read-buffer', value]); return Buffer.from(JSON.stringify(sandbox.result())); };
   if (mode === 'persistent') sandbox.persistent = true;
@@ -128,6 +128,18 @@ test('nonzero Sandbox commands include command-exit diagnostics', async () => {
     assert.equal(error.diagnostic.exitCode, 1);
     return true;
   });
+});
+
+test('primary conversion diagnostics are preserved when cleanup also fails', async () => {
+  const { executor } = fake('nonzero-stop-error');
+  await assert.rejects(() => executor.convert(source()), error => {
+    assert.equal(error.code, 'CONVERSION_FAILED');
+    assert.equal(error.diagnostic.phase, 'command_exit');
+    assert.equal(error.diagnostic.exitCode, 1);
+    return true;
+  });
+  assert.equal(executor.cleanupBlocked(), true);
+  await assert.rejects(executor.convert(source()), { code: 'CLEANUP_FAILED' });
 });
 
 test('authorized Sandbox conversion failures include bounded guest diagnostics without exposing tokens', async t => {
