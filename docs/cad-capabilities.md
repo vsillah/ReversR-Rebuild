@@ -1,5 +1,9 @@
 # CAD capabilities boundary
 
+Current assessment: `worker-qualified-disabled`. The production import route remains unmounted. The public cube now converts through a local qualification router backed by a terminable Worker. Production enablement is blocked by `WORKER_WASM_MEMORY_UNBOUNDED` and unqualified hosted packaging. Earlier sections below record the progression from metadata-only status to the direct-call probe.
+
+## Original metadata boundary
+
 `GET /api/cad/capabilities` returns static metadata qualification status under the existing API CORS and request-body policy. Responses use `Cache-Control: no-store`.
 
 `enabled: false` and `routeMounted: false` describe hosted CAD processing. Only the capabilities endpoint is mounted; no import route is added. Environment flags cannot activate processing in this slice. The module has no imports, runtime probes, file access, or execution adapters.
@@ -50,3 +54,25 @@ The first conversion took 47 ms while a scheduled 1 ms timer could not fire. Tim
 `node scripts/cad-stock-qualification.js --expect-blocked` validates the expected no-go result with exit code 0. It executes exactly two public-fixture conversions and writes no artifacts. The normal command deliberately fails the activation qualification gate; it is not a failing enabled-route test.
 
 The capabilities endpoint now exposes the stable blocker code with the limited local qualification result. POST import remains unmounted and returns 404, as tested by the existing route suite; no uploaded source is processed. No beta-enabled claim is made. An independently terminable worker (potentially a qualified Node worker-thread implementation) with separately enforced WASM memory limits is the next technical avenue within a no-subprocess design. That alternative has not been implemented or qualified here. The isolated external executor remains the other path.
+
+## Worker extraction and qualification
+
+`server/cadWorkerImport.js` provides an unmounted, default-disabled qualification router and worker lifecycle service. The fixed `server/cadMeshWorker.js` entrypoint reads only the packaged WASM asset and receives source bytes from the parent. It imports no research pipeline. No files are written, no external runtime is selected, and no environment flag enables the production route.
+
+The parent validates the upload before launching one Worker per service instance. Limits are 64 KiB source, 96 KiB JSON body, 1 MiB output, 16 meshes, 20,000 vertices, 10,000 triangles and 5 seconds including startup. Output is validated before leaving the Worker and again in the parent. The parent awaits termination before settling a request and releasing capacity, including success, timeout, abort, malformed output, worker error and early exit. JavaScript resource limits are 64 MiB old generation, 16 MiB young generation and a 4 MiB stack. These are not WASM or total-process memory limits. Concurrency is per service instance, not a distributed quota.
+
+The useful output is a bounded triangle mesh with a source checksum, byte count and explicitly unqualified source-confidence status. Requested output units are millimeters; dimensional accuracy, units and topology have no independent verification. Transforms and selected assembly/reference records are rejected. There is no rendered image, STL, database import, client UI or manufacturing-confidence claim.
+
+Validation commands:
+
+```sh
+node --test scripts/cad-worker.test.js scripts/cad-readiness.test.js
+npm run typecheck
+git diff --check
+```
+
+The worker suite covers the public package cube through HTTP, deterministic mesh output, runtime transport denial, malformed/oversized/empty/unsupported uploads, output/count/index validation, timeout of both infinite JavaScript and infinite WASM workers, parent responsiveness, abort, busy state, crash, early exit and confirmed termination. The main-server suite separately verifies GET capabilities and that production POST import remains unmounted even with activation-looking environment values. The qualification router is tested separately; it is not production-route success evidence. The public diff and runtime dependency graph are guarded.
+
+The remaining memory blocker is reproduced by the worker test named `WASM can exceed the JS resource limit`. It allocates 32 MiB of WASM memory in a Worker configured with a 16 MiB old-generation limit. This confirms that JavaScript resource limits cannot serve as the requested CAD memory boundary; it does not intentionally exhaust the machine. [Node's Worker documentation](https://nodejs.org/api/worker_threads.html) also excludes external allocations from those limits and notes that process-wide out-of-memory failures remain possible. Timeout termination solves event-loop blocking but cannot prevent allocation spikes before termination.
+
+Captain decision: this slice is reviewable as disabled qualification infrastructure, not safe for immediate production beta activation. Next qualify a hard WASM/total-process memory boundary and hosted asset tracing, or use a separately isolated executor. Do not mount or enable this router based solely on passing local cube and timeout tests. No push, deployment or environment change was performed.
