@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { getCadReadiness } = require('./cadReadiness');
+const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
 const path = require('path');
@@ -50,12 +50,9 @@ app.use(cors({
   ],
 }));
 app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+// CAD enforces its own body limit and auth before the general API parser.
+app.use('/api/cad', createSandboxRouter({ env: process.env }));
 app.use(express.json({ limit: apiRequestBodyLimit }));
-
-app.get('/api/cad/capabilities', (req, res) => {
-  res.set('Cache-Control', 'no-store');
-  res.json(getCadReadiness());
-});
 
 // API KEY POOL & RATE LIMIT HANDLING
 // ============================================

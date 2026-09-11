@@ -1,78 +1,65 @@
-# CAD capabilities boundary
+# CAD Sandbox activation preparation
 
-Current assessment: `worker-qualified-disabled`. The production import route remains unmounted. The public cube now converts through a local qualification router backed by a terminable Worker. Production enablement is blocked by `WORKER_WASM_MEMORY_UNBOUNDED` and unqualified hosted packaging. Earlier sections below record the progression from metadata-only status to the direct-call probe.
+The API now mounts a protected Sandbox import handler before the general JSON parser. It remains disabled with the default environment. This branch prepares the adapter and offline qualification; it has not created a live Sandbox or changed production.
 
-## Original metadata boundary
+`GET /api/cad/capabilities` reports `routeMounted: true` because the handler exists, even while `enabled: false`. This updates the older field convention that described an active processing route. `configured` means all required local gates are present; it does not mean credentials or hosted execution have been verified. `enabled` also becomes false if cleanup on that service instance is uncertain. Both endpoints inherit the existing CORS policy and return `Cache-Control: no-store`.
 
-`GET /api/cad/capabilities` returns static metadata qualification status under the existing API CORS and request-body policy. Responses use `Cache-Control: no-store`.
+## Operator gates
 
-`enabled: false` and `routeMounted: false` describe hosted CAD processing. Only the capabilities endpoint is mounted; no import route is added. Environment flags cannot activate processing in this slice. The module has no imports, runtime probes, file access, or execution adapters.
+All of these must be present before the handler accepts a request:
 
-The metadata qualification was recorded at evidence commit `8ab9edfeb0825bd57091ecaf3c0acbf904596582`, for implementation commit `bf80b32777d22be822db0fca095af0e89ea515e5`. This is historical evidence from the research branch, not a check performed by the endpoint or code included in this slice. Its recorded outcome was successful bounded metadata execution, observed guest restrictions, exact-ID cleanup, and an unchanged pre-existing container inventory. Private evidence is excluded from this change.
+- `CAD_IMPORT_EXECUTOR=sandbox`.
+- Vercel deployment OIDC availability, `VERCEL_OIDC_TOKEN`, or all three explicit local credentials: `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`. Authentication is delegated to the SDK; values are never returned by capabilities or sent into the guest environment.
+- `CAD_SANDBOX_LIVE_QUALIFIED=true`, an operator attestation that the separately approved live diagnostic passed. This is not an automatically verified evidence record.
+- `CAD_SANDBOX_ACCESS_TOKEN`: a random URL-safe token of 32–128 characters. Requests require it in the `Authorization: Bearer ...` header. It is operator-only access; do not put it into the web/mobile client bundle.
+- Installed Sandbox SDK and the bounded packaged CAD assets, including the qualified stock WASM checksum.
 
-The response separates that limited proof from unproven hosted processing, identity/store/executor adapters, native import, supplied-file processing, provider integration, failure-independent expiry, deployment, and production activation. Each broader execution step requires explicit approval. No environment setting grants that approval.
+Missing gates return JSON `DISABLED` with status 503 before decoding a body. Wrong access tokens return 401 before decoding a body. No source-record/database route or user UI is added. This is a protected operator beta path, not a complete end-user CAD feature.
 
-Validation: `node --test scripts/cad-readiness.test.js`, `npm run typecheck`, and `git diff --check`. The focused test uses loopback HTTP with provider/commercial modules stubbed, checks the server's existing CORS policy, rejects import requests, and guards the source boundary and public diff. It performs no CAD or provider work.
+## Adapter and resource boundary
 
-## Hosted activation assessment (2026-09-11)
+The dependency is pinned to `@vercel/sandbox` version `3.3.0`; package and lock changes add its dependency graph only. The adapter uses a unique request name, `node24`, `iad1`, one vCPU, a 60-second VM lifetime, denied guest network access, no exposed ports, no source checkout, an empty command environment, and `persistent: false`. Persistence is explicitly off because the current SDK otherwise retains snapshots by default. The SDK reports 2048 MB per vCPU. These are requested platform controls, not live enforcement evidence from this lane. See the [SDK reference](https://vercel.com/docs/sandbox/sdk-reference).
 
-Decision: keep processing disabled. This assessment starts from `bb09301`; it does not establish that serverless CAD is impossible. It establishes that the inspected code does not yet provide a qualified hosted conversion path.
+Only six fixed runtime/license assets plus validated source bytes are uploaded. The guest reads the packaged WASM directly and executes one fixed Node command; no guest package installation is needed. The app performs no process launch and uses no provider transport outside the Sandbox SDK. The guest conversion runs outside the API process; memory exhaustion there should be confined to the VM, pending live verification.
 
-Current production-shaped code uses the existing Express app through the catch-all API entrypoint. The capabilities response is static and cannot be activated by an environment flag. No CAD upload client or processing route is connected by this slice.
+Limits: 64 KiB source, 96 KiB JSON, 1 MiB streamed response, 16 meshes, 20,000 vertices, 10,000 triangles, 45-second request deadline, 10-second guest command deadline, and 5 seconds for stop confirmation. The JavaScript heap option on the guest command is additional tuning, not the WASM memory boundary. One conversion is admitted per executor instance. This is not distributed rate limiting or a project-wide spending quota.
 
-The package manifest already declares `occt-import-js` and the installed reference package contains a roughly 7.3 MiB WASM asset. Package availability alone does not prove deployed asset tracing, bounded execution, or correct source geometry. No deployment bundle or hosted conversion was executed in this assessment.
+The guest returns triangle meshes and a source checksum. The parent rechecks the checksum, geometry limits, finite coordinates, valid indices and reported guest memory. Output explicitly marks source confidence unqualified and makes no render, STL, dimensional-accuracy, topology or manufacturing claim. Stock placement/assembly cases remain excluded by the upload validator.
 
-The reference branch separates two paths:
+Stop runs after success and failure with a fresh cleanup signal. A result is not returned as successful until the stop receipt reports `stopped` without a snapshot. Cleanup errors or ambiguous creation timeouts block later work on that instance. A late-resolving creation is stopped without uploading source. If the process disappears or creation outcome is unknown, the requested VM lifetime is the fallback; its independent enforcement still needs live evidence. There are no application-level conversion retries, timeout extensions, snapshots, resumes or persistent mounts.
 
-- The local importer uses subprocess execution and operating-system memory polling. Its service explicitly rejects hosted execution. Moving that route into the API would violate this slice's execution constraints.
-- The source-faithful reader verifies a separate pinned JS/WASM artifact, admits only explicit trims on affine surfaces with straight boundaries, and validates trim, adjacent-vertex, and source-construction receipts. It also depends on local staged assets and per-call authorization ledgers. The stock package is not demonstrated to be equivalent to that reader.
-
-The reference processor also imports the research source pipeline, which contains private fixture bindings. It cannot be copied into the public request dependency graph. The hosted job adapter's synthetic contract tests are not evidence of a real geometry conversion.
-
-### Smallest viable next slice
-
-Prepare a public-safe, bytes-in/validated-results-out core around the qualified artifact and its supported-source admission checks. Preserve deterministic render, STL and source-confidence validation. Package licensed, pinned assets explicitly. Run it in an independently terminable worker with enforced input, memory, output, concurrency and wall-clock limits; a timeout promise around synchronous WASM is insufficient. Prove a generated tiny supported IGES case end to end, plus malformed, unsupported, empty, oversized and timed-out cases, before mounting import or reporting enabled capabilities.
-
-### External worker alternative
-
-The shortest evidenced architecture to investigate is an authenticated API admission endpoint forwarding to an isolated executor using the reference hosted-job protocol. Implement real identity, entitlement, ownership, durable lease/store, executor and cleanup adapters. Qualify the pinned source-faithful runtime there with synthetic source geometry, hard resource limits, expiry and cleanup receipts. Return bounded validated results through the API. Worker provisioning, source transfer, runtime execution and production activation need their own scoped authorization; no provider has been selected or benchmarked here.
-
-Captain gate: review this no-go finding, choose the isolated worker path or fund the public-safe serverless extraction/qualification slice, and retain disabled production capabilities until actual conversion and hosted deployment evidence pass. This assessment makes no production configuration changes and does not claim a completed CAD import.
-
-## Stock package execution probe
-
-The follow-on offline probe now provides actual conversion evidence for stock `occt-import-js` version `0.0.23`. It reads only the package's public cube fixture (11,562 bytes), verifies its checksum, supplies the packaged WASM bytes directly, denies network transport, and converts twice. Both outputs contain 12 triangles with identical position/index hashes. This is a local geometry check; render, STL, source-confidence, arbitrary-source correctness and hosted packaging are still unqualified.
-
-Run `node scripts/cad-stock-qualification.js`. The observed result is exit code 1:
-
-```text
-IN_PROCESS_EXECUTION_LIMITS_UNENFORCEABLE: synchronous WASM prevents timer/abort callbacks during conversion; the stock loader ignores the supplied capped memory.
-```
-
-The first conversion took 47 ms while a scheduled 1 ms timer could not fire. Timing varies by machine; the synchronous call prevents timer callbacks until it returns. The probe also passed a memory with a 256 MiB maximum and verified that the importer's heap uses a different buffer. Inspection of this installed loader shows it obtains exported memory from the WASM instance and uses a 2 GiB heap ceiling. This does not show that the tiny fixture exhausts memory, nor that every possible isolation design fails. It shows that a request timer and supplied memory option do not enforce the proposed direct in-process limits.
-
-`node scripts/cad-stock-qualification.js --expect-blocked` validates the expected no-go result with exit code 0. It executes exactly two public-fixture conversions and writes no artifacts. The normal command deliberately fails the activation qualification gate; it is not a failing enabled-route test.
-
-The capabilities endpoint now exposes the stable blocker code with the limited local qualification result. POST import remains unmounted and returns 404, as tested by the existing route suite; no uploaded source is processed. No beta-enabled claim is made. An independently terminable worker (potentially a qualified Node worker-thread implementation) with separately enforced WASM memory limits is the next technical avenue within a no-subprocess design. That alternative has not been implemented or qualified here. The isolated external executor remains the other path.
-
-## Worker extraction and qualification
-
-`server/cadWorkerImport.js` provides an unmounted, default-disabled qualification router and worker lifecycle service. The fixed `server/cadMeshWorker.js` entrypoint reads only the packaged WASM asset and receives source bytes from the parent. It imports no research pipeline. No files are written, no external runtime is selected, and no environment flag enables the production route.
-
-The parent validates the upload before launching one Worker per service instance. Limits are 64 KiB source, 96 KiB JSON body, 1 MiB output, 16 meshes, 20,000 vertices, 10,000 triangles and 5 seconds including startup. Output is validated before leaving the Worker and again in the parent. The parent awaits termination before settling a request and releasing capacity, including success, timeout, abort, malformed output, worker error and early exit. JavaScript resource limits are 64 MiB old generation, 16 MiB young generation and a 4 MiB stack. These are not WASM or total-process memory limits. Concurrency is per service instance, not a distributed quota.
-
-The useful output is a bounded triangle mesh with a source checksum, byte count and explicitly unqualified source-confidence status. Requested output units are millimeters; dimensional accuracy, units and topology have no independent verification. Transforms and selected assembly/reference records are rejected. There is no rendered image, STL, database import, client UI or manufacturing-confidence claim.
-
-Validation commands:
+## Offline validation
 
 ```sh
-node --test scripts/cad-worker.test.js scripts/cad-readiness.test.js
+node --test scripts/cad-sandbox.test.js scripts/cad-readiness.test.js scripts/cad-worker.test.js
+node scripts/cad-sandbox-diagnostic.js
 npm run typecheck
 git diff --check
 ```
 
-The worker suite covers the public package cube through HTTP, deterministic mesh output, runtime transport denial, malformed/oversized/empty/unsupported uploads, output/count/index validation, timeout of both infinite JavaScript and infinite WASM workers, parent responsiveness, abort, busy state, crash, early exit and confirmed termination. The main-server suite separately verifies GET capabilities and that production POST import remains unmounted even with activation-looking environment values. The qualification router is tested separately; it is not production-route success evidence. The public diff and runtime dependency graph are guarded.
+Fake-SDK tests cover the fixed create/upload/run/read/stop contract, gated HTTP success, missing gates, authorization, invalid requests, result limits and binding, errors, timeout, cancellation, late creation, cleanup stalls/failures, and the cleanup circuit breaker. Actual server tests verify disabled capabilities and the disabled POST path with existing CORS. Static guards cover the public diff and runtime imports. The diagnostic command above must print `SKIP` and perform no live operation.
 
-The remaining memory blocker is reproduced by the worker test named `WASM can exceed the JS resource limit`. It allocates 32 MiB of WASM memory in a Worker configured with a 16 MiB old-generation limit. This confirms that JavaScript resource limits cannot serve as the requested CAD memory boundary; it does not intentionally exhaust the machine. [Node's Worker documentation](https://nodejs.org/api/worker_threads.html) also excludes external allocations from those limits and notes that process-wide out-of-memory failures remain possible. Timeout termination solves event-loop blocking but cannot prevent allocation spikes before termination.
+These tests do not prove real Sandbox creation, OIDC, guest commands, network enforcement, memory isolation, hosted asset tracing, independent expiry, remote cleanup or a real billing receipt.
 
-Captain decision: this slice is reviewable as disabled qualification infrastructure, not safe for immediate production beta activation. Next qualify a hard WASM/total-process memory boundary and hosted asset tracing, or use a separately isolated executor. Do not mount or enable this router based solely on passing local cube and timeout tests. No push, deployment or environment change was performed.
+## Exact next gate
+
+1. Captain reviews this commit and requests approval for one live public-package-cube diagnostic: one requested Sandbox, one vCPU/2048 MB, 60-second lifetime, guest network denied, persistence off, no private source, no production activation. No live run is authorized by this document.
+2. After approval, select the intended Vercel team/project. For local execution, set the three explicit credential variables above in the terminal using a trusted secret mechanism, or supply a current OIDC token. Do not paste credentials into a task. Ensure the account supports the requested one-vCPU Sandbox.
+3. From this branch's worktree run:
+
+```sh
+CAD_SANDBOX_DIAGNOSTIC_APPROVED=true node scripts/cad-sandbox-diagnostic.js --live
+```
+
+The script also skips when credentials are absent. It always uses the checksum-pinned public package cube; there is no source-path argument. Success must report `status: passed`, 12 triangles, bounded guest memory and `execution.cleanup: stopped`. Preserve the sanitized report and verify in Vercel's Sandbox dashboard that the session stopped, no persistent snapshot was created, and usage matches the approved run. A failure is a stop condition, not permission to retry.
+
+4. Before activation, validate hosted bundle inclusion of the runner, contract, loader/WASM and license assets and an API duration sufficient for the 45-second request plus cleanup. Review deployment protection and access-token handling. Then separately approve the target environment settings, set the operator attestation only for the tested runtime/commit, and smoke the exact deployed commit with the public cube. Review VM timeout/OOM/network-denial behavior before admitting broader sources. Those checks may require another bounded live approval.
+5. Rollback disables `CAD_IMPORT_EXECUTOR`; verify capabilities report `enabled: false` and import returns 503. Keep the access token server-side and rotate it through the operator's secret-management process if exposed.
+
+Expected diagnostic cost at published default-region rates is roughly $0.003–$0.005 before taxes for a fully utilized one-minute run plus the small asset/result transfer, excluding unrelated usage. This is an estimate, not an enforceable dollar cap. The runtime/resource limits bound this request, and separate explicit live approval is required. Pricing varies by plan, included allowance and billing policy; verify the actual receipt in [Sandbox pricing and quotas](https://vercel.com/docs/sandbox/pricing). No Sandbox expense was incurred by this lane.
+
+## Earlier qualification context
+
+The original metadata boundary was released at `bb09301`. Historical Docker metadata evidence was attributed to implementation `bf80b32777d22be822db0fca095af0e89ea515e5` and evidence commit `8ab9edfeb0825bd57091ecaf3c0acbf904596582`; none of that establishes Sandbox execution.
+
+The stock package probe converted the 11,562-byte public cube into 12 deterministic triangles, but direct synchronous WASM blocked timers and ignored a supplied capped memory. `node scripts/cad-stock-qualification.js` deliberately exits 1 with `IN_PROCESS_EXECUTION_LIMITS_UNENFORCEABLE`; `--expect-blocked` validates that known result. The Worker extraction then proved termination of infinite JavaScript and WASM loops, cancellation and bounded outputs. A 32 MiB WASM allocation still succeeded under a 16 MiB Worker JavaScript limit, leaving `WORKER_WASM_MEMORY_UNBOUNDED`. The Sandbox adapter is the proposed next isolation boundary. Source-faithful staged runtimes and private fixture pipelines remain outside its dependency graph.

@@ -1,7 +1,9 @@
 const crypto = require('node:crypto');
 const LIMITS = Object.freeze({ inputBytes: 64 * 1024, jsonBytes: 96 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
 const ERRORS = Object.freeze({
-  DISABLED: [503, 'Hosted CAD import remains disabled pending memory isolation and deployment qualification.'],
+  DISABLED: [503, 'Hosted CAD import remains disabled pending executor qualification and operator configuration.'],
+  UNAUTHORIZED: [401, 'A valid operator CAD access token is required.'],
+  CLEANUP_FAILED: [503, 'Sandbox cleanup was not confirmed. Further imports on this instance are blocked; inspect the Sandbox session.'],
   NO_SOURCE: [400, 'Select a nonempty IGES source file.'],
   MALFORMED: [400, 'Provide a valid IGES upload as fileName and contentBase64.'],
   UNSUPPORTED: [415, 'Only standalone IGES source uploads are accepted.'],

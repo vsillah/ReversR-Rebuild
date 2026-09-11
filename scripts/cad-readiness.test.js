@@ -77,7 +77,7 @@ function loadServer(env) {
   return context.module.exports;
 }
 
-test('actual server route stays disabled, inherits CORS and mounts no import route', async (t) => {
+test('actual server Sandbox handler stays disabled and inherits CORS', async (t) => {
   const app = loadServer({
     API_CORS_ORIGINS: 'https://allowed.example',
     CAD_IMPORT_ENABLED: 'true', VERCEL: '1', CAD_IMPORT_RUNTIME: 'test-runtime',
@@ -91,7 +91,11 @@ test('actual server route stays disabled, inherits CORS and mounts no import rou
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('cache-control'), 'no-store');
   assert.equal(response.headers.get('access-control-allow-origin'), 'https://allowed.example');
-  assertDisabled(await response.json());
+  const status = await response.json();
+  assert.equal(status.enabled, false);
+  assert.equal(status.configured, false);
+  assert.equal(status.routeMounted, true);
+  assert.equal(status.blocker.code, 'SANDBOX_GATE_MISSING');
   const blocked = await fetch(`${url}/api/cad/capabilities`, { headers: { Origin: 'https://blocked.example' } });
   assert.equal(blocked.status, 500);
   assert.equal(blocked.headers.get('access-control-allow-origin'), null);
@@ -99,7 +103,10 @@ test('actual server route stays disabled, inherits CORS and mounts no import rou
     method: 'OPTIONS', headers: { Origin: 'https://allowed.example', 'Access-Control-Request-Method': 'GET' },
   });
   assert.equal(preflight.status, 204);
-  for (const route of ['/api/cad/import', '/api/cad/import-source-record', '/api/cad/capabilities']) {
+  const denied = await fetch(`${url}/api/cad/import`, { method: 'POST' });
+  assert.equal(denied.status, 503);
+  assert.equal((await denied.json()).code, 'DISABLED');
+  for (const route of ['/api/cad/import-source-record', '/api/cad/capabilities']) {
     const rejected = await fetch(`${url}${route}`, { method: 'POST' });
     assert.equal(rejected.status, 404);
   }
@@ -112,7 +119,7 @@ test('public slice contains only allowed source files and no private artifacts o
     ...git('diff', '--name-only', base).trim().split('\n'),
     ...git('ls-files', '--others', '--exclude-standard').trim().split('\n'),
   ].filter(Boolean))];
-  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js'];
+  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js'];
   for (const file of files) assert.ok(allowed.includes(file), `Unexpected public file: ${file}`);
   const patch = git('diff', '--unified=0', base, '--', ...allowed);
   const additions = patch.split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
@@ -130,7 +137,7 @@ test('public slice contains only allowed source files and no private artifacts o
   const addedServer = git('diff', '--unified=0', base, '--', 'server/index.js')
     .split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
   const requires = [...addedServer.matchAll(/require\(['"]([^'"]+)['"]\)/g)].map(match => match[1]);
-  assert.ok(requires.every(id => id === './cadReadiness'));
-  assert.ok(serverSource.includes("require('./cadReadiness')"));
+  assert.ok(requires.every(id => id === './cadSandboxRouter'));
+  assert.ok(serverSource.includes("require('./cadSandboxRouter')"));
   assert.doesNotMatch(addedServer, /\bimport\b|igesSourcePipeline|cadImportProcessor|child_process/);
 });
