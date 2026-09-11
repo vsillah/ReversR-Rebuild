@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "source": "occt-import-js package public test fixture",
+  "fixture": "test/testfiles/cube-10x10mm/Cube 10x10.igs",
+  "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+  "cases": [
+    { "id": "public-cube", "mutation": "none", "status": 200, "dispatches": 1 },
+    { "id": "public-cube-iges-extension", "mutation": "extension", "status": 200, "dispatches": 1 },
+    { "id": "public-cube-crlf", "mutation": "crlf", "status": 200, "dispatches": 1 },
+    { "id": "malformed-iges", "mutation": "text", "status": 400, "code": "MALFORMED", "dispatches": 0 },
+    { "id": "malformed-base64", "mutation": "base64", "status": 400, "code": "MALFORMED", "dispatches": 0 },
+    { "id": "missing-source", "mutation": "empty", "status": 400, "code": "NO_SOURCE", "dispatches": 0 },
+    { "id": "unsupported-extension", "mutation": "unsupported", "status": 415, "code": "UNSUPPORTED", "dispatches": 0 },
+    { "id": "private-path-rejected", "mutation": "path", "status": 400, "code": "MALFORMED", "dispatches": 0 },
+    { "id": "unsupported-transform", "mutation": "transform", "status": 415, "code": "UNSUPPORTED", "dispatches": 0 },
+    { "id": "source-limit-plus-one", "mutation": "sourceLimit", "status": 413, "code": "TOO_LARGE", "dispatches": 0 },
+    { "id": "json-limit-plus-one", "mutation": "jsonLimit", "status": 413, "code": "TOO_LARGE", "dispatches": 0 },
+    { "id": "malformed-json", "mutation": "json", "status": 400, "code": "MALFORMED", "dispatches": 0 }
+  ]
+}

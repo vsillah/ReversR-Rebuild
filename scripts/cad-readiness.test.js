@@ -119,7 +119,7 @@ test('public slice contains only allowed source files and no private artifacts o
     ...git('diff', '--name-only', base).trim().split('\n'),
     ...git('ls-files', '--others', '--exclude-standard').trim().split('\n'),
   ].filter(Boolean))];
-  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js', 'vercel.json'];
+  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js', 'vercel.json', 'scripts/cad-fixture-qualification.js', 'scripts/fixtures/cad-public-matrix.json', 'docs/cad-fixture-qualification.md', 'docs/cad-fixture-qualification-evidence.json'];
   for (const file of files) assert.ok(allowed.includes(file), `Unexpected public file: ${file}`);
   const patch = git('diff', '--unified=0', base, '--', ...allowed);
   const additions = patch.split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
@@ -133,7 +133,9 @@ test('public slice contains only allowed source files and no private artifacts o
     /-----BEGIN [A-Z ]*PRIVATE KEY-----/,
     /\b(?:sk|ghp)[_-][A-Za-z0-9]{20,}\b/,
   ];
-  for (const pattern of forbidden) assert.doesNotMatch(publicText, pattern);
+  // Exact public/synthetic fixture names are permitted; arbitrary CAD names remain forbidden.
+  const fixtureSafeText = publicText.replace(/Cube 10x10\.igs|public-cube\.iges|public-cube\.igs|public-cube\.jpg|public\.igs|source\.igs/g, '[fixture]');
+  for (const pattern of forbidden) assert.doesNotMatch(fixtureSafeText, pattern);
   const addedServer = git('diff', '--unified=0', base, '--', 'server/index.js')
     .split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
   const requires = [...addedServer.matchAll(/require\(['"]([^'"]+)['"]\)/g)].map(match => match[1]);
