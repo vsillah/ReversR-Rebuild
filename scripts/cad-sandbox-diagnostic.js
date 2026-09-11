@@ -21,10 +21,18 @@ async function main() {
   if (upload(body).sha256 !== '5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3') throw new Error('Public fixture checksum mismatch');
   const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
   const started = Date.now();
-  const result = await createSandboxExecutor().convert(body);
+  const stages = [];
+  let result;
+  try { result = await createSandboxExecutor({ onStage: stage => stages.push(stage) }).convert(body); }
+  catch (error) {
+    console.error(JSON.stringify({ status: 'failed', code: error.code || 'DIAGNOSTIC_FAILED', elapsedMs: Date.now() - started, stages,
+      note: 'No production configuration or route activation was attempted.' }, null, 2));
+    process.exitCode = 1;
+    return;
+  }
   if (result.triangleCount !== 12 || result.execution.cleanup !== 'stopped') throw new Error('Diagnostic mismatch');
   console.log(JSON.stringify({ status: 'passed', fixture: 'public-package-cube', triangles: result.triangleCount,
-    elapsedMs: Date.now() - started, execution: result.execution, limits: SANDBOX_LIMITS,
+    elapsedMs: Date.now() - started, execution: result.execution, limits: SANDBOX_LIMITS, stages,
     note: 'One diagnostic; production configuration and route smoke remain separate gates.' }, null, 2));
 }
 if (require.main === module) main().catch(error => { console.error(error.code || 'DIAGNOSTIC_FAILED'); process.exitCode = 1; });

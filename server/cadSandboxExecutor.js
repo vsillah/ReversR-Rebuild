@@ -60,13 +60,14 @@ async function readResult(sandbox, signal) {
   if (!stream) fail('CONVERSION_FAILED');
   return readBounded(stream, signal);
 }
-function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs } = {}) {
+function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs, onStage = () => {} } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
   const stops = new WeakMap();
   const policyMode = policy => typeof policy === 'string' ? policy : policy?.mode;
   const finite = value => Number.isFinite(value) ? value : undefined;
   const sessionFor = sandbox => typeof sandbox.currentSession === 'function' ? sandbox.currentSession() : sandbox;
+  const stage = (name, details = {}) => { try { onStage({ name, ...details }); } catch {} };
   function stop(sandbox) {
     if (!stops.has(sandbox)) stops.set(sandbox, (async () => {
       const control = new AbortController();
@@ -81,11 +82,13 @@ function createSandboxExecutor({ env = process.env, create = options => require(
   }
   async function convert(body, signal) {
     const source = upload(body);
+    stage('upload_accepted', { bytes: source.bytes.length });
     if (signal?.aborted) fail('CANCELLED');
     if (cleanupBlocked) fail('CLEANUP_FAILED');
     if (active) fail('BUSY');
     let files;
     try { files = loadAssets(); } catch { fail('RUNTIME_UNAVAILABLE'); }
+    stage('assets_loaded', { files: files.length });
     active = true;
     const control = new AbortController();
     const timer = setTimeout(() => control.abort('TIMEOUT'), requestMs);
@@ -109,12 +112,16 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       const reportedMemory = finite(session.memory) ?? finite(sandbox.memory);
       const reportedTimeout = finite(session.timeout) ?? finite(sandbox.timeout);
       const reportedPolicy = policyMode(session.networkPolicy) ?? policyMode(sandbox.networkPolicy);
+      stage('sandbox_created', { persistent: sandbox.persistent, vcpus: reportedVcpus, memoryMb: reportedMemory, timeoutMs: reportedTimeout, networkPolicy: reportedPolicy });
       if (sandbox.persistent !== false || reportedVcpus !== 1 || !reportedMemory || reportedMemory > SANDBOX_LIMITS.memoryMb || reportedTimeout !== SANDBOX_LIMITS.lifetimeMs || (reportedPolicy && reportedPolicy !== 'deny-all')) fail('RUNTIME_UNAVAILABLE');
       await abortable(sandbox.writeFiles([...files, { path: '/vercel/sandbox/source.bin', content: source.bytes, mode: 0o600 }], { signal: control.signal }), control.signal);
+      stage('files_written');
       if (control.signal.aborted) fail(control.signal.reason);
       const command = await abortable(sandbox.runCommand({ cmd: 'node', args: ['--max-old-space-size=128', '/vercel/sandbox/runner.js'], cwd: '/vercel/sandbox', env: {}, sudo: false, timeoutMs: SANDBOX_LIMITS.commandMs, signal: control.signal }), control.signal);
+      stage('command_finished', { exitCode: command.exitCode });
       if (command.exitCode !== 0) fail('CONVERSION_FAILED');
       const raw = JSON.parse((await readResult(sandbox, control.signal)).toString('utf8'));
+      stage('result_read', { status: raw.status, guestMemoryBytes: raw.guestMemoryBytes });
       if (raw.status === 'error') fail(raw.code);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
       if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0 || raw.guestMemoryBytes > SANDBOX_LIMITS.memoryMb * 1024 * 1024 * 1.05) fail('RUNTIME_UNAVAILABLE');
