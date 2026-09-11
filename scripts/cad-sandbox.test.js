@@ -29,22 +29,27 @@ function fake(mode, options = {}) {
   const sandbox = { persistent: false, vcpus: 1, memory: 2048, timeout: SANDBOX_LIMITS.lifetimeMs,
     async writeFiles(value, opts) { calls.push(['write', value, opts]); files = value; if (mode === 'write-error') throw new Error('provider secret diagnostic'); },
     async runCommand(value) { calls.push(['run', value]); if (mode === 'hang') return new Promise(() => {}); return { exitCode: mode === 'nonzero' ? 1 : 0 }; },
-    async readFile(value) {
-      calls.push(['read', value]);
-      if (mode === 'missing') return null;
-      if (mode === 'oversize') return Readable.from([Buffer.alloc(LIMITS.outputBytes), Buffer.from('x')]);
-      if (mode === 'malformed') return Readable.from(['{']);
+    result() {
       const bytes = files.find(file => file.path.endsWith('/source.bin')).content;
       const data = { status: 'ready', sourceSha256: crypto.createHash('sha256').update(bytes).digest('hex'), guestMemoryBytes: 1900 * 1024 * 1024,
         meshes: [{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2] }] };
       if (mode === 'binding') data.sourceSha256 = 'wrong';
       if (mode === 'geometry') data.meshes[0].indices = [0, 1, 99];
       if (mode === 'empty') data.meshes = [];
+      return data;
+    },
+    async readFile(value) {
+      calls.push(['read', value]);
+      if (mode === 'missing') return null;
+      if (mode === 'oversize') return Readable.from([Buffer.alloc(LIMITS.outputBytes), Buffer.from('x')]);
+      if (mode === 'malformed') return Readable.from(['{']);
+      const data = sandbox.result();
       if (mode === 'event-stream') return eventStream(JSON.stringify(data));
       return Readable.from([JSON.stringify(data)]);
     },
     async stop(opts) { calls.push(['stop', opts]); if (mode === 'stop-error') throw new Error('cleanup failed'); if (mode === 'stop-hang') return new Promise(() => {}); return mode === 'snapshot' ? { status: 'stopped', snapshot: {} } : { status: 'stopped' }; },
   };
+  if (mode === 'buffer') sandbox.readFileToBuffer = async value => { calls.push(['read-buffer', value]); return Buffer.from(JSON.stringify(sandbox.result())); };
   if (mode === 'persistent') sandbox.persistent = true;
   if (mode === 'memory') sandbox.memory = 4096;
   const create = async value => { calls.push(['create', value]); if (mode === 'create-error') throw new Error('provider secret diagnostic'); if (mode === 'late') await pause(60); return sandbox; };
@@ -118,6 +123,14 @@ test('SDK event streams are accepted under the result cap', async () => {
   const response = await executor.convert(source());
   assert.equal(response.triangleCount, 1);
   assert.equal(response.execution.cleanup, 'stopped');
+});
+
+test('SDK buffer reads are preferred when available', async () => {
+  const { calls, executor } = fake('buffer');
+  const response = await executor.convert(source());
+  assert.equal(response.triangleCount, 1);
+  assert.ok(calls.some(call => call[0] === 'read-buffer'));
+  assert.ok(!calls.some(call => call[0] === 'read'));
 });
 
 test('timeout and cancellation stop VM with fresh cleanup signal; busy fails closed', async () => {

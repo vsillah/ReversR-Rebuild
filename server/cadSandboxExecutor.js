@@ -49,6 +49,17 @@ async function readBounded(stream, signal) {
     stream.on('data', data); stream.on('end', end); stream.on('error', error);
   });
 }
+async function readResult(sandbox, signal) {
+  if (typeof sandbox.readFileToBuffer === 'function') {
+    const buffer = await abortable(sandbox.readFileToBuffer({ path: '/vercel/sandbox/result.json' }, { signal }), signal);
+    if (!buffer) fail('CONVERSION_FAILED');
+    if (buffer.length > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
+    return Buffer.from(buffer);
+  }
+  const stream = await abortable(sandbox.readFile({ path: '/vercel/sandbox/result.json' }, { signal }), signal);
+  if (!stream) fail('CONVERSION_FAILED');
+  return readBounded(stream, signal);
+}
 function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
@@ -103,9 +114,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (control.signal.aborted) fail(control.signal.reason);
       const command = await abortable(sandbox.runCommand({ cmd: 'node', args: ['--max-old-space-size=128', '/vercel/sandbox/runner.js'], cwd: '/vercel/sandbox', env: {}, sudo: false, timeoutMs: SANDBOX_LIMITS.commandMs, signal: control.signal }), control.signal);
       if (command.exitCode !== 0) fail('CONVERSION_FAILED');
-      const stream = await abortable(sandbox.readFile({ path: '/vercel/sandbox/result.json' }, { signal: control.signal }), control.signal);
-      if (!stream) fail('CONVERSION_FAILED');
-      const raw = JSON.parse((await readBounded(stream, control.signal)).toString('utf8'));
+      const raw = JSON.parse((await readResult(sandbox, control.signal)).toString('utf8'));
       if (raw.status === 'error') fail(raw.code);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
       if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0 || raw.guestMemoryBytes > SANDBOX_LIMITS.memoryMb * 1024 * 1024 * 1.05) fail('RUNTIME_UNAVAILABLE');
