@@ -60,6 +60,12 @@ async function readResult(sandbox, signal) {
   if (!stream) fail('CONVERSION_FAILED');
   return readBounded(stream, signal);
 }
+function sandboxError(code, diagnostic) {
+  const error = new Error(code);
+  error.code = code;
+  if (diagnostic && typeof diagnostic === 'object') error.diagnostic = diagnostic;
+  throw error;
+}
 function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs, onStage = () => {} } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
@@ -122,7 +128,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (command.exitCode !== 0) fail('CONVERSION_FAILED');
       const raw = JSON.parse((await readResult(sandbox, control.signal)).toString('utf8'));
       stage('result_read', { status: raw.status, guestMemoryBytes: raw.guestMemoryBytes });
-      if (raw.status === 'error') fail(raw.code);
+      if (raw.status === 'error') sandboxError(raw.code, raw.diagnostic);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
       if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0) fail('RUNTIME_UNAVAILABLE');
       const response = { schemaVersion: 1, status: 'ready', mode: 'sandbox-stock-occt-mesh-beta', source: { sha256: source.sha256, bytes: source.bytes.length, format: 'iges' },
@@ -135,7 +141,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
     } catch (error) {
       if (!sandbox) cleanupBlocked = true;
       if (control.signal.aborted) fail(control.signal.reason);
-      fail(error.code || 'RUNTIME_UNAVAILABLE');
+      sandboxError(error.code || 'RUNTIME_UNAVAILABLE', error.diagnostic);
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener('abort', abort);
