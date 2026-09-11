@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "generatedAt": "2026-09-11T23:32:27Z",
+  "project": "ReversR Rebuild",
+  "production": {
+    "commit": "93f1774bc552d3596aa6afc68375cb87403f661f",
+    "deploymentId": "dpl_71pK2st3YHoRUfWKyuKuTjP8yQSa",
+    "deploymentUrl": "https://reversr-i8oh7pke8-vsillahs-projects.vercel.app",
+    "aliasUrl": "https://reversr.vercel.app",
+    "target": "production"
+  },
+  "configuration": {
+    "cadImportExecutor": "sandbox",
+    "cadSandboxLiveQualified": true,
+    "cadSandboxAccessToken": "encrypted-production-secret-not-recorded",
+    "operatorProtected": true
+  },
+  "fixture": {
+    "source": "occt-import-js package public cube",
+    "fileName": "Cube 10x10.igs",
+    "bytes": 11562,
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "privateCadUsed": false
+  },
+  "checks": {
+    "exactDeploymentCapabilities": {
+      "status": 200,
+      "enabled": true,
+      "configured": true,
+      "blocker": null,
+      "missing": [],
+      "mode": "sandbox-stock-occt-mesh-beta"
+    },
+    "exactDeploymentUnauthorizedImport": {
+      "status": 401,
+      "code": "UNAUTHORIZED",
+      "diagnosticReturned": false
+    },
+    "exactDeploymentAuthorizedPublicCubeImport": {
+      "status": 200,
+      "ready": true,
+      "triangleCount": 12,
+      "vertexCount": 24
+    },
+    "aliasCapabilities": {
+      "status": 200,
+      "enabled": true,
+      "configured": true,
+      "blocker": null,
+      "missing": [],
+      "mode": "sandbox-stock-occt-mesh-beta"
+    },
+    "aliasAuthorizedPublicCubeImport": {
+      "status": 200,
+      "ready": true,
+      "triangleCount": 12,
+      "vertexCount": 24
+    }
+  },
+  "mergedPullRequests": [
+    147,
+    148,
+    149,
+    150,
+    151
+  ],
+  "knownLimits": [
+    "Public cube fixture only.",
+    "No private CAD files used.",
+    "No arbitrary IGES matrix qualification yet.",
+    "No manufacturing-quality or dimensional certification.",
+    "No end-user UI exposure approval.",
+    "No STL/render fidelity qualification in this activation receipt."
+  ],
+  "rollback": {
+    "primaryAction": "Remove or change CAD_IMPORT_EXECUTOR=sandbox in Vercel Production, redeploy, and verify capabilities enabled=false plus import DISABLED.",
+    "tokenAction": "Rotate CAD_SANDBOX_ACCESS_TOKEN if exposure is suspected."
+  }
+}
