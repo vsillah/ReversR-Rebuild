@@ -14,6 +14,9 @@ function createSandboxExecutor({ env = process.env, create = options => require(
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
   const stops = new WeakMap();
+  const policyMode = policy => typeof policy === 'string' ? policy : policy?.mode;
+  const finite = value => Number.isFinite(value) ? value : undefined;
+  const sessionFor = sandbox => typeof sandbox.currentSession === 'function' ? sandbox.currentSession() : sandbox;
   function stop(sandbox) {
     if (!stops.has(sandbox)) stops.set(sandbox, (async () => {
       const control = new AbortController();
@@ -51,7 +54,12 @@ function createSandboxExecutor({ env = process.env, create = options => require(
         return value;
       });
       sandbox = await abortable(creation, control.signal);
-      if (sandbox.persistent !== false || sandbox.vcpus !== 1 || !Number.isFinite(sandbox.memory) || sandbox.memory <= 0 || sandbox.memory > SANDBOX_LIMITS.memoryMb || sandbox.timeout !== SANDBOX_LIMITS.lifetimeMs) fail('RUNTIME_UNAVAILABLE');
+      const session = sessionFor(sandbox);
+      const reportedVcpus = finite(session.vcpus) ?? finite(sandbox.vcpus);
+      const reportedMemory = finite(session.memory) ?? finite(sandbox.memory);
+      const reportedTimeout = finite(session.timeout) ?? finite(sandbox.timeout);
+      const reportedPolicy = policyMode(session.networkPolicy) ?? policyMode(sandbox.networkPolicy);
+      if (sandbox.persistent !== false || reportedVcpus !== 1 || !reportedMemory || reportedMemory > SANDBOX_LIMITS.memoryMb || reportedTimeout !== SANDBOX_LIMITS.lifetimeMs || (reportedPolicy && reportedPolicy !== 'deny-all')) fail('RUNTIME_UNAVAILABLE');
       await abortable(sandbox.writeFiles([...files, { path: '/vercel/sandbox/source.bin', content: source.bytes, mode: 0o600 }], { signal: control.signal }), control.signal);
       if (control.signal.aborted) fail(control.signal.reason);
       const command = await abortable(sandbox.runCommand({ cmd: 'node', args: ['--max-old-space-size=128', '/vercel/sandbox/runner.js'], cwd: '/vercel/sandbox', env: {}, sudo: false, timeoutMs: SANDBOX_LIMITS.commandMs, signal: control.signal }), control.signal);
@@ -78,7 +86,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       const response = { schemaVersion: 1, status: 'ready', mode: 'sandbox-stock-occt-mesh-beta', source: { sha256: source.sha256, bytes: source.bytes.length, format: 'iges' },
         ...meshPayload(raw.meshes), requestedOutputUnit: 'millimeter',
         sourceConfidence: { status: 'unqualified', reason: 'Stock tessellation; source fidelity, dimensions and manufacturing use are not independently verified.' },
-        execution: { boundary: 'sandbox-microvm', vcpus: 1, memoryMb: sandbox.memory, guestMemoryBytes: raw.guestMemoryBytes, cleanup: 'stopped' },
+        execution: { boundary: 'sandbox-microvm', vcpus: reportedVcpus, memoryMb: reportedMemory, guestMemoryBytes: raw.guestMemoryBytes, cleanup: 'stopped' },
         unproven: ['STL export', 'render', 'source fidelity'] };
       if (Buffer.byteLength(JSON.stringify(response)) > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
       return response;
