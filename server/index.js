@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { getCadReadiness } = require('./cadReadiness');
 const fs = require('fs/promises');
 const crypto = require('crypto');
 const path = require('path');
@@ -50,6 +51,11 @@ app.use(cors({
 }));
 app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 app.use(express.json({ limit: apiRequestBodyLimit }));
+
+app.get('/api/cad/capabilities', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json(getCadReadiness());
+});
 
 // API KEY POOL & RATE LIMIT HANDLING
 // ============================================
