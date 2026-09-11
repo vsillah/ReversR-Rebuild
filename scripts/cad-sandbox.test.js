@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { Readable } = require('node:stream');
-const { once } = require('node:events');
+const { EventEmitter, once } = require('node:events');
 const express = require('express');
 const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
 const { createSandboxRouter } = require('../server/cadSandboxRouter');
@@ -17,6 +17,12 @@ function source() {
   return { fileName: 'cube' + '.igs', contentBase64: fs.readFileSync(path.join(directory, file)).toString('base64') };
 }
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+function eventStream(value) {
+  const stream = new EventEmitter();
+  stream.destroy = () => {};
+  process.nextTick(() => { stream.emit('data', Buffer.from(value)); stream.emit('end'); });
+  return stream;
+}
 function fake(mode, options = {}) {
   const calls = [];
   let files;
@@ -34,6 +40,7 @@ function fake(mode, options = {}) {
       if (mode === 'binding') data.sourceSha256 = 'wrong';
       if (mode === 'geometry') data.meshes[0].indices = [0, 1, 99];
       if (mode === 'empty') data.meshes = [];
+      if (mode === 'event-stream') return eventStream(JSON.stringify(data));
       return Readable.from([JSON.stringify(data)]);
     },
     async stop(opts) { calls.push(['stop', opts]); if (mode === 'stop-error') throw new Error('cleanup failed'); if (mode === 'stop-hang') return new Promise(() => {}); return mode === 'snapshot' ? { status: 'stopped', snapshot: {} } : { status: 'stopped' }; },
@@ -104,6 +111,13 @@ test('SDK and result failures always stop a created VM and return sanitized code
     assert.equal(calls.filter(call => call[0] === 'stop').length, mode === 'create-error' ? 0 : 1);
     assert.equal(executor.activeCount(), 0);
   }
+});
+
+test('SDK event streams are accepted under the result cap', async () => {
+  const { executor } = fake('event-stream');
+  const response = await executor.convert(source());
+  assert.equal(response.triangleCount, 1);
+  assert.equal(response.execution.cleanup, 'stopped');
 });
 
 test('timeout and cancellation stop VM with fresh cleanup signal; busy fails closed', async () => {

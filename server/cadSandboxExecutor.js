@@ -10,6 +10,45 @@ function abortable(operation, signal) {
     Promise.resolve(operation).then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
   });
 }
+async function readBounded(stream, signal) {
+  let size = 0;
+  const chunks = [];
+  const push = value => {
+    const chunk = Buffer.from(value);
+    size += chunk.length;
+    if (size > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
+    chunks.push(chunk);
+  };
+  if (typeof stream?.[Symbol.asyncIterator] === 'function') {
+    try {
+      const iterator = stream[Symbol.asyncIterator]();
+      while (true) {
+        const part = await abortable(iterator.next(), signal);
+        if (part.done) break;
+        push(part.value);
+      }
+    } finally { stream.destroy?.(); }
+    return Buffer.concat(chunks, size);
+  }
+  if (typeof stream?.on !== 'function') fail('RUNTIME_UNAVAILABLE');
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      signal.removeEventListener('abort', abort);
+      stream.off?.('data', data);
+      stream.off?.('end', end);
+      stream.off?.('error', error);
+    };
+    const done = fn => value => { cleanup(); fn(value); };
+    const abort = done(() => { stream.destroy?.(); reject(Object.assign(new Error('Aborted'), { code: signal.reason })); });
+    const error = done(reject);
+    const end = done(() => resolve(Buffer.concat(chunks, size)));
+    const data = value => {
+      try { push(value); } catch (err) { cleanup(); stream.destroy?.(); reject(err); }
+    };
+    signal.addEventListener('abort', abort, { once: true });
+    stream.on('data', data); stream.on('end', end); stream.on('error', error);
+  });
+}
 function createSandboxExecutor({ env = process.env, create = options => require('@vercel/sandbox').Sandbox.create(options), loadAssets = assets, requestMs = SANDBOX_LIMITS.requestMs, cleanupMs = SANDBOX_LIMITS.cleanupMs } = {}) {
   if (![requestMs, cleanupMs].every(value => Number.isInteger(value) && value > 0) || requestMs > SANDBOX_LIMITS.requestMs || cleanupMs > SANDBOX_LIMITS.cleanupMs) throw new Error('Invalid deadline');
   let active = false, cleanupBlocked = false;
@@ -66,20 +105,7 @@ function createSandboxExecutor({ env = process.env, create = options => require(
       if (command.exitCode !== 0) fail('CONVERSION_FAILED');
       const stream = await abortable(sandbox.readFile({ path: '/vercel/sandbox/result.json' }, { signal: control.signal }), control.signal);
       if (!stream) fail('CONVERSION_FAILED');
-      let size = 0;
-      const chunks = [];
-      try {
-        const iterator = stream[Symbol.asyncIterator]();
-        while (true) {
-          const part = await abortable(iterator.next(), control.signal);
-          if (part.done) break;
-          const chunk = Buffer.from(part.value);
-          size += chunk.length;
-          if (size > LIMITS.outputBytes) fail('OUTPUT_LIMIT');
-          chunks.push(chunk);
-        }
-      } finally { stream.destroy?.(); }
-      const raw = JSON.parse(Buffer.concat(chunks, size).toString('utf8'));
+      const raw = JSON.parse((await readBounded(stream, control.signal)).toString('utf8'));
       if (raw.status === 'error') fail(raw.code);
       if (raw.status !== 'ready' || raw.sourceSha256 !== source.sha256) fail('INVALID_GEOMETRY');
       if (!Number.isFinite(raw.guestMemoryBytes) || raw.guestMemoryBytes <= 0 || raw.guestMemoryBytes > SANDBOX_LIMITS.memoryMb * 1024 * 1024 * 1.05) fail('RUNTIME_UNAVAILABLE');
