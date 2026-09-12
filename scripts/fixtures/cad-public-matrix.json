@@ -1,20 +1,150 @@
 {
-  "schemaVersion": 1,
-  "source": "occt-import-js package public test fixture",
-  "fixture": "test/testfiles/cube-10x10mm/Cube 10x10.igs",
-  "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+  "schemaVersion": 2,
+  "fixtures": [
+    {
+      "id": "cube",
+      "source": "occt-import-js-package",
+      "path": "test/testfiles/cube-10x10mm/Cube 10x10.igs",
+      "format": "iges",
+      "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "bytes": 11562,
+      "geometry": {
+        "vertices": [
+          24,
+          24
+        ],
+        "triangles": [
+          12,
+          12
+        ]
+      }
+    },
+    {
+      "id": "rounded-cube-step",
+      "source": "occt-import-js-package",
+      "path": "test/testfiles/rounded-cube/rounded-cube.step",
+      "format": "step",
+      "sha256": "96e91abd536879747dcd49de707314d0157bc2d066b591a3244c81a726e52961",
+      "bytes": 21070
+    },
+    {
+      "id": "conical-surface-step",
+      "source": "occt-import-js-package",
+      "path": "test/testfiles/conical-surface/conical-surface.step",
+      "format": "step",
+      "sha256": "fa9dfef56daf69aa0630220d445a3034976af8dc6a7f59192a87a4b61d8db85e",
+      "bytes": 9640
+    }
+  ],
   "cases": [
-    { "id": "public-cube", "mutation": "none", "status": 200, "dispatches": 1 },
-    { "id": "public-cube-iges-extension", "mutation": "extension", "status": 200, "dispatches": 1 },
-    { "id": "public-cube-crlf", "mutation": "crlf", "status": 200, "dispatches": 1 },
-    { "id": "malformed-iges", "mutation": "text", "status": 400, "code": "MALFORMED", "dispatches": 0 },
-    { "id": "malformed-base64", "mutation": "base64", "status": 400, "code": "MALFORMED", "dispatches": 0 },
-    { "id": "missing-source", "mutation": "empty", "status": 400, "code": "NO_SOURCE", "dispatches": 0 },
-    { "id": "unsupported-extension", "mutation": "unsupported", "status": 415, "code": "UNSUPPORTED", "dispatches": 0 },
-    { "id": "private-path-rejected", "mutation": "path", "status": 400, "code": "MALFORMED", "dispatches": 0 },
-    { "id": "unsupported-transform", "mutation": "transform", "status": 415, "code": "UNSUPPORTED", "dispatches": 0 },
-    { "id": "source-limit-plus-one", "mutation": "sourceLimit", "status": 413, "code": "TOO_LARGE", "dispatches": 0 },
-    { "id": "json-limit-plus-one", "mutation": "jsonLimit", "status": 413, "code": "TOO_LARGE", "dispatches": 0 },
-    { "id": "malformed-json", "mutation": "json", "status": 400, "code": "MALFORMED", "dispatches": 0 }
+    {
+      "id": "public-cube",
+      "mutation": "none",
+      "status": 200,
+      "dispatches": 1,
+      "fixture": "cube"
+    },
+    {
+      "id": "public-cube-iges-extension",
+      "mutation": "extension",
+      "status": 200,
+      "dispatches": 1,
+      "fixture": "cube"
+    },
+    {
+      "id": "public-cube-crlf",
+      "mutation": "crlf",
+      "status": 200,
+      "dispatches": 1,
+      "fixture": "cube"
+    },
+    {
+      "id": "malformed-iges",
+      "mutation": "text",
+      "status": 400,
+      "code": "MALFORMED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "malformed-base64",
+      "mutation": "base64",
+      "status": 400,
+      "code": "MALFORMED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "missing-source",
+      "mutation": "empty",
+      "status": 400,
+      "code": "NO_SOURCE",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "unsupported-extension",
+      "mutation": "unsupported",
+      "status": 415,
+      "code": "UNSUPPORTED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "private-path-rejected",
+      "mutation": "path",
+      "status": 400,
+      "code": "MALFORMED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "unsupported-transform",
+      "mutation": "transform",
+      "status": 415,
+      "code": "UNSUPPORTED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "source-limit-plus-one",
+      "mutation": "sourceLimit",
+      "status": 413,
+      "code": "TOO_LARGE",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "json-limit-plus-one",
+      "mutation": "jsonLimit",
+      "status": 413,
+      "code": "TOO_LARGE",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "malformed-json",
+      "mutation": "json",
+      "status": 400,
+      "code": "MALFORMED",
+      "dispatches": 0,
+      "fixture": "cube"
+    },
+    {
+      "id": "rounded-cube-step-rejected",
+      "fixture": "rounded-cube-step",
+      "mutation": "none",
+      "status": 415,
+      "code": "UNSUPPORTED",
+      "dispatches": 0
+    },
+    {
+      "id": "conical-surface-step-rejected",
+      "fixture": "conical-surface-step",
+      "mutation": "none",
+      "status": 415,
+      "code": "UNSUPPORTED",
+      "dispatches": 0
+    }
   ]
 }

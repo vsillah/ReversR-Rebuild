@@ -1,12 +1,31 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "pass",
   "scope": "local-http-real-occt-simulated-provider",
-  "generatedAt": "2026-09-11T23:43:00.952Z",
+  "generatedAt": "2026-09-11T23:57:36.696Z",
   "packageVersion": "0.0.23",
-  "fixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
-  "fixtureBytes": 11562,
-  "matrixSha256": "6c6afa2191864da3028d8a7aa5f77c90ca1416d4c9edd3fc47c25855c77cbc9f",
+  "fixtures": [
+    {
+      "id": "cube",
+      "format": "iges",
+      "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "bytes": 11562
+    },
+    {
+      "id": "rounded-cube-step",
+      "format": "step",
+      "sha256": "96e91abd536879747dcd49de707314d0157bc2d066b591a3244c81a726e52961",
+      "bytes": 21070
+    },
+    {
+      "id": "conical-surface-step",
+      "format": "step",
+      "sha256": "fa9dfef56daf69aa0630220d445a3034976af8dc6a7f59192a87a4b61d8db85e",
+      "bytes": 9640
+    }
+  ],
+  "independentIgesCoverage": "pending-no-additional-local-iges",
+  "matrixSha256": "701ba5af23c71ebbc1b2ce9f05f166e5d68903976f0c7eea983b1b2ed7d73667",
   "providerCalls": 0,
   "privateFilesRead": 0,
   "checks": [
@@ -83,6 +102,16 @@
     {
       "id": "malformed-json",
       "httpStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "rounded-cube-step-rejected",
+      "httpStatus": 415,
+      "passed": true
+    },
+    {
+      "id": "conical-surface-step-rejected",
+      "httpStatus": 415,
       "passed": true
     },
     {
