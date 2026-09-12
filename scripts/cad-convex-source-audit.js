@@ -4,7 +4,8 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
+const files = ['offline/cad-convex/previewRuntime.js', 'offline/cad-convex/previewRuntime.d.ts',
+  'scripts/cad-convex-preview-runtime.test.js', 'docs/cad-convex-preview-setup.md', 'scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
   ...fs.readdirSync(path.join(root, 'convex/_generated')).map(n => 'convex/_generated/' + n),
 'convex/cad.ts', 'convex/schema.ts', 'convex/librarySession.ts',
   'offline/cad-convex/backend.d.ts', 'scripts/helpers/cad-convex-source-loader.js',
@@ -16,6 +17,7 @@ const patterns = [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, /(?:sk_live_|ghp_|github
 let hits = 0;
 for (const name of files) for (const pattern of patterns) if (pattern.test(read(name))) hits++;
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|require\(['"](?:convex|node:https|node:http)['"]\)/.test(read('offline/cad-convex/previewRuntime.js')));
 const cad = read('convex/cad.ts');
 assert.equal((cad.match(/= internal(?:Query|Mutation)\(\{/g) || []).length, 6);
 assert.equal((cad.match(/returns:/g) || []).length, 6);
