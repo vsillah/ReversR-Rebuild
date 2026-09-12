@@ -1,8 +1,10 @@
 # CAD upload session verifier foundation
 
-Status: verifier-only, unconfigured and unmounted. User CAD uploads remain disabled.
-No issuer, production session store, environment value, upload route, operator route
-change, provider call, private CAD input, or deployment is part of this change.
+Status: unconfigured and unmounted. User CAD uploads remain disabled.
+The server-only issuer/store contract and opt-in test adapter are documented in
+[cad-upload-issuer-store.md](cad-upload-issuer-store.md). No production session
+store, environment value, upload route, operator route change, provider call,
+private CAD input, or deployment is part of this foundation.
 
 ## Integration contract
 
@@ -25,8 +27,8 @@ row, commercial grant, access password or operator token as identity evidence.
 The credential is `us1.` followed by canonical, unpadded base64url encoding of 32
 cryptographically random bytes. This is an opaque lookup secret, not client claims
 or a self-signed token. Future server issuance must use a CSPRNG after verified
-login and verified user/shop membership. There is deliberately no issuance helper
-or credential minting endpoint in this foundation. Do not derive credentials from
+login and verified user/shop membership. The companion issuer helper requires explicit trusted adapters; there is no
+credential minting endpoint or default production wiring. Do not derive credentials from
 IDs, passwords or profile data. Version changes require explicit verifier support.
 
 The adapter receives only `sha256(fullCredential)` as lowercase hex and an
