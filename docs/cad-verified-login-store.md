@@ -161,3 +161,9 @@ Current local tests exercise binding, logout isolation, expiry, revocation,
 acknowledgements, cancellation and outage behavior using synthetic doubles only.
 They are executable interface evidence, not provider conformance certification.
 No UI changed and no live upload QA is appropriate at this gate.
+
+## Provider/store design follow-up
+
+The [review-only PostgreSQL design](cad-provider-store-design.md) adds a DDL draft,
+transaction/role contracts, synthetic scenarios and staged setup gates. It does not
+select a provider, apply a migration or configure the default service.
