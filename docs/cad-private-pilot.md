@@ -51,6 +51,25 @@ It still does not prove arbitrary-model source fidelity, render/STL behavior,
 dimensional accuracy, manufacturing suitability, or user-facing CAD readiness.
 Those remain separate gates.
 
+## Approved pilot outcome
+
+On 2026-09-12, the operator-approved private IGES pilot passed against
+production commit `a46eb8789b45babca171f428098128860d144012`.
+
+Public-safe summary:
+
+- source class: one approved private IGES source
+- source size: 145,140 bytes
+- HTTP result: 200
+- mesh output: 2 meshes, 432 vertices, 392 triangles
+- execution: hosted Sandbox microVM, 1 vCPU, 2048 MB, 60-second lifetime,
+  deny-all guest networking
+- cleanup: stopped
+
+The detailed sanitized evidence packet is intentionally retained outside git.
+Do not commit private source names, paths, source hashes, source bytes, base64,
+raw mesh payloads, operator tokens, or production secret values.
+
 ## Example
 
 Do not paste private paths into public reports. Run locally from an operator

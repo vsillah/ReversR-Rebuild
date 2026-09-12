@@ -97,13 +97,16 @@ test('fake Sandbox enforces fixed request, bounded output and confirmed stop thr
   assert.equal(caps.sandbox.liveQualification, 'operator-attested');
   assert.equal(caps.workerQualification.hostedPackagingQualified, true);
   assert.equal(caps.workerQualification.livePublicFixtureMatrixQualified, true);
+  assert.equal(caps.workerQualification.privatePilotQualified, true);
   assert.ok(caps.proven.some(value => value.includes('Live hosted public fixture matrix')));
   assert.ok(caps.proven.some(value => value.includes('without hosted Sandbox dispatch')));
-  assert.ok(caps.nextGate.includes('Private CAD'));
+  assert.ok(caps.proven.some(value => value.includes('operator-approved private IGES pilot')));
+  assert.ok(caps.nextGate.includes('Additional private CAD sources'));
   assert.ok(!caps.nextGate.includes('configuring the protected route'));
   assert.ok(!caps.unproven.some(value => value.includes('Broader public fixture matrix')));
   assert.ok(!caps.unproven.some(value => value.includes('production smoke')));
-  for (const scope of ['Private CAD', 'Arbitrary-model', 'Render and STL', 'Dimensional/manufacturing']) {
+  assert.ok(!caps.unproven.some(value => value === 'Private CAD readiness'));
+  for (const scope of ['General private-CAD corpus', 'Arbitrary-model', 'Render and STL', 'Dimensional/manufacturing', 'User-facing CAD exposure']) {
     assert.ok(caps.unproven.some(value => value.includes(scope)));
   }
   const response = await post(url, source());
