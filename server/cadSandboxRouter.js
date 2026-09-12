@@ -30,17 +30,26 @@ function createSandboxRouter({ env = process.env, executor = createSandboxExecut
   router.get('/capabilities', (req, res) => {
     const cleanupBlocked = executor.cleanupBlocked?.();
     const configured = readiness.configured;
-    res.json({ ...getCadReadiness(),
+    const base = getCadReadiness();
+    res.json({ ...base,
       enabled: configured && !cleanupBlocked, routeMounted: true, configured,
       mode: configured ? 'sandbox-stock-occt-mesh-beta' : 'sandbox-pending-qualification',
+      workerQualification: { ...base.workerQualification, hostedPackagingQualified: configured,
+        livePublicFixtureMatrixQualified: configured },
       executor: { kind: 'sandbox', authentication: readiness.credentials, liveQualification: readiness.liveQualification },
+      proven: configured ? [
+        ...base.proven,
+        'Live hosted public fixture matrix converted five public IGES fixture inputs across seven successful Sandbox dispatches.',
+        'Malformed, unsupported, auth and disabled-gate cases returned expected errors without hosted Sandbox dispatch.',
+        'Each live hosted dispatch reported 1 vCPU, 2048 MB, deny-all networking, 60s lifetime and confirmed cleanup.',
+      ] : base.proven,
       unproven: configured
-        ? ['Broader public fixture matrix on live Sandbox', 'Independent IGES model coverage', 'Source fidelity, render and STL export']
+        ? ['Private CAD readiness', 'Arbitrary-model source fidelity', 'Render and STL export', 'Dimensional/manufacturing certification']
         : ['Live Sandbox resource isolation, network denial and expiry', 'Hosted asset packaging and production smoke', 'Source fidelity, render and STL export'],
       blocker: cleanupBlocked ? { code: 'CLEANUP_FAILED', reason: 'Cleanup or creation outcome is uncertain; this instance is blocked.' } : configured ? null : { code: 'SANDBOX_GATE_MISSING', reason: 'Sandbox execution requires operator configuration and an approved live qualification.', missing: readiness.missing },
       sandbox: readiness,
       nextGate: configured
-        ? 'Broaden live qualification with public fixture matrices and independent IGES models before private CAD, visual/STL fidelity claims, or user-facing CAD exposure.'
+        ? 'Private CAD, arbitrary-model fidelity, render/STL claims and user-facing exposure remain separate gates requiring explicit approval and evidence.'
         : 'Approve and pass a live public-fixture diagnostic before attesting qualification, configuring the protected route and performing production smoke.',
     });
   });

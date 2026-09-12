@@ -77,9 +77,17 @@ test('fake Sandbox enforces fixed request, bounded output and confirmed stop thr
   const caps = await (await fetch(`${url}/capabilities`)).json();
   assert.equal(caps.enabled, true); assert.equal(caps.routeMounted, true); assert.equal(caps.configured, true);
   assert.equal(caps.sandbox.liveQualification, 'operator-attested');
-  assert.ok(caps.nextGate.includes('Broaden live qualification'));
+  assert.equal(caps.workerQualification.hostedPackagingQualified, true);
+  assert.equal(caps.workerQualification.livePublicFixtureMatrixQualified, true);
+  assert.ok(caps.proven.some(value => value.includes('Live hosted public fixture matrix')));
+  assert.ok(caps.proven.some(value => value.includes('without hosted Sandbox dispatch')));
+  assert.ok(caps.nextGate.includes('Private CAD'));
   assert.ok(!caps.nextGate.includes('configuring the protected route'));
+  assert.ok(!caps.unproven.some(value => value.includes('Broader public fixture matrix')));
   assert.ok(!caps.unproven.some(value => value.includes('production smoke')));
+  for (const scope of ['Private CAD', 'Arbitrary-model', 'Render and STL', 'Dimensional/manufacturing']) {
+    assert.ok(caps.unproven.some(value => value.includes(scope)));
+  }
   const response = await post(url, source());
   assert.equal(response.status, 200); assert.equal(response.body.triangleCount, 1);
   assert.equal(response.body.execution.cleanup, 'stopped');
