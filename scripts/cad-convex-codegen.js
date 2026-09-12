@@ -43,8 +43,9 @@ const dir = path.join(root, 'convex');
 assert.ok(!fs.existsSync(path.join(dir, 'convex.config.ts')), 'Components require reviewed full codegen');
 for (const entry of fs.readdirSync(dir, { withFileTypes: true }))
   if (entry.isDirectory()) assert.equal(entry.name, '_generated', 'Review nested module codegen');
+// Auth configuration is bundled separately by the pinned SDK, never an API module.
 const modules = fs.readdirSync(dir).filter(n => /\.(ts|js)$/.test(n)
-  && !n.endsWith('.d.ts') && n !== 'schema.ts').sort();
+  && !n.endsWith('.d.ts') && n !== 'schema.ts' && n !== 'auth.config.ts' && n !== 'auth.config.js').sort();
 const server = serverCodegen({ useTypeScript: false, envVars: undefined });
 const api = apiCodegen(modules);
 const outputs = { 'dataModel.d.ts': dynamicDataModelDTS(),
