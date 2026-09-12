@@ -136,11 +136,17 @@ function assertRedacted(serialized, secrets, sourcePath) {
 }
 
 async function runPilot({ writePath } = {}) {
+  const complete = evidence => {
+    const serialized = JSON.stringify(evidence, null, 2) + '\n';
+    assertRedacted(serialized, [], process.env.CAD_PRIVATE_SOURCE_PATH || '');
+    if (writePath) fs.writeFileSync(writePath, serialized);
+    return { evidence, serialized };
+  };
   if (!process.argv.includes('--live') || process.env.CAD_PRIVATE_PILOT_APPROVED !== 'true') {
-    return { evidence: failEvidence('APPROVAL_REQUIRED', { note: 'Requires --live and CAD_PRIVATE_PILOT_APPROVED=true.' }) };
+    return complete(failEvidence('APPROVAL_REQUIRED', { note: 'Requires --live and CAD_PRIVATE_PILOT_APPROVED=true.' }));
   }
   const prepared = sourceBody(process.env.CAD_PRIVATE_SOURCE_PATH || '');
-  if (prepared.evidence) return { evidence: prepared.evidence };
+  if (prepared.evidence) return complete(prepared.evidence);
   const operator = readOperatorConfig();
   const routeToken = crypto.randomBytes(32).toString('hex');
   const config = {

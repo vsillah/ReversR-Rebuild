@@ -13,6 +13,24 @@ function source() {
   const name = fs.readdirSync(directory).find(value => /\.igs$/i.test(value));
   return { fileName: 'cube' + '.igs', contentBase64: fs.readFileSync(path.join(directory, name)).toString('base64') };
 }
+function igesRow(section, sequence, body = '') {
+  return body.padEnd(72, ' ').slice(0, 72) + section + String(sequence).padStart(7, ' ');
+}
+function largeUnsupportedIges(targetBytes = 145140) {
+  const rows = [
+    igesRow('S', 1, 'large synthetic private-size preflight'),
+    igesRow('G', 1, ','),
+    igesRow('D', 1, '     124'),
+    igesRow('D', 2),
+  ];
+  for (let i = 1; Buffer.byteLength(rows.join('\n') + '\n' + igesRow('T', 1)) <= targetBytes; i++) {
+    rows.push(igesRow('P', i, `${i},`));
+  }
+  rows.push(igesRow('T', 1));
+  const bytes = Buffer.from(rows.join('\n') + '\n', 'ascii');
+  assert.ok(bytes.length > 145140 && bytes.length < LIMITS.inputBytes);
+  return { fileName: 'private-size-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
+}
 async function http(t, service, enabled = true) {
   const app = express();
   app.use('/api/cad', createWorkerRouter({ qualificationEnabled: enabled, service }));
@@ -59,6 +77,7 @@ test('input errors do not launch a Worker; disabled router fails closed', async 
     [{ ...valid, contentBase64: '!!!!' }, 400, 'MALFORMED'],
     [{ ...valid, contentBase64: Buffer.from('not CAD').toString('base64') }, 400, 'MALFORMED'],
     [{ ...valid, contentBase64: Buffer.alloc(LIMITS.inputBytes + 1).toString('base64') }, 413, 'TOO_LARGE'],
+    [largeUnsupportedIges(), 415, 'UNSUPPORTED'],
     [{ ...valid, extra: 'not accepted' }, 400, 'MALFORMED'],
     ['{', 400, 'MALFORMED'],
     [' '.repeat(LIMITS.jsonBytes + 1), 413, 'TOO_LARGE'],
