@@ -1,4 +1,12 @@
-# CAD login provider and PostgreSQL store design
+# CAD login provider and PostgreSQL store design (historical alternative)
+
+> **SUPERSEDED DEFAULT — 2026-09-12.** Convex is now the preferred CAD authority
+> store. Start with [Convex-first design](cad-convex-store-design.md) and
+> [current review/setup gates](cad-convex-store-review.md). The PostgreSQL /
+> Supabase recommendation, SQL, checkboxes and approval phrases below are
+> retained as historical alternative material only. They are not the active
+> setup path. Supabase dev project `jydipbkofvvpvaylxwbb` is superseded and
+> must not be mutated or reused under this lane. No cleanup is authorized.
 
 Review-only slice, based on `90268606225d91ff1cd48b9a682eaf5a444afbc4` (PR #170).
 No provider selected or contacted, database created, migration applied, production
