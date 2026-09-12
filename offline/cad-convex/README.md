@@ -166,3 +166,13 @@ tests. The production router remains unchanged and permanently disabled. See
 [the current review](../../docs/cad-convex-gateway-schema-review.md) for this phase's
 delta, validation scope and remaining provider/schema assembly gates. The earlier
 validation receipt above describes PR #174 only.
+
+## Repo source assembly (after PR #175)
+
+Manifest v3 now includes real `convex/schema.ts` and `convex/cad.ts` source, the
+default-denying library boundary, the JS type declaration and source execution
+tests. The source reuses this packet's backend/validators. Production still imports
+neither. The original templates above are historical review inputs. SDK/Auth
+selection and generated bindings remain absent; compilation is explicitly blocked.
+See [the source review](../../docs/cad-convex-schema-functions-review.md) for the
+66-test receipt, exact limitations and remaining live gates.
