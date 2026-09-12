@@ -119,3 +119,11 @@ scaffold. Historical foundation scope above does not imply that the route is sti
 unmounted. Production login/store selection, cross-instance revocation, quota and
 budget controls, bounded parsing and executor integration require separate review
 and approval before any upload activation.
+
+## Convex-first follow-up (2026-09-12)
+
+Convex is the preferred durable backing. The [replacement design](cad-convex-store-design.md)
+and local `server/convexUploadSessionStore.js` transport port preserve the existing
+service interface. The port is unwired: no verified-login callbacks, Convex functions,
+live gateway or deployment exist. Production auth remains unconfigured and uploads
+remain disabled. The prior Supabase/PostgreSQL packet is an alternative only.

@@ -1,4 +1,12 @@
-# CAD Import provider and database decision packet
+# CAD Import provider and database decision packet (historical alternative)
+
+> **SUPERSEDED DEFAULT — 2026-09-12.** Convex is now the preferred CAD authority
+> store. Start with [Convex-first design](cad-convex-store-design.md) and
+> [current review/setup gates](cad-convex-store-review.md). The PostgreSQL /
+> Supabase recommendation, SQL, checkboxes and approval phrases below are
+> retained as historical alternative material only. They are not the active
+> setup path. Supabase dev project `jydipbkofvvpvaylxwbb` is superseded and
+> must not be mutated or reused under this lane. No cleanup is authorized.
 
 Status: proposed, awaiting human selection. Reviewed 2026-09-12 against base
 `ad3b8b9` (PR #171), branch `codex/cad-provider-decision-packet`.
