@@ -184,3 +184,24 @@ test('stalled issuer and lookup are bounded and abort upstream work', async () =
   assert.equal(issueSignal.aborted, true);
   assert.equal(lookupSignal.aborted, true);
 });
+
+test('partial auth and local JSON-shaped storage cannot configure the service', async () => {
+  const f = setup();
+  let calls = 0;
+  const forbidden = async () => { calls++; throw Error('SENTINEL_UNTRUSTED_DEPENDENCY'); };
+  const auth = { resolveAuthorization: forbidden, refreshAuthorization: forbidden };
+  for (const options of [
+    { ...auth },
+    { ...auth, store: { loadStore: forbidden, saveStore: forbidden } },
+    { ...auth, store: { insertIfAbsent: forbidden, read: forbidden } },
+    { store: f.store, resolveAuthorization: forbidden },
+    { store: f.store, refreshAuthorization: forbidden },
+  ]) {
+    const service = createUploadSessionService(options);
+    const opaque = new Proxy({}, { get() { throw Error('SENTINEL_CONTEXT_READ'); } });
+    await expectCode(service.issueSession(opaque), 'AUTH_UNAVAILABLE');
+    await expectCode(service.revokeSession(hash('synthetic')), 'AUTH_UNAVAILABLE');
+    await assert.rejects(service.lookupSession(hash('synthetic')), /^Error: AUTH_UNAVAILABLE$/);
+  }
+  assert.equal(calls, 0, 'incomplete configuration must fail before calling any dependency');
+});

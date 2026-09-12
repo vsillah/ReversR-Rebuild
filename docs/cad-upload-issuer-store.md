@@ -131,3 +131,67 @@ scaffold. Historical foundation scope above does not imply that the route is sti
 unmounted. Production login/store selection, cross-instance revocation, quota and
 budget controls, bounded parsing and executor integration require separate review
 and approval before any upload activation.
+
+## Production auth/store audit — 2026-09-12
+
+Decision: **blocked; retain the unconfigured default service**. The inspected
+server and client helpers provide neither a suitable verified login boundary nor
+an upload store with durable cross-instance revocation. No issuer route or adapter
+is added by this audit. This is a source-code finding, not a live production probe.
+
+| Inspected boundary | Evidence | Upload-session decision |
+| --- | --- | --- |
+| `commercialization.js`: `requestProfile`, `ensureAccount`, `/api/me` | User ID comes from a supplied client ID or email hash; shop IDs are derived or read from that account. Reading `/api/me` can create these local account records. | A profile, owner role, account response, or derived shop ID does not prove login or membership. |
+| `getCommercialAccessGrant`, `findMatchingStoredGrant` | Tester allowlists accept profile fields; reset invite grants accept client-ID matching without a password. | Tester access and commercial entitlements, including `canUseCadReviewQueue`, are not CAD-upload permission. |
+| `verifyPassword`, `resolveAuthenticatedGrant` | Password verification exists, but resolves a profile-matched commercial grant in the JSON store. | Successful password verification alone provides no durable login-session handle, logout invalidation, or authoritative shop-membership relationship. |
+| `loadStore`, `saveStore`, `readJson`, `writeJson` | Whole-file JSON reads/writes; default file is in the OS temporary directory. | No atomic unique insertion or shared revocation guarantee. Changing `COMMERCIAL_STORE_FILE` does not establish these guarantees. |
+| `hooks/useCommercialization.tsx` | Client ID, profile and access password use AsyncStorage; requests send profile/access-password headers. | Client persistence is not a server identity boundary. |
+| `server/index.js`, `cadUserUploadRouter.js` | Disabled user route is mounted before parsing and uses the unconfigured lookup service. | Missing credentials remain 401; syntactically valid upload credentials remain 503 `USER_AUTH_UNAVAILABLE`. |
+| `uploadSessionStore.js`, `uploadSession.js` | Privileged injectable callbacks and an opt-in process-local test store. | A function-shaped adapter or schema-valid grant is not evidence of production authority or durability. |
+
+### Exact next dependency and review gate
+
+Before implementing production wiring, provide a reviewed server adapter design
+with these concrete artifacts:
+
+1. Identify the verified login source and server-side session handle, authoritative
+   user/shop membership records, explicit CAD permission, and expiration policy.
+   Define denied identity versus unavailable infrastructure without accepting
+   profile headers, client email, tester grants or operator credentials as login.
+2. Specify the durable store schema and transaction operations: unique credential
+   digest, acknowledged insert, consistent lookup, irreversible revoke, expiry
+   cleanup, cancellation and retry behavior. Attach tests using independent
+   processes against the selected backing store; restart and revocation must not
+   resurrect credentials. An in-memory fixture cannot satisfy this gate.
+3. Define an atomic relationship between each upload session and its originating
+   verified login. The current resolver returns before `issueSession` generates
+   `sessionId`; refresh receives that upload ID but no login handle. The existing
+   interface therefore does **not** itself persist a login linkage. Review an
+   explicit server-only binding/schema extension before implementing this adapter;
+   a mutable closure keyed only by user ID cannot safely distinguish concurrent
+   logins or invalidate one logged-out session.
+4. Demonstrate logout, membership removal, permission loss, store outage and
+   concurrent revoke behavior with sanitized results. Keep secure credential
+   delivery and any issuer HTTP route separately reviewed. Session readiness alone
+   does not authorize upload activation, parsing, quota spending or conversion.
+
+The captain's next action is to review this rejection evidence and scope the
+verified-login plus durable-store dependency. Provider selection/configuration,
+production credentials, deployment and upload activation remain separate gates.
+
+### Executable rejection evidence
+
+`cad-user-upload-route.test.js` executes the actual commercial source in an
+isolated VM with synthetic JSON persistence and environment values. It proves
+profile-only accounts, environment tester grants, client-bound invite grants,
+password grants and super-admin grants can produce commercial account responses
+while the default upload issuer and user route still reject them. The VM permits
+no provider calls or real account-file access. Upload request body/stream guards
+and conversion counters remain active for these cases.
+
+`cad-upload-session-store.test.js` also rejects incomplete auth dependencies and
+local JSON-shaped storage before invoking them, with sanitized unavailable codes.
+These tests protect the current rejection boundary; they do not certify arbitrary
+injected callbacks or detect a fake store that implements all required methods.
+Run both alongside the verifier and readiness suites. No UI or production behavior
+changes in this slice; the operator import implementation remains unchanged.
