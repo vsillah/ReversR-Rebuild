@@ -9,11 +9,12 @@ node --test scripts/cad-fixture-qualification.test.js scripts/cad-sandbox.test.j
 git diff --check
 ```
 
-The authorized MIT fixture is committed at
-`scripts/fixtures/kantoku-mit/sample.igs`, alongside the upstream MIT license
+The authorized MIT fixtures are committed at
+`scripts/fixtures/kantoku-mit/sample.igs` and
+`scripts/fixtures/vibe-mit/solid.igs`, each alongside its upstream MIT license
 and copyright notice. A fresh checkout needs only the locked dependencies;
 there is no acquisition command, ignored-cache prerequisite or network fetch
-in qualification. The source file is unchanged and its size/hash are checked
+in qualification. The source files are unchanged and their sizes/hashes are checked
 before every run. The former cache acquisition script has been removed.
 
 The default qualification command prints JSON without writing a file. `--write` replaces
@@ -27,7 +28,7 @@ No URL, input path, or token arguments are accepted.
 
 The public fixture matrix lives in `scripts/fixtures/cad-public-matrix.json`.
 Schema version 2 separates named fixtures from cases. Each case selects a
-fixture ID. The runner loads only reviewed package paths or the single vendored MIT fixture and verifies byte size
+fixture ID. The runner loads only reviewed package paths or the reviewed vendored MIT fixtures and verifies byte size
 and SHA-256 before making requests. It rejects paths outside the reviewed set
 and real paths outside the selected source root. Other cases are deterministic in-memory
 mutations. Adding a source requires reviewing its provenance, adding its path
@@ -75,9 +76,11 @@ Inventory on the installed `occt-import-js` 0.0.23 package and repository found:
 | rounded-cube-step | test/testfiles/rounded-cube/rounded-cube.step | HTTP 415 UNSUPPORTED, zero dispatch |
 | conical-surface-step | test/testfiles/conical-surface/conical-surface.step | HTTP 415 UNSUPPORTED, zero dispatch |
 | kantoku-mit-sample | scripts/fixtures/kantoku-mit/sample.igs | Successful IGES conversion |
+| vibe-mit-solid | scripts/fixtures/vibe-mit/solid.igs | Successful IGES conversion |
 
 The first three are public test assets already installed with the dependency.
-The fourth is the single Captain-authorized public acquisition. The exact authorized IGES asset and MIT notice are committed for reproducibility. The package cube source
+The fourth and fifth are individually Captain-authorized public acquisitions.
+The exact authorized IGES assets and MIT notices are committed for reproducibility. The package cube source
 note identifies its upstream GrabCAD origin; the other two are attributed to
 the installed package only, without inferring separate authorship or licensing.
 
@@ -102,11 +105,30 @@ upstream change require a separately reviewed fixture update. The runner validat
 license metadata, size and hash. The upstream copyright and permission notice are included beside the vendored
 asset. Qualification requires no acquisition side effect. No CATPart or other source assets were acquired.
 
-Evidence records `one-additional-mit-source-local-conversion-only` only after
-the named case passes. There are now two source-distinct IGES inputs with local
-conversion proof. Identical vertex/triangle counts do not prove shape diversity,
-source fidelity or broad corpus coverage. Render comparison, STL, dimensions,
-assembly behavior and live hosted execution remain unproven.
+## Authorized Vibe_CADing MIT source
+
+- Repository: https://github.com/Masoudjafaripour/Vibe_CADing/
+- Exact source: https://raw.githubusercontent.com/Masoudjafaripour/Vibe_CADing/main/src/B-rep/results/solid.igs
+- License: MIT (SPDX MIT); upstream notice is Copyright (c) 2025 Masoud Jafaripour.
+- License reference: https://github.com/Masoudjafaripour/Vibe_CADing/blob/main/LICENSE
+- Acquired size: 12,393 bytes.
+- SHA-256: `d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71`.
+- Local HTTP outcome: ready, one mesh, 24 vertices, 12 triangles, source hash binding validated, one simulated dispatch and stop.
+
+The fixture and its notice are committed without modifying upstream bytes.
+Exact vertex/triangle bounds remain fixture-specific. This adds a third
+source-distinct IGES input; it does not establish shape diversity. All three
+sources produce the same counts in these local runs.
+
+Evidence records `three-source-distinct-local-conversions-shape-diversity-unproven`
+only after three distinct fixture IDs have successful conversion records.
+`successfulIgesSourceCount` counts source IDs rather than cube variants.
+`shapeDiversity` remains `unproven`. Each conversion records its fixture and
+case IDs, verified source hash, mesh count, vertex count and triangle count.
+No raw geometry, source contents or runtime diagnostics enter this evidence.
+
+Render comparison, STL, dimensions, assembly behavior and live hosted execution
+remain unproven. This is incremental source diversity, not broad corpus coverage.
 The earlier production proof remains in `cad-production-activation-receipt.md`
 and `cad-production-activation-smoke-evidence.json`; this report does not replace
 or claim to refresh that production receipt.
@@ -114,8 +136,13 @@ or claim to refresh that production receipt.
 ## Next gate
 
 Captain review and integration come next. Acquisition authority covers only the
-exact MIT sample above. Additional sources need separate acquisition authority. A live matrix run requires a separately
+two exact MIT samples above. Additional sources need separate acquisition authority. A live matrix run requires a separately
 approved bounded provider invocation and secure operator access. This script
 intentionally has no live mode. Private CAD, new paid provider usage, production
 configuration changes, deployment and user-facing UI exposure remain separate
 human gates. No spending was incurred by this local qualification.
+
+The next qualification decisions are a truly shape-diverse small licensed IGES
+fixture, a limit decision for a larger official OCCT fixture, or a separately
+approved bounded live-provider matrix run. None of these gates is cleared by
+adding the Vibe_CADing source.

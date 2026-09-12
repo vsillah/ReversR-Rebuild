@@ -55,6 +55,27 @@
           12
         ]
       }
+    },
+    {
+      "id": "vibe-mit-solid",
+      "source": "vendored-mit-fixture",
+      "path": "solid.igs",
+      "format": "iges",
+      "bytes": 12393,
+      "sha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+      "sourceUrl": "https://raw.githubusercontent.com/Masoudjafaripour/Vibe_CADing/main/src/B-rep/results/solid.igs",
+      "license": "MIT",
+      "licenseUrl": "https://github.com/Masoudjafaripour/Vibe_CADing/blob/main/LICENSE",
+      "geometry": {
+        "vertices": [
+          24,
+          24
+        ],
+        "triangles": [
+          12,
+          12
+        ]
+      }
     }
   ],
   "cases": [
@@ -170,6 +191,13 @@
     {
       "id": "kantoku-mit-sample-import",
       "fixture": "kantoku-mit-sample",
+      "mutation": "none",
+      "status": 200,
+      "dispatches": 1
+    },
+    {
+      "id": "vibe-mit-solid-import",
+      "fixture": "vibe-mit-solid",
       "mutation": "none",
       "status": 200,
       "dispatches": 1

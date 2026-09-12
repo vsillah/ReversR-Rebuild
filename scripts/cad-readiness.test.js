@@ -119,19 +119,23 @@ test('public slice contains only allowed source files and no private artifacts o
     ...git('diff', '--name-only', base).trim().split('\n'),
     ...git('ls-files', '--others', '--exclude-standard').trim().split('\n'),
   ].filter(Boolean))];
-  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js', 'vercel.json', 'scripts/cad-fixture-qualification.js', 'scripts/cad-fixture-qualification.test.js', 'scripts/fixtures/cad-mit-source.js', 'scripts/fixtures/kantoku-mit/sample.igs', 'scripts/fixtures/kantoku-mit/LICENSE', 'scripts/fixtures/cad-public-matrix.json', 'docs/cad-fixture-qualification.md', 'docs/cad-fixture-qualification-evidence.json'];
+  const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js', 'vercel.json', 'scripts/cad-fixture-qualification.js', 'scripts/cad-fixture-qualification.test.js', 'scripts/fixtures/cad-mit-source.js', 'scripts/fixtures/cad-vibe-source.js', 'scripts/fixtures/vibe-mit/solid.igs', 'scripts/fixtures/vibe-mit/LICENSE', 'scripts/fixtures/kantoku-mit/sample.igs', 'scripts/fixtures/kantoku-mit/LICENSE', 'scripts/fixtures/cad-public-matrix.json', 'docs/cad-fixture-qualification.md', 'docs/cad-fixture-qualification-evidence.json'];
   for (const file of files) assert.ok(allowed.includes(file), `Unexpected public file: ${file}`);
   // Preserve the authorized upstream bytes, including IGES fixed-width whitespace.
-  // This one public asset is checked byte-for-byte instead of scanned as source code.
-  const asset = 'scripts/fixtures/kantoku-mit/sample.igs';
-  const assetBytes = fs.readFileSync(path.join(root, asset));
-  assert.equal(assetBytes.length, 24948);
-  assert.equal(require('node:crypto').createHash('sha256').update(assetBytes).digest('hex'),
-    'f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893');
-  const patch = git('diff', '--unified=0', base, '--', ...allowed.filter(file => file !== asset));
+  // These public assets are checked byte-for-byte instead of scanned as source code.
+  const assets = new Map([
+    ['scripts/fixtures/kantoku-mit/sample.igs', [24948, 'f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893']],
+    ['scripts/fixtures/vibe-mit/solid.igs', [12393, 'd1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71']],
+  ]);
+  for (const [asset, [bytes, sha256]] of assets) {
+    const assetBytes = fs.readFileSync(path.join(root, asset));
+    assert.equal(assetBytes.length, bytes);
+    assert.equal(require('node:crypto').createHash('sha256').update(assetBytes).digest('hex'), sha256);
+  }
+  const patch = git('diff', '--unified=0', base, '--', ...allowed.filter(file => !assets.has(file)));
   const additions = patch.split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
   const untracked = git('ls-files', '--others', '--exclude-standard').trim().split('\n').filter(Boolean);
-  const publicText = [additions, ...untracked.filter(file => file !== asset).map(file => fs.readFileSync(path.join(root, file), 'utf8'))].join('\n');
+  const publicText = [additions, ...untracked.filter(file => !assets.has(file)).map(file => fs.readFileSync(path.join(root, file), 'utf8'))].join('\n');
   const forbidden = [
     /\/(?:Users|home)\/[\w.-]+/,
     new RegExp('Down' + 'loads'),
@@ -141,7 +145,7 @@ test('public slice contains only allowed source files and no private artifacts o
     /\b(?:sk|ghp)[_-][A-Za-z0-9]{20,}\b/,
   ];
   // Exact public/synthetic fixture names are permitted; arbitrary CAD names remain forbidden.
-  const fixtureSafeText = publicText.replace(/Cube 10x10\.igs|public-cube\.iges|public-cube\.igs|public-cube\.jpg|public\.igs|source\.igs|sample\.igs/g, '[fixture]');
+  const fixtureSafeText = publicText.replace(/Cube 10x10\.igs|public-cube\.iges|public-cube\.igs|public-cube\.jpg|public\.igs|source\.igs|sample\.igs|solid\.igs/g, '[fixture]');
   for (const pattern of forbidden) assert.doesNotMatch(fixtureSafeText, pattern);
   const addedServer = git('diff', '--unified=0', base, '--', 'server/index.js')
     .split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');

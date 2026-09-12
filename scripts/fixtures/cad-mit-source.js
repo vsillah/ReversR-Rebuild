@@ -1,4 +1,4 @@
-// The sole externally acquired CAD source authorized for this qualification slice.
+// The Captain-authorized Kantoku source, retained with its original hash.
 const path = require('node:path');
 const metadata = Object.freeze({
   id: 'kantoku-mit-sample', source: 'vendored-mit-fixture', path: 'sample.igs', format: 'iges',
