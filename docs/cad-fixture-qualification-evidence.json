@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "status": "pass",
   "scope": "local-http-real-occt-simulated-provider",
-  "generatedAt": "2026-09-12T01:35:12.045Z",
+  "generatedAt": "2026-09-12T10:09:39.535Z",
   "packageVersion": "0.0.23",
   "fixtures": [
     {
@@ -222,7 +222,7 @@
       ]
     }
   ],
-  "matrixSha256": "400d5c52096dd6dd89f93ba5a7e9a4081f2287bf0d5291f06f5ab2e11a60888c",
+  "matrixSha256": "8a9e3a5a36bd9066a16df4537f59277f70cce56897a8eff8828e8b1b7df8d360",
   "providerCalls": 0,
   "privateFilesRead": 0,
   "checks": [
@@ -282,8 +282,8 @@
       "passed": true
     },
     {
-      "id": "unsupported-transform",
-      "httpStatus": 415,
+      "id": "transform-forwarded-conversion-failed",
+      "httpStatus": 422,
       "passed": true
     },
     {
@@ -376,5 +376,5 @@
     "Private CAD readiness"
   ],
   "successfulIgesFixtureCount": 5,
-  "simulatedDispatches": 7
+  "simulatedDispatches": 8
 }

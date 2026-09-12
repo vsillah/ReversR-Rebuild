@@ -6,7 +6,7 @@ const { once } = require('node:events');
 const { Worker } = require('node:worker_threads');
 const express = require('express');
 const { createWorkerService, createWorkerRouter } = require('../server/cadWorkerImport');
-const { LIMITS, meshPayload } = require('../server/cadWorkerContract');
+const { LIMITS, meshPayload, upload } = require('../server/cadWorkerContract');
 const probe = path.join(__dirname, 'fixtures/cad-worker-probe.js');
 function source() {
   const directory = path.join(path.dirname(require.resolve('occt-import-js/package.json')), 'test/testfiles/cube-10x10mm');
@@ -16,11 +16,11 @@ function source() {
 function igesRow(section, sequence, body = '') {
   return body.padEnd(72, ' ').slice(0, 72) + section + String(sequence).padStart(7, ' ');
 }
-function largeUnsupportedIges(targetBytes = 145140) {
+function externalReferenceIges(targetBytes = 145140) {
   const rows = [
     igesRow('S', 1, 'large synthetic private-size preflight'),
     igesRow('G', 1, ','),
-    igesRow('D', 1, '     124'),
+    igesRow('D', 1, '     416'),
     igesRow('D', 2),
   ];
   for (let i = 1; Buffer.byteLength(rows.join('\n') + '\n' + igesRow('T', 1)) <= targetBytes; i++) {
@@ -29,7 +29,25 @@ function largeUnsupportedIges(targetBytes = 145140) {
   rows.push(igesRow('T', 1));
   const bytes = Buffer.from(rows.join('\n') + '\n', 'ascii');
   assert.ok(bytes.length > 145140 && bytes.length < LIMITS.inputBytes);
-  return { fileName: 'private-size-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
+  return { fileName: 'external-reference-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
+}
+function assemblyLikeIges() {
+  const rows = [
+    igesRow('S', 1, 'synthetic in-file assembly preflight'),
+    igesRow('G', 1, ','),
+    igesRow('D', 1, '     124                                        1'),
+    igesRow('D', 2),
+    igesRow('D', 3, '     308'),
+    igesRow('D', 4),
+    igesRow('D', 5, '     408                                        1'),
+    igesRow('D', 6),
+    igesRow('P', 1, '124,1,0,0,0,1,0,0,0,1,0,0;'),
+    igesRow('P', 2, '308,0,0;'),
+    igesRow('P', 3, '408,1,0,0;'),
+    igesRow('T', 1),
+  ];
+  const bytes = Buffer.from(rows.join('\n') + '\n', 'ascii');
+  return { fileName: 'assembly-like-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
 }
 async function http(t, service, enabled = true) {
   const app = express();
@@ -77,7 +95,7 @@ test('input errors do not launch a Worker; disabled router fails closed', async 
     [{ ...valid, contentBase64: '!!!!' }, 400, 'MALFORMED'],
     [{ ...valid, contentBase64: Buffer.from('not CAD').toString('base64') }, 400, 'MALFORMED'],
     [{ ...valid, contentBase64: Buffer.alloc(LIMITS.inputBytes + 1).toString('base64') }, 413, 'TOO_LARGE'],
-    [largeUnsupportedIges(), 415, 'UNSUPPORTED'],
+    [externalReferenceIges(), 415, 'UNSUPPORTED'],
     [{ ...valid, extra: 'not accepted' }, 400, 'MALFORMED'],
     ['{', 400, 'MALFORMED'],
     [' '.repeat(LIMITS.jsonBytes + 1), 413, 'TOO_LARGE'],
@@ -89,6 +107,11 @@ test('input errors do not launch a Worker; disabled router fails closed', async 
   const disabled = await http(t, service, false);
   assert.equal((await disabled(valid)).body.code, 'DISABLED');
   assert.equal(calls, 0);
+});
+
+test('in-file IGES assembly constructs pass preflight; external references remain blocked', () => {
+  assert.doesNotThrow(() => upload(assemblyLikeIges()));
+  assert.throws(() => upload(externalReferenceIges()), { code: 'UNSUPPORTED' });
 });
 
 test('hanging Worker times out through HTTP while parent timer runs; capacity released', async t => {

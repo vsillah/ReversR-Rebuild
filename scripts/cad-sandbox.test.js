@@ -19,11 +19,11 @@ function source() {
 function igesRow(section, sequence, body = '') {
   return body.padEnd(72, ' ').slice(0, 72) + section + String(sequence).padStart(7, ' ');
 }
-function largeUnsupportedIges(targetBytes = 145140) {
+function externalReferenceIges(targetBytes = 145140) {
   const rows = [
     igesRow('S', 1, 'large synthetic private-size preflight'),
     igesRow('G', 1, ','),
-    igesRow('D', 1, '     124'),
+    igesRow('D', 1, '     416'),
     igesRow('D', 2),
   ];
   for (let i = 1; Buffer.byteLength(rows.join('\n') + '\n' + igesRow('T', 1)) <= targetBytes; i++) {
@@ -32,7 +32,7 @@ function largeUnsupportedIges(targetBytes = 145140) {
   rows.push(igesRow('T', 1));
   const bytes = Buffer.from(rows.join('\n') + '\n', 'ascii');
   assert.ok(bytes.length > 145140 && bytes.length < LIMITS.inputBytes);
-  return { fileName: 'private-size-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
+  return { fileName: 'external-reference-synthetic' + '.ig' + 's', contentBase64: bytes.toString('base64') };
 }
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 function eventStream(value) {
@@ -135,7 +135,7 @@ test('missing gates and unauthorized/invalid requests never create a Sandbox', a
   }
   const url = await app(t, env, executor);
   assert.equal((await post(url, source(), '')).status, 401);
-  for (const [body, code] of [[{}, 'NO_SOURCE'], ['{', 'MALFORMED'], [{ ...source(), fileName: 'image' + '.jpg' }, 'UNSUPPORTED'], [{ ...source(), contentBase64: Buffer.alloc(LIMITS.inputBytes + 1).toString('base64') }, 'TOO_LARGE'], [largeUnsupportedIges(), 'UNSUPPORTED'], [' '.repeat(LIMITS.jsonBytes + 1), 'TOO_LARGE']]) {
+  for (const [body, code] of [[{}, 'NO_SOURCE'], ['{', 'MALFORMED'], [{ ...source(), fileName: 'image' + '.jpg' }, 'UNSUPPORTED'], [{ ...source(), contentBase64: Buffer.alloc(LIMITS.inputBytes + 1).toString('base64') }, 'TOO_LARGE'], [externalReferenceIges(), 'UNSUPPORTED'], [' '.repeat(LIMITS.jsonBytes + 1), 'TOO_LARGE']]) {
     assert.equal((await post(url, body)).body.code, code);
   }
   assert.equal(calls.length, 0);

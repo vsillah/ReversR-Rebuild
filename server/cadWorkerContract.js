@@ -34,11 +34,13 @@ function upload(body) {
   const rows = bytes.toString('ascii').trimEnd().split(/\r?\n/);
   const sections = rows.map(row => row[72]).join('');
   if (rows.some(row => row.length !== 80 || !/^[SGDPT][ 0-9]{7}$/.test(row.slice(72))) || !/^S+G+D+P+T$/.test(sections)) fail('MALFORMED');
-  // Stock placement/assembly fidelity is not qualified in this slice.
+  // In-file subfigure assemblies and transformation matrices may be handled by
+  // the fixed OCCT reader. External references remain a separate source-
+  // resolution gate because they can imply additional files outside this upload.
   const directory = rows.filter(row => row[72] === 'D');
   if (directory.length % 2) fail('MALFORMED');
   for (let i = 0; i < directory.length; i += 2) {
-    if ([124, 308, 408, 416].includes(Number(directory[i].slice(0, 8))) || Number(directory[i].slice(48, 56)) !== 0) fail('UNSUPPORTED');
+    if (Number(directory[i].slice(0, 8)) === 416) fail('UNSUPPORTED');
   }
   return { bytes, sha256: crypto.createHash('sha256').update(bytes).digest('hex') };
 }
