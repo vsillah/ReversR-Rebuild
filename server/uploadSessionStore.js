@@ -7,7 +7,7 @@ const digest = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value
 const time = value => Number.isSafeInteger(value) && value >= 0;
 const deny = code => ({ ok: false, code });
 const unavailable = () => { throw new Error('AUTH_UNAVAILABLE'); };
-const authorization = value => value && id(value.userId) && id(value.shopId)
+const authorization = value => value && id(value.userId) && id(value.shopId) && id(value.loginSessionId)
   && ['password', 'passkey', 'oidc'].includes(value.authMethod)
   && typeof value.cadUploadAllowed === 'boolean' && time(value.expiresAt);
 
@@ -37,6 +37,8 @@ async function bounded(operation, parentSignal) {
  * store: insertIfAbsent(digest, record, {signal}), read(digest, {signal}),
  * revoke(digest, revokedAt, {signal}). Writes return boolean acknowledgements.
  * resolveAuthorization(context, {signal}) must verify login + user/shop membership.
+ * Both callbacks MUST return an opaque, server-owned loginSessionId. It is an
+ * internal reference, never a login credential. See docs/cad-verified-login-store.md.
  * refreshAuthorization(binding, {signal}) must read current login + membership +
  * CAD permission; both return null for denied identity, throw for unavailable.
  * Neither callback has a production implementation in this slice.
@@ -58,7 +60,8 @@ function createUploadSessionService({ store, resolveAuthorization, refreshAuthor
         if (!time(expiresAt) || expiresAt <= issuedAt) return deny('AUTHORIZATION_REQUIRED');
         const credential = `us1.${randomBytes(32).toString('base64url')}`;
         const csrf = transport === 'cookie' ? randomBytes(32).toString('base64url') : undefined;
-        const record = Object.freeze({ schemaVersion: 1, userId: grant.userId, shopId: grant.shopId,
+        const record = Object.freeze({ schemaVersion: 2, userId: grant.userId, shopId: grant.shopId,
+          loginSessionId: grant.loginSessionId,
           sessionId: randomUUID(), authMethod: grant.authMethod, cadUploadAllowed: grant.cadUploadAllowed,
           transport, issuedAt, expiresAt, status: 'active', ...(csrf ? { csrfDigest: hash(csrf) } : {}) });
         signal.throwIfAborted();
@@ -76,7 +79,7 @@ function createUploadSessionService({ store, resolveAuthorization, refreshAuthor
       return await bounded(async signal => {
         const record = await store.read(key, { signal });
         if (record == null) return null;
-        if (!authorization(record) || record.schemaVersion !== 1 || !id(record.sessionId)
+        if (!authorization(record) || record.schemaVersion !== 2 || !id(record.sessionId)
           || !['active', 'revoked'].includes(record.status) || !['bearer', 'cookie'].includes(record.transport)
           || !time(record.issuedAt) || record.expiresAt <= record.issuedAt
           || record.expiresAt - record.issuedAt > MAX_LIFETIME_MS
@@ -89,12 +92,13 @@ function createUploadSessionService({ store, resolveAuthorization, refreshAuthor
         if (record.issuedAt > clock()) unavailable();
         if (result.status === 'revoked' || result.expiresAt <= clock()) return Object.freeze(result);
         const binding = Object.freeze({ userId: result.userId, shopId: result.shopId,
-          sessionId: result.sessionId, authMethod: result.authMethod });
+          sessionId: result.sessionId, loginSessionId: record.loginSessionId, authMethod: result.authMethod });
         const grant = await refreshAuthorization(binding, { signal });
         signal.throwIfAborted();
         if (grant == null) return null;
         if (!authorization(grant)) unavailable();
-        if (grant.userId !== result.userId || grant.shopId !== result.shopId || grant.authMethod !== result.authMethod) return null;
+        if (grant.loginSessionId !== binding.loginSessionId || grant.userId !== result.userId
+          || grant.shopId !== result.shopId || grant.authMethod !== result.authMethod) return null;
         result.expiresAt = Math.min(result.expiresAt, grant.expiresAt);
         // A denied issued session never gains permission through refresh.
         result.cadUploadAllowed = result.cadUploadAllowed && grant.cadUploadAllowed;
@@ -129,7 +133,7 @@ function createInMemoryUploadSessionStoreForTests({ testOnly = false } = {}) {
       if (records.has(key)) return false;
       // Only whitelisted fields can be persisted, even when directly called by a test.
       const saved = {};
-      for (const field of ['schemaVersion', 'userId', 'shopId', 'sessionId', 'authMethod',
+      for (const field of ['schemaVersion', 'userId', 'shopId', 'sessionId', 'loginSessionId', 'authMethod',
         'cadUploadAllowed', 'transport', 'issuedAt', 'expiresAt', 'status', 'csrfDigest']) {
         if (record[field] !== undefined) {
           if (!['string', 'number', 'boolean'].includes(typeof record[field])) unavailable();

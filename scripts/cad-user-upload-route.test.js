@@ -37,7 +37,7 @@ async function fixture(t, options = {}) {
   };
 }
 async function service() {
-  let grant = { userId: 'user-1', shopId: 'shop-1', authMethod: 'password', cadUploadAllowed: true, expiresAt: Date.now() + 60000 };
+  let grant = { loginSessionId: 'login-test', userId: 'user-1', shopId: 'shop-1', authMethod: 'password', cadUploadAllowed: true, expiresAt: Date.now() + 60000 };
   const sessionService = createUploadSessionService({ store: createInMemoryUploadSessionStoreForTests({ testOnly: true }),
     resolveAuthorization: async () => grant, refreshAuthorization: async () => grant });
   const issued = await sessionService.issueSession(null);
