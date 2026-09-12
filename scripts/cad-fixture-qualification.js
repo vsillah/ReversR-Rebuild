@@ -186,7 +186,7 @@ async function qualify() {
         ...(source ? { sourceUrl: source.sourceUrl, license: source.license, licenseUrl: source.licenseUrl,
           ...(source.sourceCommit ? { sourceCommit: source.sourceCommit, licenseSha256: source.licenseSha256 } : {}) } : {}) };
     }),
-    independentIgesCoverage: 'pending-source-distinct-results', shapeDiversity: 'unproven', conversions: [], matrixSha256: sha(JSON.stringify(matrix)),
+    independentIgesCoverage: 'pending-fixture-conversion-results', shapeDiversity: 'unproven', conversions: [], matrixSha256: sha(JSON.stringify(matrix)),
     providerCalls: 0, privateFilesRead: 0, checks: [],
     unproven: ['Live hosted execution of this matrix', 'Provider isolation and cleanup', 'Broad arbitrary-model coverage', 'Render, STL and source fidelity', 'Dimensional certification', 'Private CAD readiness'] };
   const check = async (id, fn) => {
@@ -247,9 +247,9 @@ async function qualify() {
     assert.deepEqual(Object.keys(row), ['id', 'httpStatus', 'passed']);
     assert.ok(!JSON.stringify(row).includes(token) && !JSON.stringify(row).includes(privateSentinel)); return 200;
   });
-  report.successfulIgesSourceCount = new Set(report.conversions.map(result => result.fixtureId)).size;
-  report.independentIgesCoverage = report.successfulIgesSourceCount === 5
-    ? 'five-source-distinct-local-conversions' : 'incomplete-source-distinct-results';
+  report.successfulIgesFixtureCount = new Set(report.conversions.map(result => result.fixtureId)).size;
+  report.independentIgesCoverage = report.successfulIgesFixtureCount === 5
+    ? 'five-distinct-iges-fixtures-converted-locally' : 'incomplete-fixture-conversion-results';
   report.shapeDiversity = ['poseidon-cover-slide-import', 'poseidon-syringe-brace-import']
     .every(id => report.checks.some(check => check.id === id && check.passed))
     ? 'demonstrated-for-local-poseidon-fixture-conversion-only' : 'unproven';

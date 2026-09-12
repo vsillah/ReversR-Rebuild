@@ -153,9 +153,14 @@ space. These expected values came from the Captain's local probe and were
 confirmed through the HTTP runner. They detect displacement or geometry drift;
 they are not dimensional certification or source-fidelity proof.
 
-Evidence now records five source-distinct successful IGES inputs, with
+Evidence now records five distinct successful IGES fixture inputs, with
 `shapeDiversity: demonstrated-for-local-poseidon-fixture-conversion-only` only
 when both Poseidon cases pass their counts, bounds, hashes and dispatch checks.
+`successfulIgesFixtureCount` counts fixture IDs, not upstream repositories.
+The two Poseidon fixtures share one repository, commit and license; they are
+two fixture inputs from the same provenance group. Repeated cube variants count
+as one fixture.
+
 The two pump parts materially broaden local fixture shapes beyond the earlier
 24-vertex / 12-triangle samples. This does not qualify arbitrary CAD models.
 Each conversion records fixture/case IDs, verified source hash, mesh/vertex/

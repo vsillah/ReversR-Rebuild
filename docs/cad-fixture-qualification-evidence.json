@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "status": "pass",
   "scope": "local-http-real-occt-simulated-provider",
-  "generatedAt": "2026-09-12T01:32:12.546Z",
+  "generatedAt": "2026-09-12T01:35:12.045Z",
   "packageVersion": "0.0.23",
   "fixtures": [
     {
@@ -64,7 +64,7 @@
       "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6"
     }
   ],
-  "independentIgesCoverage": "five-source-distinct-local-conversions",
+  "independentIgesCoverage": "five-distinct-iges-fixtures-converted-locally",
   "shapeDiversity": "demonstrated-for-local-poseidon-fixture-conversion-only",
   "conversions": [
     {
@@ -375,6 +375,6 @@
     "Dimensional certification",
     "Private CAD readiness"
   ],
-  "successfulIgesSourceCount": 5,
+  "successfulIgesFixtureCount": 5,
   "simulatedDispatches": 7
 }
