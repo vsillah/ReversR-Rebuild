@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "status": "pass",
   "scope": "local-http-real-occt-simulated-provider",
-  "generatedAt": "2026-09-11T23:57:36.696Z",
+  "generatedAt": "2026-09-12T00:07:53.444Z",
   "packageVersion": "0.0.23",
   "fixtures": [
     {
@@ -22,10 +22,19 @@
       "format": "step",
       "sha256": "fa9dfef56daf69aa0630220d445a3034976af8dc6a7f59192a87a4b61d8db85e",
       "bytes": 9640
+    },
+    {
+      "id": "kantoku-mit-sample",
+      "format": "iges",
+      "sha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+      "bytes": 24948,
+      "sourceUrl": "https://raw.githubusercontent.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/main/sample/sample.igs",
+      "license": "MIT",
+      "licenseUrl": "https://github.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/blob/main/LICENSE"
     }
   ],
-  "independentIgesCoverage": "pending-no-additional-local-iges",
-  "matrixSha256": "701ba5af23c71ebbc1b2ce9f05f166e5d68903976f0c7eea983b1b2ed7d73667",
+  "independentIgesCoverage": "one-additional-mit-source-local-conversion-only",
+  "matrixSha256": "675e04c5af6caf5f78f5d24e61c0beab518d16e02966080b85d9ccd8262ea7f8",
   "providerCalls": 0,
   "privateFilesRead": 0,
   "checks": [
@@ -115,6 +124,11 @@
       "passed": true
     },
     {
+      "id": "kantoku-mit-sample-import",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
       "id": "missing-executor",
       "httpStatus": 503,
       "passed": true
@@ -156,5 +170,5 @@
     "Additional independent IGES models",
     "Render, STL and dimensional fidelity"
   ],
-  "simulatedDispatches": 3
+  "simulatedDispatches": 4
 }

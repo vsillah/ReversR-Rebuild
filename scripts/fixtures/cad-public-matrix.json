@@ -34,6 +34,27 @@
       "format": "step",
       "sha256": "fa9dfef56daf69aa0630220d445a3034976af8dc6a7f59192a87a4b61d8db85e",
       "bytes": 9640
+    },
+    {
+      "id": "kantoku-mit-sample",
+      "source": "authorized-mit-cache",
+      "path": "mit-sample.bin",
+      "format": "iges",
+      "bytes": 24948,
+      "sha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+      "sourceUrl": "https://raw.githubusercontent.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/main/sample/sample.igs",
+      "license": "MIT",
+      "licenseUrl": "https://github.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/blob/main/LICENSE",
+      "geometry": {
+        "vertices": [
+          24,
+          24
+        ],
+        "triangles": [
+          12,
+          12
+        ]
+      }
     }
   ],
   "cases": [
@@ -145,6 +166,13 @@
       "status": 415,
       "code": "UNSUPPORTED",
       "dispatches": 0
+    },
+    {
+      "id": "kantoku-mit-sample-import",
+      "fixture": "kantoku-mit-sample",
+      "mutation": "none",
+      "status": 200,
+      "dispatches": 1
     }
   ]
 }
