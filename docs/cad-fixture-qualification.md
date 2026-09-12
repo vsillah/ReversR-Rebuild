@@ -166,22 +166,30 @@ The two pump parts materially broaden local fixture shapes beyond the earlier
 Each conversion records fixture/case IDs, verified source hash, mesh/vertex/
 triangle counts and bounds. Raw source and geometry stay out of the evidence.
 
-Live hosted public matrix execution, actual provider isolation/cleanup,
-render/STL/source fidelity, dimensional certification and private CAD readiness
-remain unproven. No UI exposure or production activation is authorized here.
+Live hosted public matrix execution is recorded in
+`docs/cad-live-hosted-public-fixture-matrix-evidence.json`. That evidence covers
+the five successful public IGES fixture inputs, seven successful hosted Sandbox
+dispatches, expected no-dispatch failures for malformed/unsupported/auth/gate
+cases, fixed 1 vCPU / 2048 MB / 60s / deny-all-network runtime metadata, and
+confirmed cleanup for every hosted dispatch. It does not use private CAD files.
+The opt-in live runner is `scripts/cad-live-hosted-fixture-matrix.js`; it
+requires both `--live` and `CAD_FIXTURE_MATRIX_APPROVED=true`, and it writes
+only allowlisted evidence fields. It may use explicit `VERCEL_*` credentials or
+the local Vercel CLI auth plus the linked `.vercel/project.json`.
+
+Private CAD readiness, arbitrary-model source fidelity, render/STL behavior,
+dimensional certification and manufacturing-quality output remain unproven.
 The earlier production proof remains in `cad-production-activation-receipt.md`
-and `cad-production-activation-smoke-evidence.json`; this report does not replace
-or claim to refresh that production receipt.
+and `cad-production-activation-smoke-evidence.json`; this public matrix report
+does not replace or broaden that production receipt beyond the fixture matrix.
 
 ## Next gate
 
 Captain review and integration come next. Acquisition authority covers only the
-four exact vendored samples above. Additional sources need separate acquisition authority. A live matrix run requires a separately
-approved bounded provider invocation and secure operator access. This script
-intentionally has no live mode. Private CAD, new paid provider usage, production
+four exact vendored samples above. Additional sources need separate acquisition authority. Private CAD, new paid provider usage, production
 configuration changes, deployment and user-facing UI exposure remain separate
-human gates. No spending was incurred by this local qualification.
+human gates.
 
-The next decisions are a broader fixture/visual fidelity slice, a separately
-approved limit decision for a larger official OCCT sample, or a bounded live
-hosted public matrix run. Local shape diversity does not clear those gates.
+The next decisions are a private-CAD pilot gate, a broader fixture/visual
+fidelity slice, or a separately approved limit decision for a larger official
+OCCT sample. Public fixture matrix qualification does not clear those gates.

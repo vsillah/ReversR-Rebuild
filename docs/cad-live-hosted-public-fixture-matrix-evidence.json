@@ -1,0 +1,977 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "scope": "live-hosted-public-fixture-matrix",
+  "generatedAt": "2026-09-12T01:53:46.860Z",
+  "commit": "b42123ab685d12b9966f4516544828c8384c9083",
+  "project": {
+    "id": "prj_Geremoki2OhowX1579EolsuPWXPy",
+    "teamId": "team_e1YXCCGoccmBLfbBfXGhwbd4",
+    "name": "reversr"
+  },
+  "limits": {
+    "lifetimeMs": 60000,
+    "requestMs": 45000,
+    "commandMs": 10000,
+    "cleanupMs": 5000,
+    "vcpus": 1,
+    "memoryMb": 2048,
+    "assetBytes": 10485760
+  },
+  "fixtures": [
+    {
+      "id": "cube",
+      "source": "occt-import-js-package",
+      "format": "iges",
+      "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "bytes": 11562
+    },
+    {
+      "id": "rounded-cube-step",
+      "source": "occt-import-js-package",
+      "format": "step",
+      "sha256": "96e91abd536879747dcd49de707314d0157bc2d066b591a3244c81a726e52961",
+      "bytes": 21070
+    },
+    {
+      "id": "conical-surface-step",
+      "source": "occt-import-js-package",
+      "format": "step",
+      "sha256": "fa9dfef56daf69aa0630220d445a3034976af8dc6a7f59192a87a4b61d8db85e",
+      "bytes": 9640
+    },
+    {
+      "id": "kantoku-mit-sample",
+      "source": "vendored-mit-fixture",
+      "format": "iges",
+      "sha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+      "bytes": 24948,
+      "license": "MIT",
+      "sourceUrl": "https://raw.githubusercontent.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/main/sample/sample.igs"
+    },
+    {
+      "id": "vibe-mit-solid",
+      "source": "vendored-mit-fixture",
+      "format": "iges",
+      "sha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+      "bytes": 12393,
+      "license": "MIT",
+      "sourceUrl": "https://raw.githubusercontent.com/Masoudjafaripour/Vibe_CADing/main/src/B-rep/results/solid.igs"
+    },
+    {
+      "id": "poseidon-cover-slide",
+      "source": "vendored-bsd-fixture",
+      "format": "iges",
+      "sha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "bytes": 48357,
+      "license": "BSD-2-Clause",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Cover%20Slide.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0"
+    },
+    {
+      "id": "poseidon-syringe-brace",
+      "source": "vendored-bsd-fixture",
+      "format": "iges",
+      "sha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "bytes": 40824,
+      "license": "BSD-2-Clause",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Syringe%20Brace.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0"
+    }
+  ],
+  "checks": [
+    {
+      "id": "configured-capabilities",
+      "passed": true,
+      "elapsedMs": 15,
+      "dispatches": 0,
+      "httpStatus": 200,
+      "mode": "sandbox-stock-occt-mesh-beta",
+      "stages": []
+    },
+    {
+      "id": "missing-auth",
+      "passed": true,
+      "elapsedMs": 3,
+      "dispatches": 0,
+      "httpStatus": 401,
+      "code": "UNAUTHORIZED",
+      "stages": []
+    },
+    {
+      "id": "invalid-auth",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 401,
+      "code": "UNAUTHORIZED",
+      "stages": []
+    },
+    {
+      "id": "public-cube",
+      "passed": true,
+      "elapsedMs": 3723,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "cube",
+        "caseId": "public-cube",
+        "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+        "meshes": 1,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [
+            -5,
+            5
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            -5,
+            5
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 11562
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "public-cube-iges-extension",
+      "passed": true,
+      "elapsedMs": 4299,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "cube",
+        "caseId": "public-cube-iges-extension",
+        "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+        "meshes": 1,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [
+            -5,
+            5
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            -5,
+            5
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 11562
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "public-cube-crlf",
+      "passed": true,
+      "elapsedMs": 4966,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "cube",
+        "caseId": "public-cube-crlf",
+        "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+        "meshes": 1,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [
+            -5,
+            5
+          ],
+          [
+            0,
+            10
+          ],
+          [
+            -5,
+            5
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 11562
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "malformed-iges",
+      "passed": true,
+      "elapsedMs": 2,
+      "dispatches": 0,
+      "httpStatus": 400,
+      "code": "MALFORMED",
+      "expectedStatus": 400,
+      "stages": []
+    },
+    {
+      "id": "malformed-base64",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 400,
+      "code": "MALFORMED",
+      "expectedStatus": 400,
+      "stages": []
+    },
+    {
+      "id": "missing-source",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 400,
+      "code": "NO_SOURCE",
+      "expectedStatus": 400,
+      "stages": []
+    },
+    {
+      "id": "unsupported-extension",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 415,
+      "code": "UNSUPPORTED",
+      "expectedStatus": 415,
+      "stages": []
+    },
+    {
+      "id": "private-path-rejected",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 400,
+      "code": "MALFORMED",
+      "expectedStatus": 400,
+      "stages": []
+    },
+    {
+      "id": "unsupported-transform",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 415,
+      "code": "UNSUPPORTED",
+      "expectedStatus": 415,
+      "stages": []
+    },
+    {
+      "id": "source-limit-plus-one",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 413,
+      "code": "TOO_LARGE",
+      "expectedStatus": 413,
+      "stages": []
+    },
+    {
+      "id": "json-limit-plus-one",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 413,
+      "code": "TOO_LARGE",
+      "expectedStatus": 413,
+      "stages": []
+    },
+    {
+      "id": "malformed-json",
+      "passed": true,
+      "elapsedMs": 1,
+      "dispatches": 0,
+      "httpStatus": 400,
+      "code": "MALFORMED",
+      "expectedStatus": 400,
+      "stages": []
+    },
+    {
+      "id": "rounded-cube-step-rejected",
+      "passed": true,
+      "elapsedMs": 0,
+      "dispatches": 0,
+      "httpStatus": 415,
+      "code": "UNSUPPORTED",
+      "expectedStatus": 415,
+      "stages": []
+    },
+    {
+      "id": "conical-surface-step-rejected",
+      "passed": true,
+      "elapsedMs": 0,
+      "dispatches": 0,
+      "httpStatus": 415,
+      "code": "UNSUPPORTED",
+      "expectedStatus": 415,
+      "stages": []
+    },
+    {
+      "id": "kantoku-mit-sample-import",
+      "passed": true,
+      "elapsedMs": 4848,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "kantoku-mit-sample",
+        "caseId": "kantoku-mit-sample-import",
+        "sourceSha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+        "meshes": 6,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [
+            -30,
+            30
+          ],
+          [
+            -30,
+            30
+          ],
+          [
+            0,
+            50
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 24948
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "vibe-mit-solid-import",
+      "passed": true,
+      "elapsedMs": 4822,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "vibe-mit-solid",
+        "caseId": "vibe-mit-solid-import",
+        "sourceSha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+        "meshes": 1,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 12393
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "poseidon-cover-slide-import",
+      "passed": true,
+      "elapsedMs": 3787,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "poseidon-cover-slide",
+        "caseId": "poseidon-cover-slide-import",
+        "sourceSha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+        "meshes": 1,
+        "vertices": 232,
+        "triangles": 200,
+        "bounds": [
+          [
+            -7.451267451363921,
+            -2.4512674513639197
+          ],
+          [
+            34.2,
+            61
+          ],
+          [
+            -26.4999999999999,
+            21.43889729614702
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 48357
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "poseidon-syringe-brace-import",
+      "passed": true,
+      "elapsedMs": 4918,
+      "dispatches": 1,
+      "httpStatus": 200,
+      "expectedStatus": 200,
+      "conversion": {
+        "fixtureId": "poseidon-syringe-brace",
+        "caseId": "poseidon-syringe-brace-import",
+        "sourceSha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+        "meshes": 1,
+        "vertices": 1419,
+        "triangles": 2450,
+        "bounds": [
+          [
+            0.430478727233887,
+            12.4304787272339
+          ],
+          [
+            4.84713279031561,
+            12.704997166584702
+          ],
+          [
+            6.68023761973826,
+            13.6802376644418
+          ]
+        ],
+        "execution": {
+          "boundary": "sandbox-microvm",
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "guestMemoryBytes": 2398654464,
+          "cleanup": "stopped"
+        }
+      },
+      "stages": [
+        {
+          "name": "upload_accepted",
+          "bytes": 40824
+        },
+        {
+          "name": "assets_loaded",
+          "files": 6
+        },
+        {
+          "name": "sandbox_created",
+          "persistent": false,
+          "vcpus": 1,
+          "memoryMb": 2048,
+          "timeoutMs": 60000,
+          "networkPolicy": "deny-all"
+        },
+        {
+          "name": "files_written"
+        },
+        {
+          "name": "command_finished",
+          "exitCode": 0
+        },
+        {
+          "name": "result_read",
+          "status": "ready",
+          "guestMemoryBytes": 2398654464
+        }
+      ]
+    },
+    {
+      "id": "missing-executor",
+      "passed": true,
+      "elapsedMs": 26,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "invalid-executor",
+      "passed": true,
+      "elapsedMs": 8,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "missing-credentials",
+      "passed": true,
+      "elapsedMs": 6,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "missing-qualification",
+      "passed": true,
+      "elapsedMs": 7,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "missing-token",
+      "passed": true,
+      "elapsedMs": 6,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "invalid-token",
+      "passed": true,
+      "elapsedMs": 4,
+      "dispatches": 0,
+      "httpStatus": 503,
+      "capabilitiesStatus": 200,
+      "code": "DISABLED",
+      "stages": []
+    },
+    {
+      "id": "provider-dispatch-count",
+      "passed": true,
+      "observed": 7,
+      "expected": 7
+    }
+  ],
+  "conversions": [
+    {
+      "fixtureId": "cube",
+      "caseId": "public-cube",
+      "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "meshes": 1,
+      "vertices": 24,
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "cube",
+      "caseId": "public-cube-iges-extension",
+      "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "meshes": 1,
+      "vertices": 24,
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "cube",
+      "caseId": "public-cube-crlf",
+      "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+      "meshes": 1,
+      "vertices": 24,
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "kantoku-mit-sample",
+      "caseId": "kantoku-mit-sample-import",
+      "sourceSha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+      "meshes": 6,
+      "vertices": 24,
+      "triangles": 12,
+      "bounds": [
+        [
+          -30,
+          30
+        ],
+        [
+          -30,
+          30
+        ],
+        [
+          0,
+          50
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "vibe-mit-solid",
+      "caseId": "vibe-mit-solid-import",
+      "sourceSha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+      "meshes": 1,
+      "vertices": 24,
+      "triangles": 12,
+      "bounds": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "poseidon-cover-slide",
+      "caseId": "poseidon-cover-slide-import",
+      "sourceSha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "meshes": 1,
+      "vertices": 232,
+      "triangles": 200,
+      "bounds": [
+        [
+          -7.451267451363921,
+          -2.4512674513639197
+        ],
+        [
+          34.2,
+          61
+        ],
+        [
+          -26.4999999999999,
+          21.43889729614702
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    },
+    {
+      "fixtureId": "poseidon-syringe-brace",
+      "caseId": "poseidon-syringe-brace-import",
+      "sourceSha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "meshes": 1,
+      "vertices": 1419,
+      "triangles": 2450,
+      "bounds": [
+        [
+          0.430478727233887,
+          12.4304787272339
+        ],
+        [
+          4.84713279031561,
+          12.704997166584702
+        ],
+        [
+          6.68023761973826,
+          13.6802376644418
+        ]
+      ],
+      "execution": {
+        "boundary": "sandbox-microvm",
+        "vcpus": 1,
+        "memoryMb": 2048,
+        "guestMemoryBytes": 2398654464,
+        "cleanup": "stopped"
+      }
+    }
+  ],
+  "providerDispatchesExpected": 7,
+  "providerDispatchesObserved": 7,
+  "unproven": [
+    "Private CAD readiness",
+    "Arbitrary-model fidelity",
+    "Manufacturing certification",
+    "Render and STL export qualification"
+  ],
+  "harnessCorrection": {
+    "reason": "Initial live evidence marked missing-credentials and missing-token false because the harness checked raw.includes(emptyString). Gate-only replay corrected those no-dispatch checks without creating additional hosted Sandboxes.",
+    "correctedCheckIds": [
+      "missing-credentials",
+      "missing-token"
+    ],
+    "additionalHostedDispatches": 0
+  }
+}
