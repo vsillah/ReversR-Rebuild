@@ -4,7 +4,8 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['docs/cad-convex-live-wiring-packet.md', 'docs/cad-live-convex-auth-setup-packet.md', 'convex/auth.ts', 'convex/auth.config.ts', 'convex/http.ts',
+const files = ['offline/cad-convex/passwordPolicy.ts', 'scripts/cad-convex-password-boundary.test.js',
+  'docs/cad-convex-password-auth-boundary.md', 'docs/cad-convex-live-wiring-packet.md', 'docs/cad-live-convex-auth-setup-packet.md', 'convex/auth.ts', 'convex/auth.config.ts', 'convex/http.ts',
   'offline/cad-convex/librarySessionHarness.js', 'scripts/cad-convex-auth-assembly.test.js',
   'docs/cad-convex-auth-assembly-review.md',
   'offline/cad-convex/previewRuntime.js', 'offline/cad-convex/previewRuntime.d.ts',
@@ -32,4 +33,19 @@ assert.ok(!/process\.env|fetch\s*\(/.test(cad + read('convex/librarySession.ts')
 for (const name of fs.readdirSync(path.join(root, 'server')).filter(n => /\.js$/.test(n))) {
   assert.ok(!/require\(['"][^'"]*(?:offline\/cad-convex|\/convex\/cad)/.test(read('server/' + name)));
 }
+
+for (const directory of ['convex', 'server', 'src', 'app']) {
+  function visit(dir) {
+    if (!fs.existsSync(path.join(root, dir))) return;
+    for (const entry of fs.readdirSync(path.join(root, dir), { withFileTypes: true })) {
+      const name = dir + '/' + entry.name;
+      if (entry.isDirectory()) visit(name);
+      else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
+        assert.ok(!/passwordPolicy/.test(read(name)), 'Offline Password policy imported by runtime');
+    }
+  }
+  visit(directory);
+}
+assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/passwordPolicy.ts')));
+
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);
