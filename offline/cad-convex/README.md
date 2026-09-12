@@ -166,3 +166,14 @@ tests. The production router remains unchanged and permanently disabled. See
 [the current review](../../docs/cad-convex-gateway-schema-review.md) for this phase's
 delta, validation scope and remaining provider/schema assembly gates. The earlier
 validation receipt above describes PR #174 only.
+
+## Repo source assembly and compile follow-up (PR #176)
+
+Manifest v4 includes real schema/functions, the default-denying library boundary,
+source tests, pinned SDK packages/lockfile and five SDK-generated bindings. The
+source reuses this packet's backend/validators. Production still imports neither.
+The original templates and earlier missing-SDK receipts above are historical.
+TypeScript now passes; full local release CI passes 16/16 and focused tests 66/66.
+Run `npm run cad:convex:codegen:check` to verify local-only pinned SDK template
+output. No Convex CLI/deployment is used. See [the source review](../../docs/cad-convex-schema-functions-review.md)
+for provenance, current validation and remaining provider/live/activation gates.
