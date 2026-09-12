@@ -219,11 +219,11 @@
       "fixture": "cube"
     },
     {
-      "id": "unsupported-transform",
+      "id": "transform-forwarded-conversion-failed",
       "mutation": "transform",
-      "status": 415,
-      "code": "UNSUPPORTED",
-      "dispatches": 0,
+      "status": 422,
+      "code": "CONVERSION_FAILED",
+      "dispatches": 1,
       "fixture": "cube"
     },
     {
