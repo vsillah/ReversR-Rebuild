@@ -16,7 +16,7 @@ test('matrix rejects unknown paths, duplicate IDs, dangling references and inval
   }
 });
 test('public fixtures are source-hash pinned and reject hash drift', () => {
-  assert.equal(loadFixtures(matrix).size, 3);
+  assert.equal(loadFixtures(matrix).size, 4);
   const changed = structuredClone(matrix); changed.fixtures[0].sha256 = '0'.repeat(64);
   assert.throws(() => loadFixtures(changed));
 });
@@ -31,4 +31,17 @@ test('geometry validation accepts a non-cube mesh and rejects corrupt indices an
   corrupt.meshes[0].indices[2] = 2;
   corrupt.meshes[0].positions[0] = NaN;
   assert.throws(() => validateGeometry(corrupt));
+});
+
+test('MIT source rejects URL, size and hash substitutions before loading', () => {
+  for (const [key, value] of [['sourceUrl', 'https://example.invalid'], ['bytes', 10], ['sha256', '0'.repeat(64)]]) {
+    const changed = structuredClone(matrix); changed.fixtures.at(-1)[key] = value;
+    assert.throws(() => loadFixtures(changed));
+  }
+});
+test('MIT fixture loads from the committed fixture directory', () => {
+  const path = require('node:path');
+  const { fixtureRoot } = require('./fixtures/cad-mit-source');
+  assert.equal(fixtureRoot, path.join(__dirname, 'fixtures/kantoku-mit'));
+  assert.equal(loadFixtures(matrix).get('kantoku-mit-sample').data.length, 24948);
 });

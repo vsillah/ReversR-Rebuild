@@ -11,6 +11,7 @@ const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
 const { createWorkerService } = require('../server/cadWorkerImport');
 const { LIMITS, ERRORS, meshPayload } = require('../server/cadWorkerContract');
 const matrix = require('./fixtures/cad-public-matrix.json');
+const { metadata: mitSource, fixtureRoot } = require('./fixtures/cad-mit-source');
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const token = crypto.randomBytes(32).toString('hex');
 const privateSentinel = '/private/qualification-sentinel/source.igs';
@@ -104,7 +105,11 @@ function validateMatrix(value) {
   const ids = new Set(), cases = new Set();
   for (const fixture of value.fixtures) {
     assert.match(fixture.id, /^[a-z0-9-]+$/); assert.ok(!ids.has(fixture.id)); ids.add(fixture.id);
-    assert.equal(fixture.source, 'occt-import-js-package'); assert.ok(publicSources.has(fixture.path));
+    if (fixture.source === 'vendored-mit-fixture') {
+      for (const [key, value] of Object.entries(mitSource)) assert.equal(fixture[key], value);
+    } else {
+      assert.equal(fixture.source, 'occt-import-js-package'); assert.ok(publicSources.has(fixture.path));
+    }
     assert.match(fixture.sha256, /^[a-f0-9]{64}$/);
     assert.ok(Number.isInteger(fixture.bytes) && fixture.bytes > 0 && fixture.bytes <= LIMITS.inputBytes);
     assert.ok(['iges', 'step'].includes(fixture.format));
@@ -132,8 +137,9 @@ function loadFixtures(value) {
   validateMatrix(value);
   const packageRoot = fs.realpathSync(path.dirname(require.resolve('occt-import-js/package.json')));
   return new Map(value.fixtures.map(fixture => {
-    const target = fs.realpathSync(path.join(packageRoot, fixture.path));
-    assert.ok(target.startsWith(packageRoot + path.sep));
+    const root = fixture.source === 'vendored-mit-fixture' ? fs.realpathSync(fixtureRoot) : packageRoot;
+    const target = fs.realpathSync(path.join(root, fixture.path));
+    assert.ok(target.startsWith(root + path.sep));
     assert.equal(fs.statSync(target).size, fixture.bytes);
     const bytes = fs.readFileSync(target);
     assert.equal(sha(bytes), fixture.sha256);
@@ -154,8 +160,9 @@ async function qualify() {
   const bytes = fixtures.get('cube').data;
   const report = { schemaVersion: 2, status: 'pass', scope: 'local-http-real-occt-simulated-provider',
     generatedAt: new Date().toISOString(), packageVersion: require('occt-import-js/package.json').version,
-    fixtures: matrix.fixtures.map(({ id, format, sha256, bytes }) => ({ id, format, sha256, bytes })),
-    independentIgesCoverage: 'pending-no-additional-local-iges', matrixSha256: sha(JSON.stringify(matrix)),
+    fixtures: matrix.fixtures.map(({ id, format, sha256, bytes }) => ({ id, format, sha256, bytes,
+      ...(id === mitSource.id ? { sourceUrl: mitSource.sourceUrl, license: mitSource.license, licenseUrl: mitSource.licenseUrl } : {}) })),
+    independentIgesCoverage: 'pending-mit-fixture-result', matrixSha256: sha(JSON.stringify(matrix)),
     providerCalls: 0, privateFilesRead: 0, checks: [],
     unproven: ['Live hosted execution of this matrix', 'Provider isolation and cleanup', 'Additional independent IGES models', 'Render, STL and dimensional fidelity'] };
   const check = async (id, fn) => {
@@ -211,6 +218,8 @@ async function qualify() {
     assert.deepEqual(Object.keys(row), ['id', 'httpStatus', 'passed']);
     assert.ok(!JSON.stringify(row).includes(token) && !JSON.stringify(row).includes(privateSentinel)); return 200;
   });
+  report.independentIgesCoverage = report.checks.some(check => check.id === 'kantoku-mit-sample-import' && check.passed)
+    ? 'one-additional-mit-source-local-conversion-only' : 'pending-mit-fixture-result';
   report.simulatedDispatches = local.counts().dispatches;
   const serialized = JSON.stringify(report, null, 2) + '\n';
   assert.ok(!serialized.includes(token) && !serialized.includes(privateSentinel));
