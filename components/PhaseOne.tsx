@@ -26,6 +26,8 @@ import {
   getSampleSetForConnector,
   loadInventoryConnector,
 } from '../utils/inventoryConnector';
+import CadImportPanel from './CadImportPanel';
+import { INPUT_MODES, InputMode } from '../utils/inputModes';
 import AlertModal from './AlertModal';
 import LoadingOverlay, { LoadingStep } from './LoadingOverlay';
 
@@ -40,13 +42,13 @@ interface Props {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   onInputFocus?: (event?: any) => void;
+  initialMode?: InputMode;
   initialInput?: string;
   initialImage?: string | null;
   mockAnalysis?: AnalysisResult | null;
   inventoryRefreshKey?: number;
 }
 
-type InputMode = 'type' | 'scan' | 'lucky';
 type PhaseOneAlert = {
   visible: boolean;
   title: string;
@@ -59,6 +61,7 @@ export default function PhaseOne({
   isLoading,
   setIsLoading,
   onInputFocus,
+  initialMode,
   initialInput,
   initialImage,
   mockAnalysis,
@@ -67,7 +70,7 @@ export default function PhaseOne({
   const { colors: Colors } = useAppTheme();
   const { refreshAccount } = useCommercialization();
   const styles = createStyles(Colors);
-  const [inputMode, setInputMode] = useState<InputMode>(initialImage ? 'scan' : 'type');
+  const [inputMode, setInputMode] = useState<InputMode>(initialMode ?? (initialImage ? 'scan' : 'type'));
   const [input, setInput] = useState(initialInput || '');
   const [sampleSourceLabel, setSampleSourceLabel] = useState(DEFAULT_SAMPLE_SET.sourceLabel);
   const [productPresets, setProductPresets] = useState<string[]>(DEFAULT_SAMPLE_SET.samples);
@@ -130,6 +133,7 @@ export default function PhaseOne({
   };
 
   const hasValidInput = () => {
+    if (inputMode === 'import') return false;
     if (inputMode === 'scan') return !!capturedImage || input.trim().length > 0;
     if (inputMode === 'lucky') return luckyProduct.trim().length > 0;
     return input.trim().length > 0;
@@ -165,6 +169,7 @@ export default function PhaseOne({
   };
 
   const handleAnalyze = async () => {
+    if (inputMode === 'import') return;
     const activeInput = getActiveInput();
     if (!activeInput.trim() && !capturedImage) return;
     if (mockAnalysis) {
@@ -319,66 +324,35 @@ export default function PhaseOne({
           <Ionicons name="scan-outline" size={24} color={Colors.primary} />
         </View>
         <View style={styles.headerText}>
-          <Text style={styles.title}>Phase 1: Scan</Text>
+          <Text style={styles.title}>Phase 1: Input</Text>
           <Text style={styles.description}>
-            Capture a machine or describe the visible assemblies and identifying marks.
+            Import a CAD file, scan a machine, describe it, or explore a sample.
           </Text>
         </View>
       </View>
 
       <View style={styles.panel}>
         <View style={styles.modeSelector}>
-          <TouchableOpacity
-            style={[styles.modeTab, inputMode === 'type' && styles.modeTabActive]}
-            onPress={() => setInputMode('type')}
-            accessibilityRole="button"
-            accessibilityLabel="Use text description mode"
-            accessibilityState={{ selected: inputMode === 'type' }}
-          >
-            <Ionicons
-              name="create-outline"
-              size={18}
-              color={inputMode === 'type' ? Colors.primary : Colors.mutedText}
-            />
-            <Text style={[styles.modeTabText, inputMode === 'type' && styles.modeTabTextActive]}>
-              Type
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.modeTab, inputMode === 'scan' && styles.modeTabActive]}
-            onPress={() => setInputMode('scan')}
-            accessibilityRole="button"
-            accessibilityLabel="Use camera scan mode"
-            accessibilityState={{ selected: inputMode === 'scan' }}
-          >
-            <Ionicons
-              name="camera-outline"
-              size={18}
-              color={inputMode === 'scan' ? Colors.primary : Colors.mutedText}
-            />
-            <Text style={[styles.modeTabText, inputMode === 'scan' && styles.modeTabTextActive]}>
-              Scan
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.modeTab, inputMode === 'lucky' && styles.modeTabActive]}
-            onPress={openSampleMode}
-            accessibilityRole="button"
-            accessibilityLabel="Use sample machine mode"
-            accessibilityState={{ selected: inputMode === 'lucky' }}
-          >
-            <Ionicons
-              name="dice-outline"
-              size={18}
-              color={inputMode === 'lucky' ? Colors.primary : Colors.mutedText}
-            />
-            <Text style={[styles.modeTabText, inputMode === 'lucky' && styles.modeTabTextActive]}>
-              Sample
-            </Text>
-          </TouchableOpacity>
+          {INPUT_MODES.map(mode => (
+            <TouchableOpacity
+              key={mode.mode}
+              testID={`phase-one-mode-${mode.mode}`}
+              style={[styles.modeTab, inputMode === mode.mode && styles.modeTabActive]}
+              onPress={() => { setError(null); mode.mode === 'lucky' ? openSampleMode() : setInputMode(mode.mode); }}
+              disabled={isLoading}
+              accessibilityRole="button"
+              accessibilityLabel={mode.accessibilityLabel}
+              aria-pressed={inputMode === mode.mode}
+              accessibilityState={{ selected: inputMode === mode.mode, disabled: isLoading }}
+            >
+              <Ionicons name={mode.icon} size={18} color={inputMode === mode.mode ? Colors.primary : Colors.mutedText} />
+              <Text style={[styles.modeTabText, inputMode === mode.mode && styles.modeTabTextActive]}>{mode.label}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
         <View style={styles.contentArea}>
+          {inputMode === 'import' && <CadImportPanel />}
           {inputMode === 'type' && (
             <View style={styles.typeContent}>
               <Text style={styles.contentLabel}>Describe the machine</Text>
@@ -505,7 +479,7 @@ export default function PhaseOne({
           </View>
         )}
 
-        <TouchableOpacity
+        {inputMode !== 'import' && <TouchableOpacity
           style={[
             styles.submitButton,
             submitLocked && styles.submitButtonDisabled,
@@ -529,7 +503,7 @@ export default function PhaseOne({
               <Ionicons name="flash" size={18} color={submitIconColor} />
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>
 
       <AlertModal
@@ -594,11 +568,14 @@ const createStyles = (Colors: AppColors) => {
   },
   modeSelector: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: Spacing.sm,
     marginBottom: Spacing.lg,
   },
   modeTab: {
-    flex: 1,
+    flexGrow: 1,
+    flexBasis: '40%',
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,3 +1,4 @@
+import { INPUT_MODES, InputMode } from '../utils/inputModes';
 import React from 'react';
 import {
   View,
@@ -38,7 +39,7 @@ const HERO_IMAGE_DARK: number = require('../assets/hero/canva/hero-premium-indus
 const HERO_IMAGE_LIGHT: number = require('../assets/hero/canva/hero-premium-industrial-pump-render-light-studio.png');
 
 interface WelcomeScreenProps {
-  onStart: () => void;
+  onStart: (mode?: InputMode) => void;
   onHistory?: () => void;
   onSettings?: () => void;
   onProfile?: () => void;
@@ -54,9 +55,9 @@ interface WelcomeScreenProps {
 const phases = [
   {
     number: 1,
-    title: 'Scan',
+    title: 'Input',
     icon: 'scan-outline' as const,
-    short: 'Capture or describe the machine',
+    short: 'Import, scan, describe, or try a sample',
   },
   {
     number: 2,
@@ -78,9 +79,9 @@ const phases = [
   },
 ];
 
-const PHASE_NAMES = ['Scan', 'Inventory', 'Design', 'Build'];
-const PHASE_STEP_LABELS = ['SCAN', 'INVENTORY', 'DESIGN', 'BUILD'];
-const PHASE_STEP_SUBLABELS = ['Capture & identify', 'Catalog parts', 'Engineer & plan', 'Rebuild & test'];
+const PHASE_NAMES = ['Input', 'Inventory', 'Design', 'Build'];
+const PHASE_STEP_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
+const PHASE_STEP_SUBLABELS = ['Import, scan, describe, or try a sample', 'Catalog parts', 'Engineer & plan', 'Rebuild & test'];
 
 const expoConfig = Constants.expoConfig;
 const releaseExtra = (expoConfig?.extra || {}) as Record<string, unknown>;
@@ -500,18 +501,18 @@ export default function WelcomeScreen({
                   <Text style={styles.cpName} numberOfLines={1}>Your first reconstruction</Text>
                 </View>
               </View>
-              <Text style={styles.cpEmptySub}>Scan a machine, describe it, or try a sample build.</Text>
+              <Text style={styles.cpEmptySub}>Import a CAD file, scan a machine, describe it, or try a sample build.</Text>
+
+            </View>
+          )}
               <View style={styles.cpQuickRow}>
-                {([
-                  { icon: 'camera-outline' as const, label: 'Scan', hint: 'Use camera' },
-                  { icon: 'create-outline' as const, label: 'Describe', hint: 'Type details' },
-                  { icon: 'cube-outline' as const, label: 'Sample', hint: 'Try a demo' },
-                ]).map(action => (
+                {INPUT_MODES.map(action => (
                   <TouchableOpacity
                     key={action.label}
+                    testID={`home-mode-${action.mode}`}
                     style={styles.cpQuickTile}
                     activeOpacity={0.85}
-                    onPress={() => { setMenuOpen(false); onStart(); }}
+                    onPress={() => { setMenuOpen(false); onStart(action.mode); }}
                     accessibilityRole="button"
                     accessibilityLabel={`Start new machine reconstruction — ${action.label}, ${action.hint}`}
                   >
@@ -521,8 +522,6 @@ export default function WelcomeScreen({
                   </TouchableOpacity>
                 ))}
               </View>
-            </View>
-          )}
         </View>
       </View>
 
@@ -567,6 +566,7 @@ export default function WelcomeScreen({
 
       <Card style={styles.stepperCard}>
         <HorizontalStepper
+          testID="home-phase-nav"
           steps={PHASE_STEP_LABELS}
           subLabels={PHASE_STEP_SUBLABELS}
           currentStep={currentProject ? Math.min(currentProject.phase, 4) : 1}
@@ -586,7 +586,7 @@ export default function WelcomeScreen({
           </View>
           <View style={styles.newCardText}>
             <Text style={styles.newCardTitle}>New Reconstruction</Text>
-            <Text style={styles.newCardBody}>Start a new scan or describe the machine you&apos;re working on.</Text>
+            <Text style={styles.newCardBody}>Import a CAD file, scan a machine, describe it, or try a sample.</Text>
           </View>
           <Ionicons name="chevron-forward" size={22} color={Colors.primary} />
         </View>
@@ -1083,11 +1083,13 @@ const createStyles = (Colors: AppColors) => {
       lineHeight: 18,
     },
     cpQuickRow: {
+      flexWrap: 'wrap',
       flexDirection: 'row',
       gap: Spacing.sm,
       marginTop: 2,
     },
     cpQuickTile: {
+      minWidth: 110,
       flex: 1,
       alignItems: 'center',
       gap: 3,
