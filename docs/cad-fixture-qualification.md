@@ -145,7 +145,7 @@ Exact raw sources:
 
 The route returns one mesh per fixture, with 232 vertices / 200 triangles for
 the slide and 1,419 vertices / 2,450 triangles for the brace. Both remain below
-the existing 64 KiB input cap. No limit change is needed for this slice.
+the original 64 KiB input cap. The later private-pilot gate raises the protected operator source cap separately and keeps this public fixture slice's output and execution claims unchanged.
 
 Per-fixture matrix assertions check the exact counts plus min/max bounds on
 all three axes, using an absolute tolerance of 0.00001 in the returned coordinate

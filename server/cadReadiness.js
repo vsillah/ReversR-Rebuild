@@ -1,5 +1,7 @@
 // Static qualification status only. No runtime probes or environment activation.
 // routeMounted refers to the hosted CAD processing route, not this status route.
+const MAX_INPUT_BYTES = 256 * 1024;
+
 function getCadReadiness() {
   return {
     schemaVersion: 1,
@@ -15,7 +17,7 @@ function getCadReadiness() {
       localOnly: true,
       output: 'triangle-mesh',
       timeoutMs: 5000,
-      maxInputBytes: 65536,
+      maxInputBytes: MAX_INPUT_BYTES,
       wasmMemoryCapped: false,
       sourceFidelityQualified: false,
       hostedPackagingQualified: false,

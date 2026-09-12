@@ -1,5 +1,5 @@
 const crypto = require('node:crypto');
-const LIMITS = Object.freeze({ inputBytes: 64 * 1024, jsonBytes: 96 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
+const LIMITS = Object.freeze({ inputBytes: 256 * 1024, jsonBytes: 384 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
 const ERRORS = Object.freeze({
   DISABLED: [503, 'Hosted CAD import remains disabled pending executor qualification and operator configuration.'],
   UNAUTHORIZED: [401, 'A valid operator CAD access token is required.'],
@@ -7,7 +7,7 @@ const ERRORS = Object.freeze({
   NO_SOURCE: [400, 'Select a nonempty IGES source file.'],
   MALFORMED: [400, 'Provide a valid IGES upload as fileName and contentBase64.'],
   UNSUPPORTED: [415, 'Only standalone IGES source uploads are accepted.'],
-  TOO_LARGE: [413, 'The upload exceeds the 64 KiB source or 96 KiB request limit.'],
+  TOO_LARGE: [413, 'The upload exceeds the 256 KiB source or 384 KiB request limit.'],
   NO_GEOMETRY: [422, 'No triangle geometry was found.'],
   INVALID_GEOMETRY: [422, 'The model contains invalid geometry.'],
   OUTPUT_LIMIT: [413, 'The model exceeds the mesh, vertex, triangle or response limit.'],

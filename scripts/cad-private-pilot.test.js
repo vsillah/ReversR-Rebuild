@@ -5,9 +5,11 @@ const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
+const { LIMITS } = require('../server/cadWorkerContract');
 const { sourceBody, assertRedacted } = require('./cad-private-pilot-runner');
 
 test('private pilot runner is blocked by default before reading a source', () => {
+  const evidencePath = path.join(os.tmpdir(), `cad-private-pilot-blocked-${process.pid}.json`);
   const result = spawnSync(process.execPath, ['scripts/cad-private-pilot-runner.js'], {
     cwd: path.resolve(__dirname, '..'),
     encoding: 'utf8',
@@ -19,6 +21,15 @@ test('private pilot runner is blocked by default before reading a source', () =>
   assert.equal(payload.code, 'APPROVAL_REQUIRED');
   assert.doesNotMatch(result.stdout, /missing-private-source/);
   assert.equal(result.stderr, '');
+
+  const writeResult = spawnSync(process.execPath, ['scripts/cad-private-pilot-runner.js', `--write=${evidencePath}`], {
+    cwd: path.resolve(__dirname, '..'),
+    encoding: 'utf8',
+    env: { ...process.env, CAD_PRIVATE_SOURCE_PATH: path.join(os.tmpdir(), 'missing-private-source') },
+  });
+  assert.equal(writeResult.status, 1);
+  assert.equal(JSON.parse(fs.readFileSync(evidencePath, 'utf8')).code, 'APPROVAL_REQUIRED');
+  assert.doesNotMatch(fs.readFileSync(evidencePath, 'utf8'), /missing-private-source/);
 });
 
 test('private source preparation records hash and bytes but no source path', () => {
@@ -46,9 +57,9 @@ test('private source preparation blocks unsupported, empty and oversized files l
   assert.equal(sourceBody(empty).evidence.code, 'SOURCE_EMPTY');
 
   const oversized = path.join(directory, 'large' + '.ig' + 's');
-  fs.writeFileSync(oversized, Buffer.alloc(65537, 65));
+  fs.writeFileSync(oversized, Buffer.alloc(LIMITS.inputBytes + 1, 65));
   const blocked = sourceBody(oversized).evidence;
   assert.equal(blocked.code, 'SOURCE_TOO_LARGE');
-  assert.equal(blocked.source.bytes, 65537);
+  assert.equal(blocked.source.bytes, LIMITS.inputBytes + 1);
   assert.match(blocked.source.sha256, /^[a-f0-9]{64}$/);
 });
