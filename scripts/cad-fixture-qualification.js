@@ -11,7 +11,7 @@ const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
 const { createWorkerService } = require('../server/cadWorkerImport');
 const { LIMITS, ERRORS, meshPayload } = require('../server/cadWorkerContract');
 const matrix = require('./fixtures/cad-public-matrix.json');
-const { metadata: mitSource, cacheRoot } = require('./fixtures/cad-mit-source');
+const { metadata: mitSource, fixtureRoot } = require('./fixtures/cad-mit-source');
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const token = crypto.randomBytes(32).toString('hex');
 const privateSentinel = '/private/qualification-sentinel/source.igs';
@@ -105,7 +105,7 @@ function validateMatrix(value) {
   const ids = new Set(), cases = new Set();
   for (const fixture of value.fixtures) {
     assert.match(fixture.id, /^[a-z0-9-]+$/); assert.ok(!ids.has(fixture.id)); ids.add(fixture.id);
-    if (fixture.source === 'authorized-mit-cache') {
+    if (fixture.source === 'vendored-mit-fixture') {
       for (const [key, value] of Object.entries(mitSource)) assert.equal(fixture[key], value);
     } else {
       assert.equal(fixture.source, 'occt-import-js-package'); assert.ok(publicSources.has(fixture.path));
@@ -137,7 +137,7 @@ function loadFixtures(value) {
   validateMatrix(value);
   const packageRoot = fs.realpathSync(path.dirname(require.resolve('occt-import-js/package.json')));
   return new Map(value.fixtures.map(fixture => {
-    const root = fixture.source === 'authorized-mit-cache' ? fs.realpathSync(cacheRoot) : packageRoot;
+    const root = fixture.source === 'vendored-mit-fixture' ? fs.realpathSync(fixtureRoot) : packageRoot;
     const target = fs.realpathSync(path.join(root, fixture.path));
     assert.ok(target.startsWith(root + path.sep));
     assert.equal(fs.statSync(target).size, fixture.bytes);

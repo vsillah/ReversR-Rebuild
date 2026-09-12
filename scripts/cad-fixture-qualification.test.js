@@ -39,16 +39,9 @@ test('MIT source rejects URL, size and hash substitutions before loading', () =>
     assert.throws(() => loadFixtures(changed));
   }
 });
-test('MIT acquisition refuses errors, oversized or altered content without extra requests', async () => {
-  const { acquire } = require('./cad-acquire-mit-fixture');
-  for (const response of [new Response('missing', { status: 404 }), new Response(new Uint8Array(24949)), new Response(new Uint8Array(24948))]) {
-    let calls = 0;
-    await assert.rejects(acquire(async (url, options) => {
-      calls++; assert.equal(url, matrix.fixtures.at(-1).sourceUrl); assert.equal(options.redirect, 'error');
-      return response;
-    }));
-    assert.equal(calls, 1);
-  }
-  const bytes = loadFixtures(matrix).get('kantoku-mit-sample').data;
-  assert.deepEqual(await acquire(async () => new Response(bytes)), bytes);
+test('MIT fixture loads from the committed fixture directory', () => {
+  const path = require('node:path');
+  const { fixtureRoot } = require('./fixtures/cad-mit-source');
+  assert.equal(fixtureRoot, path.join(__dirname, 'fixtures/kantoku-mit'));
+  assert.equal(loadFixtures(matrix).get('kantoku-mit-sample').data.length, 24948);
 });

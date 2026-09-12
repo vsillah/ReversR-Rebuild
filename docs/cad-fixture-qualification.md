@@ -3,21 +3,18 @@
 Run from the repository root after `npm ci --ignore-scripts`:
 
 ```sh
-node scripts/cad-acquire-mit-fixture.js
 npm run cad:fixtures:qualify
 npm run cad:fixtures:qualify -- --write
 node --test scripts/cad-fixture-qualification.test.js scripts/cad-sandbox.test.js scripts/cad-worker.test.js scripts/cad-readiness.test.js
 git diff --check
 ```
 
-The explicit acquisition command retrieves only the authorized MIT sample into
-`node_modules/.cache/reversr-cad-public/mit-sample.bin`. It refuses redirects,
-responses larger than 24,948 bytes, and any size/hash mismatch. An existing
-valid cache is reused without a network call. No other assets are acquired.
-After `npm ci`, run acquisition again because the ignored cache may be removed.
-If the upstream file changes, acquisition fails; do not update the hash without
-reviewing and authorizing the new source. Qualification never fetches missing
-fixtures automatically. A missing cache requires running the command above.
+The authorized MIT fixture is committed at
+`scripts/fixtures/kantoku-mit/sample.igs`, alongside the upstream MIT license
+and copyright notice. A fresh checkout needs only the locked dependencies;
+there is no acquisition command, ignored-cache prerequisite or network fetch
+in qualification. The source file is unchanged and its size/hash are checked
+before every run. The former cache acquisition script has been removed.
 
 The default qualification command prints JSON without writing a file. `--write` replaces
 `docs/cad-fixture-qualification-evidence.json`, including a failed matrix result.
@@ -30,7 +27,7 @@ No URL, input path, or token arguments are accepted.
 
 The public fixture matrix lives in `scripts/fixtures/cad-public-matrix.json`.
 Schema version 2 separates named fixtures from cases. Each case selects a
-fixture ID. The runner loads only reviewed package paths or the single authorized MIT cache and verifies byte size
+fixture ID. The runner loads only reviewed package paths or the single vendored MIT fixture and verifies byte size
 and SHA-256 before making requests. It rejects paths outside the reviewed set
 and real paths outside the selected source root. Other cases are deterministic in-memory
 mutations. Adding a source requires reviewing its provenance, adding its path
@@ -77,11 +74,10 @@ Inventory on the installed `occt-import-js` 0.0.23 package and repository found:
 | cube | test/testfiles/cube-10x10mm/Cube 10x10.igs | Successful IGES conversion and mutations |
 | rounded-cube-step | test/testfiles/rounded-cube/rounded-cube.step | HTTP 415 UNSUPPORTED, zero dispatch |
 | conical-surface-step | test/testfiles/conical-surface/conical-surface.step | HTTP 415 UNSUPPORTED, zero dispatch |
-| kantoku-mit-sample | Authorized cache, acquired from sample/sample.igs | Successful IGES conversion |
+| kantoku-mit-sample | scripts/fixtures/kantoku-mit/sample.igs | Successful IGES conversion |
 
 The first three are public test assets already installed with the dependency.
-The fourth is the single Captain-authorized public acquisition. No CAD asset
-is committed to the repository. The package cube source
+The fourth is the single Captain-authorized public acquisition. The exact authorized IGES asset and MIT notice are committed for reproducibility. The package cube source
 note identifies its upstream GrabCAD origin; the other two are attributed to
 the installed package only, without inferring separate authorship or licensing.
 
@@ -102,9 +98,9 @@ checks exercise the format boundary rather than oversized-request handling.
 - Local HTTP outcome: ready, 24 vertices, 12 triangles, source hash binding validated, one simulated dispatch with confirmed simulated stop.
 
 The source URL uses upstream main; the immutable SHA-256 pin makes a changed
-upstream file fail acquisition. The runner validates the exact authorized URL,
-license metadata, size and hash. We use deterministic acquisition rather than
-redistributing the source asset. No CATPart or other source assets were acquired.
+upstream change require a separately reviewed fixture update. The runner validates the exact authorized URL,
+license metadata, size and hash. The upstream copyright and permission notice are included beside the vendored
+asset. Qualification requires no acquisition side effect. No CATPart or other source assets were acquired.
 
 Evidence records `one-additional-mit-source-local-conversion-only` only after
 the named case passes. There are now two source-distinct IGES inputs with local
