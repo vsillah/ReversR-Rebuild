@@ -9,7 +9,9 @@
    */
 
   import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
-  import type * as cad from "../cad.js";
+  import type * as auth from "../auth.js";
+import type * as cad from "../cad.js";
+import type * as http from "../http.js";
 import type * as librarySession from "../librarySession.js";
 
   /**
@@ -21,7 +23,9 @@ import type * as librarySession from "../librarySession.js";
    * ```
    */
   declare const fullApi: ApiFromModules<{
-    "cad": typeof cad,
+    "auth": typeof auth,
+"cad": typeof cad,
+"http": typeof http,
 "librarySession": typeof librarySession,
   }>;
   export declare const api: FilterApi<typeof fullApi, FunctionReference<any, "public">>;

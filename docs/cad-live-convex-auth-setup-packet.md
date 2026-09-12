@@ -28,7 +28,9 @@ functions are internal, with argument and return validators. Five are on the gat
 allowlist; `cad:changeAuthority` is excluded. The backend avoids unbounded collect and
 filter scans. Policy provisioning needs an independently authorized operator path.
 
-`convex/auth.ts`, `convex/auth.config.ts`, and `convex/http.ts` are absent.
+`convex/auth.ts`, `convex/auth.config.ts`, and `convex/http.ts` now have a
+disabled source-only assembly; see [the assembly review](cad-convex-auth-assembly-review.md).
+Login providers and trusted JWT issuers remain empty.
 `readExactLibrarySession` always throws `AUTH_UNAVAILABLE`. Generated bindings come
 from pinned local SDK templates, not a live deployment receipt. Pins are Convex
 1.45.0, Convex Auth 0.0.95 and Auth Core 0.41.3. No SDK upgrade is proposed.
