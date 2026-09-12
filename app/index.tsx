@@ -1,3 +1,4 @@
+import { InputMode } from '../utils/inputModes';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   View,
@@ -526,6 +527,7 @@ export default function HomeScreen() {
   const [context, setContext] = useState<MutationContext>(createEmptyContext());
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [entryMode, setEntryMode] = useState<InputMode | undefined>(undefined);
   const [inventorySampleRefreshKey, setInventorySampleRefreshKey] = useState(0);
   const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>('account');
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
@@ -844,6 +846,7 @@ export default function HomeScreen() {
   }, []);
 
   const startMockJourney = useCallback(async () => {
+    setEntryMode(undefined);
     const fixture = await loadMockTourFixture();
     const fixtureImages = getValidMockTourFixtureImages(fixture);
     setMockTourFixture(fixture);
@@ -1391,7 +1394,8 @@ export default function HomeScreen() {
     }
   };
 
-  const handleStartNew = () => {
+  const handleStartNew = (mode: InputMode = 'type') => {
+    setEntryMode(mode);
     setMockJourneyActive(false);
     setMockTourFixture(null);
     setTourHistoryResumeDetected(false);
@@ -1405,6 +1409,7 @@ export default function HomeScreen() {
   };
 
   const handleResume = (saved: SavedInnovation) => {
+    setEntryMode(undefined);
     setMockJourneyActive(false);
     setMockTourFixture(null);
     setTourHistoryResumeDetected(true);
@@ -1535,7 +1540,7 @@ export default function HomeScreen() {
             active="home"
             onHome={goHome}
             onProjects={openHistory}
-            onNew={handleStartNew}
+            onNew={() => handleStartNew()}
             onTour={startTour}
             onMore={() => openSettings('account')}
             bottomInset={safeAreaInsets.bottom}
@@ -1565,7 +1570,7 @@ export default function HomeScreen() {
             active="projects"
             onHome={goHome}
             onProjects={openHistory}
-            onNew={handleStartNew}
+            onNew={() => handleStartNew()}
             onTour={startTour}
             onMore={() => openSettings('account')}
             bottomInset={safeAreaInsets.bottom}
@@ -1733,6 +1738,8 @@ export default function HomeScreen() {
       >
         {context.phase === 1 && (
           <PhaseOne
+            key={context.id}
+            initialMode={entryMode}
             onComplete={handlePhaseOneComplete}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
@@ -1942,7 +1949,7 @@ export default function HomeScreen() {
           active={null}
           onHome={goHome}
           onProjects={openHistory}
-          onNew={handleStartNew}
+          onNew={() => handleStartNew()}
           onTour={startTour}
           onMore={() => openSettings('account')}
           bottomInset={safeAreaInsets.bottom}
