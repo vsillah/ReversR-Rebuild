@@ -157,3 +157,12 @@ deployment and auth configuration separately, using the scoped packets in
 `docs/cad-convex-store-review.md`. Unknown destination/version/budget values must be
 filled from evidence before seeking approval. Production wiring, upload activation
 and CAD dispatch remain separate future gates.
+
+## Gateway/session adapter follow-up (after PR #174)
+
+The request-bound test adapter and separate enabled synthetic admission harness now
+exist in this packet. Manifest v2 covers their explicit function mapping, source and
+tests. The production router remains unchanged and permanently disabled. See
+[the current review](../../docs/cad-convex-gateway-schema-review.md) for this phase's
+delta, validation scope and remaining provider/schema assembly gates. The earlier
+validation receipt above describes PR #174 only.
