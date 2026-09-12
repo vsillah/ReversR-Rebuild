@@ -76,6 +76,84 @@
           12
         ]
       }
+    },
+    {
+      "id": "poseidon-cover-slide",
+      "source": "vendored-bsd-fixture",
+      "path": "Pump Cover Slide.iges",
+      "format": "iges",
+      "bytes": 48357,
+      "sha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Cover%20Slide.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "license": "BSD-2-Clause",
+      "licenseUrl": "https://github.com/pachterlab/poseidon/blob/5a139fed350bbf5d775ffa9650f465e557b6ccb0/LICENSE",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6",
+      "geometry": {
+        "vertices": [
+          232,
+          232
+        ],
+        "triangles": [
+          200,
+          200
+        ],
+        "meshes": 1,
+        "bounds": [
+          [
+            -7.451267451363921,
+            -2.4512674513639197
+          ],
+          [
+            34.2,
+            61
+          ],
+          [
+            -26.4999999999999,
+            21.43889729614702
+          ]
+        ],
+        "boundsTolerance": 1e-05
+      }
+    },
+    {
+      "id": "poseidon-syringe-brace",
+      "source": "vendored-bsd-fixture",
+      "path": "Pump Syringe Brace.iges",
+      "format": "iges",
+      "bytes": 40824,
+      "sha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Syringe%20Brace.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "license": "BSD-2-Clause",
+      "licenseUrl": "https://github.com/pachterlab/poseidon/blob/5a139fed350bbf5d775ffa9650f465e557b6ccb0/LICENSE",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6",
+      "geometry": {
+        "vertices": [
+          1419,
+          1419
+        ],
+        "triangles": [
+          2450,
+          2450
+        ],
+        "meshes": 1,
+        "bounds": [
+          [
+            0.430478727233887,
+            12.4304787272339
+          ],
+          [
+            4.84713279031561,
+            12.704997166584702
+          ],
+          [
+            6.68023761973826,
+            13.6802376644418
+          ]
+        ],
+        "boundsTolerance": 1e-05
+      }
     }
   ],
   "cases": [
@@ -198,6 +276,20 @@
     {
       "id": "vibe-mit-solid-import",
       "fixture": "vibe-mit-solid",
+      "mutation": "none",
+      "status": 200,
+      "dispatches": 1
+    },
+    {
+      "id": "poseidon-cover-slide-import",
+      "fixture": "poseidon-cover-slide",
+      "mutation": "none",
+      "status": 200,
+      "dispatches": 1
+    },
+    {
+      "id": "poseidon-syringe-brace-import",
+      "fixture": "poseidon-syringe-brace",
       "mutation": "none",
       "status": 200,
       "dispatches": 1

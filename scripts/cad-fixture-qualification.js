@@ -11,7 +11,8 @@ const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
 const { createWorkerService } = require('../server/cadWorkerImport');
 const { LIMITS, ERRORS, meshPayload } = require('../server/cadWorkerContract');
 const matrix = require('./fixtures/cad-public-matrix.json');
-const vendoredSources = new Map([require('./fixtures/cad-mit-source'), require('./fixtures/cad-vibe-source')]
+const vendoredSources = new Map([require('./fixtures/cad-mit-source'), require('./fixtures/cad-vibe-source'),
+  ...require('./fixtures/cad-poseidon-sources')]
   .map(source => [source.metadata.id, source]));
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const token = crypto.randomBytes(32).toString('hex');
@@ -106,7 +107,7 @@ function validateMatrix(value) {
   const ids = new Set(), cases = new Set();
   for (const fixture of value.fixtures) {
     assert.match(fixture.id, /^[a-z0-9-]+$/); assert.ok(!ids.has(fixture.id)); ids.add(fixture.id);
-    if (fixture.source === 'vendored-mit-fixture') {
+    if (['vendored-mit-fixture', 'vendored-bsd-fixture'].includes(fixture.source)) {
       const source = vendoredSources.get(fixture.id); assert.ok(source);
       for (const [key, value] of Object.entries(source.metadata)) assert.equal(fixture[key], value);
     } else {
@@ -116,6 +117,12 @@ function validateMatrix(value) {
     assert.ok(Number.isInteger(fixture.bytes) && fixture.bytes > 0 && fixture.bytes <= LIMITS.inputBytes);
     assert.ok(['iges', 'step'].includes(fixture.format));
     assert.equal(fixture.format, fixture.path.endsWith('.step') ? 'step' : 'iges');
+    if (fixture.geometry?.bounds) {
+      assert.ok(Array.isArray(fixture.geometry.bounds) && fixture.geometry.bounds.length === 3);
+      for (const axis of fixture.geometry.bounds) assert.ok(Array.isArray(axis) && axis.length === 2 && axis.every(Number.isFinite) && axis[0] <= axis[1]);
+      assert.ok(Number.isFinite(fixture.geometry.boundsTolerance) && fixture.geometry.boundsTolerance > 0 && fixture.geometry.boundsTolerance <= 0.001);
+      assert.ok(Number.isInteger(fixture.geometry.meshes) && fixture.geometry.meshes > 0 && fixture.geometry.meshes <= LIMITS.meshes);
+    }
     if (fixture.geometry) for (const [key, limit] of [['vertices', LIMITS.vertices], ['triangles', LIMITS.triangles]]) {
       const bounds = fixture.geometry[key];
       assert.ok(Array.isArray(bounds) && bounds.length === 2 && bounds.every(Number.isInteger));
@@ -139,9 +146,10 @@ function loadFixtures(value) {
   validateMatrix(value);
   const packageRoot = fs.realpathSync(path.dirname(require.resolve('occt-import-js/package.json')));
   return new Map(value.fixtures.map(fixture => {
-    const root = fixture.source === 'vendored-mit-fixture' ? fs.realpathSync(vendoredSources.get(fixture.id).fixtureRoot) : packageRoot;
+    const root = ['vendored-mit-fixture', 'vendored-bsd-fixture'].includes(fixture.source) ? fs.realpathSync(vendoredSources.get(fixture.id).fixtureRoot) : packageRoot;
     const target = fs.realpathSync(path.join(root, fixture.path));
     assert.ok(target.startsWith(root + path.sep));
+    if (fixture.licenseSha256) assert.equal(sha(fs.readFileSync(path.join(root, 'LICENSE'))), fixture.licenseSha256);
     assert.equal(fs.statSync(target).size, fixture.bytes);
     const bytes = fs.readFileSync(target);
     assert.equal(sha(bytes), fixture.sha256);
@@ -155,7 +163,17 @@ function validateGeometry(body, expected) {
   if (expected) for (const [key, count] of [['vertices', geometry.vertexCount], ['triangles', geometry.triangleCount]]) {
     assert.ok(count >= expected[key][0] && count <= expected[key][1]);
   }
-  return geometry;
+  const bounds = [[Infinity, -Infinity], [Infinity, -Infinity], [Infinity, -Infinity]];
+  for (const mesh of geometry.meshes) mesh.positions.forEach((value, index) => {
+    const axis = bounds[index % 3]; axis[0] = Math.min(axis[0], value); axis[1] = Math.max(axis[1], value);
+  });
+  if (expected?.bounds) {
+    assert.equal(geometry.meshes.length, expected.meshes);
+    for (let axis = 0; axis < 3; axis++) for (let edge = 0; edge < 2; edge++) {
+      assert.ok(Math.abs(bounds[axis][edge] - expected.bounds[axis][edge]) <= expected.boundsTolerance);
+    }
+  }
+  return { ...geometry, bounds };
 }
 async function qualify() {
   const fixtures = loadFixtures(matrix);
@@ -165,11 +183,12 @@ async function qualify() {
     fixtures: matrix.fixtures.map(({ id, format, sha256, bytes }) => {
       const source = vendoredSources.get(id)?.metadata;
       return { id, format, sha256, bytes,
-        ...(source ? { sourceUrl: source.sourceUrl, license: source.license, licenseUrl: source.licenseUrl } : {}) };
+        ...(source ? { sourceUrl: source.sourceUrl, license: source.license, licenseUrl: source.licenseUrl,
+          ...(source.sourceCommit ? { sourceCommit: source.sourceCommit, licenseSha256: source.licenseSha256 } : {}) } : {}) };
     }),
-    independentIgesCoverage: 'pending-source-distinct-results', shapeDiversity: 'unproven', conversions: [], matrixSha256: sha(JSON.stringify(matrix)),
+    independentIgesCoverage: 'pending-fixture-conversion-results', shapeDiversity: 'unproven', conversions: [], matrixSha256: sha(JSON.stringify(matrix)),
     providerCalls: 0, privateFilesRead: 0, checks: [],
-    unproven: ['Live hosted execution of this matrix', 'Provider isolation and cleanup', 'Additional independent IGES models', 'Render, STL and dimensional fidelity'] };
+    unproven: ['Live hosted execution of this matrix', 'Provider isolation and cleanup', 'Broad arbitrary-model coverage', 'Render, STL and source fidelity', 'Dimensional certification', 'Private CAD readiness'] };
   const check = async (id, fn) => {
     try { const status = await fn(); report.checks.push(evidenceRow(id, status, true)); }
     catch { report.checks.push({ id, passed: false }); report.status = 'fail'; }
@@ -190,18 +209,19 @@ async function qualify() {
     for (const entry of matrix.cases) await check(entry.id, async () => {
       const fixture = fixtures.get(entry.fixture);
       const before = local.counts(); const body = fixtureBody(fixture.data, entry.mutation, fixture.format); const r = await request(body);
+      let geometry;
       assert.equal(r.status, entry.status);
       if (entry.code) assert.equal(r.body.code, entry.code);
       else {
         assert.equal(r.body.status, 'ready'); assert.equal(r.body.source.sha256, sha(Buffer.from(body.contentBase64, 'base64')));
-        validateGeometry(r.body, fixture.geometry);
+        geometry = validateGeometry(r.body, fixture.geometry);
         assert.equal(r.body.sourceConfidence.status, 'unqualified'); assert.equal(r.body.execution.cleanup, 'stopped');
       }
       assert.equal(local.counts().dispatches - before.dispatches, entry.dispatches);
       assert.equal(local.counts().stops - before.stops, entry.dispatches);
       if (r.status === 200) report.conversions.push({ fixtureId: fixture.id, caseId: entry.id,
         sourceSha256: r.body.source.sha256, meshes: r.body.meshes.length,
-        vertices: r.body.vertexCount, triangles: r.body.triangleCount });
+        vertices: r.body.vertexCount, triangles: r.body.triangleCount, bounds: geometry.bounds });
       return r.status;
     });
   });
@@ -227,9 +247,12 @@ async function qualify() {
     assert.deepEqual(Object.keys(row), ['id', 'httpStatus', 'passed']);
     assert.ok(!JSON.stringify(row).includes(token) && !JSON.stringify(row).includes(privateSentinel)); return 200;
   });
-  report.successfulIgesSourceCount = new Set(report.conversions.map(result => result.fixtureId)).size;
-  report.independentIgesCoverage = report.successfulIgesSourceCount === 3
-    ? 'three-source-distinct-local-conversions-shape-diversity-unproven' : 'incomplete-source-distinct-results';
+  report.successfulIgesFixtureCount = new Set(report.conversions.map(result => result.fixtureId)).size;
+  report.independentIgesCoverage = report.successfulIgesFixtureCount === 5
+    ? 'five-distinct-iges-fixtures-converted-locally' : 'incomplete-fixture-conversion-results';
+  report.shapeDiversity = ['poseidon-cover-slide-import', 'poseidon-syringe-brace-import']
+    .every(id => report.checks.some(check => check.id === id && check.passed))
+    ? 'demonstrated-for-local-poseidon-fixture-conversion-only' : 'unproven';
   report.simulatedDispatches = local.counts().dispatches;
   const serialized = JSON.stringify(report, null, 2) + '\n';
   assert.ok(!serialized.includes(token) && !serialized.includes(privateSentinel));
