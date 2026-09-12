@@ -92,3 +92,79 @@ test('cookie CSRF validation precedes the disabled response', async t => {
   assert.equal((await request(headers)).payload.code, 'ORIGIN_OR_CSRF_REJECTED');
   assert.equal((await request({ ...headers, 'x-upload-csrf': issued.csrf })).payload.code, 'USER_UPLOADS_DISABLED');
 });
+
+// Execute the actual commercial helpers with isolated synthetic JSON and env.
+// Never import the live commercial module: it captures provider configuration.
+async function commercialAccount({ env = {}, headers = {}, body = {}, grants = {} } = {}) {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const vm = require('node:vm');
+  let saved = JSON.stringify({ commercialAccessGrants: grants });
+  const routes = new Map();
+  const source = fs.readFileSync(path.join(__dirname, '../server/commercialization.js'), 'utf8');
+  const context = { module: { exports: {} }, Buffer, process: { env },
+    require(id) {
+      if (id === 'fs/promises') return {
+        async readFile() { return saved; }, async mkdir() {},
+        async writeFile(_path, value) { saved = value; },
+      };
+      if (['os', 'path', 'crypto'].includes(id)) return require(`node:${id}`);
+      throw Error('Unexpected commercial dependency');
+    },
+  };
+  // Stripe's constructor remains forbidden even if the source starts calling it.
+  const safeRequire = context.require;
+  context.require = id => id === 'stripe' ? class { constructor() { throw Error('Provider forbidden'); } } : safeRequire(id);
+  vm.runInNewContext(source, context);
+  context.module.exports.registerCommercialRoutes(new Proxy({}, {
+    get: (_target, method) => (route, handler) => routes.set(`${method} ${route}`, handler),
+  }));
+  let response;
+  await routes.get('get /api/me')({ get: key => headers[key], body }, {
+    json(value) { response = JSON.parse(JSON.stringify(value)); },
+    status() { throw Error('Unexpected commercial failure'); },
+  });
+  assert.equal(response.status, 'ok');
+  assert.ok(JSON.parse(saved).users[response.profile.id], 'actual helper persisted a profile-derived account');
+  return response;
+}
+
+test('real commercial accounts, tester grants and password grants never authorize upload issuance or admission', async t => {
+  const { pbkdf2Sync } = require('node:crypto');
+  const { uploadSessionService } = require('../server/uploadSessionStore');
+  const profileHeaders = { 'x-reversr-client-id': 'synthetic-client',
+    'x-reversr-profile-email': 'tester@example.invalid',
+    'x-reversr-profile-name': 'Synthetic Tester', 'x-reversr-shop-name': 'Synthetic Shop' };
+  const password = 'synthetic-password';
+  const salt = 'synthetic-salt';
+  const cases = [
+    { headers: profileHeaders },
+    { body: { profile: { email: 'body@example.invalid', name: 'Body Profile', shopName: 'Body Shop' } } },
+    { headers: profileHeaders, env: { COMMERCIAL_TESTER_EMAILS: 'tester@example.invalid' }, role: 'tester' },
+    { headers: profileHeaders, grants: { invite: { grantId: 'invite', clientId: 'synthetic-client',
+      active: true, createdByInviteId: 'synthetic-invite', mustResetPassword: false } }, role: 'tester' },
+    { headers: { ...profileHeaders, 'x-reversr-access-password': password },
+      grants: { password: { grantId: 'password', email: 'tester@example.invalid', active: true,
+        mustResetPassword: false, passwordSalt: salt,
+        passwordHash: pbkdf2Sync(password, salt, 120000, 32, 'sha256').toString('hex') } }, role: 'tester' },
+    { headers: { ...profileHeaders, 'x-reversr-access-password': password }, env: {
+      COMMERCIAL_SUPER_ADMIN_EMAILS: 'tester@example.invalid', COMMERCIAL_SUPER_ADMIN_PASSWORD: password,
+    }, role: 'super_admin' },
+  ];
+  const request = await fixture(t);
+  const token = `us1.${Buffer.alloc(32, 7).toString('base64url')}`;
+  for (const candidate of cases) {
+    const account = await commercialAccount(candidate);
+    assert.equal(account.access?.role || null, candidate.role || null);
+    for (const claimed of [account, { ...account, userId: account.profile.id, shopId: account.shop.id,
+      authMethod: 'password', cadUploadAllowed: true, verified: true, expiresAt: Date.now() + 60000 }]) {
+      assert.deepEqual(await uploadSessionService.issueSession(claimed), { ok: false, code: 'AUTH_UNAVAILABLE' });
+    }
+    const absent = await request(candidate.headers || {});
+    assert.equal(absent.status, 401);
+    assert.equal(absent.payload.code, 'USER_SESSION_REQUIRED');
+    const supplied = await request({ ...candidate.headers, authorization: `Bearer ${token}` });
+    assert.equal(supplied.status, 503);
+    assert.equal(supplied.payload.code, 'USER_AUTH_UNAVAILABLE');
+  }
+});
