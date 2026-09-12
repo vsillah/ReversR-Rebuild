@@ -35,21 +35,22 @@ function createSandboxRouter({ env = process.env, executor = createSandboxExecut
       enabled: configured && !cleanupBlocked, routeMounted: true, configured,
       mode: configured ? 'sandbox-stock-occt-mesh-beta' : 'sandbox-pending-qualification',
       workerQualification: { ...base.workerQualification, hostedPackagingQualified: configured,
-        livePublicFixtureMatrixQualified: configured },
+        livePublicFixtureMatrixQualified: configured, privatePilotQualified: configured },
       executor: { kind: 'sandbox', authentication: readiness.credentials, liveQualification: readiness.liveQualification },
       proven: configured ? [
         ...base.proven,
         'Live hosted public fixture matrix converted five public IGES fixture inputs across seven successful Sandbox dispatches.',
         'Malformed, unsupported, auth and disabled-gate cases returned expected errors without hosted Sandbox dispatch.',
         'Each live hosted dispatch reported 1 vCPU, 2048 MB, deny-all networking, 60s lifetime and confirmed cleanup.',
+        'One operator-approved private IGES pilot converted to bounded mesh output through the protected hosted Sandbox path with cleanup confirmed.',
       ] : base.proven,
       unproven: configured
-        ? ['Private CAD readiness', 'Arbitrary-model source fidelity', 'Render and STL export', 'Dimensional/manufacturing certification']
+        ? ['General private-CAD corpus coverage beyond the approved pilot source', 'Arbitrary-model source fidelity', 'Render and STL export', 'Dimensional/manufacturing certification', 'User-facing CAD exposure']
         : ['Live Sandbox resource isolation, network denial and expiry', 'Hosted asset packaging and production smoke', 'Source fidelity, render and STL export'],
       blocker: cleanupBlocked ? { code: 'CLEANUP_FAILED', reason: 'Cleanup or creation outcome is uncertain; this instance is blocked.' } : configured ? null : { code: 'SANDBOX_GATE_MISSING', reason: 'Sandbox execution requires operator configuration and an approved live qualification.', missing: readiness.missing },
       sandbox: readiness,
       nextGate: configured
-        ? 'Private CAD, arbitrary-model fidelity, render/STL claims and user-facing exposure remain separate gates requiring explicit approval and evidence.'
+        ? 'Additional private CAD sources, arbitrary-model fidelity, render/STL claims, manufacturing use and user-facing exposure remain separate gates requiring explicit approval and evidence.'
         : 'Approve and pass a live public-fixture diagnostic before attesting qualification, configuring the protected route and performing production smoke.',
     });
   });
