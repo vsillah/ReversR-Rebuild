@@ -1,4 +1,4 @@
-// Server-only, unmounted foundation. No production auth or store is configured.
+// Server-only foundation. No production auth or store is configured.
 const { createHash, randomBytes, randomUUID } = require('node:crypto');
 const MAX_LIFETIME_MS = 15 * 60 * 1000;
 const hash = value => createHash('sha256').update(value).digest('hex');

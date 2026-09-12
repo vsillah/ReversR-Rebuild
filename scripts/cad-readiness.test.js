@@ -80,7 +80,7 @@ function loadServer(env) {
 test('actual server Sandbox handler stays disabled and inherits CORS', async (t) => {
   const app = loadServer({
     API_CORS_ORIGINS: 'https://allowed.example',
-    CAD_IMPORT_ENABLED: 'true', VERCEL: '1', CAD_IMPORT_RUNTIME: 'test-runtime',
+    CAD_USER_UPLOADS_ENABLED: 'true', CAD_IMPORT_ENABLED: 'true', VERCEL: '1', CAD_IMPORT_RUNTIME: 'test-runtime',
   });
   app.use((error, req, res, next) => res.status(500).json({ error: error.message }));
   const listener = app.listen(0, '127.0.0.1');
@@ -103,6 +103,14 @@ test('actual server Sandbox handler stays disabled and inherits CORS', async (t)
     method: 'OPTIONS', headers: { Origin: 'https://allowed.example', 'Access-Control-Request-Method': 'GET' },
   });
   assert.equal(preflight.status, 204);
+  const userDenied = await fetch(`${url}/api/cad/user-import`, {
+    method: 'POST', headers: { Origin: 'https://allowed.example', 'Content-Type': 'application/json' },
+    body: '{invalid-json',
+  });
+  assert.equal(userDenied.status, 401);
+  assert.equal(userDenied.headers.get('cache-control'), 'no-store');
+  assert.equal(userDenied.headers.get('access-control-allow-origin'), 'https://allowed.example');
+  assert.equal((await userDenied.json()).code, 'USER_SESSION_REQUIRED');
   const denied = await fetch(`${url}/api/cad/import`, { method: 'POST' });
   assert.equal(denied.status, 503);
   assert.equal((await denied.json()).code, 'DISABLED');
@@ -121,6 +129,7 @@ test('public slice contains only allowed source files and no private artifacts o
   ].filter(Boolean))];
   const allowed = ['server/cadReadiness.js', 'server/index.js', 'scripts/cad-readiness.test.js', 'docs/cad-capabilities.md', 'scripts/cad-stock-qualification.js', 'server/cadWorkerContract.js', 'server/cadMeshWorker.js', 'server/cadWorkerImport.js', 'scripts/cad-worker.test.js', 'scripts/fixtures/cad-worker-probe.js', 'package.json', 'package-lock.json', 'server/cadSandboxConfig.js', 'server/cadSandboxExecutor.js', 'server/cadSandboxRouter.js', 'server/cadSandboxRunner.js', 'scripts/cad-sandbox-diagnostic.js', 'scripts/cad-sandbox.test.js', 'vercel.json', 'scripts/cad-fixture-qualification.js', 'scripts/cad-live-hosted-fixture-matrix.js', 'scripts/cad-private-pilot-runner.js', 'scripts/cad-private-pilot.test.js', 'scripts/cad-fixture-qualification.test.js', 'scripts/fixtures/cad-mit-source.js', 'scripts/fixtures/cad-vibe-source.js', 'scripts/fixtures/cad-poseidon-sources.js', 'scripts/fixtures/poseidon-bsd/Pump Cover Slide.iges', 'scripts/fixtures/poseidon-bsd/Pump Syringe Brace.iges', 'scripts/fixtures/poseidon-bsd/LICENSE', 'scripts/fixtures/vibe-mit/solid.igs', 'scripts/fixtures/vibe-mit/LICENSE', 'scripts/fixtures/kantoku-mit/sample.igs', 'scripts/fixtures/kantoku-mit/LICENSE', 'scripts/fixtures/cad-public-matrix.json', 'docs/cad-fixture-qualification.md', 'docs/cad-fixture-qualification-evidence.json', 'docs/cad-live-hosted-public-fixture-matrix-evidence.json', 'docs/cad-private-pilot.md'];
   allowed.push('server/uploadSession.js', 'scripts/cad-upload-session.test.js', 'docs/cad-upload-session-foundation.md');
+  allowed.push('server/cadUserUploadRouter.js', 'scripts/cad-user-upload-route.test.js', 'docs/cad-user-upload-contract.md');
   allowed.push('server/uploadSessionStore.js', 'scripts/cad-upload-session-store.test.js', 'docs/cad-upload-issuer-store.md');
   for (const file of files) assert.ok(allowed.includes(file), `Unexpected public file: ${file}`);
   // Preserve the authorized upstream bytes, including IGES fixed-width whitespace.
@@ -155,7 +164,7 @@ test('public slice contains only allowed source files and no private artifacts o
   const addedServer = git('diff', '--unified=0', base, '--', 'server/index.js')
     .split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).join('\n');
   const requires = [...addedServer.matchAll(/require\(['"]([^'"]+)['"]\)/g)].map(match => match[1]);
-  assert.ok(requires.every(id => id === './cadSandboxRouter'));
+  assert.ok(requires.every(id => ['./cadSandboxRouter', './cadUserUploadRouter'].includes(id)));
   assert.ok(serverSource.includes("require('./cadSandboxRouter')"));
   assert.doesNotMatch(addedServer, /\bimport\b|igesSourcePipeline|cadImportProcessor|child_process/);
 });
