@@ -1,5 +1,10 @@
 # CAD Convex/Auth source assembly review
 
+> Current continuation: [live provider/environment wiring packet](cad-convex-live-wiring-packet.md)
+> records the supplied existing development resource and supersedes pending-resource
+> assumptions and next P/E/D/T wording below. Historical validation remains dated
+> to its original slice; no additional live action is authorized.
+
 Base: `94065b0beb317881f14215fa9f6c6cb84ae6a048`. Local/source-only slice.
 Branch: `codex/cad-convex-auth-assembly-review`; sibling worktree:
 `ReversR-Rebuild.worktrees/cad-convex-auth-assembly-review`.
