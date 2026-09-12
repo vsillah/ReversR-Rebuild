@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "status": "pass",
   "scope": "local-http-real-occt-simulated-provider",
-  "generatedAt": "2026-09-12T00:25:10.261Z",
+  "generatedAt": "2026-09-12T01:32:12.546Z",
   "packageVersion": "0.0.23",
   "fixtures": [
     {
@@ -40,10 +40,32 @@
       "sourceUrl": "https://raw.githubusercontent.com/Masoudjafaripour/Vibe_CADing/main/src/B-rep/results/solid.igs",
       "license": "MIT",
       "licenseUrl": "https://github.com/Masoudjafaripour/Vibe_CADing/blob/main/LICENSE"
+    },
+    {
+      "id": "poseidon-cover-slide",
+      "format": "iges",
+      "sha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "bytes": 48357,
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Cover%20Slide.iges",
+      "license": "BSD-2-Clause",
+      "licenseUrl": "https://github.com/pachterlab/poseidon/blob/5a139fed350bbf5d775ffa9650f465e557b6ccb0/LICENSE",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6"
+    },
+    {
+      "id": "poseidon-syringe-brace",
+      "format": "iges",
+      "sha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "bytes": 40824,
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Syringe%20Brace.iges",
+      "license": "BSD-2-Clause",
+      "licenseUrl": "https://github.com/pachterlab/poseidon/blob/5a139fed350bbf5d775ffa9650f465e557b6ccb0/LICENSE",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6"
     }
   ],
-  "independentIgesCoverage": "three-source-distinct-local-conversions-shape-diversity-unproven",
-  "shapeDiversity": "unproven",
+  "independentIgesCoverage": "five-source-distinct-local-conversions",
+  "shapeDiversity": "demonstrated-for-local-poseidon-fixture-conversion-only",
   "conversions": [
     {
       "fixtureId": "cube",
@@ -51,7 +73,21 @@
       "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
       "meshes": 1,
       "vertices": 24,
-      "triangles": 12
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ]
     },
     {
       "fixtureId": "cube",
@@ -59,7 +95,21 @@
       "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
       "meshes": 1,
       "vertices": 24,
-      "triangles": 12
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ]
     },
     {
       "fixtureId": "cube",
@@ -67,7 +117,21 @@
       "sourceSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
       "meshes": 1,
       "vertices": 24,
-      "triangles": 12
+      "triangles": 12,
+      "bounds": [
+        [
+          -5,
+          5
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          -5,
+          5
+        ]
+      ]
     },
     {
       "fixtureId": "kantoku-mit-sample",
@@ -75,7 +139,21 @@
       "sourceSha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
       "meshes": 6,
       "vertices": 24,
-      "triangles": 12
+      "triangles": 12,
+      "bounds": [
+        [
+          -30,
+          30
+        ],
+        [
+          -30,
+          30
+        ],
+        [
+          0,
+          50
+        ]
+      ]
     },
     {
       "fixtureId": "vibe-mit-solid",
@@ -83,10 +161,68 @@
       "sourceSha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
       "meshes": 1,
       "vertices": 24,
-      "triangles": 12
+      "triangles": 12,
+      "bounds": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "fixtureId": "poseidon-cover-slide",
+      "caseId": "poseidon-cover-slide-import",
+      "sourceSha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "meshes": 1,
+      "vertices": 232,
+      "triangles": 200,
+      "bounds": [
+        [
+          -7.451267451363921,
+          -2.4512674513639197
+        ],
+        [
+          34.2,
+          61
+        ],
+        [
+          -26.4999999999999,
+          21.43889729614702
+        ]
+      ]
+    },
+    {
+      "fixtureId": "poseidon-syringe-brace",
+      "caseId": "poseidon-syringe-brace-import",
+      "sourceSha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "meshes": 1,
+      "vertices": 1419,
+      "triangles": 2450,
+      "bounds": [
+        [
+          0.430478727233887,
+          12.4304787272339
+        ],
+        [
+          4.84713279031561,
+          12.704997166584702
+        ],
+        [
+          6.68023761973826,
+          13.6802376644418
+        ]
+      ]
     }
   ],
-  "matrixSha256": "4b7346cf4dde83b3dfa66a9f25859e63a59e5847126fd79bb65cb9793c561398",
+  "matrixSha256": "400d5c52096dd6dd89f93ba5a7e9a4081f2287bf0d5291f06f5ab2e11a60888c",
   "providerCalls": 0,
   "privateFilesRead": 0,
   "checks": [
@@ -186,6 +322,16 @@
       "passed": true
     },
     {
+      "id": "poseidon-cover-slide-import",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
+      "id": "poseidon-syringe-brace-import",
+      "httpStatus": 200,
+      "passed": true
+    },
+    {
       "id": "missing-executor",
       "httpStatus": 503,
       "passed": true
@@ -224,9 +370,11 @@
   "unproven": [
     "Live hosted execution of this matrix",
     "Provider isolation and cleanup",
-    "Additional independent IGES models",
-    "Render, STL and dimensional fidelity"
+    "Broad arbitrary-model coverage",
+    "Render, STL and source fidelity",
+    "Dimensional certification",
+    "Private CAD readiness"
   ],
-  "successfulIgesSourceCount": 3,
-  "simulatedDispatches": 5
+  "successfulIgesSourceCount": 5,
+  "simulatedDispatches": 7
 }

@@ -9,9 +9,10 @@ node --test scripts/cad-fixture-qualification.test.js scripts/cad-sandbox.test.j
 git diff --check
 ```
 
-The authorized MIT fixtures are committed at
+The authorized fixtures are committed at
 `scripts/fixtures/kantoku-mit/sample.igs` and
-`scripts/fixtures/vibe-mit/solid.igs`, each alongside its upstream MIT license
+`scripts/fixtures/vibe-mit/solid.igs`, plus the two files under
+`scripts/fixtures/poseidon-bsd/`, each directory alongside its upstream license
 and copyright notice. A fresh checkout needs only the locked dependencies;
 there is no acquisition command, ignored-cache prerequisite or network fetch
 in qualification. The source files are unchanged and their sizes/hashes are checked
@@ -28,7 +29,7 @@ No URL, input path, or token arguments are accepted.
 
 The public fixture matrix lives in `scripts/fixtures/cad-public-matrix.json`.
 Schema version 2 separates named fixtures from cases. Each case selects a
-fixture ID. The runner loads only reviewed package paths or the reviewed vendored MIT fixtures and verifies byte size
+fixture ID. The runner loads only reviewed package paths or the reviewed vendored MIT/BSD fixtures and verifies byte size
 and SHA-256 before making requests. It rejects paths outside the reviewed set
 and real paths outside the selected source root. Other cases are deterministic in-memory
 mutations. Adding a source requires reviewing its provenance, adding its path
@@ -77,10 +78,12 @@ Inventory on the installed `occt-import-js` 0.0.23 package and repository found:
 | conical-surface-step | test/testfiles/conical-surface/conical-surface.step | HTTP 415 UNSUPPORTED, zero dispatch |
 | kantoku-mit-sample | scripts/fixtures/kantoku-mit/sample.igs | Successful IGES conversion |
 | vibe-mit-solid | scripts/fixtures/vibe-mit/solid.igs | Successful IGES conversion |
+| poseidon-cover-slide | scripts/fixtures/poseidon-bsd/Pump Cover Slide.iges | 232 vertices, 200 triangles |
+| poseidon-syringe-brace | scripts/fixtures/poseidon-bsd/Pump Syringe Brace.iges | 1,419 vertices, 2,450 triangles |
 
 The first three are public test assets already installed with the dependency.
-The fourth and fifth are individually Captain-authorized public acquisitions.
-The exact authorized IGES assets and MIT notices are committed for reproducibility. The package cube source
+The remaining four are individually Captain-authorized public acquisitions.
+The exact authorized IGES assets and license notices are committed for reproducibility. The package cube source
 note identifies its upstream GrabCAD origin; the other two are attributed to
 the installed package only, without inferring separate authorship or licensing.
 
@@ -120,15 +123,47 @@ Exact vertex/triangle bounds remain fixture-specific. This adds a third
 source-distinct IGES input; it does not establish shape diversity. All three
 sources produce the same counts in these local runs.
 
-Evidence records `three-source-distinct-local-conversions-shape-diversity-unproven`
-only after three distinct fixture IDs have successful conversion records.
-`successfulIgesSourceCount` counts source IDs rather than cube variants.
-`shapeDiversity` remains `unproven`. Each conversion records its fixture and
-case IDs, verified source hash, mesh count, vertex count and triangle count.
-No raw geometry, source contents or runtime diagnostics enter this evidence.
+## Authorized Poseidon BSD-2-Clause sources
 
-Render comparison, STL, dimensions, assembly behavior and live hosted execution
-remain unproven. This is incremental source diversity, not broad corpus coverage.
+Repository: https://github.com/pachterlab/poseidon
+
+Both files are pinned to commit `5a139fed350bbf5d775ffa9650f465e557b6ccb0`.
+License: BSD-2-Clause, retained verbatim beside the files. License URL:
+https://github.com/pachterlab/poseidon/blob/5a139fed350bbf5d775ffa9650f465e557b6ccb0/LICENSE
+
+License SHA-256: `5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6`.
+
+| Fixture | Bytes | SHA-256 |
+| --- | ---: | --- |
+| Pump Cover Slide.iges | 48,357 | `054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402` |
+| Pump Syringe Brace.iges | 40,824 | `ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c` |
+
+Exact raw sources:
+
+- https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Cover%20Slide.iges
+- https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Syringe%20Brace.iges
+
+The route returns one mesh per fixture, with 232 vertices / 200 triangles for
+the slide and 1,419 vertices / 2,450 triangles for the brace. Both remain below
+the existing 64 KiB input cap. No limit change is needed for this slice.
+
+Per-fixture matrix assertions check the exact counts plus min/max bounds on
+all three axes, using an absolute tolerance of 0.00001 in the returned coordinate
+space. These expected values came from the Captain's local probe and were
+confirmed through the HTTP runner. They detect displacement or geometry drift;
+they are not dimensional certification or source-fidelity proof.
+
+Evidence now records five source-distinct successful IGES inputs, with
+`shapeDiversity: demonstrated-for-local-poseidon-fixture-conversion-only` only
+when both Poseidon cases pass their counts, bounds, hashes and dispatch checks.
+The two pump parts materially broaden local fixture shapes beyond the earlier
+24-vertex / 12-triangle samples. This does not qualify arbitrary CAD models.
+Each conversion records fixture/case IDs, verified source hash, mesh/vertex/
+triangle counts and bounds. Raw source and geometry stay out of the evidence.
+
+Live hosted public matrix execution, actual provider isolation/cleanup,
+render/STL/source fidelity, dimensional certification and private CAD readiness
+remain unproven. No UI exposure or production activation is authorized here.
 The earlier production proof remains in `cad-production-activation-receipt.md`
 and `cad-production-activation-smoke-evidence.json`; this report does not replace
 or claim to refresh that production receipt.
@@ -136,13 +171,12 @@ or claim to refresh that production receipt.
 ## Next gate
 
 Captain review and integration come next. Acquisition authority covers only the
-two exact MIT samples above. Additional sources need separate acquisition authority. A live matrix run requires a separately
+four exact vendored samples above. Additional sources need separate acquisition authority. A live matrix run requires a separately
 approved bounded provider invocation and secure operator access. This script
 intentionally has no live mode. Private CAD, new paid provider usage, production
 configuration changes, deployment and user-facing UI exposure remain separate
 human gates. No spending was incurred by this local qualification.
 
-The next qualification decisions are a truly shape-diverse small licensed IGES
-fixture, a limit decision for a larger official OCCT fixture, or a separately
-approved bounded live-provider matrix run. None of these gates is cleared by
-adding the Vibe_CADing source.
+The next decisions are a broader fixture/visual fidelity slice, a separately
+approved limit decision for a larger official OCCT sample, or a bounded live
+hosted public matrix run. Local shape diversity does not clear those gates.

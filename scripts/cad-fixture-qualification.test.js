@@ -16,7 +16,7 @@ test('matrix rejects unknown paths, duplicate IDs, dangling references and inval
   }
 });
 test('public fixtures are source-hash pinned and reject hash drift', () => {
-  assert.equal(loadFixtures(matrix).size, 5);
+  assert.equal(loadFixtures(matrix).size, 7);
   const changed = structuredClone(matrix); changed.fixtures[0].sha256 = '0'.repeat(64);
   assert.throws(() => loadFixtures(changed));
 });
@@ -33,9 +33,9 @@ test('geometry validation accepts a non-cube mesh and rejects corrupt indices an
   assert.throws(() => validateGeometry(corrupt));
 });
 
-test('MIT source rejects URL, size and hash substitutions before loading', () => {
+test('vendored source rejects URL, size and hash substitutions before loading', () => {
   for (const [key, value] of [['sourceUrl', 'https://example.invalid'], ['bytes', 10], ['sha256', '0'.repeat(64)]]) {
-    for (const fixtureId of ['kantoku-mit-sample', 'vibe-mit-solid']) {
+    for (const fixtureId of ['kantoku-mit-sample', 'vibe-mit-solid', 'poseidon-cover-slide', 'poseidon-syringe-brace']) {
       const changed = structuredClone(matrix); changed.fixtures.find(f => f.id === fixtureId)[key] = value;
       assert.throws(() => loadFixtures(changed));
     }
@@ -56,4 +56,22 @@ test('Vibe fixture loads from the committed directory with exact metadata', () =
   assert.equal(loaded.data.length, 12393);
   assert.equal(loaded.sha256, metadata.sha256);
   assert.deepEqual(loaded.geometry, { vertices: [24, 24], triangles: [12, 12] });
+});
+
+test('Poseidon committed source and license hashes cannot drift', () => {
+  const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+  for (const { metadata, fixtureRoot } of require('./fixtures/cad-poseidon-sources')) {
+    for (const [file, hash] of [[metadata.path, metadata.sha256], ['LICENSE', metadata.licenseSha256]]) {
+      assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(fixtureRoot, file))).digest('hex'), hash);
+    }
+  }
+});
+test('geometry bounds catch displaced geometry even when counts match', () => {
+  const body = { meshes: [{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2] }], vertexCount: 3, triangleCount: 1 };
+  const expected = { vertices: [3, 3], triangles: [1, 1], meshes: 1, bounds: [[0, 1], [0, 1], [0, 0]], boundsTolerance: 1e-5 };
+  assert.deepEqual(validateGeometry(body, expected).bounds, expected.bounds);
+  const displaced = structuredClone(body); displaced.meshes[0].positions[0] = -0.1;
+  assert.throws(() => validateGeometry(displaced, expected));
+  const changed = structuredClone(matrix); changed.fixtures.at(-1).geometry.boundsTolerance = 1;
+  assert.throws(() => validateMatrix(changed));
 });
