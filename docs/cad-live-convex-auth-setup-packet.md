@@ -1,5 +1,10 @@
 # CAD live Convex/Auth setup packet — preview/development only
 
+> Current continuation: [live provider/environment wiring packet](cad-convex-live-wiring-packet.md)
+> records the supplied existing development resource and supersedes pending-resource
+> assumptions and next P/E/D/T wording below. Historical validation remains dated
+> to its original slice; no additional live action is authorized.
+
 Prepared 2026-09-12 from `ec16dab8b1f435ff456be863643cc881f1dcd847`
 (PR #177). Branch: `codex/cad-live-convex-auth-setup-packet`.
 Worktree: sibling `ReversR-Rebuild.worktrees/cad-live-convex-auth-setup-packet`.
@@ -46,7 +51,9 @@ operation; it is not an env flag. Even accepted synthetic configuration reports
 
 ## Destination/value register — fill before any live approval
 
-All actual account/resource/provider values below are **PENDING, unverified**.
+At original preparation, all account/resource/provider values were pending.
+The continuation packet now records the captain-supplied development resource;
+provider, operator and remaining execution fields are still pending.
 No console or billing account was inspected. Obtain values in the in-app Browser;
 record nonsecret identifiers only in a private operator register. Public review uses
 opaque record IDs and a checksum of the name/scope manifest, never secret hashes.
