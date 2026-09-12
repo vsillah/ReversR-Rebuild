@@ -16,7 +16,7 @@ test('matrix rejects unknown paths, duplicate IDs, dangling references and inval
   }
 });
 test('public fixtures are source-hash pinned and reject hash drift', () => {
-  assert.equal(loadFixtures(matrix).size, 4);
+  assert.equal(loadFixtures(matrix).size, 5);
   const changed = structuredClone(matrix); changed.fixtures[0].sha256 = '0'.repeat(64);
   assert.throws(() => loadFixtures(changed));
 });
@@ -35,8 +35,10 @@ test('geometry validation accepts a non-cube mesh and rejects corrupt indices an
 
 test('MIT source rejects URL, size and hash substitutions before loading', () => {
   for (const [key, value] of [['sourceUrl', 'https://example.invalid'], ['bytes', 10], ['sha256', '0'.repeat(64)]]) {
-    const changed = structuredClone(matrix); changed.fixtures.at(-1)[key] = value;
-    assert.throws(() => loadFixtures(changed));
+    for (const fixtureId of ['kantoku-mit-sample', 'vibe-mit-solid']) {
+      const changed = structuredClone(matrix); changed.fixtures.find(f => f.id === fixtureId)[key] = value;
+      assert.throws(() => loadFixtures(changed));
+    }
   }
 });
 test('MIT fixture loads from the committed fixture directory', () => {
@@ -44,4 +46,14 @@ test('MIT fixture loads from the committed fixture directory', () => {
   const { fixtureRoot } = require('./fixtures/cad-mit-source');
   assert.equal(fixtureRoot, path.join(__dirname, 'fixtures/kantoku-mit'));
   assert.equal(loadFixtures(matrix).get('kantoku-mit-sample').data.length, 24948);
+});
+
+test('Vibe fixture loads from the committed directory with exact metadata', () => {
+  const path = require('node:path');
+  const { fixtureRoot, metadata } = require('./fixtures/cad-vibe-source');
+  assert.equal(fixtureRoot, path.join(__dirname, 'fixtures/vibe-mit'));
+  const loaded = loadFixtures(matrix).get(metadata.id);
+  assert.equal(loaded.data.length, 12393);
+  assert.equal(loaded.sha256, metadata.sha256);
+  assert.deepEqual(loaded.geometry, { vertices: [24, 24], triangles: [12, 12] });
 });
