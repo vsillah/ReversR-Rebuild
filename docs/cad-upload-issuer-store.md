@@ -1,8 +1,9 @@
 # CAD upload issuer/store foundation
 
-Status: server-only contract plus synthetic in-memory adapter. Unmounted and
-unconfigured. CAD uploads remain disabled. This does not authorize an upload route,
-Sandbox dispatch, production configuration, deployment, or user activation.
+Status: server-only contract plus synthetic in-memory adapter. The disabled user
+route consumes the unconfigured default lookup service. CAD uploads remain disabled.
+This does not authorize session issuance, Sandbox dispatch, production
+configuration, deployment, or user activation.
 
 ## Existing trust boundary
 
@@ -24,8 +25,8 @@ those adapters explicitly. This slice does not select a database or auth provide
 `server/uploadSessionStore.js` exports `createUploadSessionService`, the default
 `uploadSessionService` (always unconfigured), `MAX_LIFETIME_MS`, and
 `createInMemoryUploadSessionStoreForTests({ testOnly: true })`. Never import these
-modules into app, hooks, Expo entrypoints or shared client libraries. No server
-entrypoint imports or mounts this module.
+modules into app, hooks, Expo entrypoints or shared client libraries. The server entrypoint mounts the disabled route, which consumes this module without
+configuring a production store or mounting issuance/revocation endpoints.
 
 A configured service requires all three dependencies:
 
@@ -122,3 +123,11 @@ timeouts and cancellation. Existing verifier request-access guards remain in use
 
 No UI changed; browser or human upload testing would imply an unavailable surface.
 The captain owns PR review, merge sequencing, deployment and any later human QA.
+
+## Disabled route follow-up
+
+See [cad-user-upload-contract.md](cad-user-upload-contract.md) for the current mounted
+scaffold. Historical foundation scope above does not imply that the route is still
+unmounted. Production login/store selection, cross-instance revocation, quota and
+budget controls, bounded parsing and executor integration require separate review
+and approval before any upload activation.

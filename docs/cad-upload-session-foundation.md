@@ -1,9 +1,10 @@
 # CAD upload session verifier foundation
 
-Status: unconfigured and unmounted. User CAD uploads remain disabled.
+Status: production authentication remains unconfigured. The disabled user route
+now consumes this foundation. User CAD uploads remain disabled.
 The server-only issuer/store contract and opt-in test adapter are documented in
 [cad-upload-issuer-store.md](cad-upload-issuer-store.md). No production session
-store, environment value, upload route, operator route change, provider call,
+store, environment value, issuer endpoint, operator route change, provider call,
 private CAD input, or deployment is part of this foundation.
 
 ## Integration contract
@@ -110,3 +111,11 @@ and entitlement enforcement remain explicit architecture work. Before any upload
 route, review those adapters plus the full disabled gate, shared quotas/concurrency,
 enforceable budget, parsing limits and Sandbox controls from the source contract.
 Captain review, merge, deployment and human QA are separate downstream gates.
+
+## Disabled route follow-up
+
+See [cad-user-upload-contract.md](cad-user-upload-contract.md) for the current mounted
+scaffold. Historical foundation scope above does not imply that the route is still
+unmounted. Production login/store selection, cross-instance revocation, quota and
+budget controls, bounded parsing and executor integration require separate review
+and approval before any upload activation.

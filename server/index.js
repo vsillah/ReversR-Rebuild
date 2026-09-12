@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { createCadUserUploadRouter } = require('./cadUserUploadRouter');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
@@ -27,6 +28,9 @@ const parseListEnv = (value = '') => String(value)
 const configuredCorsOrigins = parseListEnv(process.env.API_CORS_ORIGINS);
 const corsAllowsAllOrigins = configuredCorsOrigins.length === 0 || configuredCorsOrigins.includes('*');
 const apiRequestBodyLimit = process.env.API_REQUEST_BODY_LIMIT || '50mb';
+
+// Handle user upload errors and preflight before general CORS and all body parsers.
+app.use('/api/cad', createCadUserUploadRouter({ corsOrigins: configuredCorsOrigins }));
 
 app.use(cors({
   origin: (origin, callback) => {

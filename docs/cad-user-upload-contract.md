@@ -1,8 +1,29 @@
 # Proposed user CAD upload contract
 
-Status: blocked at authentication design; specification only. No route, feature flag,
-capability response, UI, operator behavior, or deployment changes are implemented.
-Baseline: `83e94e060c24690bdc197ed7fa99a74963462cd7` (PR #164).
+Status: `POST /api/cad/user-import` is mounted as a session-gated, permanently
+disabled scaffold. The shared verifier consumes the unconfigured default issuer/store
+service. No production auth/store, parser, enable flag or executor is configured.
+`/api/cad/import` remains operator-only and unchanged. No UI change or deployment
+is included. PRs #165–#167 established the contract and session foundations.
+
+## Current mounted behavior
+
+The route is mounted before general CORS and all body parsers. It follows the API
+origin allowlist and handles rejected origins with sanitized 403 responses. Allowed
+preflight returns 204; unsupported methods return 405 with `Allow: POST, OPTIONS`.
+Every response, including preflight and errors, uses `Cache-Control: no-store`.
+Cookie verification uses a separate exact HTTPS allowlist, empty by default.
+
+Missing/malformed/unknown/expired/revoked sessions and invalid identity bindings map
+to 401 `USER_SESSION_REQUIRED` without exposing which binding failed. An unavailable
+store maps to 503 `USER_AUTH_UNAVAILABLE`; denied permission maps to 403
+`USER_UPLOAD_FORBIDDEN`; origin/CSRF rejection maps to 403
+`ORIGIN_OR_CSRF_REJECTED`. Verified sessions always receive 503
+`USER_UPLOADS_DISABLED`. No environment flag, profile header or operator credential
+can enable this endpoint. Request bodies are never parsed or decoded.
+
+The following evidence and full pipeline describe the original contract and remaining
+work. Authentication design is still required before production adapters or activation.
 
 ## Evidence and exact blocker
 
@@ -40,7 +61,7 @@ no principal; verifier failures fail closed. It must inspect credentials in head
 or cookies only, never read the request body, and never trust profile headers.
 Cookie sessions additionally require session-bound CSRF validation.
 
-## Proposed request pipeline (not implemented)
+## Full request pipeline (only session and disabled scaffold implemented)
 
 A separate `POST /api/cad/user-import` handler must be mounted before every body
 parser. Keep `/api/cad/import` operator-only and unchanged.
@@ -120,7 +141,7 @@ is informational; the POST route independently enforces all gates.
 
 ## Handoff
 
-No user CAD upload behavior is implemented or enabled. Authentication design approval
+The disabled route scaffold is implemented; CAD uploads remain disabled. Authentication design approval
 is the next gate, followed by implementation of this contract and its offline tests.
 Merge, deployment, production configuration, private CAD inputs, user activation,
 and human QA remain with the captain and their separately authorized gates.
