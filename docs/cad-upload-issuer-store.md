@@ -5,6 +5,10 @@ route consumes the unconfigured default lookup service. CAD uploads remain disab
 This does not authorize session issuance, Sandbox dispatch, production
 configuration, deployment, or user activation.
 
+Phase 1 follow-up: [verified login and durable storage contract](cad-verified-login-store.md)
+now requires `loginSessionId` in both callbacks and persisted schema v2. The
+production provider gate remains unresolved.
+
 ## Existing trust boundary
 
 Inspected `server/commercialization.js`: `requestProfile` accepts client/profile
@@ -37,11 +41,11 @@ A configured service requires all three dependencies:
   caller-defined login handle, not a trusted principal merely because it has IDs.
 - `refreshAuthorization(binding, { signal })`: fetch current login validity,
   user/shop membership and CAD permission on every active, unexpired lookup.
-  Binding contains only userId, shopId, sessionId and authMethod; no credential,
+  Binding contains only userId, shopId, sessionId, loginSessionId and authMethod; no credential,
   request, profile or body. A production adapter must maintain the linkage from
   this upload session to its authoritative login, including logout invalidation.
 
-Both auth callbacks return `{ userId, shopId, authMethod, cadUploadAllowed,
+Both auth callbacks return `{ userId, shopId, loginSessionId, authMethod, cadUploadAllowed,
 expiresAt }`, with the identity/permission schema used by the existing verifier
 and `expiresAt` bounding the underlying authorization lifetime. Return null for
 unverified/revoked identity or membership, and throw for unavailable infrastructure.
@@ -94,7 +98,8 @@ credential digest; acknowledged durable writes; strongly consistent current read
 atomic irreversible revocation; protected storage and access controls; expiry
 cleanup; and authoritative logout/membership/permission invalidation across all
 instances. Errors must never fall back to a default record or local positive cache.
-Keep the existing verifier schema, adding issuedAt and optional revokedAt metadata.
+Keep verifier schema v1; persisted schema v2 adds required loginSessionId, issuedAt
+and optional revokedAt metadata. Reject old stored records without login linkage.
 
 Honor AbortSignal and bound underlying database/auth I/O. A Promise timeout cannot
 undo an external write or forcibly cancel an adapter. A timed-out issue must never
@@ -149,7 +154,7 @@ is added by this audit. This is a source-code finding, not a live production pro
 | `server/index.js`, `cadUserUploadRouter.js` | Disabled user route is mounted before parsing and uses the unconfigured lookup service. | Missing credentials remain 401; syntactically valid upload credentials remain 503 `USER_AUTH_UNAVAILABLE`. |
 | `uploadSessionStore.js`, `uploadSession.js` | Privileged injectable callbacks and an opt-in process-local test store. | A function-shaped adapter or schema-valid grant is not evidence of production authority or durability. |
 
-### Exact next dependency and review gate
+### Historical dependency gate (updated by Phase 1 contract)
 
 Before implementing production wiring, provide a reviewed server adapter design
 with these concrete artifacts:
@@ -174,6 +179,10 @@ with these concrete artifacts:
    concurrent revoke behavior with sanitized results. Keep secure credential
    delivery and any issuer HTTP route separately reviewed. Session readiness alone
    does not authorize upload activation, parsing, quota spending or conversion.
+
+Phase 1 now implements the binding/schema extension in item 3; the provider and
+durable backing in items 1–2 remain unconfigured. Use the concrete next gate in
+[cad-verified-login-store.md](cad-verified-login-store.md).
 
 The captain's next action is to review this rejection evidence and scope the
 verified-login plus durable-store dependency. Provider selection/configuration,

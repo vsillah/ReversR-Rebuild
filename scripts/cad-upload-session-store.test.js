@@ -7,7 +7,7 @@ const { createUploadSessionVerifier, verifyUploadSession } = require('../server/
 const hash = value => createHash('sha256').update(value).digest('hex');
 const context = Object.freeze({ loginHandle: 'synthetic-server-handle' });
 function setup(overrides = {}) {
-  const state = { now: 1000, grant: { userId: 'user-test', shopId: 'shop-test', authMethod: 'passkey',
+  const state = { now: 1000, grant: { loginSessionId: 'login-test', userId: 'user-test', shopId: 'shop-test', authMethod: 'passkey',
     cadUploadAllowed: true, expiresAt: 1000 + MAX_LIFETIME_MS }, reads: 0, refreshes: 0 };
   const backing = createInMemoryUploadSessionStoreForTests({ testOnly: true });
   const store = { ...backing, read: async (...args) => { state.reads++; return backing.read(...args); } };
@@ -204,4 +204,85 @@ test('partial auth and local JSON-shaped storage cannot configure the service', 
     await assert.rejects(service.lookupSession(hash('synthetic')), /^Error: AUTH_UNAVAILABLE$/);
   }
   assert.equal(calls, 0, 'incomplete configuration must fail before calling any dependency');
+});
+
+test('login reference is required at issue and in stored records; legacy records fail closed', async () => {
+  for (const loginSessionId of [undefined, '', {}, 'bad handle']) {
+    const f = setup();
+    f.state.grant.loginSessionId = loginSessionId;
+    let writes = 0;
+    const service = createUploadSessionService({ ...f.options, store: { ...f.store,
+      insertIfAbsent: async () => { writes++; return true; } } });
+    await expectCode(service.issueSession(context), 'AUTHORIZATION_REQUIRED');
+    assert.equal(writes, 0);
+  }
+  const f = setup();
+  const issued = await f.service.issueSession(context);
+  const key = hash(issued.credential);
+  const record = await f.store.read(key);
+  assert.equal(record.schemaVersion, 2);
+  assert.equal(record.loginSessionId, 'login-test');
+  for (const invalid of [{ ...record, schemaVersion: 1 }, { ...record, loginSessionId: undefined }]) {
+    const service = createUploadSessionService({ ...f.options, store: { ...f.store, read: async () => invalid } });
+    await assert.rejects(service.lookupSession(key), /^Error: AUTH_UNAVAILABLE$/);
+  }
+  assert.equal('loginSessionId' in issued, false);
+  assert.equal('loginSessionId' in await f.service.lookupSession(key), false);
+  assert.equal('loginSessionId' in (await f.verify(request(issued.credential))).principal, false);
+});
+
+test('two logins for one user remain isolated; logout and replacement login cannot revive a session', async () => {
+  const f = setup();
+  const grants = new Map(['login-a', 'login-b'].map(loginSessionId =>
+    [loginSessionId, { ...f.state.grant, loginSessionId }]));
+  const bindings = [];
+  const options = { ...f.options,
+    resolveAuthorization: async handle => grants.get(handle) ?? null,
+    refreshAuthorization: async binding => { bindings.push(binding); return grants.get(binding.loginSessionId) ?? null; } };
+  const first = createUploadSessionService(options);
+  const second = createUploadSessionService(options);
+  const a = await first.issueSession('login-a');
+  const b = await second.issueSession('login-b');
+  assert.equal((await second.lookupSession(hash(a.credential))).userId, 'user-test');
+  assert.deepEqual(Object.keys(bindings[0]).sort(), ['authMethod', 'loginSessionId', 'sessionId', 'shopId', 'userId']);
+  assert.equal(Object.isFrozen(bindings[0]), true);
+  assert.equal(bindings[0].loginSessionId, 'login-a');
+  grants.delete('login-a');
+  assert.equal(await second.lookupSession(hash(a.credential)), null);
+  assert.equal((await first.lookupSession(hash(b.credential))).userId, 'user-test');
+  const wrongLogin = createUploadSessionService({ ...options, refreshAuthorization: async () => grants.get('login-b') });
+  assert.equal(await wrongLogin.lookupSession(hash(a.credential)), null);
+  const missingLogin = createUploadSessionService({ ...options,
+    refreshAuthorization: async () => ({ ...grants.get('login-b'), loginSessionId: undefined }) });
+  await assert.rejects(missingLogin.lookupSession(hash(b.credential)), /^Error: AUTH_UNAVAILABLE$/);
+});
+
+test('acknowledgement contract rejects ambiguous writes and revoked digests cannot be reinserted', async () => {
+  const f = setup();
+  for (const response of [undefined, null, 1, 'true', { ok: true }]) {
+    const service = createUploadSessionService({ ...f.options, store: { ...f.store,
+      insertIfAbsent: async () => response, revoke: async () => response } });
+    await expectCode(service.issueSession(context), 'AUTH_UNAVAILABLE');
+    await expectCode(service.revokeSession(hash('synthetic')), 'AUTH_UNAVAILABLE');
+  }
+  const issued = await f.service.issueSession(context);
+  const key = hash(issued.credential);
+  const original = await f.store.read(key);
+  await f.service.revokeSession(key);
+  assert.equal(await f.store.insertIfAbsent(key, original), false);
+  assert.equal((await f.store.read(key)).status, 'revoked');
+});
+
+test('cancellation before a delayed insert commits leaves no record or credential', async () => {
+  const f = setup();
+  let attemptedKey, savedSignal;
+  const service = createUploadSessionService({ ...f.options, store: { ...f.store,
+    insertIfAbsent: async (key, record, { signal }) => {
+      attemptedKey = key; savedSignal = signal;
+      await new Promise(resolve => signal.addEventListener('abort', resolve, { once: true }));
+      return f.store.insertIfAbsent(key, record, { signal });
+    } } });
+  await expectCode(service.issueSession(context), 'AUTH_UNAVAILABLE');
+  assert.equal(savedSignal.aborted, true);
+  assert.equal(await f.store.read(attemptedKey), null);
 });
