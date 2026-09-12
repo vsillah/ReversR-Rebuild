@@ -595,9 +595,9 @@ export function HorizontalStepper({
   const connectorInset = `${100 / (steps.length * 2)}%` as ViewStyle['left'];
   const stepColumnMinHeight = subLabels?.length ? 82 : 62;
   return (
+    <View testID={testID}>
     <View
       style={{ position: 'relative', flexDirection: 'row', alignItems: 'flex-start', paddingBottom: 4 }}
-      testID={testID}
     >
       {steps.length > 1 ? (
         <View
@@ -696,6 +696,12 @@ export function HorizontalStepper({
           </View>
         );
       })}
+    </View>
+    {subLabels?.[currentStep - 1] ? (
+      <Text style={{ color: colors.mutedText, fontSize: 12, lineHeight: 18, textAlign: 'center', marginTop: 4 }}>
+        {subLabels[currentStep - 1]}
+      </Text>
+    ) : null}
     </View>
   );
 }

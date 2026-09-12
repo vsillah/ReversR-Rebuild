@@ -94,10 +94,10 @@ const createEmptyContext = (): MutationContext => {
   };
 };
 
-const PHASE_LABELS = ['SCAN', 'INVENTORY', 'DESIGN', 'BUILD'];
-const PHASE_STEP_LABELS = ['Scan', 'Inventory', 'Design', 'Build'];
+const PHASE_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
+const PHASE_STEP_LABELS = ['Input', 'Inventory', 'Design', 'Build'];
 const PHASE_STEP_HINTS = [
-  'Capture or describe the machine',
+  'Import, scan, describe, or try a sample',
   'Match the scan to a record',
   'Specs, references, and 3D handoff',
   'BOM, assembly, and pricing',
@@ -149,7 +149,7 @@ const TOUR_STEPS: TourStep[] = [
     id: 'phase-nav',
     eyebrow: 'Navigation',
     title: 'Use the phase rail as the workflow compass',
-    body: 'The phase rail shows progress through Scan, Inventory, Design, and Build. Completed earlier phases can be reopened from the rail with save/reset safeguards.',
+    body: 'The phase rail shows progress through Input, Inventory, Design, and Build. Completed earlier phases can be reopened from the rail with save/reset safeguards.',
     structureId: 'reversr-tour-phase-nav',
     checks: [
       { id: 'current', label: 'Open the phase rail', completion: 'auto' },
@@ -160,8 +160,8 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'scan',
     eyebrow: 'Phase 1',
-    title: 'Scan or describe the machine',
-    body: 'Scan supports typed descriptions, camera capture, and a sample machine mode so users can learn the flow before using a real asset.',
+    title: 'Choose your machine input',
+    body: 'Input offers Import, Scan, Describe, and Sample. Import currently checks IGES file metadata locally; uploads remain gated.',
     structureId: 'reversr-tour-scan',
     phase: 1,
     checks: [

@@ -257,7 +257,7 @@ export default function TourGuide({
           <Text style={styles.mockText}>
             {mockJourneyActive
               ? 'Use Next and Back to move through local fixture data. AI credits and generation endpoints are not used.'
-              : 'Load a sample reconstruction so you can move through Scan, Inventory, Design, and Build without spending AI credits.'}
+              : 'Load a sample reconstruction so you can move through Input, Inventory, Design, and Build without spending AI credits.'}
           </Text>
         </View>
         <TouchableOpacity

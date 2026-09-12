@@ -29,12 +29,16 @@ fs.mkdirSync(evidence, { recursive: true });
         await page.getByTestId(`home-mode-${mode}`).waitFor();
         const skip = page.getByText('Skip', { exact: true });
         if (await skip.isVisible()) { await skip.click(); await skip.waitFor({ state: 'hidden' }); }
+        assert((await page.getByTestId('home-phase-nav').innerText()).includes('INPUT'));
+        assert((await page.getByTestId('home-phase-nav').innerText()).includes('Import, scan, describe, or try a sample'));
         assert.deepEqual(await page.locator('[data-testid^="home-mode-"]').allTextContents().then(values => values.map(text => text.match(/Import|Scan|Describe|Sample/)[0])), ['Import', 'Scan', 'Describe', 'Sample']);
         if (mode === 'import') { await page.getByTestId('home-mode-import').scrollIntoViewIfNeeded(); }
         if (mode === 'import') await page.screenshot({ path: `${evidence}/home-${width}.png`, fullPage: true });
         await page.getByTestId(`home-mode-${mode}`).click();
         const tab = page.getByTestId(`phase-one-mode-${mode}`);
         await tab.waitFor();
+        assert.match(await page.getByTestId('reversr-tour-phase-nav').innerText(), /Input/i);
+        assert((await page.getByTestId('reversr-tour-phase-nav').innerText()).includes('Import, scan, describe, or try a sample'));
         assert.equal(await tab.getAttribute('aria-pressed'), 'true');
         if (mode === 'scan') await page.getByLabel('Open camera to scan machine', { exact: true }).waitFor();
         if (mode === 'type') await page.getByLabel('Machine description', { exact: true }).fill('Synthetic machine description');

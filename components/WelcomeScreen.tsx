@@ -55,9 +55,9 @@ interface WelcomeScreenProps {
 const phases = [
   {
     number: 1,
-    title: 'Scan',
+    title: 'Input',
     icon: 'scan-outline' as const,
-    short: 'Capture or describe the machine',
+    short: 'Import, scan, describe, or try a sample',
   },
   {
     number: 2,
@@ -79,9 +79,9 @@ const phases = [
   },
 ];
 
-const PHASE_NAMES = ['Scan', 'Inventory', 'Design', 'Build'];
-const PHASE_STEP_LABELS = ['SCAN', 'INVENTORY', 'DESIGN', 'BUILD'];
-const PHASE_STEP_SUBLABELS = ['Capture & identify', 'Catalog parts', 'Engineer & plan', 'Rebuild & test'];
+const PHASE_NAMES = ['Input', 'Inventory', 'Design', 'Build'];
+const PHASE_STEP_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
+const PHASE_STEP_SUBLABELS = ['Import, scan, describe, or try a sample', 'Catalog parts', 'Engineer & plan', 'Rebuild & test'];
 
 const expoConfig = Constants.expoConfig;
 const releaseExtra = (expoConfig?.extra || {}) as Record<string, unknown>;
@@ -566,6 +566,7 @@ export default function WelcomeScreen({
 
       <Card style={styles.stepperCard}>
         <HorizontalStepper
+          testID="home-phase-nav"
           steps={PHASE_STEP_LABELS}
           subLabels={PHASE_STEP_SUBLABELS}
           currentStep={currentProject ? Math.min(currentProject.phase, 4) : 1}
@@ -585,7 +586,7 @@ export default function WelcomeScreen({
           </View>
           <View style={styles.newCardText}>
             <Text style={styles.newCardTitle}>New Reconstruction</Text>
-            <Text style={styles.newCardBody}>Start a new scan or describe the machine you&apos;re working on.</Text>
+            <Text style={styles.newCardBody}>Import a CAD file, scan a machine, describe it, or try a sample.</Text>
           </View>
           <Ionicons name="chevron-forward" size={22} color={Colors.primary} />
         </View>

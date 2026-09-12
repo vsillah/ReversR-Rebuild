@@ -44,3 +44,9 @@ The integrated Browser in the implementation task could not launch because its c
 - Visually reviewed home entry controls, Phase One selector, and blocked import content across those widths. Synthetic screenshots are retained locally under `artifacts/cad-import-ux/` (home, selector and import images for each width).
 - Existing shared workflow header wraps the logo at 375px; this predates the Import panel and is a separate mobile-header polish item.
 - Integration Captain review and human QA remain next. Merge, deployment and public rollout remain gated.
+
+## Captain correction: Input phase naming
+
+Both home and workflow steppers now label phase one Input. The shared stepper renders its supplied current-phase hint below the rail, keeping “Import, scan, describe, or try a sample” readable at narrow widths. New Reconstruction, current-project phase naming and tour entry copy now account for Import. Scan remains the camera mode; upload gates are unchanged.
+
+Validation repeated: `npm run typecheck`, `git diff --check`, and `CAD_UX_EVIDENCE=artifacts/cad-import-ux-input-fix node scripts/cad-import-ux-smoke.js` passed. The smoke now asserts Input and the full hint in both steppers. Refreshed screenshots at 375, 768 and 1440 pixels were visually inspected. Evidence remains local in `artifacts/cad-import-ux-input-fix/`. This correction stops at a local commit, before push or PR.
