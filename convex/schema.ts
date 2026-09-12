@@ -1,4 +1,4 @@
-// Unqualified source assembly. Auth library selection and codegen remain live gates.
+// Unqualified source assembly. SDK bindings compile locally; provider qualification remains gated.
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 import { authTables } from '@convex-dev/auth/server';

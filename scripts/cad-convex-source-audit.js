@@ -4,7 +4,9 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['convex/cad.ts', 'convex/schema.ts', 'convex/librarySession.ts',
+const files = ['scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
+  ...fs.readdirSync(path.join(root, 'convex/_generated')).map(n => 'convex/_generated/' + n),
+'convex/cad.ts', 'convex/schema.ts', 'convex/librarySession.ts',
   'offline/cad-convex/backend.d.ts', 'scripts/helpers/cad-convex-source-loader.js',
   'scripts/cad-convex-source.test.js', 'docs/cad-convex-schema-functions-review.md'];
 const patterns = [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, /(?:sk_live_|ghp_|github_pat_)[A-Za-z0-9_]{16,}/,

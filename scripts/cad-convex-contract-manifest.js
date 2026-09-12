@@ -4,6 +4,14 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'package.json',
+  'package-lock.json',
+  'scripts/cad-convex-codegen.js',
+  'convex/_generated/api.js',
+  'convex/_generated/api.d.ts',
+  'convex/_generated/server.js',
+  'convex/_generated/server.d.ts',
+  'convex/_generated/dataModel.d.ts',
   'convex/schema.ts',
   'convex/cad.ts',
   'convex/librarySession.ts',
@@ -26,13 +34,15 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 3, mode: 'offline-source-unqualified',
+const manifest = { version: 4, mode: 'offline-source-unqualified',
   baseCommit: 'eecc27c46722bb81d53d2e5782ce3b16dca6f0c0',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',
   functionSource: 'convex/cad.ts',
-  sdkTypecheck: 'blocked-missing-sdk-auth-and-codegen',
+  sdkTypecheck: 'passed',
+  sdkVersions: { convex: '1.45.0', auth: '0.0.95', authCore: '0.41.3' },
+  codegen: 'local-pinned-sdk-templates',
   defaultLibrarySession: 'AUTH_UNAVAILABLE',
   schemaTemplate: 'offline/cad-convex/convex/schema.ts.template',
   internalOnlyPolicyFunction: 'cad:changeAuthority',
