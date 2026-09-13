@@ -3,7 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
-const files = ['convex/developmentAuth.ts', 'offline/cad-convex/developmentService.js',
+const files = ['docs/cad-live-dev-auth-config-gate.md',
+  'offline/cad-convex/developmentConfigurationGate.json',
+  'offline/cad-convex/developmentConfigurationGate.js',
+  'scripts/cad-convex-development-config-gate.test.js', 'convex/developmentAuth.ts', 'offline/cad-convex/developmentService.js',
   'offline/cad-convex/developmentExecution.json', 'docs/cad-live-auth-source-assembly.md',
   'scripts/cad-convex-development-assembly.test.js', 'docs/cad-live-dev-edt-approval-packet.md', 'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
@@ -52,7 +55,7 @@ const files = ['convex/developmentAuth.ts', 'offline/cad-convex/developmentServi
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 13, mode: 'offline-source-unqualified',
+const manifest = { version: 14, mode: 'offline-source-unqualified',
   baseCommit: '10045b720ca87d39942d00fe191cbe3e7f8a366a',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
