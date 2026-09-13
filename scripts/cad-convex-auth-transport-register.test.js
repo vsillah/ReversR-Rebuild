@@ -241,3 +241,21 @@ test('slow private receipt cannot dispatch logout after the verified session hor
   assert.equal(f.calls.some(c => c.op === 'logout'), false);
   assert.equal(f.rows.has('login-0'), true);
 });
+
+test('retention alternatives and claimed approval stop composed transport before any host access', async t => {
+  const review = require('../offline/cad-convex/removalRetentionReview.json');
+  for (const removalMode of ['pinned-sdk', 'retention-approved', ...Object.keys(review.alternatives)]) {
+    const f = setup(t, { noRun: true });
+    let hostCalls = 0;
+    for (const name of Object.keys(f.host)) f.host[name] = async () => { hostCalls++; throw Error('UNEXPECTED_HOST_ACCESS'); };
+    const run = createVerifiedSyntheticTransport({ ...f.input, removalMode, retentionApproved: true,
+      retentionPolicy: { ...review, liveReady: true, retentionApproved: true } });
+    try {
+      await denied(run.prepare());
+      await assert.rejects(run.provision(0, password), /RUN_STOPPED/);
+      assert.equal(hostCalls, 0); assert.equal(f.rows.size, 0);
+      assert.equal(run.status().liveReady, false);
+      assert.equal(run.status().removal.retentionOverride, false);
+    } finally { run.close(); }
+  }
+});
