@@ -4,6 +4,8 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-mark-handoff.md',
+  'docs/cad-mark-handoff-evidence.md',
   'docs/cad-live-dev-run-execution-plan.md',
   'offline/cad-convex/liveRunApprovalPacket.json',
   'offline/cad-convex/liveRunApprovalEnvelope.json',
