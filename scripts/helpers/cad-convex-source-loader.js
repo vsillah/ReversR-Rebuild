@@ -61,7 +61,7 @@ function loadSource({ now = () => 1000, readExactLibrarySession } = {}) {
         internalQuery: register('query'), internalMutation: register('mutation'),
       };
       if (name === '../offline/cad-convex/backend') return {
-        createBackendContract: options => createBackendContract({ ...options, now }),
+        createBackendContract: options => createBackendContract({ ...options, now: options.now ?? now }),
       };
       if (name === './developmentAuth') return { developmentAuthReviewed: false };
       if (name === './librarySession' && readExactLibrarySession) return { readExactLibrarySession };

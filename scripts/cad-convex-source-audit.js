@@ -40,7 +40,13 @@ const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));
 assert.ok(Object.values(execution.uploads).every(value => value === false));
+const reader = read('convex/librarySession.ts');
+assert.ok(!/Date\s*\.|new\s+Date|performance\s*\./.test(reader), 'Session reader must use explicit deterministic time');
+assert.match(read('offline/cad-convex/backend.js'), /readExactLibrarySession\(ctx, b.loginSessionId, deadlineAt\)/);
 const cad = read('convex/cad.ts');
+for (const operation of ['read', 'resolveAuthorization', 'refreshAuthorization'])
+  assert.ok(cad.includes("queryBackend(p.deadlineAt).run(ctx, '" + operation + "'"), 'Queries require deterministic snapshot clock');
+assert.match(cad, /now: \(\) => deadlineAt - 1/);
 assert.equal((cad.match(/= internal(?:Query|Mutation)\(\{/g) || []).length, 6);
 assert.equal((cad.match(/returns:/g) || []).length, 6);
 assert.ok(!/\b(?:query|mutation|action|httpAction)\s*\(/.test(cad));

@@ -56,13 +56,13 @@ test('actual session source uses verified exact identity plus bounded point read
     '@convex-dev/auth/server': { getAuthUserId: async () => user, getAuthSessionId: async () => session },
     './developmentAuth': { developmentAuthReviewed: true },
   }, () => tick).readExactLibrarySession;
-  assert.equal((await reader(ctx, 'login')).authMethod, 'password');
+  assert.equal((await reader(ctx, 'login', tick)).authMethod, 'password');
   assert.deepEqual(reads, ['login', 'owner']);
-  reads.length = 0; session = 'different'; assert.equal(await reader(ctx, 'login'), null); assert.equal(reads.length, 0);
-  session = 'login'; user = 'other'; assert.equal(await reader(ctx, 'login'), null);
-  user = 'owner'; tick = 2000; assert.equal(await reader(ctx, 'login'), null);
-  tick = 1000; rows.delete('owner'); assert.equal(await reader(ctx, 'login'), null);
-  rows.set('owner', { _id: 'owner' }); rows.delete('login'); assert.equal(await reader(ctx, 'login'), null);
+  reads.length = 0; session = 'different'; assert.equal(await reader(ctx, 'login', tick), null); assert.equal(reads.length, 0);
+  session = 'login'; user = 'other'; assert.equal(await reader(ctx, 'login', tick), null);
+  user = 'owner'; tick = 2000; assert.equal(await reader(ctx, 'login', tick), null);
+  tick = 1000; rows.delete('owner'); assert.equal(await reader(ctx, 'login', tick), null);
+  rows.set('owner', { _id: 'owner' }); rows.delete('login'); assert.equal(await reader(ctx, 'login', tick), null);
 });
 function service(overrides = {}) {
   let calls = 0;
@@ -125,4 +125,25 @@ test('execution worksheet leaves every live gate closed and blockers explicit', 
   assert.ok(Object.values(manifest.uploads).every(value => value === false));
   assert.equal(manifest.service.transport, null);
   assert.equal(manifest.reconciliation.resumeInNewProcess, false);
+});
+test('session reader needs a valid deterministic horizon and never samples wall time', async () => {
+  let reads = 0;
+  const rows = { login: { _id: 'login', userId: 'owner', expirationTime: 2000 }, owner: { _id: 'owner' } };
+  const ctx = { db: { get: async id => { reads++; return rows[id] ?? null; } } };
+  const reader = load('librarySession', {
+    '@convex-dev/auth/server': { getAuthUserId: async () => 'owner', getAuthSessionId: async () => 'login' },
+    './developmentAuth': { developmentAuthReviewed: true },
+  }, () => { throw Error('WALL_CLOCK_FORBIDDEN'); }).readExactLibrarySession;
+  for (const horizon of [undefined, NaN, Infinity, -1, 1.5, Number.MAX_SAFE_INTEGER + 1])
+    await assert.rejects(reader(ctx, 'login', horizon), /AUTH_UNAVAILABLE/);
+  assert.equal(reads, 0);
+  assert.equal((await reader(ctx, 'login', 1999)).expiresAt, 2000);
+  assert.equal(await reader(ctx, 'login', 2000), null);
+  assert.equal(await reader(ctx, 'login', 2001), null);
+});
+test('gateway rejects otherwise successful snapshot when response crosses deadline', async () => {
+  let tick = 1000;
+  const f = service({ now: () => tick, invokeInternal: async () => { tick = 1800; return null; } });
+  await assert.rejects(f.instance.call('resolveAuthorization', input), /RUN_STOPPED/);
+  assert.equal(f.instance.status().stopped, true);
 });

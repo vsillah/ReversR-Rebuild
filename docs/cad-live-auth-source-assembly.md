@@ -76,7 +76,7 @@ synthetic provisioning and durable run receipts, named operator/backup, key gene
 review, enforceable budget evidence and U/K/S/E/D/T worksheets. All live gates remain
 closed. No push, merge, deployment, UI activation or cleanup is part of this lane.
 
-Local result: 78 tests passed, TypeScript passed, five pinned SDK bindings verified,
+Local result: 82 tests passed, TypeScript passed, five pinned SDK bindings verified,
 63 integrity entries verified and 49 audit files passed with zero leak matches.
 No UI changed; browser QA and live provider concurrency were intentionally not run.
 Existing pinned dependencies were linked locally from the earlier schema lane;
@@ -87,3 +87,18 @@ convex/librarySession.ts and convex/_generated/api.d.ts. Added service candidate
 execution worksheet under offline/cad-convex; updated its manifest. Added development
 assembly tests and updated auth-assembly/live-readiness tests, source-loader helper,
 contract-manifest generator and source audit. This document is the review handoff.
+
+Deterministic-time correction: all three internal query handlers construct the
+backend with a deterministic evaluation instant of deadlineAt minus one millisecond
+(the final millisecond inside the exclusive gateway deadline). Invalid or nonpositive
+deadlines reject before database reads. The backend validates the deadline and passes
+it to the session reader as validThrough; a session expiring at or before that horizon
+denies. The reader never samples wall time. Exact-session and owner point reads remain
+in the same snapshot. Mutations retain their existing elapsed-time checks.
+
+This is snapshot evidence through a supplied horizon, not independent proof of current
+wall time. Only the trusted service gateway may consume it for admission, checking
+freshness before dispatch and after response. Reusing a cached result or backdating
+a deadline outside that gateway is not authorized. The gateway rejects a result that
+arrives at the deadline, even if the deterministic query succeeded. Tests exercise
+query paths with a throwing clock, invalid horizons and stale gateway responses.

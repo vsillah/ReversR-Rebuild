@@ -5,6 +5,13 @@ import { binding, upload } from './schema';
 import { createBackendContract } from '../offline/cad-convex/backend';
 import { readExactLibrarySession } from './librarySession';
 const backend = createBackendContract({ readExactLibrarySession });
+// Snapshot queries use only the supplied exclusive deadline. The trusted gateway
+// checks real-time freshness before dispatch and after response; cached query data
+// is not admission authority. Require the session to remain live through deadlineAt.
+function queryBackend(deadlineAt: number) {
+  if (!Number.isSafeInteger(deadlineAt) || deadlineAt < 1) throw new Error('AUTH_UNAVAILABLE');
+  return createBackendContract({ readExactLibrarySession, now: () => deadlineAt - 1 });
+}
 const principal = v.object(binding);
 const common = { principal, deadlineAt: v.number() };
 const grant = v.union(v.null(), v.object({ ...binding, cadUploadAllowed: v.boolean(), expiresAt: v.number() }));
@@ -14,7 +21,7 @@ export const insertIfAbsent = internalMutation({
 });
 export const read = internalQuery({
   args: { ...common, credentialDigest: v.string() }, returns: v.union(v.null(), v.object(upload)),
-  handler: (ctx, { principal, ...p }) => backend.run(ctx, 'read', p, principal),
+  handler: (ctx, { principal, ...p }) => queryBackend(p.deadlineAt).run(ctx, 'read', p, principal),
 });
 export const revoke = internalMutation({
   args: { ...common, credentialDigest: v.string(), revokedAt: v.number() }, returns: v.boolean(),
@@ -22,11 +29,11 @@ export const revoke = internalMutation({
 });
 export const resolveAuthorization = internalQuery({
   args: { ...common, shopId: v.string() }, returns: grant,
-  handler: (ctx, { principal, ...p }) => backend.run(ctx, 'resolveAuthorization', p, principal),
+  handler: (ctx, { principal, ...p }) => queryBackend(p.deadlineAt).run(ctx, 'resolveAuthorization', p, principal),
 });
 export const refreshAuthorization = internalQuery({
   args: { ...common, binding: v.object({ ...binding, sessionId: v.string() }) }, returns: grant,
-  handler: (ctx, { principal, ...p }) => backend.run(ctx, 'refreshAuthorization', p, principal),
+  handler: (ctx, { principal, ...p }) => queryBackend(p.deadlineAt).run(ctx, 'refreshAuthorization', p, principal),
 });
 // Policy changes are internal and intentionally absent from the gateway allowlist.
 export const changeAuthority = internalMutation({

@@ -105,3 +105,25 @@ test('source validates secrets, digest, unsafe epochs, and exact library session
   assert.equal(await f.run('read', { credentialDigest: key }, { ...principal, loginSessionId: 'other-login' }), null);
   f.tables().library.length = 0; assert.equal(await f.read(), null);
 });
+test('all actual internal query handlers use deterministic deadline time, never the wall clock', async () => {
+  const f = fixture();
+  const horizons = [];
+  const { cad } = loadSource({ now: () => { throw Error('WALL_CLOCK_FORBIDDEN'); },
+    readExactLibrarySession: async (ctx, id, validThrough) => {
+      horizons.push(validThrough);
+      return structuredClone(ctx.tables.library.find(row => row._id === id) ?? null);
+    } });
+  for (const [operation, args] of [
+    ['resolveAuthorization', { shopId: principal.shopId }],
+    ['read', { credentialDigest: key }],
+    ['refreshAuthorization', { binding: { ...principal, sessionId: record.sessionId } }],
+  ]) {
+    await f.transaction(ctx => cad[operation].invoke(ctx, { principal, deadlineAt: 1800, ...args }));
+  }
+  assert.deepEqual(horizons, [1800]);
+});
+test('snapshot query rejects invalid deadlines before authority reads', async () => {
+  const { cad } = loadSource({ readExactLibrarySession: async () => { throw Error('UNEXPECTED_READ'); } });
+  for (const deadlineAt of [0, -1, NaN, Infinity, 1.5, Number.MAX_SAFE_INTEGER + 1])
+    await assert.rejects(cad.resolveAuthorization.invoke({}, { principal, shopId: principal.shopId, deadlineAt }), /AUTH_UNAVAILABLE/);
+});
