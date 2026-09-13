@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-positive-synthetic-auth-session.md',
+  'offline/cad-convex/positiveSyntheticLedger.js',
+  'offline/cad-convex/positiveSyntheticSession.js',
+  'scripts/helpers/cad-positive-synthetic-fixture.js',
+  'scripts/cad-convex-positive-synthetic-session.test.js',
+
   'docs/cad-live-dev-auth-execution-readiness.md',
   'offline/cad-convex/rollbackCompatibility.js',
   'offline/cad-convex/rollbackBaseline.json',
@@ -63,7 +69,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 17, mode: 'offline-source-unqualified',
+const manifest = { version: 18, mode: 'offline-source-unqualified',
   baseCommit: '10045b720ca87d39942d00fe191cbe3e7f8a366a',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

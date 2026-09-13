@@ -5,6 +5,12 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-positive-synthetic-auth-session.md',
+  'offline/cad-convex/positiveSyntheticLedger.js',
+  'offline/cad-convex/positiveSyntheticSession.js',
+  'scripts/helpers/cad-positive-synthetic-fixture.js',
+  'scripts/cad-convex-positive-synthetic-session.test.js',
+
   'docs/cad-live-dev-auth-execution-readiness.md',
   'offline/cad-convex/rollbackCompatibility.js',
   'offline/cad-convex/rollbackBaseline.json',
@@ -75,7 +81,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -88,5 +94,8 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request/.test(read('offline/cad-conv
 assert.equal(require('../offline/cad-convex/developmentConfigurationGate').inspectDevelopmentConfigurationGate(JSON.parse(read('offline/cad-convex/developmentConfigurationGate.json'))).packetValid, true);
 
 assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/rollbackCompatibility.js')));
+
+for (const name of ['positiveSyntheticSession', 'positiveSyntheticLedger'])
+  assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/' + name + '.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);
