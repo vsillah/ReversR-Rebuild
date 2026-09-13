@@ -4,6 +4,10 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-bounded-retention-policy.md',
+  'offline/cad-convex/boundedRetentionPolicy.json',
+  'offline/cad-convex/boundedRetentionPolicy.js',
+  'scripts/cad-convex-bounded-retention.test.js',
   'docs/cad-removal-retention-policy.md',
   'offline/cad-convex/removalRetentionReview.json',
   'scripts/cad-convex-removal-retention.test.js',
@@ -78,8 +82,8 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 20, mode: 'offline-source-unqualified',
-  baseCommit: 'fe2aee7463e813378168ba2aaaba8717e87e1400',
+const manifest = { version: 21, mode: 'offline-source-unqualified',
+  baseCommit: '64941be9c674d18e81291c54290a105f9d07ba1b',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',
