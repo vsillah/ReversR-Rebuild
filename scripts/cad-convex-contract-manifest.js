@@ -4,6 +4,10 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'offline/cad-convex/liveAdapterRunPacket.json',
+  'offline/cad-convex/liveAdapterRunPacket.js',
+  'scripts/cad-live-adapter-run-packet.test.js',
+  'docs/cad-live-adapter-qualification-packet.md',
   'offline/cad-convex/sharedControlsAdapterQualification.json',
   'scripts/helpers/cad-shared-controls-adapter-double.js',
   'scripts/cad-shared-controls-adapter-qualification.test.js',
@@ -111,7 +115,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 26, mode: 'offline-source-unqualified',
+const manifest = { version: 27, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
