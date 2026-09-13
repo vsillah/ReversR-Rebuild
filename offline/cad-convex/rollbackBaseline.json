@@ -1,0 +1,649 @@
+{
+  "mode": "offline-source-baseline",
+  "sourceCommit": "d957b547655d417d958ddc6dc697f4c8caaa96d1",
+  "verifiedCloudRelease": null,
+  "versions": {
+    "convex": "1.45.0",
+    "auth": "0.0.95",
+    "typescript": "6.0.3"
+  },
+  "sourceHashes": {
+    "node_modules/@convex-dev/auth/src/server/implementation/types.ts": "57ac2312b71fe58e61bb2dc2d919f6b68e48f0eda5f113ed71e75bfc921e2563",
+    "convex/schema.ts": "d2a9cba1d5baa035f3060b6710d796bfa6eb1988e857074210ea615b914f15eb",
+    "convex/_generated/api.js": "4ef87aa7076b041c2b9699726d55d5da7026b18ca88004510e44dc4858a2614b",
+    "convex/_generated/api.d.ts": "3ed1ad92ff130e31396bc643f8d29c16a5700d683341e369fe7cfe59a9c0fce0",
+    "convex/_generated/server.js": "9a91705a1cae0d80bf570cbdea4d78f657151c7c6b3d06b627a595022e8299d6",
+    "convex/_generated/server.d.ts": "2b492a0b792631882bc74aaa81721b275366adb6a2534522606d17c4c7db7631",
+    "convex/_generated/dataModel.d.ts": "34552c928adf623bbffa8dc0bb8a1506d302356a83abc0fa57838637f68ab462"
+  },
+  "schema": {
+    "tables": [
+      {
+        "tableName": "users",
+        "indexes": [
+          {
+            "indexDescriptor": "email",
+            "fields": [
+              "email"
+            ]
+          },
+          {
+            "indexDescriptor": "phone",
+            "fields": [
+              "phone"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "name": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "image": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "email": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "emailVerificationTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": true
+            },
+            "phone": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "phoneVerificationTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": true
+            },
+            "isAnonymous": {
+              "fieldType": {
+                "type": "boolean"
+              },
+              "optional": true
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authSessions",
+        "indexes": [
+          {
+            "indexDescriptor": "userId",
+            "fields": [
+              "userId"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "userId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "users"
+              },
+              "optional": false
+            },
+            "expirationTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authAccounts",
+        "indexes": [
+          {
+            "indexDescriptor": "userIdAndProvider",
+            "fields": [
+              "userId",
+              "provider"
+            ]
+          },
+          {
+            "indexDescriptor": "providerAndAccountId",
+            "fields": [
+              "provider",
+              "providerAccountId"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "userId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "users"
+              },
+              "optional": false
+            },
+            "provider": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "providerAccountId": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "secret": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "emailVerified": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "phoneVerified": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authRefreshTokens",
+        "indexes": [
+          {
+            "indexDescriptor": "sessionId",
+            "fields": [
+              "sessionId"
+            ]
+          },
+          {
+            "indexDescriptor": "sessionIdAndParentRefreshTokenId",
+            "fields": [
+              "sessionId",
+              "parentRefreshTokenId"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "sessionId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "authSessions"
+              },
+              "optional": false
+            },
+            "expirationTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "firstUsedTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": true
+            },
+            "parentRefreshTokenId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "authRefreshTokens"
+              },
+              "optional": true
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authVerificationCodes",
+        "indexes": [
+          {
+            "indexDescriptor": "accountId",
+            "fields": [
+              "accountId"
+            ]
+          },
+          {
+            "indexDescriptor": "code",
+            "fields": [
+              "code"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "accountId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "authAccounts"
+              },
+              "optional": false
+            },
+            "provider": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "code": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "expirationTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "verifier": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "emailVerified": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "phoneVerified": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authVerifiers",
+        "indexes": [
+          {
+            "indexDescriptor": "signature",
+            "fields": [
+              "signature"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "sessionId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "authSessions"
+              },
+              "optional": true
+            },
+            "signature": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            }
+          }
+        }
+      },
+      {
+        "tableName": "authRateLimits",
+        "indexes": [
+          {
+            "indexDescriptor": "identifier",
+            "fields": [
+              "identifier"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "identifier": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "lastAttemptTime": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "attemptsLeft": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            }
+          }
+        }
+      },
+      {
+        "tableName": "cadUserAuthority",
+        "indexes": [
+          {
+            "indexDescriptor": "by_userId",
+            "fields": [
+              "userId"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "userId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "users"
+              },
+              "optional": false
+            },
+            "enabled": {
+              "fieldType": {
+                "type": "boolean"
+              },
+              "optional": false
+            },
+            "generation": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            }
+          }
+        }
+      },
+      {
+        "tableName": "cadMemberships",
+        "indexes": [
+          {
+            "indexDescriptor": "by_userId_and_shopId",
+            "fields": [
+              "userId",
+              "shopId"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "userId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "users"
+              },
+              "optional": false
+            },
+            "shopId": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "active": {
+              "fieldType": {
+                "type": "boolean"
+              },
+              "optional": false
+            },
+            "cadUploadAllowed": {
+              "fieldType": {
+                "type": "boolean"
+              },
+              "optional": false
+            },
+            "generation": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            }
+          }
+        }
+      },
+      {
+        "tableName": "cadUploadSessions",
+        "indexes": [
+          {
+            "indexDescriptor": "by_credentialDigest",
+            "fields": [
+              "credentialDigest"
+            ]
+          },
+          {
+            "indexDescriptor": "by_sessionId",
+            "fields": [
+              "sessionId"
+            ]
+          },
+          {
+            "indexDescriptor": "by_expiresAt",
+            "fields": [
+              "expiresAt"
+            ]
+          }
+        ],
+        "stagedDbIndexes": [],
+        "searchIndexes": [],
+        "stagedSearchIndexes": [],
+        "vectorIndexes": [],
+        "stagedVectorIndexes": [],
+        "documentType": {
+          "type": "object",
+          "value": {
+            "schemaVersion": {
+              "fieldType": {
+                "type": "literal",
+                "value": 2
+              },
+              "optional": false
+            },
+            "userId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "users"
+              },
+              "optional": false
+            },
+            "shopId": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "loginSessionId": {
+              "fieldType": {
+                "type": "id",
+                "tableName": "authSessions"
+              },
+              "optional": false
+            },
+            "authMethod": {
+              "fieldType": {
+                "type": "union",
+                "value": [
+                  {
+                    "type": "literal",
+                    "value": "password"
+                  },
+                  {
+                    "type": "literal",
+                    "value": "passkey"
+                  },
+                  {
+                    "type": "literal",
+                    "value": "oidc"
+                  }
+                ]
+              },
+              "optional": false
+            },
+            "sessionId": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "cadUploadAllowed": {
+              "fieldType": {
+                "type": "boolean"
+              },
+              "optional": false
+            },
+            "transport": {
+              "fieldType": {
+                "type": "union",
+                "value": [
+                  {
+                    "type": "literal",
+                    "value": "bearer"
+                  },
+                  {
+                    "type": "literal",
+                    "value": "cookie"
+                  }
+                ]
+              },
+              "optional": false
+            },
+            "issuedAt": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "expiresAt": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "status": {
+              "fieldType": {
+                "type": "union",
+                "value": [
+                  {
+                    "type": "literal",
+                    "value": "active"
+                  },
+                  {
+                    "type": "literal",
+                    "value": "revoked"
+                  }
+                ]
+              },
+              "optional": false
+            },
+            "csrfDigest": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "credentialDigest": {
+              "fieldType": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "userGeneration": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "membershipGeneration": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": false
+            },
+            "revokedAt": {
+              "fieldType": {
+                "type": "number"
+              },
+              "optional": true
+            }
+          }
+        }
+      }
+    ],
+    "schemaValidation": true
+  }
+}

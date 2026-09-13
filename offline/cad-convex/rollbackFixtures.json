@@ -1,0 +1,186 @@
+{
+  "mode": "synthetic-only",
+  "rows": {
+    "users": [
+      {},
+      {
+        "name": "fixture-name",
+        "image": "fixture-image",
+        "email": "cad-test-one@auth-test.invalid",
+        "emailVerificationTime": 1000,
+        "phone": "fixture-phone",
+        "phoneVerificationTime": 1000,
+        "isAnonymous": false
+      }
+    ],
+    "authSessions": [
+      {
+        "userId": "fixture:users:one",
+        "expirationTime": 2000
+      },
+      {
+        "userId": "fixture:users:one",
+        "expirationTime": 1000
+      }
+    ],
+    "authAccounts": [
+      {
+        "userId": "fixture:users:one",
+        "provider": "password",
+        "providerAccountId": "fixture-account"
+      },
+      {
+        "userId": "fixture:users:one",
+        "provider": "password",
+        "providerAccountId": "fixture-account",
+        "secret": "fixture-secret-not-a-password-hash",
+        "emailVerified": "fixture-email",
+        "phoneVerified": "fixture-phone"
+      }
+    ],
+    "authRefreshTokens": [
+      {
+        "sessionId": "fixture:authSessions:one",
+        "expirationTime": 2000
+      },
+      {
+        "sessionId": "fixture:authSessions:one",
+        "expirationTime": 1000,
+        "firstUsedTime": 1000,
+        "parentRefreshTokenId": "fixture:authRefreshTokens:parent"
+      }
+    ],
+    "authVerificationCodes": [
+      {
+        "accountId": "fixture:authAccounts:one",
+        "provider": "fixture-provider",
+        "code": "fixture-code",
+        "expirationTime": 2000
+      },
+      {
+        "accountId": "fixture:authAccounts:one",
+        "provider": "fixture-provider",
+        "code": "fixture-code",
+        "expirationTime": 1000,
+        "verifier": "fixture-verifier",
+        "emailVerified": "fixture-email",
+        "phoneVerified": "fixture-phone"
+      }
+    ],
+    "authVerifiers": [
+      {},
+      {
+        "sessionId": "fixture:authSessions:one",
+        "signature": "fixture-signature"
+      }
+    ],
+    "authRateLimits": [
+      {
+        "identifier": "fixture-identifier",
+        "lastAttemptTime": 1000,
+        "attemptsLeft": 1
+      },
+      {
+        "identifier": "fixture-identifier",
+        "lastAttemptTime": 1000,
+        "attemptsLeft": 0
+      }
+    ],
+    "cadUserAuthority": [
+      {
+        "userId": "fixture:users:one",
+        "enabled": true,
+        "generation": 1
+      },
+      {
+        "userId": "fixture:users:one",
+        "enabled": false,
+        "generation": 2
+      }
+    ],
+    "cadMemberships": [
+      {
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "active": true,
+        "cadUploadAllowed": false,
+        "generation": 1
+      },
+      {
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "active": false,
+        "cadUploadAllowed": false,
+        "generation": 2
+      }
+    ],
+    "cadUploadSessions": [
+      {
+        "schemaVersion": 2,
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "loginSessionId": "fixture:authSessions:one",
+        "authMethod": "password",
+        "sessionId": "fixture-upload",
+        "cadUploadAllowed": false,
+        "transport": "bearer",
+        "issuedAt": 1000,
+        "expiresAt": 2000,
+        "status": "active",
+        "credentialDigest": "fixture-digest",
+        "userGeneration": 1,
+        "membershipGeneration": 1
+      },
+      {
+        "schemaVersion": 2,
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "loginSessionId": "fixture:authSessions:one",
+        "authMethod": "password",
+        "sessionId": "fixture-upload",
+        "cadUploadAllowed": false,
+        "transport": "cookie",
+        "issuedAt": 1000,
+        "expiresAt": 2000,
+        "status": "revoked",
+        "credentialDigest": "fixture-digest",
+        "userGeneration": 1,
+        "membershipGeneration": 1,
+        "csrfDigest": "fixture-csrf",
+        "revokedAt": 1500
+      },
+      {
+        "schemaVersion": 2,
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "loginSessionId": "fixture:authSessions:one",
+        "authMethod": "passkey",
+        "sessionId": "fixture-upload",
+        "cadUploadAllowed": false,
+        "transport": "bearer",
+        "issuedAt": 1000,
+        "expiresAt": 2000,
+        "status": "active",
+        "credentialDigest": "fixture-digest",
+        "userGeneration": 1,
+        "membershipGeneration": 1
+      },
+      {
+        "schemaVersion": 2,
+        "userId": "fixture:users:one",
+        "shopId": "fixture-shop",
+        "loginSessionId": "fixture:authSessions:one",
+        "authMethod": "oidc",
+        "sessionId": "fixture-upload",
+        "cadUploadAllowed": false,
+        "transport": "bearer",
+        "issuedAt": 1000,
+        "expiresAt": 2000,
+        "status": "active",
+        "credentialDigest": "fixture-digest",
+        "userGeneration": 1,
+        "membershipGeneration": 1
+      }
+    ]
+  }
+}
