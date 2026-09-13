@@ -3,7 +3,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
-const files = ['docs/cad-live-execution-blockers-resolution.md', 'offline/cad-convex/executionBlockers.json', 'scripts/cad-convex-execution-blockers.test.js', 'docs/cad-live-dev-execution-inputs.md', 'offline/cad-convex/executionInputs.json', 'scripts/cad-convex-execution-inputs.test.js', 'docs/cad-live-dev-auth-config-gate.md',
+const files = [
+  'docs/cad-live-dev-auth-execution-readiness.md',
+  'offline/cad-convex/rollbackCompatibility.js',
+  'offline/cad-convex/rollbackBaseline.json',
+  'offline/cad-convex/rollbackFixtures.json',
+  'scripts/helpers/cad-convex-schema-export.js',
+  'scripts/cad-convex-rollback-compatibility.js',
+  'scripts/cad-convex-rollback-compatibility.test.js',
+  'docs/cad-live-execution-blockers-resolution.md', 'offline/cad-convex/executionBlockers.json', 'scripts/cad-convex-execution-blockers.test.js', 'docs/cad-live-dev-execution-inputs.md', 'offline/cad-convex/executionInputs.json', 'scripts/cad-convex-execution-inputs.test.js', 'docs/cad-live-dev-auth-config-gate.md',
   'offline/cad-convex/developmentConfigurationGate.json',
   'offline/cad-convex/developmentConfigurationGate.js',
   'scripts/cad-convex-development-config-gate.test.js', 'convex/developmentAuth.ts', 'offline/cad-convex/developmentService.js',
@@ -55,7 +63,7 @@ const files = ['docs/cad-live-execution-blockers-resolution.md', 'offline/cad-co
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 16, mode: 'offline-source-unqualified',
+const manifest = { version: 17, mode: 'offline-source-unqualified',
   baseCommit: '10045b720ca87d39942d00fe191cbe3e7f8a366a',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

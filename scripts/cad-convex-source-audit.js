@@ -4,7 +4,15 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['docs/cad-live-execution-blockers-resolution.md', 'offline/cad-convex/executionBlockers.json', 'scripts/cad-convex-execution-blockers.test.js', 'docs/cad-live-dev-execution-inputs.md', 'offline/cad-convex/executionInputs.json', 'scripts/cad-convex-execution-inputs.test.js', 'docs/cad-live-dev-auth-config-gate.md',
+const files = [
+  'docs/cad-live-dev-auth-execution-readiness.md',
+  'offline/cad-convex/rollbackCompatibility.js',
+  'offline/cad-convex/rollbackBaseline.json',
+  'offline/cad-convex/rollbackFixtures.json',
+  'scripts/helpers/cad-convex-schema-export.js',
+  'scripts/cad-convex-rollback-compatibility.js',
+  'scripts/cad-convex-rollback-compatibility.test.js',
+  'docs/cad-live-execution-blockers-resolution.md', 'offline/cad-convex/executionBlockers.json', 'scripts/cad-convex-execution-blockers.test.js', 'docs/cad-live-dev-execution-inputs.md', 'offline/cad-convex/executionInputs.json', 'scripts/cad-convex-execution-inputs.test.js', 'docs/cad-live-dev-auth-config-gate.md',
   'offline/cad-convex/developmentConfigurationGate.json',
   'offline/cad-convex/developmentConfigurationGate.js',
   'scripts/cad-convex-development-config-gate.test.js', 'convex/developmentAuth.ts', 'offline/cad-convex/developmentService.js',
@@ -67,7 +75,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -78,5 +86,7 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request/.test(read('offline/cad-conv
 
 
 assert.equal(require('../offline/cad-convex/developmentConfigurationGate').inspectDevelopmentConfigurationGate(JSON.parse(read('offline/cad-convex/developmentConfigurationGate.json'))).packetValid, true);
+
+assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/rollbackCompatibility.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);
