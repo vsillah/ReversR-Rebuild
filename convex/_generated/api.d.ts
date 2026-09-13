@@ -11,6 +11,7 @@
   import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
   import type * as auth from "../auth.js";
 import type * as cad from "../cad.js";
+import type * as developmentAuth from "../developmentAuth.js";
 import type * as http from "../http.js";
 import type * as librarySession from "../librarySession.js";
 
@@ -25,6 +26,7 @@ import type * as librarySession from "../librarySession.js";
   declare const fullApi: ApiFromModules<{
     "auth": typeof auth,
 "cad": typeof cad,
+"developmentAuth": typeof developmentAuth,
 "http": typeof http,
 "librarySession": typeof librarySession,
   }>;

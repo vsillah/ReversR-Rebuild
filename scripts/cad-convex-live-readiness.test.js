@@ -38,7 +38,14 @@ test('actual runtime exact-session reader denies before database access with abs
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
   for (const env of [{}, { JWT_PRIVATE_KEY: 'synthetic', JWKS: 'synthetic', CONVEX_SITE_URL: 'https://issuer.invalid' }]) {
     const exports = {};
-    vm.runInNewContext(compiled, { exports, process: { env } });
+    vm.runInNewContext(compiled, { exports, process: { env }, require: name => {
+      if (name === './developmentAuth') return { developmentAuthReviewed: false };
+      if (name === '@convex-dev/auth/server') return {
+        getAuthUserId: () => { throw Error('UNEXPECTED_AUTH_READ'); },
+        getAuthSessionId: () => { throw Error('UNEXPECTED_AUTH_READ'); },
+      };
+      throw Error('UNEXPECTED_DEPENDENCY');
+    } });
     let reads = 0;
     await assert.rejects(exports.readExactLibrarySession({ db: { get() { reads++; } } }, 'synthetic-session'), /^Error: AUTH_UNAVAILABLE$/);
     assert.equal(reads, 0);

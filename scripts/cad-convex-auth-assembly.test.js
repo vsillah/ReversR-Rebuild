@@ -27,13 +27,14 @@ test('assembly registers library exports, no login providers or trusted JWT issu
     const exports = {}; cache[name] = exports;
     const source = fs.readFileSync(require.resolve('../convex/' + name + '.ts'), 'utf8');
     const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
-    vm.runInNewContext(output, { exports, require: dependency => {
+    vm.runInNewContext(output, { exports, process: { env: {} }, require: dependency => {
       if (dependency === '@convex-dev/auth/server') return { convexAuth: config => {
         assert.equal(JSON.stringify(config), '{"providers":[]}');
         return { auth, signIn: {}, signOut: {}, store: {}, isAuthenticated: {} };
       } };
       if (dependency === 'convex/server') return { httpRouter: () => router };
       if (dependency === './auth') return load('auth');
+      if (dependency === './developmentAuth') return { developmentConfiguration: () => null };
       throw Error('UNEXPECTED_DEPENDENCY');
     } }); // No process/env/network capability in this assembly test.
     return exports;
