@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "mode": "offline-policy-only",
+  "enabled": false,
+  "approved": false,
+  "liveReady": false,
+  "retentionOverride": false,
+  "baseCommit": "64941be9c674d18e81291c54290a105f9d07ba1b",
+  "cohortSize": 2,
+  "retainedCapsPerIdentity": {
+    "users": 1,
+    "authAccounts": 1,
+    "authSessions": 0,
+    "authRefreshTokens": 0,
+    "authVerificationCodes": 0,
+    "authVerifiers": 0,
+    "authRateLimits": 1,
+    "cadUserAuthority": 0,
+    "cadMemberships": 0,
+    "cadUploadSessions": 0
+  },
+  "retainedCapTotal": 6,
+  "activeGraphCapPerIdentity": 20,
+  "maxRetentionHours": 24,
+  "expiryAction": "BLOCK_AND_ESCALATE_NO_AUTOMATIC_DELETE",
+  "custodianRef": null,
+  "expiresAtUtc": null,
+  "gates": {
+    "policyAcceptance": false,
+    "lockoutImplementation": false,
+    "privateRegister": false,
+    "reconciliation": false,
+    "cleanup": false,
+    "environment": false,
+    "deployment": false,
+    "liveQualification": false,
+    "eventualDisposition": false
+  }
+}
