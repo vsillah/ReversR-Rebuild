@@ -41,7 +41,7 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
   };
   return Object.freeze({
     prepare: () => ledger.execute('prepare', () => { if (prepared) deny(); },
-      () => ports.prepare(), result => {
+      ticket => ports.prepare(undefined, ticket), result => {
         if (!keys(result, ['counts', 'passwordOnly', 'supportedRemoval', 'diagnosticsReviewed'])
           || !zero(result.counts) || result.passwordOnly !== true
           || result.supportedRemoval !== true || result.diagnosticsReviewed !== true) deny();
@@ -51,9 +51,9 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
       requireSlot(slot);
       if (!prepared || owners[slot] || typeof password !== 'string'
         || password.length < 12 || password.length > 128) deny();
-    }, () => ports.provision({ slot, provider: 'password',
+    }, ticket => ports.provision({ slot, provider: 'password',
       account: { id: emails[slot], secret: password }, profile: { email: emails[slot] },
-      shouldLinkViaEmail: false, shouldLinkViaPhone: false, requireAbsent: true }), result => {
+      shouldLinkViaEmail: false, shouldLinkViaPhone: false, requireAbsent: true }, ticket), result => {
       if (!keys(result, ['userId', 'accountId', 'created']) || result.created !== true
         || !id(result.userId) || !id(result.accountId)
         || owners.some(o => o && (o.userId === result.userId || o.accountId === result.accountId))) deny();
@@ -74,7 +74,7 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
             validatedParams = { ...params };
             const profile = policy.profile(validatedParams);
             if (profile.email !== emails[slot]) deny();
-          }, () => ports.signIn({ slot, params: validatedParams }), result => {
+          }, ticket => ports.signIn({ slot, params: validatedParams }, ticket), result => {
             const o = owner(slot);
             if (!keys(result, ['userId', 'loginSessionId']) || result.userId !== o.userId
               || !id(result.loginSessionId) || owners.some(v => v?.sessionId === result.loginSessionId)) deny();
@@ -84,11 +84,11 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
         verify: horizon => ledger.execute('verify', n => {
           const o = session(slot);
           if (o.invalidated || !Number.isSafeInteger(horizon) || horizon <= n || horizon > Math.min(n + 800, endAt)) deny();
-        }, () => ports.exactSession({ ...selection(slot), loginSessionId: session(slot).sessionId, validThrough: horizon }),
+        }, ticket => ports.exactSession({ ...selection(slot), loginSessionId: session(slot).sessionId, validThrough: horizon }, ticket),
         (result, receivedAt) => { if (receivedAt >= horizon) deny(); exact(result, slot, horizon); }),
         logout: () => ledger.execute('logout', () => {
           if (session(slot).invalidated) deny();
-        }, () => ports.logout({ ...selection(slot), loginSessionId: session(slot).sessionId }), result => {
+        }, ticket => ports.logout({ ...selection(slot), loginSessionId: session(slot).sessionId }, ticket), result => {
           if (result !== null) deny(); session(slot).invalidated = true;
         }, true),
       });
@@ -96,17 +96,17 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
     },
     revoke: slot => ledger.execute('revoke', () => { if (session(slot).invalidated) deny(); },
       // No except list. Adapter must bound all sessions for this exclusively run-owned user.
-      () => ports.revoke(selection(slot)), result => {
+      ticket => ports.revoke(selection(slot), ticket), result => {
         if (result !== null) deny(); session(slot).invalidated = true;
       }, true),
     verifyRevoked: (slot, horizon) => ledger.execute('verifyRevoked', n => {
       if (!session(slot).invalidated || !Number.isSafeInteger(horizon) || horizon <= n
         || horizon > Math.min(n + 800, endAt)) deny();
-    }, () => ports.exactSession({ ...selection(slot), loginSessionId: session(slot).sessionId, validThrough: horizon }),
+    }, ticket => ports.exactSession({ ...selection(slot), loginSessionId: session(slot).sessionId, validThrough: horizon }, ticket),
     (result, receivedAt) => { if (result !== null || receivedAt >= horizon) deny(); session(slot).denialVerified = true; }),
     inventory: slot => ledger.execute('inventory', () => {
       const o = owner(slot); if (!o.denialVerified) deny();
-    }, () => ports.inventory(selection(slot)), result => {
+    }, ticket => ports.inventory(selection(slot), ticket), result => {
       const o = owner(slot);
       if (!counts(result) || result.authSessions !== 0 || result.authRefreshTokens !== 0
         || tables.some(t => t.startsWith('cad') && result[t] !== 0)
@@ -116,7 +116,7 @@ function createPositiveSyntheticSession({ testOnly, cohort, ports, policy, ledge
     remove: slot => ledger.execute('remove', () => {
       const o = owner(slot);
       if (o.removed || !o.denialVerified || !o.inventory) deny();
-    }, () => ports.remove({ ...selection(slot), expectedCounts: { ...owner(slot).inventory } }), result => {
+    }, ticket => ports.remove({ ...selection(slot), expectedCounts: { ...owner(slot).inventory } }, ticket), result => {
       if (result !== null) deny(); const o = owner(slot); o.removed = true; o.inventory = null;
     }, true),
     status: () => ({ ...ledger.status(), provisioned: owners.filter(Boolean).length,
