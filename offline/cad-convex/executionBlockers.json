@@ -1,0 +1,581 @@
+{
+  "version": 1,
+  "mode": "source-only-blocker-resolution",
+  "baseCommit": "94250aeba0bb734be28739e9108eacf9014d07fa",
+  "executable": false,
+  "liveReady": false,
+  "gates": {
+    "K": false,
+    "E": false,
+    "D": false,
+    "T": false,
+    "C": false,
+    "U": false,
+    "S": false,
+    "P": false
+  },
+  "privateRegister": {
+    "storage": "existing approved encrypted custody outside Git",
+    "fieldGroups": {
+      "identity": [
+        "runId",
+        "sourceSha",
+        "sourceManifestSha256",
+        "immutableProjectId",
+        "immutableDeploymentId",
+        "teamBinding",
+        "deploymentKind",
+        "region",
+        "cloudEndpoint",
+        "siteEndpoint",
+        "releaseIdOrVerifiedAbsence",
+        "environmentInventoryReceipt",
+        "observedAtUtc",
+        "providerEvidenceReference"
+      ],
+      "appointment": [
+        "executorName",
+        "executorAcceptanceReceipt",
+        "accountableHuman",
+        "backupName",
+        "backupAcceptanceReceipt",
+        "custodianName",
+        "appointmentAuthorityReceipt",
+        "allowedGateIds",
+        "rollbackOwner",
+        "retentionOwner",
+        "recoveryProcedureReference"
+      ],
+      "custody": [
+        "existingVaultReference",
+        "accessPolicyReference",
+        "recoveryPolicyReference",
+        "itemOwner",
+        "signerItemVersionReference",
+        "jwksItemVersionReference",
+        "syntheticPasswordItemVersionReferences",
+        "priorEnvironmentVersionReferences"
+      ],
+      "clock": [
+        "approvalExpiresAtUtc",
+        "runStartsAtUtc",
+        "runEndsAtUtc",
+        "cleanupDeadlineUtc",
+        "receiptExpiryUtc",
+        "observedClockSkewSeconds",
+        "cleanupDurationUpperBoundSeconds",
+        "clockEvidenceReference"
+      ],
+      "budget": [
+        "rateObservationUtc",
+        "rateEvidenceReference",
+        "currencyConversionEvidenceReference",
+        "baselineUsageReceipt",
+        "metricRows",
+        "coverageReceipt",
+        "enforcementReceipt",
+        "cleanupCapacityReceipt",
+        "allInUpperBoundUsd"
+      ],
+      "command": [
+        "commandId",
+        "gateId",
+        "absoluteExecutable",
+        "executableVersion",
+        "executableSha256",
+        "argvWithoutSecrets",
+        "worktreeReference",
+        "branch",
+        "sourceSha",
+        "sourceManifestSha256",
+        "destinationReceiptReference",
+        "credentialReferenceMechanism",
+        "timeoutSeconds",
+        "logicalAttemptUpperBound",
+        "providerCallUpperBound",
+        "allowedRecordSelectors",
+        "expectedOutcomeCodes",
+        "unknownOutcomeProcedureReference",
+        "rollbackCommandId",
+        "approvalReceiptReference"
+      ],
+      "outcome": [
+        "runId",
+        "operationId",
+        "commandId",
+        "sourceSha",
+        "destinationReceiptReference",
+        "startedAtUtc",
+        "endedAtUtc",
+        "fixedOutcomeCode",
+        "initiatedLogicalCount",
+        "providerCallCountOrUnknown",
+        "ownershipLedgerReference",
+        "reconciliationReceiptReference"
+      ],
+      "rollback": [
+        "disabledSourceSha",
+        "schemaManifestSha256",
+        "generatedBindingsSha256",
+        "compatibilityEvidenceReference",
+        "retainedRecordInventoryReference",
+        "orderedCommandIds",
+        "environmentPriorVersionReferences",
+        "protectiveLimitReceiptReference",
+        "triggerCodes",
+        "owner",
+        "backup",
+        "deadlineUtc",
+        "approvalReceiptReference"
+      ]
+    },
+    "values": null
+  },
+  "evidenceRequirements": [
+    {
+      "id": "identity",
+      "kind": "provider-read-only",
+      "sourcePaths": [
+        "docs/cad-live-dev-execution-inputs.md"
+      ],
+      "finding": "Provider-supported immutable project/deployment identity receipt; dashboard slugs are insufficient.",
+      "nextGate": "Provider-supported read-only identity export and fresh private receipt",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "appointments",
+      "kind": "human-private",
+      "sourcePaths": [],
+      "finding": "Signed appointment and acceptance records for executor, backup, custodian and accountable human.",
+      "nextGate": "Named appointments and existing custody references",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "cap",
+      "kind": "provider-and-implementation",
+      "sourcePaths": [
+        "offline/cad-convex/executionInputs.json"
+      ],
+      "finding": "Verified rates, every billable metric, bounded lag/overshoot and cleanup availability; no unknown cost term.",
+      "nextGate": "Provider evidence plus implemented enforceable all-in cap",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "transport",
+      "kind": "implementation",
+      "sourcePaths": [
+        "offline/cad-convex/developmentService.js",
+        "convex/cad.ts",
+        "convex/librarySession.ts"
+      ],
+      "finding": "Internal CAD functions and verification hooks exist; no reviewed live transport or durable coordinator.",
+      "nextGate": "Separate source implementation and adversarial offline review",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "cleanup",
+      "kind": "provider-and-implementation",
+      "sourcePaths": [
+        "offline/cad-convex/executionInputs.json"
+      ],
+      "finding": "Pinned source reports no public account-removal helper; invalidation alone cannot prove account deletion.",
+      "nextGate": "Supported bounded removal evidence and implementation, or explicit revised retention decision",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "diagnostics",
+      "kind": "implementation",
+      "sourcePaths": [
+        "offline/cad-convex/developmentService.js"
+      ],
+      "finding": "No end-to-end sentinel harness or provider log-retention proof in this source packet.",
+      "nextGate": "Offline sentinel implementation and private provider retention receipt",
+      "receipt": null,
+      "resolved": false
+    },
+    {
+      "id": "rollback",
+      "kind": "implementation-and-private",
+      "sourcePaths": [
+        "convex/schema.ts",
+        "convex/developmentAuth.ts",
+        "convex/auth.ts"
+      ],
+      "finding": "Disabled source exists; no cloud release or retained-data compatibility proof.",
+      "nextGate": "Reviewed disabled rollback command and schema/data fixture proof",
+      "receipt": null,
+      "resolved": false
+    }
+  ],
+  "commandCards": [
+    {
+      "id": "transport",
+      "gate": "T",
+      "evidenceRequirements": [
+        "transport",
+        "diagnostics"
+      ],
+      "acceptance": [
+        "service authentication independent of exact server-verified user session",
+        "wrong origin, forged claims and mismatched login denied",
+        "internal functions never exposed through generic admin proxy"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "accounting",
+      "gate": "T",
+      "evidenceRequirements": [
+        "cap",
+        "transport"
+      ],
+      "acceptance": [
+        "one durable run ledger shared across two clients",
+        "atomic count and single in-flight lease before dispatch, including denied and unknown attempts",
+        "reserve cleanup capacity; no reset on restart and no automatic retry"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "reconciliation",
+      "gate": "T",
+      "evidenceRequirements": [
+        "transport",
+        "cap"
+      ],
+      "acceptance": [
+        "unknown write halts all subsequent test writes",
+        "bounded read lookup of run/operation/source/destination",
+        "authoritative committed or absent receipt required; no automatic replay even after absence"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "revocation",
+      "gate": "C",
+      "evidenceRequirements": [
+        "cleanup",
+        "diagnostics"
+      ],
+      "acceptance": [
+        "exact run-owned users with verified empty prior session history",
+        "invalidateSessions has no except list and bounded fanout",
+        "previous exact sessions subsequently denied; retained records counted separately"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "cleanup",
+      "gate": "C",
+      "evidenceRequirements": [
+        "cleanup",
+        "cap"
+      ],
+      "acceptance": [
+        "supported version-pinned removal only; exact ownership ledger selectors",
+        "complete related-record inventory and dependency order",
+        "unknown deletion stops; no table-wide edits or resource deletion"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "provision",
+      "gate": "T",
+      "evidenceRequirements": [
+        "appointments",
+        "cleanup",
+        "cap",
+        "diagnostics"
+      ],
+      "acceptance": [
+        "maximum two synthetic run-owned identities",
+        "reviewed createAccount action context with linking disabled",
+        "collision abort before mutation; public signup denied"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    },
+    {
+      "id": "qualification",
+      "gate": "T",
+      "evidenceRequirements": [
+        "transport",
+        "cap",
+        "cleanup",
+        "rollback"
+      ],
+      "acceptance": [
+        "expiry/logout/revoke and two-client race cases",
+        "missing, unverifiable and valid session all deny CAD admission before body read",
+        "zero CAD bytes, conversion and Sandbox dispatch"
+      ],
+      "command": null,
+      "implementationReceipt": null
+    }
+  ],
+  "deadlineRules": {
+    "identityFreshnessSeconds": 300,
+    "maximumRunSeconds": 900,
+    "maximumSessionSeconds": 900,
+    "maximumRecordRetentionHours": 24,
+    "maximumReceiptRetentionDays": 30,
+    "crossUtcResetAllowed": false,
+    "restartAllowed": false,
+    "constraints": [
+      "all timestamps literal UTC with Z; absent, invalid or reordered timestamps deny",
+      "approval must remain valid through every authorized action including cleanup",
+      "run end <= start + 900 seconds and strictly before next daily/monthly UTC reset",
+      "cleanup deadline >= run end + cleanup duration + observed clock skew",
+      "cleanup deadline <= earliest run-owned record creation + 24 hours",
+      "receipt expiry <= earliest private receipt creation + 30 days",
+      "session expiry <= min(issue + 900 seconds, run end)",
+      "identity age plus clock skew <= 300 seconds; future-dated evidence denies"
+    ]
+  },
+  "capWorksheet": {
+    "ceilingUsd": 5,
+    "maximumLogicalOperations": 100,
+    "minimumCleanupReserve": 20,
+    "maximumClients": 2,
+    "maximumIdentities": 2,
+    "maximumInFlight": 1,
+    "automaticRetries": 0,
+    "metricFields": [
+      "metric",
+      "unit",
+      "ratePerUnitUsd",
+      "rateReceipt",
+      "baselineQuantity",
+      "plannedQuantityUpperBound",
+      "fanoutUpperBound",
+      "roundingQuantum",
+      "lagOvershootQuantityUpperBound",
+      "retentionQuantityUpperBound",
+      "cleanupQuantityUpperBound",
+      "disableThreshold",
+      "thresholdPrecision",
+      "enforcementScope",
+      "enforcementReceipt",
+      "boundedCostUsd"
+    ],
+    "requiredCoverage": [
+      "compute",
+      "storage",
+      "io",
+      "egress",
+      "search",
+      "deployment",
+      "auth",
+      "logs",
+      "backupRetention",
+      "cleanup",
+      "tax",
+      "fees",
+      "currencyConversion",
+      "otherApplicableCharges"
+    ],
+    "metricRows": [],
+    "allInUpperBoundUsd": null,
+    "enforced": false
+  },
+  "rollbackCompatibility": {
+    "disabledSourceCandidate": "94250aeba0bb734be28739e9108eacf9014d07fa",
+    "verifiedCloudRelease": null,
+    "command": null,
+    "compatibilityReceipt": null,
+    "tableSources": [
+      "convex/schema.ts",
+      "node_modules/@convex-dev/auth/src/server/implementation/types.ts"
+    ],
+    "requiredTableRows": [
+      "cadUserAuthority",
+      "cadMemberships",
+      "cadUploadSessions",
+      "users",
+      "authSessions",
+      "authAccounts",
+      "authRefreshTokens",
+      "authVerificationCodes",
+      "authVerifiers",
+      "authRateLimits"
+    ],
+    "rowFields": [
+      "table",
+      "currentValidatorHash",
+      "proposedValidatorHash",
+      "disabledValidatorHash",
+      "indexesBeforeAfter",
+      "runOwnedRecordSelector",
+      "retainedRecordShapeReceipt",
+      "forwardFixtureReceipt",
+      "rollbackFixtureReceipt",
+      "supportedRemovalReference",
+      "cleanupOrder",
+      "retainedProviderCopyDeadline"
+    ],
+    "order": [
+      "halt test dispatch and keep CAD admission disabled",
+      "reconcile unknown writes under separately authorized bounded reads",
+      "revoke exact run-owned sessions and prove denial",
+      "remove approved run-owned records through supported operations",
+      "restore only approved prior env versions or remove individually approved new rows",
+      "deploy compatible disabled source only under explicit rollback deployment authority"
+    ],
+    "protectiveLimitsRetained": true,
+    "resourceDeletionAllowed": false,
+    "pinnedAuthSchemaSha256": "57ac2312b71fe58e61bb2dc2d919f6b68e48f0eda5f113ed71e75bfc921e2563",
+    "authVersion": "0.0.95",
+    "tableRows": [
+      {
+        "table": "cadUserAuthority",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadMemberships",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadUploadSessions",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "users",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authSessions",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authAccounts",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authRefreshTokens",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authVerificationCodes",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authVerifiers",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "authRateLimits",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      }
+    ]
+  }
+}

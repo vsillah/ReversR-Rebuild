@@ -169,3 +169,5 @@ Local validation receipt: 115 focused tests passed (111 existing plus four plan 
 TypeScript passed, five local bindings verified, 70 integrity-manifest files and
 56 source-audit files passed with zero leak-pattern matches. Whitespace passed.
 No runtime changes, live tests, provider calls, source publication or expense.
+
+Continuation: [source-only blocker-resolution packet](cad-live-execution-blockers-resolution.md) defines the private register, command review cards and acceptance evidence. It grants no live authority.
