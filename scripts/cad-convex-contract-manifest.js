@@ -4,6 +4,11 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-lockout-private-register-adapters.md',
+  'offline/cad-convex/lockoutPrivateAdapters.js',
+  'offline/cad-convex/privateAdapterReadiness.json',
+  'scripts/cad-convex-lockout-private-adapters.test.js',
+
   'docs/cad-lockout-retained-terminal-state.md',
   'offline/cad-convex/lockoutReadiness.json',
   'offline/cad-convex/retainedTerminalState.js',
@@ -86,8 +91,8 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 22, mode: 'offline-source-unqualified',
-  baseCommit: 'c411fc5be019a4f0f90ae0912392a2be1bdfee8e',
+const manifest = { version: 23, mode: 'offline-source-unqualified',
+  baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',

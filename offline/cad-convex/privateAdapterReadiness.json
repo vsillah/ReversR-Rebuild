@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "mode": "offline-fixture-adapters-only",
+  "baseCommit": "80474b111d358f98788f363672973207ffee854d",
+  "enabled": false,
+  "liveReady": false,
+  "cleanupVerified": false,
+  "custodianRef": null,
+  "expiresAtUtc": null,
+  "gates": {
+    "publication": false,
+    "policyAcceptance": false,
+    "providerImplementation": false,
+    "environmentE": false,
+    "deploymentD": false,
+    "qualificationT": false,
+    "reconciliation": false,
+    "disposition": false
+  },
+  "bounds": {
+    "cohortSize": 2,
+    "selectedRecordsPerIdentity": 20,
+    "selectedRecordsTotal": 40,
+    "takePerQuery": 21,
+    "pendingOperationsAtOnce": 1,
+    "operationSequenceCeiling": 100,
+    "retentionHours": 24
+  },
+  "unproven": [
+    "durable register persistence and authenticated ownership evidence",
+    "provider interception before all credential processing and writes",
+    "transactional fence epochs and concurrent admission drain",
+    "backend fanout and enforceable operation and cost limits",
+    "absence of unregistered verifier or upload rows",
+    "live custody enforcement and supported eventual disposition"
+  ]
+}
