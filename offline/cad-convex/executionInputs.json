@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "mode": "source-only-execution-inputs",
+  "baseCommit": "70bc1f5e17f1d68dde918ba375103f631d99fb3c",
+  "executable": false,
+  "configurationAuthorized": false,
+  "liveTestAuthorized": false,
+  "uploadsEnabled": false,
+  "destination": {
+    "team": "vambah-sillah",
+    "project": "reversr-cad-auth-dev",
+    "deployment": "majestic-alligator-31",
+    "kind": "development",
+    "immutableProjectId": null,
+    "immutableDeploymentId": null,
+    "identityReceipt": null
+  },
+  "observation": {
+    "observedAtUtc": "2026-09-13T04:16:12Z",
+    "historicalOnly": true,
+    "release": "never-deployed",
+    "environmentRowsDisplayed": 0,
+    "authProvidersDisplayed": 0,
+    "backupsDisplayed": 0,
+    "usageThresholds": "unset",
+    "clientLogs": "default-enabled",
+    "deploymentExpiry": "never",
+    "receipt": "operator-dashboard-2026-09-13"
+  },
+  "custody": {
+    "executor": null,
+    "backup": null,
+    "appointmentReceipt": null,
+    "vaultLocationReference": null,
+    "signerVersionReference": null,
+    "syntheticPasswordReferences": [],
+    "secretGenerationAuthorized": false
+  },
+  "expiry": {
+    "approvalExpiresAtUtc": null,
+    "runStartsAtUtc": null,
+    "runEndsAtUtc": null,
+    "cleanupDeadlineUtc": null,
+    "receiptExpiryUtc": null,
+    "maximumRunSeconds": 900,
+    "maximumSessionSeconds": 900,
+    "maximumRecordRetentionHours": 24,
+    "maximumReceiptRetentionDays": 30,
+    "crossUtcResetAllowed": false,
+    "restartAllowed": false
+  },
+  "budget": {
+    "proposedAllInUsd": 5,
+    "enforcementVerified": false,
+    "maximumIdentities": 2,
+    "maximumClients": 2,
+    "maximumInitiatedLogicalOperations": 100,
+    "reservedCleanupLogicalOperations": 20,
+    "automaticRetries": 0,
+    "maximumInFlightAcrossRun": 1,
+    "billableFanoutUpperBound": null,
+    "metricRatesReceipt": null,
+    "enforcementLagBound": null,
+    "storageAndRetentionCostBound": null,
+    "taxFeeBound": null,
+    "capReceipt": null,
+    "limitChangesAuthorized": false
+  },
+  "environmentRows": [
+    {
+      "name": "JWT_PRIVATE_KEY",
+      "priorVersionReference": null,
+      "newVersionReference": null,
+      "rollbackAction": null
+    },
+    {
+      "name": "JWKS",
+      "priorVersionReference": null,
+      "newVersionReference": null,
+      "rollbackAction": null
+    },
+    {
+      "name": "SITE_URL",
+      "priorVersionReference": null,
+      "newVersionReference": null,
+      "rollbackAction": null
+    }
+  ],
+  "cohort": [],
+  "commands": [],
+  "workflows": [
+    {
+      "id": "identity",
+      "requires": [],
+      "command": null,
+      "acceptance": "Independently bind nonsecret immutable IDs, team/project/development, endpoints and current release; never derive IDs from slugs or team ID."
+    },
+    {
+      "id": "custody",
+      "requires": [
+        "identity"
+      ],
+      "command": null,
+      "acceptance": "Executor and backup appointed; existing encrypted custody and versions identified without secret contents; appointments not inferred from admin badges."
+    },
+    {
+      "id": "budget",
+      "requires": [
+        "identity"
+      ],
+      "command": null,
+      "acceptance": "All-in cap covers workload, fanout, enforcement lag, retained storage, tax/fees and cleanup; alerts/estimates alone deny."
+    },
+    {
+      "id": "diagnostics",
+      "requires": [
+        "identity"
+      ],
+      "command": null,
+      "acceptance": "Synthetic sentinel review covers client/provider errors and traces; no tokens, secrets, email, auth rows or raw input in receipts."
+    },
+    {
+      "id": "rollback",
+      "requires": [
+        "identity"
+      ],
+      "command": null,
+      "acceptance": "Disabled source and schema compatibility reviewed; no previous cloud release exists; deployment rollback is separate from session invalidation/data removal."
+    },
+    {
+      "id": "provision",
+      "requires": [
+        "custody",
+        "budget",
+        "diagnostics",
+        "rollback",
+        "cleanup"
+      ],
+      "command": null,
+      "acceptance": "At most two run-owned existing-account fixtures, no linking/signup/delivery; reviewed SDK action context and exact ownership ledger."
+    },
+    {
+      "id": "transport",
+      "requires": [
+        "identity",
+        "diagnostics"
+      ],
+      "command": null,
+      "acceptance": "Verify service and exact user session independently; preserve ctx.auth to internal functions; no admin/deploy key used as user authority."
+    },
+    {
+      "id": "accounting",
+      "requires": [
+        "budget"
+      ],
+      "command": null,
+      "acceptance": "One durable coordinator for two clients, count before dispatch, reserve cleanup, include rejected/unknown attempts, no restart or automatic replay."
+    },
+    {
+      "id": "reconciliation",
+      "requires": [
+        "accounting",
+        "transport"
+      ],
+      "command": null,
+      "acceptance": "Unknown writes halt; separately approved bounded read reconciliation by opaque run/operation identity; never retry a possibly committed write."
+    },
+    {
+      "id": "revocation",
+      "requires": [
+        "identity",
+        "diagnostics"
+      ],
+      "command": null,
+      "acceptance": "SDK invalidateSessions only for exact run-owned synthetic users; no except list; exact-session subsequent denial and retained-record accounting required."
+    },
+    {
+      "id": "cleanup",
+      "requires": [
+        "revocation"
+      ],
+      "command": null,
+      "acceptance": "Review library-supported record removal or obtain an explicit alternative retention decision before provisioning; never manually edit auth tables."
+    },
+    {
+      "id": "qualification",
+      "requires": [
+        "provision",
+        "transport",
+        "accounting",
+        "reconciliation",
+        "cleanup"
+      ],
+      "command": null,
+      "acceptance": "Live expiry/revocation/two-client cases and disabled upload route with zero CAD bytes require separate deployed-source approval."
+    }
+  ],
+  "sourceEvidence": {
+    "files": {
+      "convex/developmentAuth.ts": "273b272b2c5cbddf3ca7e5f93a64c34c5712527bc9dfac1a5f28674073df6bdc",
+      "convex/auth.ts": "bc5c04537aab1223402673fbd98e7098d21cff82873e003267f9c4e02c228c58",
+      "convex/auth.config.ts": "53b4f76eb85dd8b65a7b13f8d54815911cd26b06defd154914f051a805b16dce",
+      "convex/librarySession.ts": "a36e8d17d4a509498cfbef226487be1b00c90f1f721ac4c907bd799d667df042",
+      "convex/schema.ts": "d2a9cba1d5baa035f3060b6710d796bfa6eb1988e857074210ea615b914f15eb",
+      "convex/cad.ts": "b6bd6edd995571bf149d462b7da75fe090083b89d1ce72501e421d9830759413",
+      "offline/cad-convex/developmentService.js": "4c4da642bfe70ffa855e917302b7d3acc6acf8aeba47bdf92524eea35e96624f"
+    },
+    "authVersion": "0.0.95",
+    "sdkFiles": {
+      "src/server/index.ts": "09033c75d6501e35d51be1c18e2fbb5ae73a6305fdec8c381860d8cc73b46ddb",
+      "src/server/implementation/index.ts": "99c5dba7a4f5e5949e1c5bf45a5771221631f443bf03e3d6221f89dac7c7d2e4",
+      "src/server/implementation/mutations/invalidateSessions.ts": "f8122a0d5376a98bff3624747535b2af0a99a3dca4cbd6c9087c2740976c64a1"
+    },
+    "provisioningCandidate": "createAccount",
+    "revocationCandidate": "invalidateSessions",
+    "publicAccountRemovalHelper": null
+  },
+  "rollback": {
+    "disabledSourceCandidate": "70bc1f5e17f1d68dde918ba375103f631d99fb3c",
+    "verifiedCloudRelease": null,
+    "compatibilityReceipt": null,
+    "command": null,
+    "redeployRevokesSessions": false,
+    "resourceDeletionAllowed": false
+  },
+  "gates": {
+    "K": false,
+    "E": false,
+    "D": false,
+    "T": false,
+    "C": false,
+    "U": false,
+    "S": false,
+    "P": false
+  }
+}
