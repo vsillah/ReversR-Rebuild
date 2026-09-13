@@ -3,7 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
-const files = ['docs/cad-live-dev-edt-approval-packet.md', 'offline/cad-convex/configurationQualification.js',
+const files = ['convex/developmentAuth.ts', 'offline/cad-convex/developmentService.js',
+  'offline/cad-convex/developmentExecution.json', 'docs/cad-live-auth-source-assembly.md',
+  'scripts/cad-convex-development-assembly.test.js', 'docs/cad-live-dev-edt-approval-packet.md', 'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
   'docs/cad-live-dev-convex-auth-qualification.md',
@@ -50,8 +52,8 @@ const files = ['docs/cad-live-dev-edt-approval-packet.md', 'offline/cad-convex/c
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 12, mode: 'offline-source-unqualified',
-  baseCommit: '96a68ac253d08be9ae2b8bd8227da5aa09496bb8',
+const manifest = { version: 13, mode: 'offline-source-unqualified',
+  baseCommit: '10045b720ca87d39942d00fe191cbe3e7f8a366a',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',

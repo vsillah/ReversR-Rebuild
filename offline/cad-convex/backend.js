@@ -19,7 +19,9 @@ function createBackendContract({ readExactLibrarySession, now = Date.now } = {})
     if (typeof readExactLibrarySession !== 'function') v.fail();
     // Adapter must point-read the current library session AND owner within ctx's snapshot.
     // No custom login table, JWT decoding or client-provided liveness flag is sufficient.
-    const login = await readExactLibrarySession(ctx, b.loginSessionId);
+    // deadlineAt is validated by clock above; the reader evaluates this deterministic
+    // horizon, never wall time. Gateway freshness remains a separate requirement.
+    const login = await readExactLibrarySession(ctx, b.loginSessionId, deadlineAt);
     if (login === null) return null;
     if (!login || !v.id(login.userId) || !v.id(login.loginSessionId) || !v.method(login.authMethod)
       || !v.time(login.expiresAt) || typeof login.active !== 'boolean') v.fail();

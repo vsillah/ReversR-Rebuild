@@ -16,7 +16,7 @@ type Payloads = {
 type Results = { insertIfAbsent: boolean; read: Upload | null; revoke: boolean;
   resolveAuthorization: Grant | null; refreshAuthorization: Grant | null };
 export function createBackendContract(options: {
-  readExactLibrarySession: (ctx: QueryCtx, id: Id<'authSessions'>) =>
+  readExactLibrarySession: (ctx: QueryCtx, id: Id<'authSessions'>, validThrough: number) =>
     Promise<(Omit<Binding, 'shopId'> & { active: boolean; expiresAt: number }) | null>;
   now?: () => number;
 }): {

@@ -1,4 +1,5 @@
 import type { AuthConfig } from 'convex/server';
-// Deliberately no trusted JWT issuer, even when deployment env values exist.
-// Later source review must bind CONVEX_SITE_URL with applicationID: 'convex'.
-export default { providers: [] } satisfies AuthConfig;
+import { developmentConfiguration } from './developmentAuth';
+const configuration = developmentConfiguration(process.env);
+export default { providers: configuration
+  ? [{ domain: configuration.issuer, applicationID: 'convex' }] : [] } satisfies AuthConfig;

@@ -1,5 +1,9 @@
-// Source-only assembly: no login method is enabled. Provider selection is a later gate.
+// Source-only candidate; gate and empty cohort prevent accidental activation.
 import { convexAuth } from '@convex-dev/auth/server';
-export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [],
-});
+import { developmentConfiguration, developmentPassword, developmentRedirect } from './developmentAuth';
+const configuration = developmentConfiguration(process.env);
+export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth(configuration ? {
+  providers: [developmentPassword([])],
+  session: { totalDurationMs: 15 * 60 * 1000 },
+  callbacks: { redirect: async params => developmentRedirect(params) },
+} : { providers: [] });

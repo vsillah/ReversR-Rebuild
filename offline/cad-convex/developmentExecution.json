@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "status": "source-review-only",
+  "executable": false,
+  "destination": { "project": "reversr-cad-auth-dev", "deployment": "majestic-alligator-31", "kind": "development", "team": "vambah-sillah", "teamId": 405220 },
+  "baseCommit": "10045b720ca87d39942d00fe191cbe3e7f8a366a",
+  "sourceManifest": "offline/cad-convex/manifest.json",
+  "auth": { "provider": "password", "issuer": "https://majestic-alligator-31.convex.site", "applicationID": "convex", "siteUrl": "http://localhost:5001", "returnPaths": ["/"], "cohort": [], "sourceGate": false },
+  "queryTime": { "source": "validated-deadlineAt", "backendEvaluation": "deadlineAt-minus-one", "sessionMustExpireAfter": "deadlineAt", "wallClockReads": false, "gatewayFreshnessRequired": true, "cachedResultIsAdmissionAuthority": false },
+  "uploads": { "enabled": false, "conversionDispatch": false, "sandboxDispatch": false, "cadBytes": false },
+  "service": { "transport": null, "subject": null, "credential": null, "publicCadFunctions": [], "internalFunctions": ["cad:insertIfAbsent", "cad:read", "cad:revoke", "cad:resolveAuthorization", "cad:refreshAuthorization"], "excludedPolicyFunction": "cad:changeAuthority", "userContextPropagationVerified": false },
+  "bounds": { "durationMs": 900000, "logicalOperations": 100, "identities": 2, "clients": 2, "automaticRetries": 0, "proposedIncrementalUsd": 5, "costEnforcementVerified": false },
+  "reconciliation": { "onTransportFailure": "stop-run", "mutationOutcome": "unknown-until-reviewed-reconciliation", "resumeInNewProcess": false, "durableEvidenceRequired": true, "operatorReceipt": null, "revokeReplay": "requires-new-approval", "insertReplay": "requires-new-approval" },
+  "gates": {
+    "U": { "approved": false, "metricManifest": null, "allInCapEvidence": null },
+    "K": { "approved": false, "generatorChecksum": null, "vaultItemVersions": null, "custodian": null },
+    "S": { "approved": false, "diagnosticSettingsReceipt": null },
+    "E": { "approved": false, "proposedNames": ["JWT_PRIVATE_KEY", "JWKS", "SITE_URL"], "platformOwnedExcluded": ["CONVEX_SITE_URL"], "rowRollbackManifest": null },
+    "D": { "approved": false, "implementationSha": null, "command": null, "deploymentReceipt": null, "disabledRollbackSha": "10045b720ca87d39942d00fe191cbe3e7f8a366a", "schemaCompatibilityVerified": false },
+    "T": { "approved": false, "provisioningCommand": null, "cohortManifest": null, "operator": null, "backup": null, "cleanupDeadlineUtc": null, "receiptExpiryUtc": null, "cleanupMaximumHours": 24, "receiptRetentionDays": 30 }
+  }
+}
