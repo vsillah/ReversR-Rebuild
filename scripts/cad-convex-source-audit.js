@@ -4,7 +4,11 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.json',
+const files = ['offline/cad-convex/configurationQualification.js',
+  'offline/cad-convex/configurationQualification.json',
+  'scripts/cad-convex-configuration-qualification.test.js',
+  'docs/cad-live-dev-convex-auth-qualification.md',
+  'offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.json',
   'scripts/cad-convex-dev-wiring.test.js', 'docs/cad-dev-convex-auth-wiring-review.md',
   'offline/cad-convex/liveReadiness.js', 'offline/cad-convex/liveReadiness.json',
   'scripts/cad-convex-live-readiness.js', 'scripts/cad-convex-live-readiness.test.js',
@@ -45,11 +49,13 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/passwordPolicy|liveReadiness|devWiring/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/passwordPolicy|liveReadiness|devWiring|configurationQualification/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
 }
 assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/passwordPolicy.ts')));
+
+assert.ok(!/process\.env|fetch\s*\(|https?\.request/.test(read('offline/cad-convex/configurationQualification.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);

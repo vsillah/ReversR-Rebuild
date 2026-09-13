@@ -3,7 +3,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
-const files = ['offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.json',
+const files = ['offline/cad-convex/configurationQualification.js',
+  'offline/cad-convex/configurationQualification.json',
+  'scripts/cad-convex-configuration-qualification.test.js',
+  'docs/cad-live-dev-convex-auth-qualification.md',
+  'offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.json',
   'scripts/cad-convex-dev-wiring.test.js', 'docs/cad-dev-convex-auth-wiring-review.md',
   'offline/cad-convex/liveReadiness.js', 'offline/cad-convex/liveReadiness.json',
   'scripts/cad-convex-live-readiness.js', 'scripts/cad-convex-live-readiness.test.js',
@@ -46,8 +50,8 @@ const files = ['offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 10, mode: 'offline-source-unqualified',
-  baseCommit: '312c9f5ddc81e92e9278aa9bd43108e46acc5592',
+const manifest = { version: 11, mode: 'offline-source-unqualified',
+  baseCommit: 'cc8a45d2a7c2830e3b5ee1ecd96dbcdcb27357c8',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',
