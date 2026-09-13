@@ -5,6 +5,11 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-lockout-private-register-adapters.md',
+  'offline/cad-convex/lockoutPrivateAdapters.js',
+  'offline/cad-convex/privateAdapterReadiness.json',
+  'scripts/cad-convex-lockout-private-adapters.test.js',
+
   'docs/cad-lockout-retained-terminal-state.md',
   'offline/cad-convex/lockoutReadiness.json',
   'offline/cad-convex/retainedTerminalState.js',
@@ -105,7 +110,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -138,3 +143,10 @@ assert.ok(Object.values(lockout.gates).every(v => v === false));
 assert.equal(lockout.custodianRef, null);
 assert.equal(lockout.expiresAtUtc, null);
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/retainedTerminalState.js')));
+
+const privateAdapters = JSON.parse(read('offline/cad-convex/privateAdapterReadiness.json'));
+for (const key of ['enabled', 'liveReady', 'cleanupVerified']) assert.equal(privateAdapters[key], false);
+assert.ok(Object.values(privateAdapters.gates).every(v => v === false));
+assert.equal(privateAdapters.custodianRef, null);
+assert.equal(privateAdapters.expiresAtUtc, null);
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\.|node:fs/.test(read('offline/cad-convex/lockoutPrivateAdapters.js')));
