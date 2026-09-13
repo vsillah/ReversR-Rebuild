@@ -5,6 +5,12 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-auth-transport-run-register.md',
+  'offline/cad-convex/syntheticRemovalBoundary.js',
+  'offline/cad-convex/syntheticRunRegister.js',
+  'offline/cad-convex/verifiedSyntheticTransport.js',
+  'scripts/cad-convex-auth-transport-register.test.js',
+
   'docs/cad-positive-synthetic-auth-session.md',
   'offline/cad-convex/positiveSyntheticLedger.js',
   'offline/cad-convex/positiveSyntheticSession.js',
@@ -81,7 +87,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -95,7 +101,7 @@ assert.equal(require('../offline/cad-convex/developmentConfigurationGate').inspe
 
 assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/rollbackCompatibility.js')));
 
-for (const name of ['positiveSyntheticSession', 'positiveSyntheticLedger'])
+for (const name of ['positiveSyntheticSession', 'positiveSyntheticLedger', 'syntheticRemovalBoundary', 'syntheticRunRegister', 'verifiedSyntheticTransport'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/' + name + '.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);

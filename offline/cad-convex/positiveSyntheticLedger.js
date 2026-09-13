@@ -57,7 +57,7 @@ function createPositiveSyntheticLedger({ testOnly, journalPath, now = Date.now,
         append({ sequence, phase: 'pending' });
         dispatched++; invoked = true;
         const result = await Promise.race([
-          Promise.resolve().then(invoke),
+          Promise.resolve().then(() => invoke(Object.freeze({ sequence, operation }))),
           new Promise((_, reject) => { timer = setTimeout(() => reject(fixedError('DEADLINE')), Math.min(timeoutMs, endAt - n)); }),
         ]);
         const receivedAt = clock();
