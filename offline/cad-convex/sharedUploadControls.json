@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline-source-only-transaction-model",
+  "enabled": false,
+  "liveReady": false,
+  "bodyAdmissionAuthorized": false,
+  "conversionAvailable": false,
+  "stateSchemaVersion": 1,
+  "maxRecordsPerBudgetWindow": 256,
+  "money": {
+    "currency": "USD",
+    "unit": "integer-microdollars",
+    "reservation": "all-in-enforceable-maximum",
+    "includes": ["compute", "storage", "network", "provider", "taxes", "fees"],
+    "unknownOutcome": "retain-full-reservation-and-both-leases",
+    "pricingEvidenceRef": null,
+    "approvedBudgetMicros": null
+  },
+  "transaction": {
+    "isolation": "serializable",
+    "commit": "compare-and-swap-state-revision-with-conflict-retry",
+    "authority": "read-exact-login-upload-session-membership-permission-and-authority-revision-in-same-transaction",
+    "reserve": "authority-plus-user-shop-attempts-leases-and-global-cost-in-one-commit-before-body",
+    "fence": "fresh-authority-plus-reservation-fence-and-deduplicated-outbox-in-one-commit",
+    "revocation": "serialize-with-fence-and-recheck-at-future-executor-consumption",
+    "acknowledgementLoss": "replay-same-bound-key-never-new-key",
+    "unknownHandoff": "reconcile-never-redispatch"
+  },
+  "rollback": {
+    "routeRemainsDisabled": true,
+    "schemaMutationRequired": false,
+    "deleteUnresolvedRecords": false,
+    "unsupportedSchema": "reject-and-retain",
+    "windowRollover": "blocked-until-separately-qualified-carry-forward-and-retention",
+    "procedure": ["keep-body-gate-closed", "stop-new-admission", "retain-state-and-cost-holds", "reconcile-with-independent-evidence", "revert-source-without-deleting-ledger"]
+  },
+  "gates": {
+    "durableSerializableAdapter": false,
+    "liveExactSessionEvidence": false,
+    "crossInstanceConcurrencyQualification": false,
+    "transactionalAuthorityFenceQualification": false,
+    "enforceableAllInCostCap": false,
+    "reconciliationEvidenceAndCustodian": false,
+    "rollbackAndWindowRolloverQualification": false,
+    "providerQualification": false,
+    "sandboxDispatchApproval": false,
+    "uploadActivationApproval": false
+  }
+}
