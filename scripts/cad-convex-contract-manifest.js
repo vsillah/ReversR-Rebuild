@@ -4,6 +4,7 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-live-dev-run-execution-plan.md',
   'offline/cad-convex/liveRunApprovalPacket.json',
   'offline/cad-convex/liveRunApprovalEnvelope.json',
   'offline/cad-convex/liveRunApprovalPacket.js',
@@ -125,7 +126,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 29, mode: 'offline-source-unqualified',
+const manifest = { version: 30, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
