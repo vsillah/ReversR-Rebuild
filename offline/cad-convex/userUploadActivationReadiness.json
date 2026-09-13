@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-activation-readiness",
+  "baseCommit": "bf983bdad89d4373fd3000fb5e4474f593bd27db",
+  "enabled": false,
+  "liveReady": false,
+  "executable": false,
+  "route": "POST /api/cad/user-import",
+  "currentTerminalCode": "USER_UPLOADS_DISABLED",
+  "gates": {
+    "publication": {
+      "approved": false,
+      "evidence": {
+        "reviewedCommit": null,
+        "publicDestination": null,
+        "draftPrApproval": null
+      }
+    },
+    "exactSessionAuthority": {
+      "approved": false,
+      "evidence": {
+        "verifiedTransport": null,
+        "exactLoginSessionOwner": null,
+        "expiryLogoutRevocation": null,
+        "membershipPermissionRefresh": null,
+        "noAlternateSessionFallback": null,
+        "concurrentRevocationFence": null
+      }
+    },
+    "uploadPermission": {
+      "approved": false,
+      "evidence": {
+        "serverOwnedUserShopBinding": null,
+        "explicitCadEntitlement": null,
+        "cookieExactHttpsOriginAndSessionCsrf": null,
+        "nativeBearerTransportReview": null,
+        "noProfileOrOperatorFallback": null
+      }
+    },
+    "payloadAdmission": {
+      "approved": false,
+      "evidence": {
+        "preParserAuthOrdering": null,
+        "streamingJsonLimit": null,
+        "encodingAndMediaType": null,
+        "exactFieldsAndSafeName": null,
+        "canonicalBase64AndDecodedLimit": null,
+        "igesContentAndExternalReferenceRejection": null,
+        "sanitizedParserErrors": null
+      }
+    },
+    "sharedControls": {
+      "approved": false,
+      "evidence": {
+        "atomicUserShopLease": null,
+        "crossInstanceRateLimit": null,
+        "enforcedAllInCostCap": null,
+        "unknownOutcomeReconciliation": null,
+        "abortAndRetryAccounting": null
+      }
+    },
+    "sandboxDispatch": {
+      "approved": false,
+      "evidence": {
+        "reviewedExecutorAndAssetHashes": null,
+        "denyAllNetwork": null,
+        "boundedResourcesAndDeadlines": null,
+        "outputBounds": null,
+        "cleanupConfirmation": null,
+        "retainedReservationOnUncertainty": null
+      }
+    },
+    "providerReadiness": {
+      "approved": false,
+      "evidence": {
+        "freshImmutableDevelopmentDestination": null,
+        "reviewedExactCommandManifest": null,
+        "credentialCustody": null,
+        "supportedDispositionOrApprovedBoundedRetention": null,
+        "durablePrivateRegisterAndLockout": null,
+        "separateEnvironmentDeploymentTestApprovals": null
+      }
+    },
+    "rollback": {
+      "approved": false,
+      "evidence": {
+        "namedExecutorAndBackup": null,
+        "verifiedDisabledRelease": null,
+        "closeAdmissionBeforeDrain": null,
+        "reconcileInFlightAndUnknownOutcomes": null,
+        "sessionRevocationEvidence": null,
+        "safeRetainedStateDisposition": null,
+        "disabledEndpointReceipt": null
+      }
+    },
+    "activation": {
+      "approved": false,
+      "evidence": {
+        "reviewedRuntimeImplementationCommit": null,
+        "exactDeploymentAndRoute": null,
+        "exactCohortAndWindow": null,
+        "fixtureAndPrivacyScope": null,
+        "boundedRunAndCostManifest": null,
+        "priorGateEvidence": null,
+        "explicitUploadActivationApproval": null,
+        "separateConversionAndSandboxApproval": null
+      }
+    }
+  },
+  "proposedBounds": {
+    "jsonBytes": 393216,
+    "decodedBytes": 262144,
+    "encodedCharacters": 349528,
+    "fileNameCharacters": 120,
+    "extensions": [
+      ".igs",
+      ".iges"
+    ],
+    "mimeTypes": [
+      "model/iges",
+      "application/iges",
+      "application/octet-stream"
+    ],
+    "perUserConcurrency": 1,
+    "perShopConcurrency": 1,
+    "attemptsPerUserMinute": 5,
+    "allInCostCapUsd": null,
+    "sandbox": {
+      "vcpus": 1,
+      "memoryMb": 2048,
+      "lifetimeMs": 60000,
+      "requestMs": 45000,
+      "commandMs": 10000,
+      "cleanupMs": 5000,
+      "outputBytes": 1048576,
+      "meshes": 16,
+      "vertices": 20000,
+      "triangles": 10000,
+      "network": "deny-all"
+    }
+  },
+  "authority": {
+    "reviewedCommit": null,
+    "deploymentRef": null,
+    "cohortRef": null,
+    "sessionEvidenceRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "executorRef": null,
+    "rollbackReleaseRef": null,
+    "runManifestRef": null
+  },
+  "evidencePolicy": "Sanitized opaque references only; never credentials, identities, filenames, CAD bytes or provider responses."
+}
