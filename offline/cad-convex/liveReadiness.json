@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "mode": "source-only",
+  "target": {
+    "team": "vambah-sillah",
+    "teamId": "405220",
+    "project": "reversr-cad-auth-dev",
+    "deployment": "majestic-alligator-31",
+    "type": "development",
+    "clientOrigin": "https://majestic-alligator-31.convex.cloud",
+    "issuerOrigin": "https://majestic-alligator-31.convex.site"
+  },
+  "method": "password",
+  "applicationId": "convex",
+  "appOrigin": null,
+  "returnPath": null,
+  "logoutPath": null,
+  "providerCallback": "N/A: Password has no external OAuth callback",
+  "environment": [
+    {
+      "name": "JWT_PRIVATE_KEY",
+      "scope": "deployment-secret",
+      "status": "pending"
+    },
+    {
+      "name": "JWKS",
+      "scope": "deployment",
+      "status": "pending"
+    },
+    {
+      "name": "CONVEX_SITE_URL",
+      "scope": "platform-owned",
+      "status": "pending"
+    },
+    {
+      "name": "SITE_URL",
+      "scope": "requirement-unresolved",
+      "status": "pending"
+    }
+  ],
+  "gates": {
+    "environment": false,
+    "deployment": false,
+    "liveTest": false,
+    "uploads": false
+  }
+}
