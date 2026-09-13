@@ -4,7 +4,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['offline/cad-convex/configurationQualification.js',
+const files = ['docs/cad-live-dev-edt-approval-packet.md', 'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
   'docs/cad-live-dev-convex-auth-qualification.md',

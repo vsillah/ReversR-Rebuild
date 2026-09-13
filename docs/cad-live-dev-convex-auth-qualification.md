@@ -1,5 +1,8 @@
 # Development Convex/Auth configuration qualification
 
+> Next operator packet: [live development E/D/T approval register](cad-live-dev-edt-approval-packet.md).
+> Dashboard observations remain reported evidence; all live gates remain closed.
+
 Prepared from main `cc8a45d2a7c2830e3b5ee1ecd96dbcdcb27357c8` on branch
 `codex/cad-live-dev-convex-auth-qualification`. This phase adds an executable
 configuration-evidence contract and a pending worksheet. It performs no live
