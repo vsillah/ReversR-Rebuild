@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "mode": "offline-only",
+  "target": {
+    "team": "vambah-sillah",
+    "teamId": "405220",
+    "project": "reversr-cad-auth-dev",
+    "deployment": "majestic-alligator-31",
+    "type": "development",
+    "clientOrigin": "https://majestic-alligator-31.convex.cloud",
+    "issuerOrigin": "https://majestic-alligator-31.convex.site"
+  },
+  "environment": {
+    "JWT_PRIVATE_KEY": "deployment-secret",
+    "JWKS": "deployment",
+    "CONVEX_SITE_URL": "platform-owned",
+    "SITE_URL": "not-used-by-offline-bearer-contract"
+  },
+  "transport": "host-injected-synthetic-bearer",
+  "cohort": [
+    "cad-test-alpha@auth-test.invalid"
+  ],
+  "provisioning": {
+    "mode": "fixture-only",
+    "method": "password",
+    "flow": "existing-account-signIn",
+    "delivery": false
+  },
+  "rollback": {
+    "disabledCommit": "312c9f5ddc81e92e9278aa9bd43108e46acc5592",
+    "owner": "integration-captain",
+    "action": "stop-local-harness",
+    "liveMutation": false
+  },
+  "limits": {
+    "maxOperations": 8,
+    "sessionTtlMs": 60000,
+    "runTtlMs": 300000,
+    "maxConcurrent": 1,
+    "expenseUsd": 0
+  },
+  "gates": {
+    "providers": false,
+    "issuers": false,
+    "sessionReader": false,
+    "uploads": false,
+    "conversion": false,
+    "liveTests": false
+  }
+}

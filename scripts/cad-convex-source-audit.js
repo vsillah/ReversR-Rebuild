@@ -4,7 +4,9 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-const files = ['offline/cad-convex/liveReadiness.js', 'offline/cad-convex/liveReadiness.json',
+const files = ['offline/cad-convex/devWiring.js', 'offline/cad-convex/devWiring.json',
+  'scripts/cad-convex-dev-wiring.test.js', 'docs/cad-dev-convex-auth-wiring-review.md',
+  'offline/cad-convex/liveReadiness.js', 'offline/cad-convex/liveReadiness.json',
   'scripts/cad-convex-live-readiness.js', 'scripts/cad-convex-live-readiness.test.js',
   'docs/cad-convex-live-auth-readiness.md', 'offline/cad-convex/passwordPolicy.ts', 'scripts/cad-convex-password-boundary.test.js',
   'docs/cad-convex-password-auth-boundary.md', 'docs/cad-convex-live-wiring-packet.md', 'docs/cad-live-convex-auth-setup-packet.md', 'convex/auth.ts', 'convex/auth.config.ts', 'convex/http.ts',
@@ -43,7 +45,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/passwordPolicy|liveReadiness/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/passwordPolicy|liveReadiness|devWiring/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
