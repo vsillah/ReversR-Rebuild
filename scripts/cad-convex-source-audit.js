@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-live-dev-run-execution-plan.md',
   'offline/cad-convex/liveRunApprovalPacket.json',
   'offline/cad-convex/liveRunApprovalEnvelope.json',
   'offline/cad-convex/liveRunApprovalPacket.js',
