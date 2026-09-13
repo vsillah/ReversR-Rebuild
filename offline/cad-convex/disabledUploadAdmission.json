@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-disabled-admission",
+  "bodyAdmissionAuthorized": false,
+  "conversionAvailable": false,
+  "terminalCode": "USER_UPLOADS_DISABLED",
+  "precedence": ["cors-method", "session-permission-csrf", "source-closed-body-gate", "http-body-limits", "iges-payload-validation", "disabled"],
+  "prerequisites": {
+    "liveExactSessionEvidence": false,
+    "transactionalAuthorityFence": false,
+    "crossInstanceQuotaAndConcurrency": false,
+    "enforcedAllInCostReservation": false,
+    "providerReadiness": false,
+    "sandboxDispatchApproval": false,
+    "cleanupReconciliation": false,
+    "rollbackQualification": false,
+    "activationApproval": false
+  }
+}

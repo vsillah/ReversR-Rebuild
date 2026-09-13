@@ -2,7 +2,8 @@
 
 Status: `POST /api/cad/user-import` is mounted as a session-gated, permanently
 disabled scaffold. The shared verifier consumes the unconfigured default issuer/store
-service. No production auth/store, parser, enable flag or executor is configured.
+service. No production auth/store, enable flag or executor is configured. A source-closed
+bounded body validation stage now exists; see [admission scaffolding](cad-disabled-upload-admission.md).
 `/api/cad/import` remains operator-only and unchanged. No UI change or deployment
 is included. PRs #165–#167 established the contract and session foundations.
 
@@ -19,8 +20,9 @@ to 401 `USER_SESSION_REQUIRED` without exposing which binding failed. An unavail
 store maps to 503 `USER_AUTH_UNAVAILABLE`; denied permission maps to 403
 `USER_UPLOAD_FORBIDDEN`; origin/CSRF rejection maps to 403
 `ORIGIN_OR_CSRF_REJECTED`. Verified sessions always receive 503
-`USER_UPLOADS_DISABLED`. No environment flag, profile header or operator credential
-can enable this endpoint. Request bodies are never parsed or decoded.
+`USER_UPLOADS_DISABLED`. No environment flag, profile header, factory option or operator credential
+can enable this endpoint. Mounted requests never parse or decode bodies; offline
+tests instrument an isolated route copy to exercise the bounded validation stage.
 
 The following evidence and full pipeline describe the original contract and remaining
 work. Authentication design is still required before production adapters or activation.
