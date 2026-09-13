@@ -4,6 +4,14 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'server/cadUserUploadAdmission.js',
+  'server/cadUserUploadRouter.js',
+  'scripts/cad-user-upload-admission.test.js',
+  'scripts/cad-user-upload-route.test.js',
+  'offline/cad-convex/disabledUploadAdmission.json',
+  'docs/cad-disabled-upload-admission.md',
+  'docs/cad-user-upload-contract.md',
+
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
   'scripts/cad-user-upload-activation-readiness.test.js',

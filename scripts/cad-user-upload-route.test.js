@@ -55,7 +55,7 @@ test('mounted default rejects missing/profile/operator credentials and unavailab
 });
 test('valid sessions stay disabled; current permission and identity binding remain authoritative', async t => {
   const synthetic = await service();
-  const request = await fixture(t, synthetic);
+  const request = await fixture(t, { ...synthetic, enabled: true, bodyAdmissionAuthorized: true, executor: { convert() { throw Error('SENTINEL'); } } });
   const result = await request({ ...synthetic.headers, 'content-type': 'application/json', 'x-reversr-profile-email': 'SENTINEL' });
   assert.equal(result.status, 503); assert.equal(result.payload.code, 'USER_UPLOADS_DISABLED');
   assert.deepEqual(Object.keys(result.payload).sort(), ['code', 'message', 'schemaVersion', 'status']);

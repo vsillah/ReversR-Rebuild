@@ -1,9 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const { admissionErrors, validateRequestBody } = require('./cadUserUploadAdmission');
+// Source-closed gate: no environment, request or factory option can open it.
+const BODY_ADMISSION_AUTHORIZED = false;
 const { createUploadSessionVerifier } = require('./uploadSession');
 const { uploadSessionService } = require('./uploadSessionStore');
 
 const errors = Object.freeze({
+  ...admissionErrors,
   USER_SESSION_REQUIRED: [401, 'A valid upload session is required.'],
   USER_AUTH_UNAVAILABLE: [503, 'Upload authentication is unavailable.'],
   USER_UPLOAD_FORBIDDEN: [403, 'CAD upload permission is required.'],
@@ -14,7 +18,7 @@ const errors = Object.freeze({
 const sessionFailures = new Set(['SESSION_MISSING', 'SESSION_MALFORMED', 'SESSION_INVALID', 'SESSION_REVOKED', 'SESSION_EXPIRED']);
 
 // Server-only injection consumes the shared service contract. No enable switch,
-// body parser, issuer endpoint, executor dependency or conversion path exists.
+// issuer endpoint, executor dependency or conversion path exists.
 function createCadUserUploadRouter({ sessionService = uploadSessionService, allowedOrigins = [], corsOrigins = [] } = {}) {
   const router = express.Router();
   const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
@@ -40,6 +44,12 @@ function createCadUserUploadRouter({ sessionService = uploadSessionService, allo
         : result.code === 'ORIGIN_OR_CSRF_REJECTED' ? result.code : 'USER_AUTH_UNAVAILABLE';
       return send(res, code);
     }
+    if (!BODY_ADMISSION_AUTHORIZED) return send(res, 'USER_UPLOADS_DISABLED');
+    // Future activation requires shared controls and a transactional authority fence
+    // BEFORE opening this gate. Offline tests instrument the literal only.
+    const admission = await validateRequestBody(req);
+    if (!admission.ok) return send(res, admission.code);
+    // Payload acceptance never grants conversion authority. No executor is wired.
     return send(res, 'USER_UPLOADS_DISABLED');
   });
   return router;
