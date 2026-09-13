@@ -89,7 +89,7 @@
     "scripts/helpers/cad-convex-source-loader.js": "c0bd2930834cc20a16645c1acdc1cb27605ab69334fd33dff89af6eadc4de2d5",
     "scripts/cad-convex-source-audit.js": "699a6aa5a7dd4859031a94f75434cbbc7f62a642f08189f4bc831b75ae864613",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
-    "offline/cad-convex/README.md": "6263e7a019a46032e2602db2eda3b9dd2f669a78ebb5cd856d3dba04c581616c",
+    "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
     "offline/cad-convex/gateway.js": "465ad052fba01d3a41993a9be01f75250ef3836458bb672adce2b2e5bcc0fba4",
     "offline/cad-convex/sessionAdapter.js": "3dbb1000ed0b0b80640ae770f1b188428b5249df09275da52ee0d32294a7465e",

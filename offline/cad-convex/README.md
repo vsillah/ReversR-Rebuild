@@ -23,8 +23,11 @@ CAD uploads remain disabled. No live auth provider or Convex backing is qualifie
   scripts. Validate with `node scripts/cad-convex-contract-manifest.js`.
 
 The host must execute each backend operation in one authoritative query/mutation
-snapshot, never as independent remote CRUD calls. `readExactLibrarySession(ctx, id)`
-must freshly read the exact library session and owner within that snapshot, returning
+snapshot, never as independent remote CRUD calls.
+`readExactLibrarySession(ctx, id, validThrough)` must point-read the exact library
+session and owner within that snapshot. The backend passes its validated `deadlineAt`
+as the deterministic `validThrough` horizon; a session expiring at or before that
+horizon denies. The query helper never reads wall time. It returns
 `{userId, loginSessionId, authMethod, active, expiresAt}` or null. The method must
 come from verified login provenance. Disabled/deleted owners must deny, and session
 IDs must never be reused. No custom password/account/login-session database is added.
@@ -83,9 +86,19 @@ qualify provider-session invalidation before any reopening.
 ## Deadline and unknown-commit behavior
 
 The gateway caps the caller deadline at 800 ms and includes authentication, login
-verification and dispatch in that wait. Backend operations check deadline before
-reads/writes and on return; a thrown mutation requires transaction rollback. The
-simulator tests rollback when its clock crosses deadline during a write.
+verification and dispatch in that wait. It enforces wall-clock freshness before
+and after internal dispatch and rejects a response arriving at or after the deadline.
+
+Convex query handlers validate the supplied exclusive deadline and evaluate their
+backend at `deadlineAt - 1`, the final millisecond inside that deadline. The exact
+session reader separately requires session expiration strictly after `validThrough`,
+which is that same validated deadline. These are deterministic snapshot checks,
+not independent evidence of current wall time. Time passage alone does not invalidate
+a cached query result. Only the trusted gateway may consume the result for admission;
+reusing cached results or backdating deadlines outside its freshness checks is not
+authorized. Mutations retain their existing elapsed-time checks before reads/writes
+and on return; a thrown mutation requires transaction rollback. The simulator tests
+rollback when its clock crosses the deadline during a write.
 
 A late or lost acknowledgement yields `AUTH_UNAVAILABLE`, no credential and no retry.
 A possibly committed row may remain until expiry. Abort stops waiting and signals
