@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "mode": "source-review-only",
+  "sdkVersion": "0.0.95",
+  "decision": "KEEP_PROVISIONING_BLOCKED",
+  "supportedUserRemoval": false,
+  "liveReady": false,
+  "retentionApproved": false,
+  "alternatives": {
+    "supported-removal-adapter": {
+      "enabled": false,
+      "approved": false
+    },
+    "bounded-quarantine": {
+      "enabled": false,
+      "approved": false
+    },
+    "disposable-resource-retirement": {
+      "enabled": false,
+      "approved": false
+    }
+  },
+  "sdkFiles": {
+    "package.json": "d216814065fff5226fc81a9c0a64dfa264e3416b816cbab844e0519e994bb704",
+    "src/server/index.ts": "09033c75d6501e35d51be1c18e2fbb5ae73a6305fdec8c381860d8cc73b46ddb",
+    "dist/server/index.js": "35ea2faad3a46b0098627278a9aa31ebd6ac202bf2024aa0f4ff4087defd9950",
+    "src/server/implementation/types.ts": "57ac2312b71fe58e61bb2dc2d919f6b68e48f0eda5f113ed71e75bfc921e2563",
+    "src/server/implementation/sessions.ts": "195d949b3956829f7babf201bbd1beb24f7a3d878edfd069b1d025f108076f98",
+    "src/server/implementation/refreshTokens.ts": "114dc1e7d52a50562dd12187ac62689ab17715e3903db91052cfe09798ec8279",
+    "src/server/implementation/mutations/signOut.ts": "2ec2eeae646e140ac017cafafa07984e23367d29f9ae7d1a5b0b9e835609da89",
+    "src/server/implementation/mutations/invalidateSessions.ts": "f8122a0d5376a98bff3624747535b2af0a99a3dca4cbd6c9087c2740976c64a1",
+    "src/server/implementation/mutations/createAccountFromCredentials.ts": "2497bcd06072e2ed639495170bc70cd99de95ed090e64ef201618c2188ef4572",
+    "src/server/implementation/mutations/retrieveAccountWithCredentials.ts": "38e0fd70c167e119810b061886045aa17017586b5f672944756901e49500775c",
+    "src/server/implementation/rateLimit.ts": "a2b6e1fa0e7d5ae0ee087acccc687d5e16c18518a5821767531bf5aefb8d9f12"
+  }
+}

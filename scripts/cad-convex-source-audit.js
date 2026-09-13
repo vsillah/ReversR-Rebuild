@@ -5,6 +5,9 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-removal-retention-policy.md',
+  'offline/cad-convex/removalRetentionReview.json',
+  'scripts/cad-convex-removal-retention.test.js',
   'docs/cad-auth-transport-run-register.md',
   'offline/cad-convex/syntheticRemovalBoundary.js',
   'offline/cad-convex/syntheticRunRegister.js',
@@ -63,6 +66,13 @@ const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));
 assert.ok(Object.values(execution.uploads).every(value => value === false));
+const disposition = JSON.parse(read('offline/cad-convex/removalRetentionReview.json'));
+assert.equal(disposition.decision, 'KEEP_PROVISIONING_BLOCKED');
+assert.equal(disposition.mode, 'source-review-only');
+for (const key of ['supportedUserRemoval', 'liveReady', 'retentionApproved']) assert.equal(disposition[key], false);
+assert.equal(Object.keys(disposition.alternatives).length, 3);
+for (const alternative of Object.values(disposition.alternatives))
+  assert.deepEqual(alternative, { enabled: false, approved: false });
 const reader = read('convex/librarySession.ts');
 assert.ok(!/Date\s*\.|new\s+Date|performance\s*\./.test(reader), 'Session reader must use explicit deterministic time');
 assert.match(read('offline/cad-convex/backend.js'), /readExactLibrarySession\(ctx, b.loginSessionId, deadlineAt\)/);
@@ -87,7 +97,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
