@@ -5,6 +5,11 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'offline/cad-convex/sharedControlsAdapterQualification.json',
+  'scripts/helpers/cad-shared-controls-adapter-double.js',
+  'scripts/cad-shared-controls-adapter-qualification.test.js',
+  'docs/cad-shared-controls-adapter-qualification.md',
+
   'offline/cad-convex/sharedUploadControls.js',
   'offline/cad-convex/sharedUploadControls.json',
   'scripts/cad-upload-shared-controls.test.js',
@@ -125,7 +130,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);

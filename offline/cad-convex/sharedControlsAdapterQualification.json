@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline-adapter-qualification-review",
+  "baseCommit": "5ac57ce5a49e9329d118dad5c88776d158222e81",
+  "enabled": false,
+  "liveQualified": false,
+  "adapterRef": null,
+  "custodianRef": null,
+  "approvedRunRef": null,
+  "requirements": [
+    {
+      "id": "serializable-commit",
+      "acceptance": "One serializable transaction reads the shared ledger and all authority dependencies and commits attempts, both leases, money and any future outbox together; abort leaves no partial write.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "revision-cas",
+      "acceptance": "CAS includes ledger identity, window identity, schema and revision plus the complete authority read set; authority-only changes and deletion conflict even when ledger revision is unchanged; revisions never reset or wrap.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "conflict-retry",
+      "acceptance": "Retry only explicit transaction conflicts with a bounded attempt count, deadline and backoff; reread authority, ledger and trusted clock on each try; exhausted retries deny admission. Never repeat external effects in transaction callbacks.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "durable-selector",
+      "acceptance": "Persist the window identity, exact four-field binding, attempt key and fence as the unique selector; never resolve by fence alone or accept user-selected ledger partitions. Validate selector against stored immutable binding.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "authority-read",
+      "acceptance": "Read exact active login, upload session, membership, permission and authority revision in the transaction. Include missing-row and revocation dependencies. Earlier HTTP verification is insufficient; executor consumption needs a fresh fence and revocation protocol.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "cost-durability",
+      "acceptance": "Atomically persist integer USD microdollar all-in holds with accepted attempts. Restart, timeout, expiry and cancellation after fencing retain both leases and full hold. Only verified terminal evidence refunds unused hold. External enforceable cost cap and pricing remain separate prerequisites.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "acknowledgement-loss",
+      "acceptance": "Unknown commit outcomes resolve by original selector and original immutable command under fresh authority; never allocate a replacement key. Lost handoff acknowledgement goes to reconciliation, never redispatch.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "reconciliation-custody",
+      "acceptance": "Persist custodian, due time, claim generation, bounded claim expiry and evidence reference with unresolved selectors. Claim expiry permits reassignment but never releases money. Settlement requires current claim CAS and independently verified terminal evidence; stale custodians cannot settle.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "pagination-fairness",
+      "acceptance": "Use indexed bounded pages ordered by immutable selector within a captured high-water mark. Persist cursor and restart sweeps; revisit earlier nonterminal entries and newly expired rows. Retry/backoff and escalation prevent poison rows from starving later pages.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "rollback",
+      "acceptance": "Disable admission before source rollback; preserve unresolved holds, terminal costs, idempotency history, cursor and custody. Reject unsupported schemas without rewriting them. Prove backup recovery retains acknowledged commits and use a compatible reconciler without reopening uploads.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "window-rollover",
+      "acceptance": "Keep rollover blocked until separately qualified. Future rollover must atomically preserve old selector lookup, unresolved global cost/concurrency and terminal history while advancing a unique window identity; never initialize an empty competing budget ledger.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "disabled-route",
+      "acceptance": "Mounted user-import remains literal-false before body subscription. No runtime import, live store configuration, provider call, outbox dispatch or environment switch may be introduced by this source packet.",
+      "qualified": false,
+      "liveEvidenceRef": null
+    }
+  ]
+}
