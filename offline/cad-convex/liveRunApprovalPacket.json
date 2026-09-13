@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline-live-run-approval-preparation",
+  "baseCommit": "fcc353979ad7c731500a902eb9b2101233352c98",
+  "executable": false,
+  "liveQualified": false,
+  "gates": {
+    "publication": false,
+    "provisioning": false,
+    "configuration": false,
+    "liveRun": false,
+    "storeMutation": false,
+    "backupRestore": false,
+    "reconciliation": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "merge": false,
+    "deployment": false,
+    "cleanup": false
+  },
+  "fields": {
+    "identity.adapterCommit": null,
+    "identity.runnerCommit": null,
+    "identity.sourceReviewRef": null,
+    "identity.runId": null,
+    "identity.resourceAlias": null,
+    "identity.privateResourceBindingRef": null,
+    "identity.namespace": null,
+    "identity.ledgerAndWindowRef": null,
+    "identity.engineAndIsolationRef": null,
+    "identity.schemaAndIndexRef": null,
+    "identity.syntheticInventoryRef": null,
+    "identity.privilegeEvidenceRef": null,
+    "identity.fixtureDigest": null,
+    "identity.scenarioAllocationRef": null,
+    "identity.independentVerifierRef": null,
+    "custody.primaryRef": null,
+    "custody.primaryAcceptanceRef": null,
+    "custody.backupRef": null,
+    "custody.backupAcceptanceRef": null,
+    "custody.escalationOwnerRef": null,
+    "custody.recoveryOperatorRef": null,
+    "custody.evidenceReviewerRef": null,
+    "custody.retentionAcceptanceRef": null,
+    "window.startUtc": null,
+    "window.expiresUtc": null,
+    "window.trustedClockEvidenceRef": null,
+    "window.stopProcedureRef": null,
+    "cost.enforcedCapMicros": null,
+    "cost.enforcementEvidenceRef": null,
+    "cost.pricingEvidenceRef": null,
+    "cost.computeMicros": null,
+    "cost.storageMicros": null,
+    "cost.operationsMicros": null,
+    "cost.backupMicros": null,
+    "cost.egressMicros": null,
+    "cost.taxFeesFxMicros": null,
+    "cost.contingencyMicros": null,
+    "cost.retainedStateCoverageRef": null,
+    "evidence.restrictedDestinationRef": null,
+    "evidence.sanitizedDestinationRef": null,
+    "evidence.sanitizationReviewRef": null,
+    "evidence.disabledRouteBaselineRef": null,
+    "evidence.disabledRouteLivePlanRef": null,
+    "evidence.reconciliationAcceptanceRef": null,
+    "evidence.rollbackAcceptanceRef": null,
+    "evidence.recoveryBaselineRef": null,
+    "identity.ledgerId": null,
+    "identity.windowId": null,
+    "identity.fence": null
+  },
+  "evidence": {
+    "identity.adapterCommit": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.runnerCommit": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.sourceReviewRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.runId": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.resourceAlias": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.privateResourceBindingRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.namespace": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.ledgerAndWindowRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.engineAndIsolationRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.schemaAndIndexRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.syntheticInventoryRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.privilegeEvidenceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.fixtureDigest": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.scenarioAllocationRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.independentVerifierRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.primaryRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.primaryAcceptanceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.backupRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.backupAcceptanceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.escalationOwnerRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.recoveryOperatorRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.evidenceReviewerRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "custody.retentionAcceptanceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "window.startUtc": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "window.expiresUtc": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "window.trustedClockEvidenceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "window.stopProcedureRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.enforcedCapMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.enforcementEvidenceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.pricingEvidenceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.computeMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.storageMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.operationsMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.backupMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.egressMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.taxFeesFxMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.contingencyMicros": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "cost.retainedStateCoverageRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.restrictedDestinationRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.sanitizedDestinationRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.sanitizationReviewRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.disabledRouteBaselineRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.disabledRouteLivePlanRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.reconciliationAcceptanceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.rollbackAcceptanceRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "evidence.recoveryBaselineRef": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.ledgerId": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.windowId": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    },
+    "identity.fence": {
+      "ref": null,
+      "sha256": null,
+      "reviewerRef": null,
+      "reviewedUtc": null
+    }
+  },
+  "limits": {
+    "startUtc": null,
+    "expiresUtc": null,
+    "maxRunSeconds": 1800,
+    "maxTransactionAttempts": 3,
+    "transactionDeadlineMs": 5000,
+    "conflictBackoffMs": [
+      100,
+      250
+    ],
+    "maxClaimSeconds": 60,
+    "maxReconciliationPasses": 2,
+    "maxPageSize": 32,
+    "maxPagesPerPass": 4,
+    "syntheticOnly": true,
+    "independentClients": 2,
+    "globalLedgers": 1,
+    "activeWindows": 1,
+    "maxSyntheticRecords": 64,
+    "paginationFixtureRecords": 40,
+    "maxLogicalCommands": 256,
+    "maxTransactionAttemptsTotal": 768,
+    "maxRecordBytes": 4096,
+    "maxStoredBytes": 1048576,
+    "maxEvidenceBytes": 1048576,
+    "maxClientRestarts": 2,
+    "maxStoreRestarts": 0,
+    "productionAccess": false,
+    "realAuthRequired": false
+  },
+  "operationMatrix": [
+    {
+      "operation": "read-exact-selector",
+      "maxLogicalCommands": 32,
+      "maxTransactionAttempts": 96,
+      "authorized": false
+    },
+    {
+      "operation": "read-authority-dependencies",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "seed-synthetic-metadata",
+      "maxLogicalCommands": 40,
+      "maxTransactionAttempts": 120,
+      "authorized": false
+    },
+    {
+      "operation": "reserve-transaction",
+      "maxLogicalCommands": 48,
+      "maxTransactionAttempts": 144,
+      "authorized": false
+    },
+    {
+      "operation": "authority-revoke-or-delete-synthetic",
+      "maxLogicalCommands": 16,
+      "maxTransactionAttempts": 48,
+      "authorized": false
+    },
+    {
+      "operation": "fence-without-dispatch",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "mark-unknown",
+      "maxLogicalCommands": 16,
+      "maxTransactionAttempts": 48,
+      "authorized": false
+    },
+    {
+      "operation": "claim-cas",
+      "maxLogicalCommands": 20,
+      "maxTransactionAttempts": 60,
+      "authorized": false
+    },
+    {
+      "operation": "settle-from-independent-synthetic-receipt",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "scan-bounded-page",
+      "maxLogicalCommands": 8,
+      "maxTransactionAttempts": 24,
+      "authorized": false
+    },
+    {
+      "operation": "inject-abort-or-ack-loss",
+      "maxLogicalCommands": 2,
+      "maxTransactionAttempts": 6,
+      "authorized": false
+    },
+    {
+      "operation": "restart-isolated-client",
+      "maxLogicalCommands": 2,
+      "maxTransactionAttempts": 0,
+      "authorized": false
+    }
+  ],
+  "postRunEvidence": [
+    {
+      "requirementId": "serializable-commit",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "revision-cas",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "conflict-retry",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "durable-selector",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "authority-read",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "cost-durability",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "acknowledgement-loss",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "reconciliation-custody",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "pagination-fairness",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "rollback",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "window-rollover",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    },
+    {
+      "requirementId": "disabled-route",
+      "status": "pending",
+      "scenarioRef": null,
+      "artifactRef": null,
+      "sha256": null,
+      "runnerCommit": null,
+      "adapterCommit": null,
+      "runId": null,
+      "resourceAlias": null,
+      "namespace": null,
+      "utcInterval": null,
+      "engineReceiptRef": null,
+      "reviewerRef": null,
+      "disposition": null
+    }
+  ],
+  "postRunCloseout": {
+    "actualCountersRef": null,
+    "actualCostAndReceiptRef": null,
+    "disabledRouteAfterRef": null,
+    "reconciledSelectorsRef": null,
+    "unresolvedCustodyAcceptanceRef": null,
+    "sanitizedPublicationReviewRef": null
+  }
+}
