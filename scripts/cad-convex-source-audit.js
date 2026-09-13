@@ -5,6 +5,10 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-lockout-retained-terminal-state.md',
+  'offline/cad-convex/lockoutReadiness.json',
+  'offline/cad-convex/retainedTerminalState.js',
+  'scripts/cad-convex-retained-terminal-state.test.js',
   'docs/cad-bounded-retention-policy.md',
   'offline/cad-convex/boundedRetentionPolicy.json',
   'offline/cad-convex/boundedRetentionPolicy.js',
@@ -101,7 +105,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -127,3 +131,10 @@ assert.equal(retention.expiresAtUtc, null);
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/boundedRetentionPolicy.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);
+
+const lockout = JSON.parse(read('offline/cad-convex/lockoutReadiness.json'));
+for (const key of ['enabled', 'liveReady', 'cleanupVerified']) assert.equal(lockout[key], false);
+assert.ok(Object.values(lockout.gates).every(v => v === false));
+assert.equal(lockout.custodianRef, null);
+assert.equal(lockout.expiresAtUtc, null);
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/retainedTerminalState.js')));

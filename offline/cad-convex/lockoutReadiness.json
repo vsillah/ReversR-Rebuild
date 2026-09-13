@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "mode": "offline-contract-only",
+  "baseCommit": "c411fc5be019a4f0f90ae0912392a2be1bdfee8e",
+  "enabled": false,
+  "liveReady": false,
+  "cleanupVerified": false,
+  "custodianRef": null,
+  "expiresAtUtc": null,
+  "gates": {
+    "publication": false, "policyAcceptance": false, "implementation": false,
+    "environment": false, "deployment": false, "liveQualification": false,
+    "reconciliation": false, "disposition": false
+  },
+  "cases": [
+    "correct-password", "wrong-password", "signup", "reset", "verification",
+    "extra-parameters", "noncohort", "direct-auth", "concurrent-signin",
+    "concurrent-refresh", "repeated-attempts", "stale-session", "missing-lockout",
+    "expired-custody", "provider-failure", "rollback-release"
+  ],
+  "requiredDenialPostconditions": {
+    "newSessions": 0, "newRefreshTokens": 0, "newVerificationRows": 0,
+    "newCadRows": 0, "newRateLimitRows": 0,
+    "credentialProcessing": false, "enumeration": false, "unboundedLogs": false
+  }
+}
