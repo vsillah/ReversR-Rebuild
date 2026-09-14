@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 1,
+  "mode": "successor-restricted-register-public-projection",
+  "sourceMainCommit": "bfd481fe2e5409c5cc384536543428c5627adb82",
+  "sourcePr": 218,
+  "observedAtUtc": "2026-09-14T18:57:01Z",
+  "runRef": "rrb-ref:successor-bounded-development-run",
+  "publicProjectionOnly": true,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "predecessor": {
+    "sourcePr": 218,
+    "mergeCommit": "bfd481fe2e5409c5cc384536543428c5627adb82",
+    "freshReplacementPacketSha256": "adadfc84badd892708744feeca885e5498582282e793b3fc1bc15e8a96fc984d",
+    "priorFreshRolloverProjectionSha256": "d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9",
+    "priorFreshRolloverRegisterDigest": "3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724",
+    "expiredRunCloseoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199"
+  },
+  "window": {
+    "startUtc": "2026-09-15T17:00:00Z",
+    "expiresUtc": "2026-09-15T17:05:00Z",
+    "maxRunSeconds": 300,
+    "automaticRefresh": false,
+    "approved": false,
+    "boundToSuccessorRegister": true
+  },
+  "restrictedEvidence": {
+    "identity.sourceReviewRef": {
+      "ref": "rrb-ref:successor-identity-sourcereviewref",
+      "valueDigest": "37964f7bc8a80a2d42fa08486b3bf723aa096d7e02ffd4faa87d9abad7903b5a",
+      "evidenceDigest": "7b0307ddf4823dfa567536d109275d0cd9ac99d80df32a5764b4f3b296dc4776",
+      "reviewerRef": "rrb-ref:reviewer-identity-sourcereviewref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 620
+    },
+    "identity.runId": {
+      "ref": "rrb-ref:successor-identity-runid",
+      "valueDigest": "a817fb352189f3027e66e36f740cc09cd18faf679a5e89de745e6fc7a56910ba",
+      "evidenceDigest": "497f5efdfe4be4a6308f9ad68a29a51faa040575602fd5a834a603dda0b904ce",
+      "reviewerRef": "rrb-ref:reviewer-identity-runid",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 590
+    },
+    "identity.namespace": {
+      "ref": "rrb-ref:successor-identity-namespace",
+      "valueDigest": "7d1bd9b487c93646d3198ce4790b3f3deb120373bad72087e728ce3d4b628a47",
+      "evidenceDigest": "9c85eabb2ed190f51a4599c87eef9ea7ea116290c66add6312d07bae6c9b9303",
+      "reviewerRef": "rrb-ref:reviewer-identity-namespace",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 602
+    },
+    "identity.ledgerAndWindowRef": {
+      "ref": "rrb-ref:successor-identity-ledgerandwindowref",
+      "valueDigest": "ea18bd34dda44d3514a329b2aede19e78903858029d65fb9eeac0d89f425b968",
+      "evidenceDigest": "4d0aa9029161890e0a4f15109231328b808b03bed4f51b4747ebfe095899139c",
+      "reviewerRef": "rrb-ref:reviewer-identity-ledgerandwindowref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 629
+    },
+    "identity.ledgerId": {
+      "ref": "rrb-ref:successor-identity-ledgerid",
+      "valueDigest": "567123c70be6adf1d72b489b81a4a365a95ea4a609914fc74f6ae1993005dc03",
+      "evidenceDigest": "3a14b8d151da94b73d712cd9ab9404b84e52213f3c7265e70c42de979998403f",
+      "reviewerRef": "rrb-ref:reviewer-identity-ledgerid",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "identity.windowId": {
+      "ref": "rrb-ref:successor-identity-windowid",
+      "valueDigest": "cb21bfd358317f0670634cd1e8d729e578947380d460e7992979d9c0b1efefca",
+      "evidenceDigest": "0a7101bde9a7de63a7adc4053caaf94520abac7df3cbed2566a81b0ac2c5686a",
+      "reviewerRef": "rrb-ref:reviewer-identity-windowid",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "identity.fence": {
+      "ref": "rrb-ref:successor-identity-fence",
+      "valueDigest": "037034304de07d4f9a6094a8d90da677cb6342e70826e19a351e50f6f9d696a7",
+      "evidenceDigest": "986e5de2dcae99f982c5ff6ec3b9fcdaea72188aafe9d19264618375fe1d5915",
+      "reviewerRef": "rrb-ref:reviewer-identity-fence",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 590
+    },
+    "identity.resourceAlias": {
+      "ref": "rrb-ref:successor-identity-resourcealias",
+      "valueDigest": "0a142655faf32cce2cd2d48162232aa0ee2388d89a9062cae688daeee88e5846",
+      "evidenceDigest": "f24d1e3ba8e4ab9f7478db253273883eb7c2d324b85088a7ccdf2ccc9ead0b08",
+      "reviewerRef": "rrb-ref:reviewer-identity-resourcealias",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 614
+    },
+    "identity.privateResourceBindingRef": {
+      "ref": "rrb-ref:successor-identity-privateresourcebindingref",
+      "valueDigest": "9c264d014462802d0525fc1e4a2de9ed4c8db57a050d744570bb3057d93023d4",
+      "evidenceDigest": "43c99024f9b5e368ae3e84c1e068e6643990ea2700517a0dd2306d7a58efd8ba",
+      "reviewerRef": "rrb-ref:reviewer-identity-privateresourcebindingref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 650
+    },
+    "identity.engineAndIsolationRef": {
+      "ref": "rrb-ref:successor-identity-engineandisolationref",
+      "valueDigest": "a408bfa74eacab75efcdc3b1b1724a6aa63c7abef9f4f09a639c136f29222d1c",
+      "evidenceDigest": "f6e852a1fe7042761e7250292c79571a561e894cd7407368d116524a6cbfb96b",
+      "reviewerRef": "rrb-ref:reviewer-identity-engineandisolationref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "identity.syntheticInventoryRef": {
+      "ref": "rrb-ref:successor-identity-syntheticinventoryref",
+      "valueDigest": "fd96431318aaf0c51c5ccd707f4011afdbcbc4ff489e6e2bf96b391071810abe",
+      "evidenceDigest": "074693bf44ea3674bea652f3c3bd92b9eac64a43778f26e033a7a6a40e22a915",
+      "reviewerRef": "rrb-ref:reviewer-identity-syntheticinventoryref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "identity.privilegeEvidenceRef": {
+      "ref": "rrb-ref:successor-identity-privilegeevidenceref",
+      "valueDigest": "d40862197e22ad4f68238a43c858493461170d46f9bd457ad53f81ccab81a1c2",
+      "evidenceDigest": "6dde61ac4572e11c71dd0e6da3e26b9c859f5b833a003d3deac74395d3ddcbc5",
+      "reviewerRef": "rrb-ref:reviewer-identity-privilegeevidenceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 635
+    },
+    "identity.fixtureDigest": {
+      "ref": "rrb-ref:successor-identity-fixturedigest",
+      "valueDigest": "93e45dc11e8d190a5952450b43e25e97f792532c071b42ca308734b6622b7b5b",
+      "evidenceDigest": "7e4abf90e915a10b7b89dffbd7fdb31343345231fdc164d45ec5c3bc3c197197",
+      "reviewerRef": "rrb-ref:reviewer-identity-fixturedigest",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 614
+    },
+    "identity.scenarioAllocationRef": {
+      "ref": "rrb-ref:successor-identity-scenarioallocationref",
+      "valueDigest": "344c60d613649318a92d519cd873e852258bf3e5996939b82a1b72d89cd7a65e",
+      "evidenceDigest": "cd75f0a58116ebfa948cf29268bba56e2b22d991f5cc8b95da8ac64445ee707b",
+      "reviewerRef": "rrb-ref:reviewer-identity-scenarioallocationref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "identity.independentVerifierRef": {
+      "ref": "rrb-ref:successor-identity-independentverifierref",
+      "valueDigest": "2c8778e2a397f1de65c75def78256a520a8e251576584af7167359feae96bebc",
+      "evidenceDigest": "fac358ac748df1456e6c41132056bff0eac32e0b539d89710982d00b1bcf2a10",
+      "reviewerRef": "rrb-ref:reviewer-identity-independentverifierref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 641
+    },
+    "custody.primaryRef": {
+      "ref": "rrb-ref:successor-custody-primaryref",
+      "valueDigest": "16c89712ba75c07e886cb5e58efa23a84aeaf69331d9a6b070bc557db99a212c",
+      "evidenceDigest": "292834a1b7c559304e87d5f59b2cf805fe70107e02a942b0c4f5f4668486ef5d",
+      "reviewerRef": "rrb-ref:reviewer-custody-primaryref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 602
+    },
+    "custody.primaryAcceptanceRef": {
+      "ref": "rrb-ref:successor-custody-primaryacceptanceref",
+      "valueDigest": "609ac5c107ae9908eabee217cefe9d67a55934f9df01e72f9cb2183e3bfdae1b",
+      "evidenceDigest": "2c69d5ce9e8b818e3f9d1b2b4fc9512364e7e83a4b293793fd734f0259a69630",
+      "reviewerRef": "rrb-ref:reviewer-custody-primaryacceptanceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 632
+    },
+    "custody.backupRef": {
+      "ref": "rrb-ref:successor-custody-backupref",
+      "valueDigest": "3a10a6437cfc15e99b2665b08925821a9d33dd417667e117c3d9928eb4db4bfb",
+      "evidenceDigest": "a8b7c1019ad78f04aa8baf0000b5981bfcfae6f5594845993ff8515134aabe67",
+      "reviewerRef": "rrb-ref:reviewer-custody-backupref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "custody.backupAcceptanceRef": {
+      "ref": "rrb-ref:successor-custody-backupacceptanceref",
+      "valueDigest": "c9145c5882f2175d69eb14792cd1e4a9e6f44c30615040970030566e851df913",
+      "evidenceDigest": "4adea33f1ac6fc8189d35236f3204f20a0fe75fe8b64b564e52c8a57c563b259",
+      "reviewerRef": "rrb-ref:reviewer-custody-backupacceptanceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 629
+    },
+    "custody.escalationOwnerRef": {
+      "ref": "rrb-ref:successor-custody-escalationownerref",
+      "valueDigest": "e9af29d769e7b95fefbbce492412dd4ba4acd71429a6ba37df943c662f248e38",
+      "evidenceDigest": "24b0f951e7e987c51d9ce0120edd631291e9975cd34807d7caf6663a6a8262c4",
+      "reviewerRef": "rrb-ref:reviewer-custody-escalationownerref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 626
+    },
+    "custody.recoveryOperatorRef": {
+      "ref": "rrb-ref:successor-custody-recoveryoperatorref",
+      "valueDigest": "5fefd8ea8a85f5c22929bb77e688fad0404f03f4a7cae75378720a6c9c23cc89",
+      "evidenceDigest": "6cf155bea59ce967c878be0a07e699c1383dd3923b13906c0b1b1d7f5ba10270",
+      "reviewerRef": "rrb-ref:reviewer-custody-recoveryoperatorref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 629
+    },
+    "custody.evidenceReviewerRef": {
+      "ref": "rrb-ref:successor-custody-evidencereviewerref",
+      "valueDigest": "51debafd2c272018fa2382722829983e52408bcaea2bd24bf8d241ce5a49dc68",
+      "evidenceDigest": "2916de0d6ae8036561d54ca5771a78fd1aeda52bcd665726b34d381e82aab943",
+      "reviewerRef": "rrb-ref:reviewer-custody-evidencereviewerref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 629
+    },
+    "custody.retentionAcceptanceRef": {
+      "ref": "rrb-ref:successor-custody-retentionacceptanceref",
+      "valueDigest": "ad18d25cd8f235b93d03b6d45286c4d03261582c90925c0b3a9732c96d268a35",
+      "evidenceDigest": "b5491082ae75dd321f4035c173aba966930f8276a0a0e4d6451104eca9e0caa9",
+      "reviewerRef": "rrb-ref:reviewer-custody-retentionacceptanceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "window.startUtc": {
+      "ref": "rrb-ref:successor-window-startutc",
+      "valueDigest": "fb9a0f5bb4fc35c62f04f7d1c46efddce58c300b3ba275bb179f042a0b90e430",
+      "evidenceDigest": "ebc10889c9ca12793c02b95877c872a48b7e558595b70058b4f3bc6cee32adda",
+      "reviewerRef": "rrb-ref:reviewer-window-startutc",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 593
+    },
+    "window.expiresUtc": {
+      "ref": "rrb-ref:successor-window-expiresutc",
+      "valueDigest": "2656df27bdc916f5a4171aa63b5f715e8a0d2ea7e53246eef83facc48892e3e8",
+      "evidenceDigest": "5baab4c8b9d7071805b24e6b84644c87f4fc4619848ea1f703ae005f00b562f1",
+      "reviewerRef": "rrb-ref:reviewer-window-expiresutc",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "window.trustedClockEvidenceRef": {
+      "ref": "rrb-ref:successor-window-trustedclockevidenceref",
+      "valueDigest": "a31c5a4627699a052a7b162384f9a86cf4f333d1aa80cd76ab9bbb9999121388",
+      "evidenceDigest": "d24eae81e50bb766075fb3d91df3aa2b894cfdf12cef0bff7b5e17122939833a",
+      "reviewerRef": "rrb-ref:reviewer-window-trustedclockevidenceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "window.stopProcedureRef": {
+      "ref": "rrb-ref:successor-window-stopprocedureref",
+      "valueDigest": "a35fccc6df347c87742a862230e1cde3ad33e072e3ac5df7340083176b3b37c7",
+      "evidenceDigest": "1ca3f8aa93d9de2812621299bd6f370ca60c709eec3ef593477d8db8e31976af",
+      "reviewerRef": "rrb-ref:reviewer-window-stopprocedureref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 617
+    },
+    "cost.enforcedCapMicros": {
+      "ref": "rrb-ref:successor-cost-enforcedcapmicros",
+      "valueDigest": "0d1d02755f4ea676f4f172390800409d35becf165ffacd57af6efb66d4fd3024",
+      "evidenceDigest": "824d237ff957822848a6dc9aa2aa607ea9c0a5abdddf0dfeba1fd981d249f3bb",
+      "reviewerRef": "rrb-ref:reviewer-cost-enforcedcapmicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 614
+    },
+    "cost.enforcementEvidenceRef": {
+      "ref": "rrb-ref:successor-cost-enforcementevidenceref",
+      "valueDigest": "b93395c100d707dc729ed26539e01c6d3bc2f74bef46fdc54f879fb8a664fa4c",
+      "evidenceDigest": "0f13c49c81b7c42ab04e324013af2467c29f7904d26578950d0e1cc2ed974682",
+      "reviewerRef": "rrb-ref:reviewer-cost-enforcementevidenceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 629
+    },
+    "cost.pricingEvidenceRef": {
+      "ref": "rrb-ref:successor-cost-pricingevidenceref",
+      "valueDigest": "44402f512695a82b1b60573d1675e9f8b35d51f840dac253c201808cf09c8485",
+      "evidenceDigest": "3843d086990e893b92d98670984a67a4c1a63860ec3ca95c7a29eeb7c9d80f67",
+      "reviewerRef": "rrb-ref:reviewer-cost-pricingevidenceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 617
+    },
+    "cost.computeMicros": {
+      "ref": "rrb-ref:successor-cost-computemicros",
+      "valueDigest": "3abc43048db73d33cc94c29aab6d44318f1a44c40cf090f162b2f5538a537808",
+      "evidenceDigest": "8cc56d49701bcd3e456d138a0d34df579f7846baa80fae4039569c59eca656dd",
+      "reviewerRef": "rrb-ref:reviewer-cost-computemicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 602
+    },
+    "cost.storageMicros": {
+      "ref": "rrb-ref:successor-cost-storagemicros",
+      "valueDigest": "a6bcaf6c2df6d00ca9842fa97baca1a83d02500a24c4fb6fd1e9e3e22d84e41b",
+      "evidenceDigest": "94b76f8730a48eb604dbf79134bd8fa5bf8b1bfcbc27444be82d45abe1fb90c5",
+      "reviewerRef": "rrb-ref:reviewer-cost-storagemicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 602
+    },
+    "cost.operationsMicros": {
+      "ref": "rrb-ref:successor-cost-operationsmicros",
+      "valueDigest": "dcd8b39677759e5c07b5adbdcc011209a5000e5aa88a0a9265f23423f45bd99d",
+      "evidenceDigest": "8127f7b436671bbd4c841fcb7ba6602c56bc9b956906c20c838711c927d2d061",
+      "reviewerRef": "rrb-ref:reviewer-cost-operationsmicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 611
+    },
+    "cost.backupMicros": {
+      "ref": "rrb-ref:successor-cost-backupmicros",
+      "valueDigest": "7bbd69d450bbde1bea240c48f03521b1d0588a7f886aad51938583bc532054fb",
+      "evidenceDigest": "4132145d2d2941c6158d60457e211a3b94bcd54370da46ba9612af447a430078",
+      "reviewerRef": "rrb-ref:reviewer-cost-backupmicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "cost.egressMicros": {
+      "ref": "rrb-ref:successor-cost-egressmicros",
+      "valueDigest": "05405485e349555600ee39834d92645cb71a2c5a4ba906e4a2f0df6f96c5ecb0",
+      "evidenceDigest": "a5f3a9e8ce754be3465396bd68cb897fcd24499b3eb759c808149f0c3dc06f72",
+      "reviewerRef": "rrb-ref:reviewer-cost-egressmicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 599
+    },
+    "cost.taxFeesFxMicros": {
+      "ref": "rrb-ref:successor-cost-taxfeesfxmicros",
+      "valueDigest": "580f137586e507b7b58211f03c89f83f5e42c6c4b82bd97870ef96c29a341b61",
+      "evidenceDigest": "7447db342e6e9a5bc664c447fd81fead6b41e3625391c11c056431264a41934a",
+      "reviewerRef": "rrb-ref:reviewer-cost-taxfeesfxmicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 608
+    },
+    "cost.contingencyMicros": {
+      "ref": "rrb-ref:successor-cost-contingencymicros",
+      "valueDigest": "a10529d31df6656a1c4d9f6659dbc850c49a617914fa95aa541722fd1fe388c5",
+      "evidenceDigest": "57259bc855023be7036b2e7d0077f4c0a2fd36779d973a6074748b65f8fc521c",
+      "reviewerRef": "rrb-ref:reviewer-cost-contingencymicros",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 614
+    },
+    "cost.retainedStateCoverageRef": {
+      "ref": "rrb-ref:successor-cost-retainedstatecoverageref",
+      "valueDigest": "fbfdf8fe231c330e7a62345fdbf12686cf459ab11223b0dd0552c2d6dcd5e425",
+      "evidenceDigest": "13106d6225d41a517bd11542d281ffd89a6198c4d076d91d8107e142746ad3f2",
+      "reviewerRef": "rrb-ref:reviewer-cost-retainedstatecoverageref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 635
+    },
+    "evidence.restrictedDestinationRef": {
+      "ref": "rrb-ref:successor-evidence-restricteddestinationref",
+      "valueDigest": "9ee4b72bcd2b1f0b212abac9b69d9dc3776b281463834375b5e75f1b04c62594",
+      "evidenceDigest": "2c159b1b38b64bd42aca4ed106f2b4b599eb8f9a0b01ca201bcb1bb4f0ae53b5",
+      "reviewerRef": "rrb-ref:reviewer-evidence-restricteddestinationref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 647
+    },
+    "evidence.sanitizedDestinationRef": {
+      "ref": "rrb-ref:successor-evidence-sanitizeddestinationref",
+      "valueDigest": "ab782402fbcd7235ab2db506f5bee5dd63ff09104bb5422652a0d717b22c6f39",
+      "evidenceDigest": "960499c8075bc06ec8bb02c458f104c9d77485cb690fb7c5f43bc45c58891fc9",
+      "reviewerRef": "rrb-ref:reviewer-evidence-sanitizeddestinationref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 644
+    },
+    "evidence.sanitizationReviewRef": {
+      "ref": "rrb-ref:successor-evidence-sanitizationreviewref",
+      "valueDigest": "840228798ec864f5cc6e20719c75a8112b8a3732f8b651d85f61630cc4dc1b89",
+      "evidenceDigest": "d0ef39837c89b2a834a770c0aa9c2f432f0dec12bcbc44b53e7638720c2298ef",
+      "reviewerRef": "rrb-ref:reviewer-evidence-sanitizationreviewref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "evidence.disabledRouteLivePlanRef": {
+      "ref": "rrb-ref:successor-evidence-disabledrouteliveplanref",
+      "valueDigest": "21f2795b541340d0e7d9ce14516257acf22b71625bd53bf7e3d601f9e9110c30",
+      "evidenceDigest": "c17de87dafc3d2b148f9baf845cc07ce00c4579681b96b61947b0519186802da",
+      "reviewerRef": "rrb-ref:reviewer-evidence-disabledrouteliveplanref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 647
+    },
+    "evidence.reconciliationAcceptanceRef": {
+      "ref": "rrb-ref:successor-evidence-reconciliationacceptanceref",
+      "valueDigest": "ac3278b9cea5df1e8e1a1b7341c7b097dbce09111efde55e3fdbad9b6ac9a18a",
+      "evidenceDigest": "fe703f373e2e069ded5846de9286f95e5d2b09f6bfd3ecd6a7e3fe5b95fa6a0b",
+      "reviewerRef": "rrb-ref:reviewer-evidence-reconciliationacceptanceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 656
+    },
+    "evidence.rollbackAcceptanceRef": {
+      "ref": "rrb-ref:successor-evidence-rollbackacceptanceref",
+      "valueDigest": "4e6c910ecdbfc94da7aab50dbd5913f57a0c3d08f2cf63ca10391c0e090eb32a",
+      "evidenceDigest": "b9099155a443f63b853b16c0fffad4fd6fd7032ab12c733251694f2fd9ab00b4",
+      "reviewerRef": "rrb-ref:reviewer-evidence-rollbackacceptanceref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 638
+    },
+    "evidence.recoveryBaselineRef": {
+      "ref": "rrb-ref:successor-evidence-recoverybaselineref",
+      "valueDigest": "da78924b4deab2419ef2ed4507cc1614cd832e1d029e576955fd98cb69b230f5",
+      "evidenceDigest": "5fa426deb711bdbe3cfcacc0b50403250cf6f2b5e170a0156f6cd029d02d9035",
+      "reviewerRef": "rrb-ref:reviewer-evidence-recoverybaselineref",
+      "reviewedUtc": "2026-09-14T18:57:01Z",
+      "byteCount": 632
+    }
+  },
+  "commandCards": {
+    "schemaVersion": 1,
+    "mode": "offline-command-card-review",
+    "executable": false,
+    "liveRunAuthorized": false,
+    "uploadsEnabled": false,
+    "conversionEnabled": false,
+    "fields": {
+      "runnerCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+      "adapterCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+      "dossierDigest": "4409614c421a5330612031de33f78b00ab89a5d17a11f758e0f3d5868e2bf34f",
+      "envelopeDigest": "9cfd18dad2abbb23f64564c84391ed32f8aba17b532357500b5c3e162a52c9f2",
+      "resourceBindingDigest": "03724748912e3e215958c373c06c7cc6a7e511389f14147fa347bc4249380046",
+      "selectorScopeDigest": "534cc10f6743f1ddbab759f9f4bea2e788fcbb9653de6935e152d3c593df163b",
+      "credentialMechanismDigest": "fd3eed719c4a7dcefd70619104814f30bd4f957b425fd31b241399f1c3ed2928",
+      "adapterContractDigest": "71ede07bab3848f142c83ea1e8558569e31ac8058d4b5f46208fb288164cfd09",
+      "independentReviewDigest": "b5cc73fe12abb15e5770a7a62d9e759404a88eb32e0e40b386c77e544b2c5379"
+    },
+    "limits": {
+      "startUtc": null,
+      "expiresUtc": null,
+      "maxRunSeconds": 1800,
+      "maxTransactionAttempts": 3,
+      "transactionDeadlineMs": 5000,
+      "conflictBackoffMs": [
+        100,
+        250
+      ],
+      "maxClaimSeconds": 60,
+      "maxReconciliationPasses": 2,
+      "maxPageSize": 32,
+      "maxPagesPerPass": 4,
+      "syntheticOnly": true,
+      "independentClients": 2,
+      "globalLedgers": 1,
+      "activeWindows": 1,
+      "maxSyntheticRecords": 64,
+      "paginationFixtureRecords": 40,
+      "maxLogicalCommands": 256,
+      "maxTransactionAttemptsTotal": 768,
+      "maxRecordBytes": 4096,
+      "maxStoredBytes": 1048576,
+      "maxEvidenceBytes": 1048576,
+      "maxClientRestarts": 2,
+      "maxStoreRestarts": 0,
+      "productionAccess": false,
+      "realAuthRequired": false
+    },
+    "operationMatrix": [
+      {
+        "operation": "read-exact-selector",
+        "maxLogicalCommands": 32,
+        "maxTransactionAttempts": 96,
+        "authorized": false
+      },
+      {
+        "operation": "read-authority-dependencies",
+        "maxLogicalCommands": 24,
+        "maxTransactionAttempts": 72,
+        "authorized": false
+      },
+      {
+        "operation": "seed-synthetic-metadata",
+        "maxLogicalCommands": 40,
+        "maxTransactionAttempts": 120,
+        "authorized": false
+      },
+      {
+        "operation": "reserve-transaction",
+        "maxLogicalCommands": 48,
+        "maxTransactionAttempts": 144,
+        "authorized": false
+      },
+      {
+        "operation": "authority-revoke-or-delete-synthetic",
+        "maxLogicalCommands": 16,
+        "maxTransactionAttempts": 48,
+        "authorized": false
+      },
+      {
+        "operation": "fence-without-dispatch",
+        "maxLogicalCommands": 24,
+        "maxTransactionAttempts": 72,
+        "authorized": false
+      },
+      {
+        "operation": "mark-unknown",
+        "maxLogicalCommands": 16,
+        "maxTransactionAttempts": 48,
+        "authorized": false
+      },
+      {
+        "operation": "claim-cas",
+        "maxLogicalCommands": 20,
+        "maxTransactionAttempts": 60,
+        "authorized": false
+      },
+      {
+        "operation": "settle-from-independent-synthetic-receipt",
+        "maxLogicalCommands": 24,
+        "maxTransactionAttempts": 72,
+        "authorized": false
+      },
+      {
+        "operation": "scan-bounded-page",
+        "maxLogicalCommands": 8,
+        "maxTransactionAttempts": 24,
+        "authorized": false
+      },
+      {
+        "operation": "inject-abort-or-ack-loss",
+        "maxLogicalCommands": 2,
+        "maxTransactionAttempts": 6,
+        "authorized": false
+      },
+      {
+        "operation": "restart-isolated-client",
+        "maxLogicalCommands": 2,
+        "maxTransactionAttempts": 0,
+        "authorized": false
+      }
+    ],
+    "cards": [
+      {
+        "id": "C0",
+        "effect": "offline-preflight",
+        "executable": false,
+        "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+        "fields": {
+          "restrictedCommandRef": "rrb-ref:successor-command-c0",
+          "restrictedCommandDigest": "a171148c200a6548b56c686e245833949b1f022a2b53d1282f73e3247d7cd0f5",
+          "executableVersionDigest": "a8c84811e9710c3492e84fed0e9b64c4cb48df17e369d3b2a3224762da3f860b",
+          "executableSha256": "c2cbde00587adf8b45691935da22f70703981febf07a9ec1f67ad7a1fafdc0e4",
+          "argvDigest": "5d40abf4b8a81572a9e003f92742fbdd57f167dae52755def1f99e4e5263d7e1",
+          "cwdDigest": "684ed2f642aa4c2c64214452a427868fede022c3ef5b9577f51c34b3659d3eed",
+          "inputArtifactDigest": "f92b367d2903c3f4dd99bad894031850fce6e96c71d24e9e5689cde47387935d",
+          "outputContractDigest": "a3098fc8ce6e94909af84c59409721f828ca626c560766e8e2ae8321bfa24623",
+          "reviewReceiptDigest": "731c1fe0654ab6ca1af37566af73e6b1866a35c7c643f04302e03c166d3e680b",
+          "timeoutMs": 5000,
+          "allowedSelectorsDigest": "21fb7a372dd22798158e927c97bc5875c468e8d28a34b3002f31fb3daeda3521",
+          "allowedSideEffectsDigest": "0fef19d78905e1e6936820403c4995112edba19ca422430589311b1922453139",
+          "expectedResultCodesDigest": "bd05c0513326641ac5908ca8354ba546b79e3d5ed0110a83830092ffed1811f9",
+          "stopPlanDigest": "4d49d8a7d8f40fa41e04514832c7f26681ab2f75f3ea4062cbfe7fe0f36912d6"
+        },
+        "allocation": []
+      },
+      {
+        "id": "C1",
+        "effect": "disabled-route-precheck-no-body",
+        "executable": false,
+        "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+        "fields": {
+          "restrictedCommandRef": "rrb-ref:successor-command-c1",
+          "restrictedCommandDigest": "5ecf417fb276a9c99f604dbbe48e2b8840a7c48e8413b9bdfb15920609c6fccb",
+          "executableVersionDigest": "4e8419a9a463fc28d2ac5e0359326ae9eda96bf79b0f26ca16dce6519ea89387",
+          "executableSha256": "6995df9d36bfd5c9cad67707fe3de39c602bd1a7e182ea670a6cdf3b41670360",
+          "argvDigest": "59c04aae453bbd5cf16317184b8a9523ab23d48467c2424007a3d472ed94332d",
+          "cwdDigest": "d89f74e298a6972d36e7789bfc351325a739836554213eea53a2226066574245",
+          "inputArtifactDigest": "e785f577b8db75edef6ef94860948d88fa78a01539146c7e8de0b5bd65916196",
+          "outputContractDigest": "42b0e99e9a18a25899a1fded7d2d8423e77272ab0a25ce0623b79ad71fb57cfd",
+          "reviewReceiptDigest": "ad6b923afedf0c430d6ff19160c4cf76fac239860ee2e0941656dde49e6d3ac2",
+          "timeoutMs": 5000,
+          "allowedSelectorsDigest": "0af57bcba3bd1b305bdb78667eca48ad7f3eb0d7f4b399ee63caff1dc95a52cd",
+          "allowedSideEffectsDigest": "d51457ca7b86d9bf8f7ae49d1805e7439ab7d9a56eee3e1c0723a442826c6648",
+          "expectedResultCodesDigest": "8addbe34740dc3a68f8effebbd311c5f1a21f94ee2bce4c3ace257de36dffae6",
+          "stopPlanDigest": "6190971ac38d4eaccf045e5975f1f853e10c3f7a1fc5a90f275ac3f14ce684e7"
+        },
+        "allocation": []
+      },
+      {
+        "id": "C2",
+        "effect": "synthetic-metadata-qualification",
+        "executable": false,
+        "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+        "fields": {
+          "restrictedCommandRef": "rrb-ref:successor-command-c2",
+          "restrictedCommandDigest": "ae20bc2f395d4c57287fa807f1cf488b44a4fe2f069853e62ee24b203d856671",
+          "executableVersionDigest": "41043647fdc13320eaee86d5f9e97765f7e7cd9fb0aafd7c42c7fa12374f4556",
+          "executableSha256": "b19ad1b74d6cfdc26a52df7e6e4c0ec44e6fedba7719e59738a8f8b46bd04a31",
+          "argvDigest": "5d9f1af84c32f93fdc645ca768e06e13b397350b68c4420b90617b40a5560a45",
+          "cwdDigest": "9ef01bac5794795c798ae9f34a4ba78812b9f9760a2a4b314fd261f31622f231",
+          "inputArtifactDigest": "4cc886921ce41672ab0403f353773e0e6a7e6676ccd96b1042fa6e0beba3126a",
+          "outputContractDigest": "23e4409b626bbc81f88a1b3e073fdbdcedb2c8eb141edc26652e0e595f437712",
+          "reviewReceiptDigest": "0380454bd0c37b870f33d3b22098a6a06e3dd71d01577d865aa47abf925265f7",
+          "timeoutMs": 5000,
+          "allowedSelectorsDigest": "1ec57117705b64e987795e210bd20096148437b9b2d7726bb4bff3b7bec05155",
+          "allowedSideEffectsDigest": "d917ab7041d72833b5d5c777e8c5f27be5de1d1d8727ea0ecf27881b63938f17",
+          "expectedResultCodesDigest": "96697eca59c70cf97b9b1f1b18cf6e972fadbb8c84888c45bf1f42c2d6bd789c",
+          "stopPlanDigest": "e620d9c06dccb2718193bdbe87565226b01c352fec77ef401ccfa83159cc4a51"
+        },
+        "allocation": [
+          {
+            "operation": "read-exact-selector",
+            "logicalCommands": 24,
+            "transactionAttempts": 72
+          },
+          {
+            "operation": "read-authority-dependencies",
+            "logicalCommands": 18,
+            "transactionAttempts": 54
+          },
+          {
+            "operation": "seed-synthetic-metadata",
+            "logicalCommands": 40,
+            "transactionAttempts": 120
+          },
+          {
+            "operation": "reserve-transaction",
+            "logicalCommands": 48,
+            "transactionAttempts": 144
+          },
+          {
+            "operation": "authority-revoke-or-delete-synthetic",
+            "logicalCommands": 16,
+            "transactionAttempts": 48
+          },
+          {
+            "operation": "fence-without-dispatch",
+            "logicalCommands": 24,
+            "transactionAttempts": 72
+          },
+          {
+            "operation": "mark-unknown",
+            "logicalCommands": 8,
+            "transactionAttempts": 24
+          },
+          {
+            "operation": "claim-cas",
+            "logicalCommands": 8,
+            "transactionAttempts": 24
+          },
+          {
+            "operation": "settle-from-independent-synthetic-receipt",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "scan-bounded-page",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "inject-abort-or-ack-loss",
+            "logicalCommands": 2,
+            "transactionAttempts": 6
+          },
+          {
+            "operation": "restart-isolated-client",
+            "logicalCommands": 2,
+            "transactionAttempts": 0
+          }
+        ]
+      },
+      {
+        "id": "C3",
+        "effect": "bounded-original-selector-reconciliation",
+        "executable": false,
+        "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+        "fields": {
+          "restrictedCommandRef": "rrb-ref:successor-command-c3",
+          "restrictedCommandDigest": "415b8515183d62e647ecd4c30a51f8d5ab5f97fcdccc65a8e010735ba15ecaf1",
+          "executableVersionDigest": "e1b780226ed0278f24c3b7af1bce1e1f0853ea4fcf7e864e237d72291a70c407",
+          "executableSha256": "bf1a8db9e1a53953e84270f484b2b123102cc1fd2193ba49fc6d66e73ce41bb3",
+          "argvDigest": "a8bac2e5c0d964263fc50efe443ea685a263e4a688fbbe33ba43f0b93b79b036",
+          "cwdDigest": "faf0eefe000420221304d2a27b3f25c7f45553b0073c136efffc834e6d1fd78e",
+          "inputArtifactDigest": "3f4ff16da3727e71be1b4f1ae92ee26d87c0d45de333c1c141dd2ccd08e62c88",
+          "outputContractDigest": "32eb07efc3230739ad4a85d67006e22c754fcc87dd30c4220f4e1808f68ffd1d",
+          "reviewReceiptDigest": "02ebe827ea62c44f3da425316a7e424e13c4212265658e2eee93966040dcc26b",
+          "timeoutMs": 5000,
+          "allowedSelectorsDigest": "37672b85bfb62867f96b1162074c1c790e4f5fe5e6bc92f7360c560bef2cceb0",
+          "allowedSideEffectsDigest": "7a56a033fed33a1345d50d503ee672cbaad619af15c5f881f1cba3fe0f9603c3",
+          "expectedResultCodesDigest": "9ec9301dc360e9b5830b93d549d98ddb06672823521c969c8d6abd915706f9ee",
+          "stopPlanDigest": "48a10be021783a9b24756ba585bbbc1ca682910d7fe7af36f2d831cc38357a0b"
+        },
+        "allocation": [
+          {
+            "operation": "read-exact-selector",
+            "logicalCommands": 8,
+            "transactionAttempts": 24
+          },
+          {
+            "operation": "read-authority-dependencies",
+            "logicalCommands": 6,
+            "transactionAttempts": 18
+          },
+          {
+            "operation": "seed-synthetic-metadata",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "reserve-transaction",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "authority-revoke-or-delete-synthetic",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "fence-without-dispatch",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "mark-unknown",
+            "logicalCommands": 8,
+            "transactionAttempts": 24
+          },
+          {
+            "operation": "claim-cas",
+            "logicalCommands": 12,
+            "transactionAttempts": 36
+          },
+          {
+            "operation": "settle-from-independent-synthetic-receipt",
+            "logicalCommands": 24,
+            "transactionAttempts": 72
+          },
+          {
+            "operation": "scan-bounded-page",
+            "logicalCommands": 8,
+            "transactionAttempts": 24
+          },
+          {
+            "operation": "inject-abort-or-ack-loss",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          },
+          {
+            "operation": "restart-isolated-client",
+            "logicalCommands": 0,
+            "transactionAttempts": 0
+          }
+        ]
+      },
+      {
+        "id": "C4",
+        "effect": "disabled-route-postcheck-no-body-and-closeout",
+        "executable": false,
+        "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+        "fields": {
+          "restrictedCommandRef": "rrb-ref:successor-command-c4",
+          "restrictedCommandDigest": "e085012984fc3d50685615a385a3514fbc3cc3ca6787fc60292c4cc3acbf5817",
+          "executableVersionDigest": "17b42bdc5367160a48dcd4ef5b974e0111f2d557d630fecd932b88d55367f5af",
+          "executableSha256": "101d6269fc11cde51df00df417e6009912ba291c3ab11eb80a8d002aa2789fb6",
+          "argvDigest": "cb15be1cbe6c5e2d5b53932035413c146bd0ba287b9bb8327ec4ca57058a7218",
+          "cwdDigest": "f680bb907fbcb969b796e4498b65421d0369731c1a45a44d1dcee3bf3098cb87",
+          "inputArtifactDigest": "ee644dde95ffdfae08f85f3c812e78fe319e95afe80f22714f8a94ec86a04ee3",
+          "outputContractDigest": "456b7ea8133a50b16575896b948bf7e6b99c2683c4c6d8dee52c5941ff761d2f",
+          "reviewReceiptDigest": "5d1bdc828c5aa24f3b7416a641ee50a2a177abdd510945dfd63168b4daf029cf",
+          "timeoutMs": 5000,
+          "allowedSelectorsDigest": "9054433b9652ae4cee379cf1953b0a3860f6cf2b306bd4b812f4f54ce31d338a",
+          "allowedSideEffectsDigest": "14c1972bd9c9478c9ed7b89140cb41c7d655119662e928452db65b5484dad73e",
+          "expectedResultCodesDigest": "46bb2dcbcb5cbcf35cb4fdc9de682e2f1a46a0c18bf113abc15f9268d4c6a8a5",
+          "stopPlanDigest": "163ba97fbf4e94f210b9843011da11efe54b6d7789766e74d472eb2c5fcb438c"
+        },
+        "allocation": []
+      }
+    ],
+    "stopPolicy": {
+      "unknown": "STOP_NEW_WORK_RECONCILE_ORIGINAL_SELECTOR",
+      "expiry": "STOP_ALL_REMOTE_PRESERVE_CUSTODY",
+      "retry": "EXPLICIT_CONFLICT_ONLY",
+      "releaseHolds": false,
+      "releaseLeases": false,
+      "redispatch": false,
+      "resume": false,
+      "recoveryRequiresSeparateApproval": true
+    },
+    "requirements": [
+      {
+        "id": "serializable-commit",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "revision-cas",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "conflict-retry",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "durable-selector",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "authority-read",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "cost-durability",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "acknowledgement-loss",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "reconciliation-custody",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "pagination-fairness",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "rollback",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "window-rollover",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      },
+      {
+        "id": "disabled-route",
+        "liveQualified": false,
+        "liveEvidenceRef": null
+      }
+    ]
+  },
+  "restrictedCommandByteCounts": {
+    "C0": 429,
+    "C1": 443,
+    "C2": 444,
+    "C3": 452,
+    "C4": 457
+  },
+  "restrictedCommandSetDigest": "8decf5762fd50e0a8cb54d99101a4843e886f1082a6ee0f54be080ee406f2f8b",
+  "commandCardProjectionDigest": "c916d8c869b354d55297ea5dc76cb2cf50db03ead73d7766a7d3c66d4371658c",
+  "commandCardProjectionByteCount": 12416,
+  "restrictedRegisterDigest": "419151192084ed42d347f2f4973511a3166e792325a197801a8586df017baa6c",
+  "restrictedRegisterByteCount": 56204,
+  "sanitizedDestinationRef": "rrb-ref:cad-successor-sanitized-evidence-destination",
+  "restrictedDestinationRef": "rrb-ref:cad-successor-restricted-evidence-destination",
+  "independentReviewRef": "rrb-ref:cad-successor-independent-review",
+  "gates": {
+    "restrictedEvidenceAccepted": false,
+    "liveRunAuthorized": false,
+    "uploadsEnabled": false,
+    "conversionEnabled": false,
+    "providerBinding": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "billingChange": false,
+    "sandbox": false,
+    "push": false,
+    "merge": false,
+    "deployment": false,
+    "cleanup": false
+  }
+}

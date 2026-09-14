@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-safe-successor-register-provenance-acceptance-prep",
+  "status": "RESTRICTED_EVIDENCE_ACCEPTANCE_PREPARED_NO_LIVE_AUTHORITY",
+  "sourceMainCommit": "bfd481fe2e5409c5cc384536543428c5627adb82",
+  "sourcePr": 218,
+  "observedAtUtc": "2026-09-14T18:57:01Z",
+  "expensesUsd": 0,
+  "publicProjectionOnly": true,
+  "predecessor": {
+    "freshReplacementPacketSha256": "adadfc84badd892708744feeca885e5498582282e793b3fc1bc15e8a96fc984d",
+    "priorFreshRolloverProjectionSha256": "d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9",
+    "priorFreshRolloverRegisterDigest": "3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724",
+    "priorFreshRolloverCommandCardProjectionDigest": "6a38c8b6960b33ecb8be339ffe6676a48514d42c4592f618a066e0387982a98f",
+    "priorFreshRolloverRestrictedCommandSetDigest": "2e2c95a7f82308efd05bb907ed8bbb9609d2b86c02659dbbe786318460c2d51e",
+    "priorFreshRolloverPlanningEvidenceSha256": "e911f3cf4df0b4bc0579683726182746fbe1d8af5acf00b33dbbecc7847934f7",
+    "expiredRunCloseoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199"
+  },
+  "provenanceRecovery": {
+    "authenticOriginalRolloverRegisterFound": false,
+    "authenticOriginalStillPreferred": true,
+    "olderAcceptedRegisterFound": true,
+    "olderAcceptedRegisterCanonicalDigest": "0ed5be1773de1db4f7f9f6991a63f29473a530dfe53716ee1d955e61380c3c58",
+    "olderAcceptedRegisterSubstituted": false,
+    "successorPreparedFromRecoveredOriginal": false,
+    "successorRequiresIndependentReview": true,
+    "publicDigestsCanReconstructPrivateEvidence": false,
+    "sourceSafeProjectionOnly": true
+  },
+  "localRestrictedArtifacts": {
+    "directoryMode": "0700",
+    "fileMode": "0600",
+    "gitIgnored": true,
+    "rawValuesInGit": false,
+    "successorRegisterPrepared": true,
+    "successorRegisterDigest": "419151192084ed42d347f2f4973511a3166e792325a197801a8586df017baa6c",
+    "successorRegisterByteCount": 56204,
+    "successorProjectionSha256": "9b05d00e9825cadc3c7aa1af561700ed8c00af22c0b1648530b68ae509d25026",
+    "successorProjectionComplete": true,
+    "commandCardsAvailable": 5,
+    "commandCardProjectionDigest": "c916d8c869b354d55297ea5dc76cb2cf50db03ead73d7766a7d3c66d4371658c",
+    "commandCardProjectionByteCount": 12416,
+    "restrictedCommandSetDigest": "8decf5762fd50e0a8cb54d99101a4843e886f1082a6ee0f54be080ee406f2f8b",
+    "restrictedCommandDigestReceipt": "8decf5762fd50e0a8cb54d99101a4843e886f1082a6ee0f54be080ee406f2f8b"
+  },
+  "successorWindow": {
+    "startUtc": "2026-09-15T17:00:00Z",
+    "expiresUtc": "2026-09-15T17:05:00Z",
+    "maxRunSeconds": 300,
+    "automaticRefresh": false,
+    "approved": false,
+    "boundToSuccessorRegister": true
+  },
+  "evidenceReadiness": {
+    "requiredFields": 45,
+    "projectedFields": 45,
+    "acceptedFields": 0,
+    "commandCardsAvailable": 5,
+    "resourceBindingEvidenceReady": true,
+    "costEvidenceReady": true,
+    "custodyEvidenceReady": true,
+    "utcEvidenceReady": true,
+    "disabledRoutePlanReady": true,
+    "reconciliationAcceptanceReady": true,
+    "rollbackAcceptanceReady": true,
+    "retainedStateCustodyReady": true,
+    "independentReviewAccepted": false,
+    "restrictedEvidenceAcceptanceGranted": false
+  },
+  "retainedState": {
+    "expiredRunRetryAuthorized": false,
+    "deleteAuthorized": false,
+    "retainNoDeleteCustody": true,
+    "closeoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199"
+  },
+  "gates": {
+    "restrictedEvidenceAccepted": false,
+    "liveRunAuthorized": false,
+    "uploadsEnabled": false,
+    "conversionEnabled": false,
+    "providerBinding": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "billingChange": false,
+    "sandbox": false,
+    "push": false,
+    "merge": false,
+    "deployment": false,
+    "cleanup": false
+  },
+  "nextHumanGates": {
+    "restrictedEvidenceAcceptance": "Approve accepting restricted successor evidence projection 9b05d00e9825cadc3c7aa1af561700ed8c00af22c0b1648530b68ae509d25026 for synthetic durable-adapter development run rrb-ref:successor-bounded-development-run with private successor restricted register 419151192084ed42d347f2f4973511a3166e792325a197801a8586df017baa6c, command cards C0-C4 byte-count/digest receipts 8decf5762fd50e0a8cb54d99101a4843e886f1082a6ee0f54be080ee406f2f8b/c916d8c869b354d55297ea5dc76cb2cf50db03ead73d7766a7d3c66d4371658c, resource alias rrb-ref:successor-resource-alias, namespace/ledger/window/fence rrb-ref:successor-namespace/rrb-ref:successor-ledger-window/rrb-ref:successor-fence, UTC/cost cap evidence 5fd1bf4f70ef6a4ebd617d20e3a564ab7ccc9485cb17476ca2ae0f4d2d207df0/84ae5de3cc62da2d7a6ac54a2156a47e97f9f7f04dc345ad97d4deb9954bd6dd, custody and reviewer acceptances cf219145a08fb0baa24a69e9abf9a6a8b9f37c8ee4d5e8011c4d4d42cbc2c94e/756bef52c8bafc912b0577e4832a1dc746945f9051619dc7c76814980b8f5418/rrb-ref:cad-successor-independent-review, disabled-route pre/post plan 1be4c97e91de4df210feb7521764ceb555b13aae4ca2622252e68acdc8e47dab, reconciliation/rollback acceptance 8909f264a64daba7980809f1f2d13f47fed05922f52c94d8298983b814cee210/1c41262b552698cd730652fa4640139c578691842012d484f31b7e0dad9062af and retained-state custody 1aad901b40ffe01acfd169a1a6c78659bbd4d0c411f29ec6e1c3a77c7cd898f8. This accepts evidence completeness only and authorizes no live run, provider/resource/env mutation, upload activation, conversion, private CAD, Sandbox dispatch, deployment, merge or cleanup.",
+    "liveRunApproval": "BLOCKED_UNTIL_RESTRICTED_EVIDENCE_ACCEPTED_AND_EXECUTOR_REBIND_REVIEWED",
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-successor-register-provenance to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-safe CAD successor-register provenance and evidence-acceptance prep packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets outside ignored reviewed restricted evidence artifacts, usage/billing changes, enrollment, email/SMS/Slack, store mutation outside reviewed restricted evidence artifacts, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, expired-run retry, live run, or branch/worktree cleanup."
+  }
+}

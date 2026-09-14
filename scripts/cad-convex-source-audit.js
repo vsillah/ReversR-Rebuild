@@ -9,6 +9,11 @@ const files = [
   'docs/cad-fresh-replacement-restricted-evidence.json',
   'offline/cad-convex/freshReplacementRestrictedEvidence.js',
   'scripts/cad-fresh-replacement-restricted-evidence.test.js',
+  'docs/cad-successor-register-provenance-acceptance.md',
+  'docs/cad-successor-register-provenance-acceptance.json',
+  'docs/cad-successor-register-provenance-projection.json',
+  'offline/cad-convex/successorRegisterProvenanceAcceptance.js',
+  'scripts/cad-successor-register-provenance-acceptance.test.js',
   'docs/cad-fresh-executor-rebind-evidence-prep.md',
   'docs/cad-fresh-executor-rebind-evidence-prep.json',
   'offline/cad-convex/durableEngine.js',
@@ -267,6 +272,19 @@ assert.equal(freshReplacementResult.structureValid, true);
 assert.equal(freshReplacementResult.decision, 'LIVE_RUN_BLOCKED');
 assert.equal(freshReplacementResult.readyForLiveRunApproval, false);
 assert.equal(freshReplacementResult.successorExecutable, false);
+const successorAcceptance = JSON.parse(read('docs/cad-successor-register-provenance-acceptance.json'));
+const successorProjection = JSON.parse(read('docs/cad-successor-register-provenance-projection.json'));
+const successorAcceptanceResult = require('../offline/cad-convex/successorRegisterProvenanceAcceptance')
+  .inspectSuccessorRegisterProvenanceAcceptance(successorAcceptance, successorProjection);
+assert.equal(successorAcceptanceResult.structureValid, true);
+assert.equal(successorAcceptanceResult.decision, 'LIVE_RUN_BLOCKED');
+assert.equal(successorAcceptanceResult.readyForRestrictedEvidenceAcceptance, true);
+assert.equal(successorAcceptanceResult.readyForLiveRunApproval, false);
+assert.equal(successorAcceptance.provenanceRecovery.olderAcceptedRegisterSubstituted, false);
+assert.equal(successorAcceptance.evidenceReadiness.restrictedEvidenceAcceptanceGranted, false);
+assert.equal(successorAcceptance.nextHumanGates.liveRunApproval,
+  'BLOCKED_UNTIL_RESTRICTED_EVIDENCE_ACCEPTED_AND_EXECUTOR_REBIND_REVIEWED');
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/successorRegisterProvenanceAcceptance.js')));
 
 for (const name of ['durableAdapter.js', 'liveRunner.js', 'durableEvidenceBinding.js'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
