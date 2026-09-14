@@ -26,6 +26,29 @@ fixed card IDs and effects, not as executable shell bytes. Runtime execution is
 possible only when a later approved caller injects a reviewed development-only
 durable adapter, a no-body disabled-route checker and a sanitized evidence sink.
 
+## Rebuilt successor rebind update
+
+The executor now also carries a second accepted evidence binding for the rebuilt
+successor packet accepted after PR #219:
+
+- projection `30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8`
+- acceptance receipt `f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d`
+- private register digest `53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65`
+- restricted command set digest `7d29d14ee50269ba2a24607fe662bc95b4aea8aef3a22cda9234252ea3ddeb48`
+- command-card projection digest `4b102923f9ff0bc4f46f618894b4503e4b63e43f0b8b3991f82fe5eaff4144c6`
+
+`inspectAcceptedRunArtifacts` detects the rebuilt successor artifact shape and
+routes it through a dedicated validator. The old accepted-evidence path remains
+unchanged. `executeBoundedDevelopmentQualificationRun` accepts only a
+`oneRunApproval` object matching one of the reviewed bindings, then verifies the
+loaded artifacts match that same binding before it can call an injected adapter.
+Sanitized evidence includes `acceptedEvidenceKey` so a future local fixture or
+approved development run cannot silently report the prior digest chain.
+
+This rebind remains source-only. It grants no live run authority, no provider or
+resource mutation, no upload activation, no conversion, no private CAD access
+and no Sandbox dispatch.
+
 ## Runtime boundary
 
 `offline/cad-convex/boundedDevQualificationExecutor.js` exports:
