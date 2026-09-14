@@ -39,14 +39,21 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
+    "offline/cad-convex/durableAdapter.js": "ce3bcb5e02894bc0c2128cd87180da84c235bf6f99481c9821cdd5b782bc334e",
+    "offline/cad-convex/durableAdapter.d.ts": "eabbc597bad320b69b42f58fa55aae62e0c86fc1ad9921984262b52d037dbd41",
+    "offline/cad-convex/liveRunner.js": "94eb8bfe9d0b09b8b5d4457b78d68268c2f43e4b35547a9ccaddfe2ab1fd870c",
+    "offline/cad-convex/liveRunnerOutput.json": "0b52abc346474ace594af9fb01dac7cc09fd1fb9ee0923dd3ea86c35ce0dfdc6",
+    "scripts/cad-live-runner.js": "002c3643bd7e76f5f68c85092430fd178e5566f17b9e5d1f4f319874f8f8bae7",
+    "scripts/cad-live-runner.test.js": "0d3d734e8e04d5d07d186bf806120d771cd5837d9b760078b83a2573ec2eb0e5",
+    "docs/cad-live-runner-adapter-source.md": "21cf6f354aee8048b15bef60ad9477cd05ea3e5a566850e370517013c515d0ad",
     "offline/cad-convex/runnerCommandCards.json": "b7754a6b538079cd505ed68c24a1ec9a120690ecdddd87d16b003ddd4732a3c6",
     "offline/cad-convex/runnerCommandCards.js": "fc41c4488eee66bd6eae13623ceb1681057a464236d5077bf463265811079ec9",
     "scripts/cad-runner-command-cards.js": "02528f1dad0c10ca01dcf3099d171475435af49fa357596774197e4638676c2f",
     "scripts/cad-runner-command-cards.test.js": "64b7f8d075ff7830b552d65438e502de36c8373da12715d2957183764da83610",
-    "docs/cad-runner-adapter-command-cards.md": "a3324f7113db9caf5a69ee7e5fe4b9adff596a9a998b6d53320eb6088f0fa636",
+    "docs/cad-runner-adapter-command-cards.md": "8627b4758ad6b7d33114bf52d19de1937cd8468da5198daa0923a453f757a33c",
     "docs/cad-mark-handoff.md": "42c311d70178f8f4d2874651a6a5c741a7a80177a4accc95f985e27f573716dd",
     "docs/cad-mark-handoff-evidence.md": "ea7c24a7f718174e75e195d58bbdf48033e0c5af08c0f546b834b6e95d8ea6fd",
-    "docs/cad-live-dev-run-execution-plan.md": "6317725ec9b150b77fd305e56283b6f86af0dab5b8bebcbbbcf2b187c0047609",
+    "docs/cad-live-dev-run-execution-plan.md": "12894ec1a2bbdf91d34ad0ce0483141ee6f10d54917016a7646697befb9ea0f5",
     "offline/cad-convex/liveRunApprovalPacket.json": "947d6b0679fb9b37d29968d81bc9edc424232c05a1e636e4e14c8a517f32c7c8",
     "offline/cad-convex/liveRunApprovalEnvelope.json": "8bdb9af87b21ed403c02e9d3dc942d66537b4105619e442318fac42a02554afd",
     "offline/cad-convex/liveRunApprovalPacket.js": "c2628e30d9136cbfc207dfe7640c3e2c8fec3fe838d438044ef5e117d6cad8d2",
@@ -168,7 +175,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "305cf6465cbeabadc752d1ee3239b316f20cbd2faffc106481295047f39be4ed",
     "scripts/helpers/cad-convex-source-loader.js": "c0bd2930834cc20a16645c1acdc1cb27605ab69334fd33dff89af6eadc4de2d5",
-    "scripts/cad-convex-source-audit.js": "f90b48bb5967e53e4407865f710b29b7325e332fd7d07f434e4608ace3788848",
+    "scripts/cad-convex-source-audit.js": "459d96f661e234325f2627e2d3363344127cf481f97157a3adcd88c7513da294",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -182,6 +189,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "829624e5d7e852d3dcc4b8b862a2adcdf5f4a35569a2e254260069a9f067356a"
+    "scripts/cad-convex-contract-manifest.js": "21b9751e3fc0045bf2a4ce6eb304927afe757f54b5ee665fdf11a047a2168bb4"
   }
 }

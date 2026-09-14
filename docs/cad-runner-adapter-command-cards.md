@@ -180,3 +180,9 @@ Validation receipt: 33/33 synthetic offline tests passed; 144 manifest files
 verified; 130 source-audit files passed with zero leak-pattern matches and runtime
 isolation intact. Whitespace checks passed. Expenses: USD 0. No live execution or
 publication occurred.
+
+## Source follow-on: blocked runner and adapter boundary
+
+The [source boundary](cad-live-runner-adapter-source.md) supplies a typed adapter
+interface, blocked C1-C4 entry points and offline source-digest preflight. A durable
+engine and live prerequisite verification remain unimplemented and unqualified.

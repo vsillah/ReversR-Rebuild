@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "decision": "LIVE_RUN_BLOCKED",
+  "executable": false,
+  "liveRunAuthorized": false,
+  "liveQualified": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "publicationAuthorized": false,
+  "remoteAttempts": 0,
+  "retainHolds": true,
+  "retainLeases": true,
+  "redispatch": false
+}

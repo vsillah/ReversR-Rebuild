@@ -190,3 +190,9 @@ a runnable offline generator and strict inspector for C0-C4 review projections.
 It checks shape, fixed gates, digests and shared matrix allocations. Exact private
 command bytes, a live runner, durable adapter and independent receipts remain
 unresolved; this follow-on supplies no live preflight or execution authority.
+
+## Source follow-on: blocked runner and adapter boundary
+
+The [source boundary](cad-live-runner-adapter-source.md) supplies a typed adapter
+interface, blocked C1-C4 entry points and offline source-digest preflight. A durable
+engine and live prerequisite verification remain unimplemented and unqualified.
