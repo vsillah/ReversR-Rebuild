@@ -4,6 +4,18 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'offline/cad-convex/durableEngine.js',
+  'offline/cad-convex/durableEngine.d.ts',
+  'offline/cad-convex/durableEngineAdapter.js',
+  'offline/cad-convex/durableEngineRunner.js',
+  'offline/cad-convex/durableEngineQualification.json',
+  'convex/cadDurableEngine.ts',
+  'scripts/helpers/cad-durable-engine-fixture.js',
+  'scripts/cad-durable-engine.test.js',
+  'scripts/cad-durable-engine-atomicity.test.js',
+  'scripts/cad-durable-engine-source.test.js',
+  'docs/cad-durable-engine-implementation.md',
+
   'offline/cad-convex/durableEvidenceBinding.js',
   'offline/cad-convex/durableEvidencePrerequisites.json',
   'scripts/helpers/cad-durable-evidence-fixture.js',
@@ -147,12 +159,14 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 32, mode: 'offline-source-unqualified',
+const manifest = { version: 33, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
+  durableFunctions: require('../offline/cad-convex/durableEngineAdapter').FUNCTIONS,
   schemaSource: 'convex/schema.ts',
   functionSource: 'convex/cad.ts',
+  durableFunctionSource: 'convex/cadDurableEngine.ts',
   sdkTypecheck: 'passed',
   sdkVersions: { convex: '1.45.0', auth: '0.0.95', authCore: '0.41.3' },
   codegen: 'local-pinned-sdk-templates',

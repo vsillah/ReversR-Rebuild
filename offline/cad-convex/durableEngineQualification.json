@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-durable-engine-candidate",
+  "executable": false,
+  "liveQualified": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "runtimeWired": false,
+  "independentEvidenceVerifierBound": false,
+  "gates": {
+    "publication": false,
+    "deployment": false,
+    "configuration": false,
+    "liveRun": false,
+    "storeMutation": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "cleanup": false
+  },
+  "source": {
+    "engine": "offline/cad-convex/durableEngine.js",
+    "adapter": "offline/cad-convex/durableEngineAdapter.js",
+    "runner": "offline/cad-convex/durableEngineRunner.js",
+    "schema": "convex/schema.ts",
+    "functions": "convex/cadDurableEngine.ts",
+    "evidenceInspector": "offline/cad-convex/durableEvidenceBinding.js"
+  },
+  "requirements": [
+    { "id": "serializable-commit", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "revision-cas", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "conflict-retry", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "durable-selector", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "authority-read", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "cost-durability", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "acknowledgement-loss", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "reconciliation-custody", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "pagination-fairness", "sourceImplemented": true, "liveEvidenceRef": null },
+    { "id": "rollback", "sourceImplemented": false, "liveEvidenceRef": null },
+    { "id": "window-rollover", "sourceImplemented": false, "liveEvidenceRef": null },
+    { "id": "disabled-route", "sourceImplemented": true, "liveEvidenceRef": null }
+  ]
+}
