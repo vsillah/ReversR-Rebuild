@@ -182,3 +182,11 @@ the exact local commit and publication phrase. The overall plan now makes the
 runner/adapter and private evidence gaps explicit; execution stays blocked until
 those are resolved in separately authorized work. No executable command or live
 readiness claim can be supplied from the current source-only evidence.
+
+## Source follow-on: offline command-card contract
+
+The [runner/adapter command-card packet](cad-runner-adapter-command-cards.md) adds
+a runnable offline generator and strict inspector for C0-C4 review projections.
+It checks shape, fixed gates, digests and shared matrix allocations. Exact private
+command bytes, a live runner, durable adapter and independent receipts remain
+unresolved; this follow-on supplies no live preflight or execution authority.

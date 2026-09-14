@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline-command-card-review",
+  "executable": false,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "fields": {
+    "runnerCommit": null,
+    "adapterCommit": null,
+    "dossierDigest": null,
+    "envelopeDigest": null,
+    "resourceBindingDigest": null,
+    "selectorScopeDigest": null,
+    "credentialMechanismDigest": null,
+    "adapterContractDigest": null,
+    "independentReviewDigest": null
+  },
+  "limits": {
+    "startUtc": null,
+    "expiresUtc": null,
+    "maxRunSeconds": 1800,
+    "maxTransactionAttempts": 3,
+    "transactionDeadlineMs": 5000,
+    "conflictBackoffMs": [
+      100,
+      250
+    ],
+    "maxClaimSeconds": 60,
+    "maxReconciliationPasses": 2,
+    "maxPageSize": 32,
+    "maxPagesPerPass": 4,
+    "syntheticOnly": true,
+    "independentClients": 2,
+    "globalLedgers": 1,
+    "activeWindows": 1,
+    "maxSyntheticRecords": 64,
+    "paginationFixtureRecords": 40,
+    "maxLogicalCommands": 256,
+    "maxTransactionAttemptsTotal": 768,
+    "maxRecordBytes": 4096,
+    "maxStoredBytes": 1048576,
+    "maxEvidenceBytes": 1048576,
+    "maxClientRestarts": 2,
+    "maxStoreRestarts": 0,
+    "productionAccess": false,
+    "realAuthRequired": false
+  },
+  "operationMatrix": [
+    {
+      "operation": "read-exact-selector",
+      "maxLogicalCommands": 32,
+      "maxTransactionAttempts": 96,
+      "authorized": false
+    },
+    {
+      "operation": "read-authority-dependencies",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "seed-synthetic-metadata",
+      "maxLogicalCommands": 40,
+      "maxTransactionAttempts": 120,
+      "authorized": false
+    },
+    {
+      "operation": "reserve-transaction",
+      "maxLogicalCommands": 48,
+      "maxTransactionAttempts": 144,
+      "authorized": false
+    },
+    {
+      "operation": "authority-revoke-or-delete-synthetic",
+      "maxLogicalCommands": 16,
+      "maxTransactionAttempts": 48,
+      "authorized": false
+    },
+    {
+      "operation": "fence-without-dispatch",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "mark-unknown",
+      "maxLogicalCommands": 16,
+      "maxTransactionAttempts": 48,
+      "authorized": false
+    },
+    {
+      "operation": "claim-cas",
+      "maxLogicalCommands": 20,
+      "maxTransactionAttempts": 60,
+      "authorized": false
+    },
+    {
+      "operation": "settle-from-independent-synthetic-receipt",
+      "maxLogicalCommands": 24,
+      "maxTransactionAttempts": 72,
+      "authorized": false
+    },
+    {
+      "operation": "scan-bounded-page",
+      "maxLogicalCommands": 8,
+      "maxTransactionAttempts": 24,
+      "authorized": false
+    },
+    {
+      "operation": "inject-abort-or-ack-loss",
+      "maxLogicalCommands": 2,
+      "maxTransactionAttempts": 6,
+      "authorized": false
+    },
+    {
+      "operation": "restart-isolated-client",
+      "maxLogicalCommands": 2,
+      "maxTransactionAttempts": 0,
+      "authorized": false
+    }
+  ],
+  "cards": [
+    {
+      "id": "C0",
+      "effect": "offline-preflight",
+      "executable": false,
+      "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+      "fields": {
+        "restrictedCommandRef": null,
+        "restrictedCommandDigest": null,
+        "executableVersionDigest": null,
+        "executableSha256": null,
+        "argvDigest": null,
+        "cwdDigest": null,
+        "inputArtifactDigest": null,
+        "outputContractDigest": null,
+        "reviewReceiptDigest": null,
+        "timeoutMs": null,
+        "allowedSelectorsDigest": null,
+        "allowedSideEffectsDigest": null,
+        "expectedResultCodesDigest": null,
+        "stopPlanDigest": null
+      },
+      "allocation": []
+    },
+    {
+      "id": "C1",
+      "effect": "disabled-route-precheck-no-body",
+      "executable": false,
+      "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+      "fields": {
+        "restrictedCommandRef": null,
+        "restrictedCommandDigest": null,
+        "executableVersionDigest": null,
+        "executableSha256": null,
+        "argvDigest": null,
+        "cwdDigest": null,
+        "inputArtifactDigest": null,
+        "outputContractDigest": null,
+        "reviewReceiptDigest": null,
+        "timeoutMs": null,
+        "allowedSelectorsDigest": null,
+        "allowedSideEffectsDigest": null,
+        "expectedResultCodesDigest": null,
+        "stopPlanDigest": null
+      },
+      "allocation": []
+    },
+    {
+      "id": "C2",
+      "effect": "synthetic-metadata-qualification",
+      "executable": false,
+      "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+      "fields": {
+        "restrictedCommandRef": null,
+        "restrictedCommandDigest": null,
+        "executableVersionDigest": null,
+        "executableSha256": null,
+        "argvDigest": null,
+        "cwdDigest": null,
+        "inputArtifactDigest": null,
+        "outputContractDigest": null,
+        "reviewReceiptDigest": null,
+        "timeoutMs": null,
+        "allowedSelectorsDigest": null,
+        "allowedSideEffectsDigest": null,
+        "expectedResultCodesDigest": null,
+        "stopPlanDigest": null
+      },
+      "allocation": [
+        {
+          "operation": "read-exact-selector",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "read-authority-dependencies",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "seed-synthetic-metadata",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "reserve-transaction",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "authority-revoke-or-delete-synthetic",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "fence-without-dispatch",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "mark-unknown",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "claim-cas",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "settle-from-independent-synthetic-receipt",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "scan-bounded-page",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "inject-abort-or-ack-loss",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "restart-isolated-client",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "effect": "bounded-original-selector-reconciliation",
+      "executable": false,
+      "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+      "fields": {
+        "restrictedCommandRef": null,
+        "restrictedCommandDigest": null,
+        "executableVersionDigest": null,
+        "executableSha256": null,
+        "argvDigest": null,
+        "cwdDigest": null,
+        "inputArtifactDigest": null,
+        "outputContractDigest": null,
+        "reviewReceiptDigest": null,
+        "timeoutMs": null,
+        "allowedSelectorsDigest": null,
+        "allowedSideEffectsDigest": null,
+        "expectedResultCodesDigest": null,
+        "stopPlanDigest": null
+      },
+      "allocation": [
+        {
+          "operation": "read-exact-selector",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "read-authority-dependencies",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "seed-synthetic-metadata",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "reserve-transaction",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "authority-revoke-or-delete-synthetic",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "fence-without-dispatch",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "mark-unknown",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "claim-cas",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "settle-from-independent-synthetic-receipt",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "scan-bounded-page",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "inject-abort-or-ack-loss",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        },
+        {
+          "operation": "restart-isolated-client",
+          "logicalCommands": 0,
+          "transactionAttempts": 0
+        }
+      ]
+    },
+    {
+      "id": "C4",
+      "effect": "disabled-route-postcheck-no-body-and-closeout",
+      "executable": false,
+      "stopCounterpart": "STOP_PRESERVE_CUSTODY",
+      "fields": {
+        "restrictedCommandRef": null,
+        "restrictedCommandDigest": null,
+        "executableVersionDigest": null,
+        "executableSha256": null,
+        "argvDigest": null,
+        "cwdDigest": null,
+        "inputArtifactDigest": null,
+        "outputContractDigest": null,
+        "reviewReceiptDigest": null,
+        "timeoutMs": null,
+        "allowedSelectorsDigest": null,
+        "allowedSideEffectsDigest": null,
+        "expectedResultCodesDigest": null,
+        "stopPlanDigest": null
+      },
+      "allocation": []
+    }
+  ],
+  "stopPolicy": {
+    "unknown": "STOP_NEW_WORK_RECONCILE_ORIGINAL_SELECTOR",
+    "expiry": "STOP_ALL_REMOTE_PRESERVE_CUSTODY",
+    "retry": "EXPLICIT_CONFLICT_ONLY",
+    "releaseHolds": false,
+    "releaseLeases": false,
+    "redispatch": false,
+    "resume": false,
+    "recoveryRequiresSeparateApproval": true
+  },
+  "requirements": [
+    {
+      "id": "serializable-commit",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "revision-cas",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "conflict-retry",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "durable-selector",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "authority-read",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "cost-durability",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "acknowledgement-loss",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "reconciliation-custody",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "pagination-fairness",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "rollback",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "window-rollover",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    },
+    {
+      "id": "disabled-route",
+      "liveQualified": false,
+      "liveEvidenceRef": null
+    }
+  ]
+}
