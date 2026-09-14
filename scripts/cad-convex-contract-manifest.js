@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'offline/cad-convex/durableEvidenceBinding.js',
+  'offline/cad-convex/durableEvidencePrerequisites.json',
+  'scripts/helpers/cad-durable-evidence-fixture.js',
+  'scripts/cad-durable-evidence-binding.test.js',
+  'docs/cad-durable-engine-evidence-binding.md',
+
   'offline/cad-convex/durableAdapter.js',
   'offline/cad-convex/durableAdapter.d.ts',
   'offline/cad-convex/liveRunner.js',
@@ -141,7 +147,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 31, mode: 'offline-source-unqualified',
+const manifest = { version: 32, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

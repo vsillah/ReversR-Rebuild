@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline-durable-evidence-prerequisites",
+  "executable": false,
+  "liveQualified": false,
+  "syntheticEvidenceAcceptedAsLive": false,
+  "commonPrerequisites": [
+    "Reviewed durable engine and isolation semantics; the memory double supplies neither.",
+    "Independently reviewed adapter/runner full commits, contract hashes and exact private command bytes.",
+    "Privately verified existing resource, namespace/run/ledger/window/fence, schema/index and unused run identity.",
+    "Trusted clock, stop/cancellation owner, original window and shared operation/attempt budgets.",
+    "Accepted enforceable all-in cost cap, prices and retained obligations.",
+    "Independent evidence authenticity, exact receipt byte digest, accepted restricted/sanitized custody and human one-run approval."
+  ],
+  "requirements": [
+    {
+      "id": "serializable-commit",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Independent engine transaction receipt binding the complete authority read set (including absent rows), before/after revision, exact command, attempts, both leases, full hold and terminal outcome."
+    },
+    {
+      "id": "revision-cas",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Independent two-client transaction history proving stale ledger, scope, schema and authority-only snapshots conflict without partial writes or reset revisions."
+    },
+    {
+      "id": "conflict-retry",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Trusted-clock and attempt receipts proving fresh reads per explicit conflict, 100/250 ms backoff, three-attempt and 5000 ms limits within shared row/global budgets."
+    },
+    {
+      "id": "durable-selector",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Engine/index receipt binding original window, four-field identity, attempt key and fence inside the transaction, with namespace/resource isolation and cross-scope rejection."
+    },
+    {
+      "id": "authority-read",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Engine read-dependency evidence for exact login, upload session, membership, permission and authority revisions, including missing-row and revocation conflicts."
+    },
+    {
+      "id": "cost-durability",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Atomic integer microdollar accounting and retained-hold receipts plus separate accepted pricing and externally enforceable all-in cap; application counters alone are insufficient."
+    },
+    {
+      "id": "acknowledgement-loss",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Independent commit evidence recovered only by original selector/command with fresh authority and shared read budget; unknown acknowledgement retains both leases and full hold."
+    },
+    {
+      "id": "reconciliation-custody",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Current generation-CAS claim, bounded expiry and accepted custodian receipts; independently verified original terminal receipt, integer cost and identical-receipt idempotent settlement."
+    },
+    {
+      "id": "pagination-fairness",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Persisted original-scope cursor and immutable high-water evidence across two client restarts, bounded pages/passes, poison rows and repeat sweeps without starvation."
+    },
+    {
+      "id": "rollback",
+      "disposition": "SEPARATELY_BLOCKED",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Compatible schema/fence baseline and retained-state custody evidence. Actual backup/restore and store restart require separate approval and are excluded from this run."
+    },
+    {
+      "id": "window-rollover",
+      "disposition": "SEPARATELY_BLOCKED",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Separate reviewed rollover protocol and operation-specific approval proving old selector history and unresolved obligations survive; no rollover is authorized by the current run."
+    },
+    {
+      "id": "disabled-route",
+      "disposition": "PENDING",
+      "liveQualified": false,
+      "liveEvidenceRef": null,
+      "requiredEvidence": "Reviewed non-production no-body pre/post denial receipts bound to exact source and destination, proving zero downstream effects without uploading a body."
+    }
+  ]
+}
