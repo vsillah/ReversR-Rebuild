@@ -5,6 +5,8 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-fresh-executor-rebind-evidence-prep.md',
+  'docs/cad-fresh-executor-rebind-evidence-prep.json',
   'offline/cad-convex/durableEngine.js',
   'offline/cad-convex/durableEngine.d.ts',
   'offline/cad-convex/durableEngineAdapter.js',
