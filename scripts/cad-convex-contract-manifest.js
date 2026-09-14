@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'offline/cad-convex/runnerCommandCards.json',
+  'offline/cad-convex/runnerCommandCards.js',
+  'scripts/cad-runner-command-cards.js',
+  'scripts/cad-runner-command-cards.test.js',
+  'docs/cad-runner-adapter-command-cards.md',
+
   'docs/cad-mark-handoff.md',
   'docs/cad-mark-handoff-evidence.md',
   'docs/cad-live-dev-run-execution-plan.md',
@@ -128,7 +134,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 30, mode: 'offline-source-unqualified',
+const manifest = { version: 31, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
