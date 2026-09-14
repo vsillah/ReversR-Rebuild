@@ -33,7 +33,8 @@ test('actual source registrations match fixed gateway mapping; policy stays inte
 });
 test('source schema preserves every bounded read index and library ID boundary', () => {
   const { schema } = loadSource();
-  assert.deepEqual(Object.keys(schema).sort(), ['cadMemberships', 'cadUploadSessions', 'cadUserAuthority']);
+  assert.deepEqual(Object.keys(schema).sort(), ['cadMemberships', 'cadQualificationAuthority',
+    'cadQualificationLedgers', 'cadUploadSessions', 'cadUserAuthority']);
   for (const [table, indexes] of Object.entries({ cadUserAuthority: { by_userId: ['userId'] },
     cadMemberships: { by_userId_and_shopId: ['userId', 'shopId'] },
     cadUploadSessions: { by_credentialDigest: ['credentialDigest'], by_sessionId: ['sessionId'], by_expiresAt: ['expiresAt'] } })) {

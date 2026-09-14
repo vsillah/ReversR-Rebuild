@@ -12,13 +12,17 @@ const v = {
   string: () => scalar('string'), number: () => scalar('number'), boolean: () => scalar('boolean'),
   null: () => scalar('null'), id: table => scalar('id', { table }),
   literal: value => scalar('literal', { value }), optional: value => scalar('optional', { value }),
-  union: (...values) => scalar('union', { values }), object: fields => scalar('object', { fields }),
+  union: (...values) => scalar('union', { values }), array: value => scalar('array', { value }),
+  object: fields => scalar('object', { fields }),
 };
 function validate(rule, value) {
   if (rule.kind === 'optional') { if (value !== undefined) validate(rule.value, value); return; }
   if (rule.kind === 'union') {
     for (const member of rule.values) { try { validate(member, value); return; } catch {} }
     throw new Error('MODEL_VALIDATION_FAILED');
+  }
+  if (rule.kind === 'array') {
+    assert.ok(Array.isArray(value)); for (const item of value) validate(rule.value, item); return;
   }
   if (rule.kind === 'object') {
     assert.ok(value && typeof value === 'object' && !Array.isArray(value));
@@ -60,6 +64,7 @@ function loadSource({ now = () => 1000, readExactLibrarySession } = {}) {
       if (name === './_generated/server') return {
         internalQuery: register('query'), internalMutation: register('mutation'),
       };
+      if (name === '../offline/cad-convex/durableEngine') return require('../../offline/cad-convex/durableEngine');
       if (name === '../offline/cad-convex/backend') return {
         createBackendContract: options => createBackendContract({ ...options, now: options.now ?? now }),
       };
@@ -71,6 +76,7 @@ function loadSource({ now = () => 1000, readExactLibrarySession } = {}) {
     vm.runInNewContext(result.outputText, { exports, require: localRequire }, { filename: full });
     return exports;
   }
-  return { cad: load('convex/cad.ts'), schema: load('convex/schema.ts').default };
+  return { cad: load('convex/cad.ts'), durable: load('convex/cadDurableEngine.ts'),
+    schema: load('convex/schema.ts').default };
 }
 module.exports = { loadSource, validate, v };

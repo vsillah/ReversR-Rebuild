@@ -5,6 +5,18 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'offline/cad-convex/durableEngine.js',
+  'offline/cad-convex/durableEngine.d.ts',
+  'offline/cad-convex/durableEngineAdapter.js',
+  'offline/cad-convex/durableEngineRunner.js',
+  'offline/cad-convex/durableEngineQualification.json',
+  'convex/cadDurableEngine.ts',
+  'scripts/helpers/cad-durable-engine-fixture.js',
+  'scripts/cad-durable-engine.test.js',
+  'scripts/cad-durable-engine-atomicity.test.js',
+  'scripts/cad-durable-engine-source.test.js',
+  'docs/cad-durable-engine-implementation.md',
+
   'offline/cad-convex/durableEvidenceBinding.js',
   'offline/cad-convex/durableEvidencePrerequisites.json',
   'scripts/helpers/cad-durable-evidence-fixture.js',
@@ -155,6 +167,19 @@ assert.ok(!/\b(?:query|mutation|action|httpAction)\s*\(/.test(cad));
 const backend = read('offline/cad-convex/backend.js');
 assert.ok(!/\.collect\s*\(|\.query\([^)]*\)\.filter\s*\(/.test(backend));
 assert.ok(!/process\.env|fetch\s*\(/.test(cad + read('convex/librarySession.ts')));
+const durable = read('convex/cadDurableEngine.ts');
+assert.equal((durable.match(/= internal(?:Query|Mutation)\(\{/g) || []).length, 9);
+assert.equal((durable.match(/returns:/g) || []).length, 9);
+assert.ok(!/export const \w+ = (?:query|mutation|action|httpAction)\s*\(/.test(durable));
+assert.match(durable, /verifyIndependentEvidence: \(\) => false/);
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|child_process/.test(durable));
+assert.match(read('convex/schema.ts'), /cadQualificationLedgers/);
+assert.match(read('convex/schema.ts'), /by_resource_namespace_run_ledger_window_fence/);
+assert.match(read('convex/schema.ts'), /by_ledger_binding_kind/);
+const durableQualification = JSON.parse(read('offline/cad-convex/durableEngineQualification.json'));
+for (const key of ['executable', 'liveQualified', 'uploadsEnabled', 'conversionEnabled',
+  'runtimeWired', 'independentEvidenceVerifierBound']) assert.equal(durableQualification[key], false);
+assert.ok(Object.values(durableQualification.gates).every(value => value === false));
 for (const name of fs.readdirSync(path.join(root, 'server')).filter(n => /\.js$/.test(n))) {
   assert.ok(!/require\(['"][^'"]*(?:offline\/cad-convex|\/convex\/cad)/.test(read('server/' + name)));
 }
@@ -166,7 +191,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -211,5 +236,9 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex
 
 for (const name of ['durableAdapter.js', 'liveRunner.js', 'durableEvidenceBinding.js'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
+
+for (const name of ['durableEngine.js', 'durableEngineAdapter.js', 'durableEngineRunner.js'])
+  assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
+assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false;/);
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
