@@ -78,6 +78,9 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
+    "docs/cad-fresh-bounded-dev-run-register-rollover.md": "157f4ab173a6f1d601ee477571c488a2d822d3dd32134350276e128e6eb1da6e",
+    "docs/cad-fresh-bounded-dev-run-register-rollover.json": "5a108e340c48e6b3caae9575bb87119c639569bce1538f50bb68877274c68c6a",
+    "docs/cad-fresh-bounded-dev-run-command-card-projection.json": "d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9",
     "offline/cad-convex/durableEngine.js": "7e0bc19cd65c89c23241b0fcb3c5c163be36440f3e14b9bd245e6a2497c3457f",
     "offline/cad-convex/durableEngine.d.ts": "376f1680ff9ee07575f671a15e881535847269c357c30035cf82cc7c479d04d9",
     "offline/cad-convex/durableEngineAdapter.js": "fd03b38eff87476b75c5efea316bf6b0c1b892cf26ff618590b517b48451a26b",
@@ -265,6 +268,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "d3922b924f08da06097edfae441d7eb3b9fad7ed65006fb9572a3cc85d558ccd"
+    "scripts/cad-convex-contract-manifest.js": "5331ee75ee5ab82a4a162311b496b7525838334db4da684a6859bfd768731896"
   }
 }
