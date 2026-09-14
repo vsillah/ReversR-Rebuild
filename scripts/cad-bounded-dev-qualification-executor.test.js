@@ -11,6 +11,7 @@ const { createFixture } = require('./helpers/cad-durable-engine-fixture');
 const {
   packet,
   inspectAcceptedRunArtifacts,
+  inspectRebuiltSuccessorRunArtifacts,
   inspectRestrictedCommandDescriptors,
   executeBoundedDevelopmentQualificationRun,
 } = require('../offline/cad-convex/boundedDevQualificationExecutor');
@@ -82,6 +83,24 @@ function acceptedArtifacts() {
   return { register, projection, projectionBytes, acceptanceReceiptBytes };
 }
 
+function rebuiltSuccessorArtifacts(t) {
+  const base = path.join('.local', 'cad-convex', 'successor-evidence-recovery-rebuild');
+  const files = {
+    register: path.join(base, 'successor-restricted-register.json'),
+    projection: path.join(base, 'successor-source-safe-projection.json'),
+    receipt: path.join(base, 'rebuilt-successor-evidence-acceptance-receipt.json'),
+  };
+  if (!Object.values(files).every(file => fs.existsSync(file))) {
+    t.skip('ignored rebuilt successor restricted evidence artifacts are not present in this checkout');
+    return null;
+  }
+  const register = JSON.parse(fs.readFileSync(files.register, 'utf8'));
+  const projectionBytes = fs.readFileSync(files.projection, 'utf8');
+  const acceptanceReceiptBytes = fs.readFileSync(files.receipt, 'utf8');
+  const projection = JSON.parse(projectionBytes);
+  return { register, projection, projectionBytes, acceptanceReceiptBytes };
+}
+
 function oneRunApproval(artifacts) {
   return {
     projectionSha256: hash(artifacts.projectionBytes),
@@ -122,6 +141,12 @@ test('executor packet binds accepted digests while keeping every authority gate 
   assert.equal(packet.mode, 'source-only-bounded-development-qualification-executor');
   assert.equal(packet.baseCommit, 'cf066a38f30df8b4bbd04042775fcf3dca7a0810');
   assert.equal(packet.sourcePacketCommit, 'a4fd2568269e6991a8621784e73effc7a8722ad5');
+  assert.equal(packet.acceptedEvidence.projectionSha256, '2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.projectionSha256, '30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, 'f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, '53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, '7d29d14ee50269ba2a24607fe662bc95b4aea8aef3a22cda9234252ea3ddeb48');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '4b102923f9ff0bc4f46f618894b4503e4b63e43f0b8b3991f82fe5eaff4144c6');
   assert.equal(packet.executableBridgeSource, true);
   assert.equal(packet.providerClientBundled, false);
   for (const key of ['liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled']) assert.equal(packet[key], false);
@@ -143,6 +168,49 @@ test('accepted restricted register, projection and receipt inspect without leaki
   assert.deepEqual(result.commandCards.map(card => card.cardId), ['C0', 'C1', 'C2', 'C3', 'C4']);
   assert.ok(!JSON.stringify(result).includes(artifacts.register.restrictedEvidence['identity.runId'].valueBytes));
   assert.ok(!JSON.stringify(result).includes(artifacts.register.restrictedCommandBytes.C2));
+});
+
+test('accepted rebuilt successor artifacts inspect and execute through the local fixture only', async t => {
+  const artifacts = rebuiltSuccessorArtifacts(t);
+  if (!artifacts) return;
+  const result = inspectAcceptedRunArtifacts(artifacts);
+  assert.equal(result.structureValid, true);
+  assert.equal(result.acceptedArtifacts, true);
+  assert.equal(result.decision, 'EXECUTOR_BINDING_READY');
+  assert.equal(result.acceptedEvidenceKey, 'acceptedRebuiltSuccessorEvidence');
+  assert.equal(result.projectionSha256, packet.acceptedRebuiltSuccessorEvidence.projectionSha256);
+  assert.equal(result.acceptanceReceiptSha256, packet.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256);
+  assert.equal(result.privateRestrictedRegisterDigest, packet.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest);
+  assert.equal(result.restrictedCommandSetDigest, packet.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest);
+  assert.equal(result.commandCardProjectionDigest, packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest);
+  assert.deepEqual(result.commandCards.map(card => card.cardId), ['C0', 'C1', 'C2', 'C3', 'C4']);
+  assert.ok(!JSON.stringify(result).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
+  const direct = inspectRebuiltSuccessorRunArtifacts(artifacts);
+  assert.equal(direct.structureValid, true);
+
+  const fixture = createFixture();
+  let evidence = null;
+  const executed = await executeBoundedDevelopmentQualificationRun({
+    ...artifacts,
+    oneRunApproval: oneRunApproval(artifacts),
+    adapter: fixtureAdapter(fixture),
+    disabledRouteCheck,
+    evidenceWriter: async value => {
+      evidence = value;
+      return { ref: 'rrb-ref:rebuilt-successor-evidence-' + hash(JSON.stringify(value)).slice(0, 16) };
+    },
+    now: fixture.now,
+  });
+  assert.equal(executed.decision, 'DEVELOPMENT_QUALIFICATION_EXECUTED');
+  assert.equal(executed.runCompleted, true);
+  assert.equal(executed.automaticRetry, false);
+  assert.equal(executed.secondRun, false);
+  assert.equal(executed.uploadsEnabled, false);
+  assert.equal(executed.conversionEnabled, false);
+  assert.equal(evidence.acceptedEvidenceKey, 'acceptedRebuiltSuccessorEvidence');
+  assert.equal(evidence.acceptedProjectionSha256, packet.acceptedRebuiltSuccessorEvidence.projectionSha256);
+  assert.equal(evidence.commandCardProjectionDigest, packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest);
+  assert.ok(!JSON.stringify(evidence).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
 });
 
 test('restricted command bytes are descriptors, not shell or provider commands', () => {

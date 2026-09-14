@@ -333,7 +333,14 @@ assert.ok(Object.values(boundedExecutor.gates).every(value => value === false));
 assert.equal(boundedExecutor.acceptedEvidence.projectionSha256, '2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4');
 assert.equal(boundedExecutor.acceptedEvidence.acceptanceReceiptSha256, 'c1001e4c4ab59accebfa5bc49e8bf76d8799af75bfcc165fc43e5e03e61bf053');
 assert.equal(boundedExecutor.acceptedEvidence.commandCardProjectionDigest, 'f3e864320f4f6aa146cac0cacf3f1e1a7e4e90b2c0001af0bfb23bcc1698ff1a');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.projectionSha256, '30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, 'f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, '53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, '7d29d14ee50269ba2a24607fe662bc95b4aea8aef3a22cda9234252ea3ddeb48');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '4b102923f9ff0bc4f46f618894b4503e4b63e43f0b8b3991f82fe5eaff4144c6');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.sourcePr, 219);
 assert.ok(boundedExecutor.nextHumanGates.liveQualification.includes('Keep CAD uploads disabled'));
+assert.ok(boundedExecutor.nextHumanGates.rebuiltSuccessorLiveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/boundedDevQualificationExecutor.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser/.test(read('scripts/cad-bounded-dev-qualification-executor.js')));
 

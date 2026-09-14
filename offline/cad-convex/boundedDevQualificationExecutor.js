@@ -31,6 +31,35 @@ const SCOPE_FIELDS = Object.freeze({
   windowDigest: 'identity.windowId',
   fenceDigest: 'identity.fence',
 });
+const REBUILT_REGISTER_KEYS = Object.freeze([
+  'schemaVersion', 'mode', 'status', 'sourceMainCommit', 'sourcePr',
+  'createdAtUtc', 'runRef', 'originalSuccessorRegister', 'olderAcceptedRegister',
+  'window', 'refs', 'restrictedEvidence', 'restrictedCommandCards', 'gates',
+]);
+const REBUILT_PROJECTION_KEYS = Object.freeze([
+  'schemaVersion', 'mode', 'sourceMainCommit', 'sourcePr', 'observedAtUtc',
+  'runRef', 'publicProjectionOnly', 'liveRunAuthorized', 'uploadsEnabled',
+  'conversionEnabled', 'predecessor', 'window', 'restrictedEvidence',
+  'commandCards', 'restrictedCommandByteCounts', 'restrictedCommandSetDigest',
+  'commandCardProjectionDigest', 'commandCardProjectionByteCount',
+  'restrictedRegisterDigest', 'restrictedRegisterByteCount',
+  'sanitizedDestinationRef', 'restrictedDestinationRef', 'independentReviewRef',
+  'gates',
+]);
+const REBUILT_RECEIPT_KEYS = Object.freeze([
+  'schemaVersion', 'mode', 'status', 'acceptedAtUtc', 'acceptedByRef',
+  'sourceMainCommit', 'sourcePr', 'approvalPhraseSha256',
+  'acceptedProjectionSha256', 'acceptedProjectionByteCount',
+  'privateSuccessorRestrictedRegisterDigest',
+  'privateSuccessorRestrictedRegisterByteCount', 'acceptancePacketSha256',
+  'acceptancePacketByteCount', 'restrictedCommandSetDigest',
+  'commandCardProjectionDigest', 'commandCardProjectionByteCount',
+  'evidenceReceiptCount', 'commandCardCount', 'runRef', 'resourceAliasRef',
+  'namespaceRef', 'ledgerWindowRef', 'fenceRef',
+  'originalSuccessorRegisterRecovered', 'unrecoveredOriginalSuccessorRegisterDigest',
+  'olderAcceptedRegisterFound', 'olderAcceptedRegisterSubstituted',
+  'acceptanceScope', 'nextBlockedUntil',
+]);
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const sha256 = bytes => createHash('sha256').update(bytes, 'utf8').digest('hex');
@@ -45,6 +74,11 @@ const stringBytes = value => typeof value === 'string'
   : Buffer.isBuffer(value) ? value.toString('utf8') : null;
 const safeString = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
 const started = value => typeof value === 'string' && /^[A-Za-z0-9._:-]+$/.test(value);
+const allFalse = value => isObject(value) && Object.values(value).every(item => item === false);
+const ACCEPTED_EVIDENCE = Object.freeze(Object.entries({
+  acceptedEvidence: packet.acceptedEvidence,
+  acceptedRebuiltSuccessorEvidence: packet.acceptedRebuiltSuccessorEvidence,
+}).filter(([, value]) => isObject(value)).map(([key, value]) => Object.freeze({ key, ...value })));
 
 function fail(code, values = {}) {
   return Object.freeze({
@@ -168,7 +202,7 @@ function inspectRestrictedCommandDescriptors(register, projection) {
   });
 }
 
-function inspectAcceptedRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes } = {}) {
+function inspectLegacyAcceptedRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes } = {}) {
   const errors = new Set();
   const projectionText = stringBytes(projectionBytes);
   const receiptText = stringBytes(acceptanceReceiptBytes);
@@ -218,28 +252,214 @@ function inspectAcceptedRunArtifacts({ register, projectionBytes, acceptanceRece
     privateRestrictedRegisterDigest: isObject(register) ? sha256Json(register) : null,
     restrictedCommandSetDigest: projection ? projection.restrictedCommandSetDigest : null,
     commandCardProjectionDigest: projection ? projection.commandCardProjectionDigest : null,
+    acceptedEvidenceKey: 'acceptedEvidence',
     commandCards: commands.descriptors,
     errors: [...errors],
   });
 }
 
+function isRebuiltSuccessorArtifactSet(register, projection, receipt) {
+  return (isObject(register) && register.mode === 'ignored-successor-restricted-register-rebuild')
+    || (isObject(projection) && projection.mode === 'source-safe-successor-restricted-evidence-rebuild-projection')
+    || (isObject(receipt) && receipt.mode === 'rebuilt-successor-evidence-acceptance-receipt');
+}
+
+function inspectRebuiltSuccessorReceipt(receipt, receiptSha256, errors, evidence) {
+  if (!exact(receipt, REBUILT_RECEIPT_KEYS)) {
+    errors.add('REBUILT_ACCEPTANCE_RECEIPT_SHAPE_INVALID');
+    return;
+  }
+  if (receiptSha256 !== evidence.acceptanceReceiptSha256
+    || receipt.status !== 'ACCEPTED_FOR_EVIDENCE_COMPLETENESS_ONLY'
+    || receipt.sourceMainCommit !== evidence.sourceMainCommit
+    || receipt.sourcePr !== evidence.sourcePr
+    || receipt.runRef !== evidence.runRef
+    || receipt.acceptedProjectionSha256 !== evidence.projectionSha256
+    || receipt.privateSuccessorRestrictedRegisterDigest !== evidence.privateRestrictedRegisterDigest
+    || receipt.restrictedCommandSetDigest !== evidence.restrictedCommandSetDigest
+    || receipt.commandCardProjectionDigest !== evidence.commandCardProjectionDigest
+    || receipt.evidenceReceiptCount !== evidence.requiredEvidenceReceipts
+    || receipt.commandCardCount !== REQUIRED_CARDS.length
+    || receipt.olderAcceptedRegisterSubstituted !== false) {
+    errors.add('REBUILT_ACCEPTANCE_RECEIPT_DIGEST_MISMATCH');
+  }
+  if (!isObject(receipt.acceptanceScope)
+    || receipt.acceptanceScope.evidenceCompletenessOnly !== true
+    || Object.entries(receipt.acceptanceScope)
+      .some(([key, value]) => key !== 'evidenceCompletenessOnly' && value !== false)) {
+    errors.add('REBUILT_ACCEPTANCE_SCOPE_INVALID');
+  }
+}
+
+function inspectRebuiltSuccessorCommandCards(register, projection) {
+  const errors = new Set();
+  const descriptors = [];
+  if (!isObject(register) || !isObject(register.restrictedCommandCards)
+    || !isObject(projection) || !isObject(projection.commandCards)
+    || !Array.isArray(projection.commandCards.cards)
+    || !isObject(projection.restrictedCommandByteCounts)) {
+    errors.add('REBUILT_COMMAND_DESCRIPTOR_INPUT_INVALID');
+  } else {
+    for (const cardId of REQUIRED_CARDS) {
+      const command = register.restrictedCommandCards[cardId];
+      const card = projection.commandCards.cards.find(item => item.id === cardId);
+      if (!exact(command, ['restrictedCommandRef', 'restrictedCommandBytes', 'restrictedCommandDigest', 'byteCount'])
+        || !isObject(card) || !isObject(card.fields)) {
+        errors.add('REBUILT_COMMAND_DESCRIPTOR_SHAPE_INVALID');
+        continue;
+      }
+      const commandBytes = command.restrictedCommandBytes;
+      const commandDigest = typeof commandBytes === 'string' ? sha256(commandBytes) : null;
+      const descriptor = parseJsonBytes(commandBytes, errors, 'REBUILT_RESTRICTED_COMMAND_BYTES_INVALID');
+      if (typeof commandBytes !== 'string' || commandDigest !== command.restrictedCommandDigest
+        || command.restrictedCommandDigest !== card.fields.restrictedCommandDigest
+        || command.restrictedCommandRef !== card.fields.restrictedCommandRef
+        || command.byteCount !== Buffer.byteLength(commandBytes || '', 'utf8')
+        || projection.restrictedCommandByteCounts[cardId] !== command.byteCount) {
+        errors.add('REBUILT_COMMAND_DESCRIPTOR_DIGEST_MISMATCH');
+      }
+      if (!isObject(descriptor)
+        || descriptor.schemaVersion !== 1
+        || descriptor.id !== cardId
+        || descriptor.effect !== CARD_EFFECTS[cardId]
+        || descriptor.effect !== card.effect
+        || descriptor.runRef !== packet.acceptedRebuiltSuccessorEvidence.runRef
+        || descriptor.sourceMainCommit !== packet.acceptedRebuiltSuccessorEvidence.sourceMainCommit
+        || descriptor.sourcePr !== packet.acceptedRebuiltSuccessorEvidence.sourcePr
+        || descriptor.syntheticMetadataOnly !== true
+        || descriptor.cadFilesAllowed !== false
+        || descriptor.uploadActivationAuthorized !== false
+        || descriptor.conversionAuthorized !== false
+        || descriptor.sandboxDispatchAuthorized !== false
+        || descriptor.automaticRetryAuthorized !== false
+        || descriptor.stopOnUnknown !== true
+        || descriptor.stopCounterpart !== card.stopCounterpart) {
+        errors.add('REBUILT_COMMAND_DESCRIPTOR_VALUE_INVALID');
+      }
+      descriptors.push({
+        cardId,
+        effect: card.effect,
+        byteCount: command.byteCount,
+        sha256: command.restrictedCommandDigest,
+        executableCommandBytes: false,
+        expectedStop: isObject(descriptor) ? descriptor.stopCounterpart : null,
+      });
+    }
+  }
+  return Object.freeze({
+    structureValid: errors.size === 0,
+    descriptors,
+    errors: [...errors],
+  });
+}
+
+function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes } = {}) {
+  const errors = new Set();
+  const evidence = packet.acceptedRebuiltSuccessorEvidence;
+  const projectionText = stringBytes(projectionBytes);
+  const receiptText = stringBytes(acceptanceReceiptBytes);
+  const projection = parseJsonBytes(projectionBytes, errors, 'REBUILT_PROJECTION_BYTES_INVALID');
+  const receipt = parseJsonBytes(acceptanceReceiptBytes, errors, 'REBUILT_ACCEPTANCE_RECEIPT_BYTES_INVALID');
+  if (!isObject(register)) errors.add('REBUILT_RESTRICTED_REGISTER_INVALID');
+  if (!isObject(evidence)) errors.add('REBUILT_ACCEPTED_EVIDENCE_MISSING');
+  if (projectionText !== null && sha256(projectionText) !== evidence.projectionSha256)
+    errors.add('REBUILT_PROJECTION_DIGEST_MISMATCH');
+  if (receiptText !== null && receipt) inspectRebuiltSuccessorReceipt(receipt, sha256(receiptText), errors, evidence);
+  if (isObject(register) && sha256Json(register) !== evidence.privateRestrictedRegisterDigest)
+    errors.add('REBUILT_RESTRICTED_REGISTER_DIGEST_MISMATCH');
+  if (!exact(register, REBUILT_REGISTER_KEYS)
+    || register.schemaVersion !== 1
+    || register.mode !== 'ignored-successor-restricted-register-rebuild'
+    || register.sourceMainCommit !== evidence.sourceMainCommit
+    || register.sourcePr !== evidence.sourcePr
+    || register.runRef !== evidence.runRef
+    || register.status !== 'REBUILT_AFTER_ORIGINAL_SUCCESSOR_REGISTER_UNRECOVERABLE'
+    || !allFalse(register.gates)) {
+    errors.add('REBUILT_RESTRICTED_REGISTER_SHAPE_INVALID');
+  }
+  if (!exact(projection, REBUILT_PROJECTION_KEYS)
+    || projection.schemaVersion !== 1
+    || projection.mode !== 'source-safe-successor-restricted-evidence-rebuild-projection'
+    || projection.sourceMainCommit !== evidence.sourceMainCommit
+    || projection.sourcePr !== evidence.sourcePr
+    || projection.runRef !== evidence.runRef
+    || projection.publicProjectionOnly !== true
+    || projection.liveRunAuthorized !== false
+    || projection.uploadsEnabled !== false
+    || projection.conversionEnabled !== false
+    || !allFalse(projection.gates)) {
+    errors.add('REBUILT_PROJECTION_SHAPE_INVALID');
+  }
+  if (projection) {
+    const commandBytes = JSON.stringify(projection.commandCards);
+    if (projection.restrictedRegisterDigest !== evidence.privateRestrictedRegisterDigest
+      || projection.restrictedCommandSetDigest !== evidence.restrictedCommandSetDigest
+      || projection.commandCardProjectionDigest !== evidence.commandCardProjectionDigest
+      || projection.commandCardProjectionDigest !== sha256(commandBytes)
+      || !isObject(projection.restrictedEvidence)
+      || !isObject(projection.commandCards)
+      || !Array.isArray(projection.commandCards.cards)) {
+      errors.add('REBUILT_PROJECTION_BINDING_MISMATCH');
+    }
+  }
+  const commands = inspectRebuiltSuccessorCommandCards(register, projection);
+  for (const error of commands.errors) errors.add(error);
+  if (leaksPrivatePattern({ projection, receipt, descriptors: commands.descriptors }))
+    errors.add('PRIVATE_PATTERN_DETECTED');
+  return Object.freeze({
+    mode: packet.mode,
+    decision: errors.size === 0 ? 'EXECUTOR_BINDING_READY' : 'LIVE_RUN_BLOCKED',
+    structureValid: errors.size === 0,
+    acceptedArtifacts: errors.size === 0,
+    executableBridgeSource: true,
+    liveRunAuthorized: false,
+    uploadsEnabled: false,
+    conversionEnabled: false,
+    projectionSha256: projectionText === null ? null : sha256(projectionText),
+    acceptanceReceiptSha256: receiptText === null ? null : sha256(receiptText),
+    privateRestrictedRegisterDigest: isObject(register) ? sha256Json(register) : null,
+    restrictedCommandSetDigest: projection ? projection.restrictedCommandSetDigest : null,
+    commandCardProjectionDigest: projection ? projection.commandCardProjectionDigest : null,
+    acceptedEvidenceKey: 'acceptedRebuiltSuccessorEvidence',
+    commandCards: commands.descriptors,
+    errors: [...errors],
+  });
+}
+
+function inspectAcceptedRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes } = {}) {
+  const errors = new Set();
+  const projection = parseJsonBytes(projectionBytes, errors, 'PROJECTION_BYTES_INVALID');
+  const receipt = parseJsonBytes(acceptanceReceiptBytes, errors, 'ACCEPTANCE_RECEIPT_BYTES_INVALID');
+  if (isRebuiltSuccessorArtifactSet(register, projection, receipt))
+    return inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes });
+  return inspectLegacyAcceptedRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes });
+}
+
 function validateOneRunApproval(approval) {
+  return resolveAcceptedEvidenceFromApproval(approval) !== null;
+}
+
+function matchesAcceptedEvidence(approval, evidence) {
   return exact(approval, [
     'projectionSha256', 'acceptanceReceiptSha256', 'privateRestrictedRegisterDigest',
     'restrictedCommandSetDigest', 'commandCardProjectionDigest', 'automaticRetry',
     'secondRun', 'uploadsEnabled',
   ])
-    && approval.projectionSha256 === packet.acceptedEvidence.projectionSha256
-    && approval.acceptanceReceiptSha256 === packet.acceptedEvidence.acceptanceReceiptSha256
-    && approval.privateRestrictedRegisterDigest === packet.acceptedEvidence.privateRestrictedRegisterDigest
-    && approval.restrictedCommandSetDigest === packet.acceptedEvidence.restrictedCommandSetDigest
-    && approval.commandCardProjectionDigest === packet.acceptedEvidence.commandCardProjectionDigest
+    && approval.projectionSha256 === evidence.projectionSha256
+    && approval.acceptanceReceiptSha256 === evidence.acceptanceReceiptSha256
+    && approval.privateRestrictedRegisterDigest === evidence.privateRestrictedRegisterDigest
+    && approval.restrictedCommandSetDigest === evidence.restrictedCommandSetDigest
+    && approval.commandCardProjectionDigest === evidence.commandCardProjectionDigest
     && approval.automaticRetry === false
     && approval.secondRun === false
     && approval.uploadsEnabled === false;
 }
 
-function createScenario(projection, nowMs, clockNow) {
+function resolveAcceptedEvidenceFromApproval(approval) {
+  return ACCEPTED_EVIDENCE.find(evidence => matchesAcceptedEvidence(approval, evidence)) || null;
+}
+
+function createScenario(projection, nowMs, clockNow, acceptedEvidence = packet.acceptedEvidence) {
   const valueDigest = id => projection.restrictedEvidence[id].valueDigest;
   const label = id => id + '-' + valueDigest(id).slice(0, 16);
   const scope = Object.fromEntries(Object.entries(SCOPE_FIELDS)
@@ -256,9 +476,9 @@ function createScenario(projection, nowMs, clockNow) {
     primary: 'bounded-primary',
     conflict: 'bounded-conflict-observation',
   };
-  const selectorDigest = name => sha256('selector:' + name + ':' + packet.acceptedEvidence.commandCardProjectionDigest);
-  const commandDigest = name => sha256('command:' + name + ':' + packet.acceptedEvidence.restrictedCommandSetDigest);
-  const proposalDigest = name => sha256('proposal:' + name + ':' + packet.acceptedEvidence.projectionSha256);
+  const selectorDigest = name => sha256('selector:' + name + ':' + acceptedEvidence.commandCardProjectionDigest);
+  const commandDigest = name => sha256('command:' + name + ':' + acceptedEvidence.restrictedCommandSetDigest);
+  const proposalDigest = name => sha256('proposal:' + name + ':' + acceptedEvidence.projectionSha256);
   const selector = (name, fence) => ({ scope, binding, key: key[name], fence, selectorDigest: selectorDigest(name) });
   const deadline = () => {
     const liveNow = clockNow();
@@ -376,15 +596,23 @@ async function executeBoundedDevelopmentQualificationRun({
   evidenceWriter = async () => ({}),
   now = () => Date.now(),
 } = {}) {
-  if (!validateOneRunApproval(oneRunApproval)) return fail('ONE_RUN_APPROVAL_REQUIRED');
+  const acceptedEvidence = resolveAcceptedEvidenceFromApproval(oneRunApproval);
+  if (!acceptedEvidence) return fail('ONE_RUN_APPROVAL_REQUIRED');
   if (!validateAdapter(adapter) || typeof disabledRouteCheck !== 'function' || typeof evidenceWriter !== 'function')
     return fail('EXECUTOR_BINDING_INVALID');
   const artifacts = inspectAcceptedRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes });
   if (!artifacts.structureValid) return fail('ACCEPTED_ARTIFACTS_INVALID', { artifacts });
+  if (artifacts.acceptedEvidenceKey !== acceptedEvidence.key
+    || artifacts.projectionSha256 !== acceptedEvidence.projectionSha256
+    || artifacts.acceptanceReceiptSha256 !== acceptedEvidence.acceptanceReceiptSha256
+    || artifacts.privateRestrictedRegisterDigest !== acceptedEvidence.privateRestrictedRegisterDigest
+    || artifacts.restrictedCommandSetDigest !== acceptedEvidence.restrictedCommandSetDigest
+    || artifacts.commandCardProjectionDigest !== acceptedEvidence.commandCardProjectionDigest)
+    return fail('ACCEPTED_ARTIFACTS_APPROVAL_MISMATCH', { artifacts });
   const projection = JSON.parse(stringBytes(projectionBytes));
   const nowMs = now();
   if (!Number.isSafeInteger(nowMs) || nowMs < 0) return fail('CLOCK_INVALID');
-  const scenario = createScenario(projection, nowMs, now);
+  const scenario = createScenario(projection, nowMs, now, acceptedEvidence);
   if (Object.values(scenario.binding).some(value => !safeString(value))
     || Object.values(scenario.scope).some(value => !digest(value))
     || !started(scenario.policy.windowId)) return fail('SCENARIO_INVALID');
@@ -503,9 +731,10 @@ async function executeBoundedDevelopmentQualificationRun({
     schemaVersion: 1,
     mode: 'bounded-development-qualification-executor-evidence',
     decision: stopped ? 'RUN_STOPPED' : 'DEVELOPMENT_QUALIFICATION_EXECUTED',
-    acceptedProjectionSha256: packet.acceptedEvidence.projectionSha256,
-    acceptanceReceiptSha256: packet.acceptedEvidence.acceptanceReceiptSha256,
-    commandCardProjectionDigest: packet.acceptedEvidence.commandCardProjectionDigest,
+    acceptedEvidenceKey: acceptedEvidence.key,
+    acceptedProjectionSha256: acceptedEvidence.projectionSha256,
+    acceptanceReceiptSha256: acceptedEvidence.acceptanceReceiptSha256,
+    commandCardProjectionDigest: acceptedEvidence.commandCardProjectionDigest,
     commandCards: artifacts.commandCards.map(card => ({
       cardId: card.cardId,
       effect: card.effect,
@@ -565,6 +794,7 @@ async function executeBoundedDevelopmentQualificationRun({
 module.exports = {
   packet: clone(packet),
   inspectAcceptedRunArtifacts,
+  inspectRebuiltSuccessorRunArtifacts,
   inspectRestrictedCommandDescriptors,
   executeBoundedDevelopmentQualificationRun,
 };
