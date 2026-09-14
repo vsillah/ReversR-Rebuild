@@ -20,6 +20,9 @@ const ADAPTER_METHODS = Object.freeze([
 const MUTATION_METHODS = new Set(['initialize', 'transact', 'changeAuthority', 'claim', 'scanPage', 'stop']);
 const AUTHORITY_KINDS = Object.freeze(['login', 'upload-session', 'membership', 'permission']);
 const BINDING_KEYS = Object.freeze(['userId', 'shopId', 'sessionId', 'loginSessionId']);
+const RUN_WINDOW_MS = 300000;
+const PER_CALL_DEADLINE_MS = 4000;
+const CLAIM_LEASE_MS = 60000;
 const SCOPE_FIELDS = Object.freeze({
   resourceBindingDigest: 'identity.privateResourceBindingRef',
   namespaceDigest: 'identity.namespace',
@@ -236,7 +239,7 @@ function validateOneRunApproval(approval) {
     && approval.uploadsEnabled === false;
 }
 
-function createScenario(projection, nowMs) {
+function createScenario(projection, nowMs, clockNow) {
   const valueDigest = id => projection.restrictedEvidence[id].valueDigest;
   const label = id => id + '-' + valueDigest(id).slice(0, 16);
   const scope = Object.fromEntries(Object.entries(SCOPE_FIELDS)
@@ -247,7 +250,7 @@ function createScenario(projection, nowMs) {
     sessionId: label('identity.runId'),
     loginSessionId: label('identity.ledgerId'),
   };
-  const windowEnd = nowMs + Math.min(300000, 1800000);
+  const windowEnd = nowMs + RUN_WINDOW_MS;
   const ownerDigest = valueDigest('custody.primaryRef');
   const key = {
     primary: 'bounded-primary',
@@ -257,6 +260,16 @@ function createScenario(projection, nowMs) {
   const commandDigest = name => sha256('command:' + name + ':' + packet.acceptedEvidence.restrictedCommandSetDigest);
   const proposalDigest = name => sha256('proposal:' + name + ':' + packet.acceptedEvidence.projectionSha256);
   const selector = (name, fence) => ({ scope, binding, key: key[name], fence, selectorDigest: selectorDigest(name) });
+  const deadline = () => {
+    const liveNow = clockNow();
+    if (!Number.isSafeInteger(liveNow) || liveNow < nowMs || liveNow >= windowEnd) return null;
+    return Math.min(liveNow + PER_CALL_DEADLINE_MS, windowEnd);
+  };
+  const claimExpiresAt = () => {
+    const liveNow = clockNow();
+    if (!Number.isSafeInteger(liveNow) || liveNow < nowMs || liveNow >= windowEnd) return null;
+    return Math.min(liveNow + CLAIM_LEASE_MS, windowEnd);
+  };
   return {
     scope,
     binding,
@@ -276,7 +289,8 @@ function createScenario(projection, nowMs) {
       currency: 'USD',
     },
     authority: AUTHORITY_KINDS.map(kind => ({ kind, generation: 1, active: true, expiresAt: windowEnd })),
-    deadline: () => nowMs + 1000,
+    deadline,
+    claimExpiresAt,
     selector,
     reserve: (name, expectedRevision) => ({
       scope,
@@ -285,7 +299,7 @@ function createScenario(projection, nowMs) {
       commandDigest: commandDigest('reserve:' + name),
       proposalDigest: proposalDigest('reserve:' + name),
       command: { type: 'reserve', binding, key: key[name], reservationMicros: 100 },
-      deadlineAt: nowMs + 1000,
+      deadlineAt: deadline(),
     }),
     command: (type, name, expectedRevision, fence) => ({
       scope,
@@ -294,10 +308,17 @@ function createScenario(projection, nowMs) {
       commandDigest: commandDigest(type + ':' + name),
       proposalDigest: proposalDigest(type + ':' + name),
       command: { type, binding, key: key[name], fence },
-      deadlineAt: nowMs + 1000,
+      deadlineAt: deadline(),
     }),
-    stop: () => ({ scope, reasonDigest: valueDigest('window.stopProcedureRef'), deadlineAt: nowMs + 1000 }),
+    stop: () => ({ scope, reasonDigest: valueDigest('window.stopProcedureRef'), deadlineAt: deadline() }),
   };
+}
+
+function revisionFrom(...responses) {
+  for (const response of responses) {
+    if (response && Number.isSafeInteger(response.revision) && response.revision >= 0) return response.revision;
+  }
+  return 0;
 }
 
 function projectEngineResponse(response) {
@@ -363,7 +384,7 @@ async function executeBoundedDevelopmentQualificationRun({
   const projection = JSON.parse(stringBytes(projectionBytes));
   const nowMs = now();
   if (!Number.isSafeInteger(nowMs) || nowMs < 0) return fail('CLOCK_INVALID');
-  const scenario = createScenario(projection, nowMs);
+  const scenario = createScenario(projection, nowMs, now);
   if (Object.values(scenario.binding).some(value => !safeString(value))
     || Object.values(scenario.scope).some(value => !digest(value))
     || !started(scenario.policy.windowId)) return fail('SCENARIO_INVALID');
@@ -420,18 +441,24 @@ async function executeBoundedDevelopmentQualificationRun({
     binding: scenario.binding,
     authority: scenario.authority,
     deadlineAt: scenario.deadline(),
-  }, ['RUN_INITIALIZED']);
-  await call('C2', 'read-authority-dependencies', 'readAuthority', {
+  }, ['RUN_INITIALIZED', 'RUN_ALREADY_EXISTS']);
+  const authority = await call('C2', 'read-authority-dependencies', 'readAuthority', {
     scope: scenario.scope,
     binding: scenario.binding,
     deadlineAt: scenario.deadline(),
   }, ['AUTHORITY_ACTIVE']);
+  if (!stopped && initialized?.code === 'RUN_ALREADY_EXISTS' && revisionFrom(authority) !== 0) {
+    stopped = true;
+    steps.push({ cardId: 'C2', operation: 'resume-initialized-run', method: 'readAuthority',
+      expected: ['RETAINED_INITIALIZED_RUN'], response: { code: 'RESUME_STATE_UNSUPPORTED',
+        revision: revisionFrom(authority) } });
+  }
   await call('C2', 'read-exact-selector', 'readExact', {
     selector: scenario.selector('primary', 1),
     deadlineAt: scenario.deadline(),
   }, ['SELECTOR_NOT_FOUND']);
   const held = await call('C2', 'reserve-transaction', 'transact',
-    scenario.reserve('primary', initialized?.revision ?? 0), ['COMMITTED']);
+    scenario.reserve('primary', revisionFrom(authority, initialized)), ['COMMITTED']);
   await call('C2', 'reserve-transaction', 'transact',
     scenario.reserve('conflict', 0), ['CONFLICT']);
   const fenced = await call('C2', 'fence-without-dispatch', 'transact',
@@ -442,7 +469,7 @@ async function executeBoundedDevelopmentQualificationRun({
     selector: scenario.selector('primary', held?.fence ?? 1),
     expectedGeneration: 0,
     ownerDigest: scenario.ownerDigest,
-    expiresAt: nowMs + 2000,
+    expiresAt: scenario.claimExpiresAt(),
     deadlineAt: scenario.deadline(),
   }, ['CLAIMED']);
   await call('C3', 'scan-bounded-page', 'scanPage', {

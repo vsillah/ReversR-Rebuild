@@ -190,6 +190,75 @@ test('fixture execution uses only injected adapter and records sanitized evidenc
   assert.equal(snapshot.authority.filter(row => row.active === false).length, 1);
 });
 
+test('executor uses live-safe function references, rolling deadlines and initialized-run resume', async () => {
+  const artifacts = acceptedArtifacts();
+  const fixture = createFixture();
+  const references = Object.fromEntries(Object.entries(FUNCTIONS).map(([key, value]) => [key, value.name]));
+  assert.deepEqual(references, {
+    initialize: 'cadDurableEngine.js:initialize',
+    readExact: 'cadDurableEngine.js:readExact',
+    readAuthority: 'cadDurableEngine.js:readAuthority',
+    transact: 'cadDurableEngine.js:transact',
+    changeAuthority: 'cadDurableEngine.js:changeAuthority',
+    claim: 'cadDurableEngine.js:claim',
+    settle: 'cadDurableEngine.js:settle',
+    scanPage: 'cadDurableEngine.js:scanPage',
+    stop: 'cadDurableEngine.js:stop',
+  });
+  const operationFromReference = Object.fromEntries(Object.entries(FUNCTIONS)
+    .map(([key, value]) => [value.name, key]));
+  const firstAttemptAdapter = createDurableEngineAdapter({
+    references,
+    runQuery: () => { throw new Error('query transport unavailable'); },
+    runMutation: (refName, input) => fixture.invoke(operationFromReference[refName], input),
+  });
+  const firstAttempt = await executeBoundedDevelopmentQualificationRun({
+    ...artifacts,
+    oneRunApproval: oneRunApproval(artifacts),
+    adapter: firstAttemptAdapter,
+    disabledRouteCheck,
+    evidenceWriter: async () => ({ ref: 'rrb-ref:first-stopped-evidence' }),
+    now: fixture.now,
+  });
+  assert.equal(firstAttempt.runCompleted, false);
+  assert.equal(firstAttempt.unknownOutcome, false);
+  assert.equal(firstAttempt.steps.at(-1).code, 'ENGINE_UNAVAILABLE');
+  assert.equal(fixture.snapshot().ledgers[0].controlState.revision, 0);
+
+  let clock = 100;
+  const deadlines = [];
+  const rollingNow = () => {
+    const value = clock;
+    fixture.setTime(value);
+    clock += 50;
+    return value;
+  };
+  const adapter = createDurableEngineAdapter({
+    references,
+    runQuery: (refName, input) => {
+      deadlines.push(input.deadlineAt);
+      return fixture.invoke(operationFromReference[refName], input);
+    },
+    runMutation: (refName, input) => {
+      deadlines.push(input.deadlineAt);
+      return fixture.invoke(operationFromReference[refName], input);
+    },
+  });
+  const resumed = await executeBoundedDevelopmentQualificationRun({
+    ...artifacts,
+    oneRunApproval: oneRunApproval(artifacts),
+    adapter,
+    disabledRouteCheck,
+    evidenceWriter: async value => ({ ref: 'rrb-ref:resume-evidence-' + hash(JSON.stringify(value)).slice(0, 16) }),
+    now: rollingNow,
+  });
+  assert.equal(resumed.runCompleted, true);
+  assert.ok(resumed.steps.some(step => step.operation === 'seed-synthetic-metadata'
+    && step.code === 'RUN_ALREADY_EXISTS'));
+  assert.ok(deadlines.every(value => Number.isSafeInteger(value) && value > 100 && value <= 5000));
+  assert.ok(new Set(deadlines).size > 1);
+});
+
 test('missing approval, unsafe route checks and unknown mutation outcomes stop closed', async () => {
   const artifacts = acceptedArtifacts();
   const fixture = createFixture();

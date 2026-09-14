@@ -28,39 +28,39 @@
   },
   "durableFunctions": {
     "initialize": {
-      "name": "cadDurableEngine:initialize",
+      "name": "cadDurableEngine.js:initialize",
       "kind": "mutation"
     },
     "readExact": {
-      "name": "cadDurableEngine:readExact",
+      "name": "cadDurableEngine.js:readExact",
       "kind": "query"
     },
     "readAuthority": {
-      "name": "cadDurableEngine:readAuthority",
+      "name": "cadDurableEngine.js:readAuthority",
       "kind": "query"
     },
     "transact": {
-      "name": "cadDurableEngine:transact",
+      "name": "cadDurableEngine.js:transact",
       "kind": "mutation"
     },
     "changeAuthority": {
-      "name": "cadDurableEngine:changeAuthority",
+      "name": "cadDurableEngine.js:changeAuthority",
       "kind": "mutation"
     },
     "claim": {
-      "name": "cadDurableEngine:claim",
+      "name": "cadDurableEngine.js:claim",
       "kind": "mutation"
     },
     "settle": {
-      "name": "cadDurableEngine:settle",
+      "name": "cadDurableEngine.js:settle",
       "kind": "mutation"
     },
     "scanPage": {
-      "name": "cadDurableEngine:scanPage",
+      "name": "cadDurableEngine.js:scanPage",
       "kind": "mutation"
     },
     "stop": {
-      "name": "cadDurableEngine:stop",
+      "name": "cadDurableEngine.js:stop",
       "kind": "mutation"
     }
   },
@@ -80,7 +80,7 @@
   "files": {
     "offline/cad-convex/durableEngine.js": "7e0bc19cd65c89c23241b0fcb3c5c163be36440f3e14b9bd245e6a2497c3457f",
     "offline/cad-convex/durableEngine.d.ts": "376f1680ff9ee07575f671a15e881535847269c357c30035cf82cc7c479d04d9",
-    "offline/cad-convex/durableEngineAdapter.js": "2d90b6f9236baf446091f09d75e7f41c0114463a09dc810b6b0d98659f3f192c",
+    "offline/cad-convex/durableEngineAdapter.js": "fd03b38eff87476b75c5efea316bf6b0c1b892cf26ff618590b517b48451a26b",
     "offline/cad-convex/durableEngineRunner.js": "6d202313134fbaa57d88b7e8cdd5236599520d143fd68b9926e13e7975e8112e",
     "offline/cad-convex/durableEngineQualification.json": "1b9c29bed49044116de76289eb7f867886d0c3b9d3c550578b3d5f9cf92fc73a",
     "offline/cad-convex/liveDurableRunPacketAssembly.json": "b391295111d19a17ec4db01ef077191c823e70597d22a8088ad827c27cc0fa6d",
@@ -91,11 +91,11 @@
     "offline/cad-convex/privateRestrictedRegisterReview.js": "01caf4d33290146113493d0e2c30e1294b3d7facc1889b5209a28befe4b993b9",
     "offline/cad-convex/restrictedEvidenceCommandCardBytes.json": "bd1ef584006480ed828fd3912c82d4543d038a482fd252e434bd94849f487cc9",
     "offline/cad-convex/restrictedEvidenceCommandCardBytes.js": "a3f90f000f3ccb78f49d4e5130df43830f52639045f35fc6f6145407a8a479dd",
-    "offline/cad-convex/boundedDevQualificationExecutor.json": "5ab3ce352b1cf471231aa822a9ab9da8eab0c4ee876e18b5fe942800e07f91a4",
-    "offline/cad-convex/boundedDevQualificationExecutor.js": "005a09053ac7b5d4bc227663fc1d3c6ab8f4ef779c6133b29f6bcae6c813d699",
+    "offline/cad-convex/boundedDevQualificationExecutor.json": "1a7ac8131a99985aab7826992a75fdf1875ae79c7c36453d745b5173232b4298",
+    "offline/cad-convex/boundedDevQualificationExecutor.js": "1aa4381e9255d697bdb056145b15f7d4504edd418f58843aae794fbb18fe11ef",
     "scripts/cad-bounded-dev-qualification-executor.js": "e9d54228f5389795e232ffb02b08aac6865ff9990cad902f267426b9cc313f6e",
-    "scripts/cad-bounded-dev-qualification-executor.test.js": "cc629af83762bd86f730ea85591229478f1781a872a76877176824dbb5a5a3c2",
-    "docs/cad-bounded-dev-qualification-executor.md": "36dbbbbe0659b52d6211a159d0a1545b638e1e89a0b1dd15e54a78b0dd13e79b",
+    "scripts/cad-bounded-dev-qualification-executor.test.js": "77ba1d5e88de6f0a825c4cd58a38751e429d5836c6428e5ebea248bb2e721b30",
+    "docs/cad-bounded-dev-qualification-executor.md": "e64cf13c622d0986d1a4e3bfcf07ada555f5d8178bf6ab7257efc0b70e481ec7",
     "convex/cadDurableEngine.ts": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3",
     "scripts/helpers/cad-durable-engine-fixture.js": "1e9492326058d3914ac9d3879a89777e58b5d38824cd85891a318fca3908c09b",
     "scripts/cad-durable-engine.test.js": "ea38c517b830eedab944581dfbba354fed584ab59c59b58791b34a000f6b26e1",
