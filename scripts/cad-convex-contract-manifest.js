@@ -4,6 +4,8 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-fresh-executor-rebind-evidence-prep.md',
+  'docs/cad-fresh-executor-rebind-evidence-prep.json',
   'docs/cad-fresh-bounded-dev-run-register-rollover.md',
   'docs/cad-fresh-bounded-dev-run-register-rollover.json',
   'docs/cad-fresh-bounded-dev-run-command-card-projection.json',
