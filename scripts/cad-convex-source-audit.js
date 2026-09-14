@@ -10,12 +10,16 @@ const files = [
   'offline/cad-convex/durableEngineAdapter.js',
   'offline/cad-convex/durableEngineRunner.js',
   'offline/cad-convex/durableEngineQualification.json',
+  'offline/cad-convex/liveDurableRunPacketAssembly.json',
+  'offline/cad-convex/liveDurableRunPacketAssembly.js',
   'convex/cadDurableEngine.ts',
   'scripts/helpers/cad-durable-engine-fixture.js',
   'scripts/cad-durable-engine.test.js',
   'scripts/cad-durable-engine-atomicity.test.js',
   'scripts/cad-durable-engine-source.test.js',
+  'scripts/cad-live-durable-run-packet-assembly.test.js',
   'docs/cad-durable-engine-implementation.md',
+  'docs/cad-live-durable-run-packet-assembly.md',
 
   'offline/cad-convex/durableEvidenceBinding.js',
   'offline/cad-convex/durableEvidencePrerequisites.json',
@@ -242,3 +246,12 @@ for (const name of ['durableEngine.js', 'durableEngineAdapter.js', 'durableEngin
 assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false;/);
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
+
+const durableAssembly = JSON.parse(read('offline/cad-convex/liveDurableRunPacketAssembly.json'));
+for (const key of ['executable', 'liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled',
+  'privateEvidenceComplete', 'readyForLiveRunApproval']) assert.equal(durableAssembly[key], false);
+assert.equal(durableAssembly.sourceDerivedComplete, true);
+assert.ok(Object.values(durableAssembly.gates).every(value => value === false));
+assert.ok(durableAssembly.remainingEvidence.some(item => item.id === 'identity.privateResourceBindingRef'));
+assert.ok(durableAssembly.nextHumanGates.publication.includes('No merge, deployment, live tests'));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/liveDurableRunPacketAssembly.js')));

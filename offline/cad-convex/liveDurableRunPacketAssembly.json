@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-live-durable-run-packet-assembly",
+  "baseCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+  "sourceImplementationCommit": "034379cea73fc81d8502eb3e879ec27fd6d90ebf",
+  "expensesUsd": 0,
+  "executable": false,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "sourceDerivedComplete": true,
+  "privateEvidenceComplete": false,
+  "readyForLiveRunApproval": false,
+  "gates": {
+    "publication": false,
+    "configuration": false,
+    "liveRun": false,
+    "storeMutation": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "deployment": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "cleanup": false
+  },
+  "sourceDerived": {
+    "adapterCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "runnerCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "implementationCommit": "034379cea73fc81d8502eb3e879ec27fd6d90ebf",
+    "operationCounterTemplateDigest": "b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98",
+    "files": [
+      {
+        "path": "offline/cad-convex/durableEngine.js",
+        "role": "bounded transaction engine",
+        "sha256": "7e0bc19cd65c89c23241b0fcb3c5c163be36440f3e14b9bd245e6a2497c3457f"
+      },
+      {
+        "path": "offline/cad-convex/durableEngine.d.ts",
+        "role": "durable engine type contract",
+        "sha256": "376f1680ff9ee07575f671a15e881535847269c357c30035cf82cc7c479d04d9"
+      },
+      {
+        "path": "offline/cad-convex/durableEngineAdapter.js",
+        "role": "sanitized internal adapter",
+        "sha256": "2d90b6f9236baf446091f09d75e7f41c0114463a09dc810b6b0d98659f3f192c"
+      },
+      {
+        "path": "offline/cad-convex/durableEngineRunner.js",
+        "role": "bounded internal runner",
+        "sha256": "6d202313134fbaa57d88b7e8cdd5236599520d143fd68b9926e13e7975e8112e"
+      },
+      {
+        "path": "offline/cad-convex/durableEngineQualification.json",
+        "role": "source qualification inventory",
+        "sha256": "1b9c29bed49044116de76289eb7f867886d0c3b9d3c550578b3d5f9cf92fc73a"
+      },
+      {
+        "path": "offline/cad-convex/durableEvidenceBinding.js",
+        "role": "synthetic evidence rejection boundary",
+        "sha256": "b4bc695da6402135d2d25dca91c33484cc771118e2260139223f062be1bf11ef"
+      },
+      {
+        "path": "offline/cad-convex/durableAdapter.d.ts",
+        "role": "command-card adapter contract",
+        "sha256": "eabbc597bad320b69b42f58fa55aae62e0c86fc1ad9921984262b52d037dbd41"
+      },
+      {
+        "path": "offline/cad-convex/liveRunnerOutput.json",
+        "role": "sanitized runner output contract",
+        "sha256": "0b52abc346474ace594af9fb01dac7cc09fd1fb9ee0923dd3ea86c35ce0dfdc6"
+      },
+      {
+        "path": "offline/cad-convex/runnerCommandCards.json",
+        "role": "unfilled command-card template",
+        "sha256": "b7754a6b538079cd505ed68c24a1ec9a120690ecdddd87d16b003ddd4732a3c6"
+      },
+      {
+        "path": "offline/cad-convex/liveRunApprovalPacket.json",
+        "role": "unfilled live-run dossier template",
+        "sha256": "947d6b0679fb9b37d29968d81bc9edc424232c05a1e636e4e14c8a517f32c7c8"
+      },
+      {
+        "path": "offline/cad-convex/liveRunApprovalEnvelope.json",
+        "role": "unfilled external envelope template",
+        "sha256": "8bdb9af87b21ed403c02e9d3dc942d66537b4105619e442318fac42a02554afd"
+      },
+      {
+        "path": "convex/cadDurableEngine.ts",
+        "role": "internal Convex durable functions",
+        "sha256": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3"
+      },
+      {
+        "path": "convex/schema.ts",
+        "role": "schema and index source",
+        "sha256": "d9daa2c91a2fae881bce598601b1db80e2eece4825e24584b5c2340ecca2c520"
+      },
+      {
+        "path": "server/cadUserUploadRouter.js",
+        "role": "disabled upload route baseline",
+        "sha256": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb"
+      }
+    ]
+  },
+  "sourceResolvedApprovalFields": {
+    "identity.adapterCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "identity.runnerCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "identity.schemaAndIndexRef": "rrb-ref:source-schema-index-a07f97a",
+    "evidence.disabledRouteBaselineRef": "rrb-ref:disabled-upload-baseline-a07f97a"
+  },
+  "remainingEvidence": [
+    {
+      "id": "identity.sourceReviewRef",
+      "kind": "review",
+      "reason": "Independent review receipt for the final source-derived packet is not present."
+    },
+    {
+      "id": "identity.runId",
+      "kind": "private-run",
+      "reason": "Unused run identity must be allocated in a restricted record immediately before the run."
+    },
+    {
+      "id": "identity.resourceAlias",
+      "kind": "private-resource",
+      "reason": "Public alias must map to the exact existing non-production resource in restricted evidence."
+    },
+    {
+      "id": "identity.privateResourceBindingRef",
+      "kind": "private-resource",
+      "reason": "Exact resource identity, isolation, absence of real data and binding digest are still private evidence."
+    },
+    {
+      "id": "identity.namespace",
+      "kind": "private-run",
+      "reason": "Namespace must include the approved run ID and a fresh nonce."
+    },
+    {
+      "id": "identity.ledgerAndWindowRef",
+      "kind": "private-run",
+      "reason": "One ledger, one window and one fence must be bound to every selector and cursor."
+    },
+    {
+      "id": "identity.engineAndIsolationRef",
+      "kind": "provider-evidence",
+      "reason": "Live store isolation and serializable behavior remain unverified by source tests."
+    },
+    {
+      "id": "identity.syntheticInventoryRef",
+      "kind": "private-run",
+      "reason": "The exact synthetic metadata inventory must fit the 64-record cap and exclude real users or CAD."
+    },
+    {
+      "id": "identity.privilegeEvidenceRef",
+      "kind": "provider-evidence",
+      "reason": "Least-privilege live operation evidence is not available from committed source."
+    },
+    {
+      "id": "identity.fixtureDigest",
+      "kind": "private-run",
+      "reason": "The exact seed fixture and scenario allocation must be frozen separately."
+    },
+    {
+      "id": "identity.scenarioAllocationRef",
+      "kind": "review",
+      "reason": "Every scenario must map to the shared command and transaction-attempt matrix."
+    },
+    {
+      "id": "identity.independentVerifierRef",
+      "kind": "review",
+      "reason": "The source still rejects synthetic evidence and has no qualified independent private verifier binding."
+    },
+    {
+      "id": "custody.*",
+      "kind": "custody",
+      "reason": "Primary, backup, escalation, recovery, evidence reviewer and retention acceptances remain unset."
+    },
+    {
+      "id": "window.*",
+      "kind": "timebox",
+      "reason": "Exact UTC start, expiry, trusted clock evidence and stop procedure must be reviewed immediately before execution."
+    },
+    {
+      "id": "cost.*",
+      "kind": "cost",
+      "reason": "The all-in cap must be enforced below USD 10 with dated pricing, retained-state coverage and hard stop evidence."
+    },
+    {
+      "id": "evidence.*",
+      "kind": "evidence",
+      "reason": "Restricted and sanitized destinations, review digests, disabled-route live plan, reconciliation and rollback remain unaccepted."
+    },
+    {
+      "id": "commandCards.C0-C4",
+      "kind": "command-cards",
+      "reason": "Exact command bytes, executable/version hashes, argv, cwd, selector allowlists, side effects and stop plans are not filled."
+    }
+  ],
+  "blockedScenarios": [
+    "backup-restore",
+    "isolated-store-restart",
+    "window-rollover",
+    "resource-retirement",
+    "retention-deletion"
+  ],
+  "nextHumanGates": {
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-live-durable-run-packet-assembly to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD live durable run packet assembly. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or branch/worktree cleanup.",
+    "liveQualificationTemplate": "Approve one synthetic durable-adapter development qualification run [run ID] at adapter commit a07f97aaa34913ba5e622d05e92cd22722fe6d55 and runner commit a07f97aaa34913ba5e622d05e92cd22722fe6d55, exact command cards [SHA-256], final dossier [SHA-256], final envelope [SHA-256], private existing resource [exact identity and binding digest], alias [alias], namespace [namespace], ledger/window/fence [values], operation/counter matrix b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98 and accepted per-row allocations, primary and backup custodians [accepted references and digests], independent reviewer [acceptance digest], UTC interval [start to expiry, at most 1800 seconds], enforceable all-in cap [at most USD 9 and evidence digest], restricted/sanitized evidence destinations [accepted references and digests], disabled-route pre/post plan [digest], reconciliation/rollback acceptance [digests] and retained-state custody [digest]. Permit only enumerated synthetic metadata reads/writes and non-production no-body verification within the reviewed shared counters, including revocation but no deletion. Keep uploads disabled and stop on unknown outcomes under the bounded reconciliation plan. No production access/smokes, live Auth tests, private CAD, conversion, Sandbox, enrollment, email/SMS/Slack, env/provider/auth/resource or usage/billing changes, secrets, backup/restore, store restart, rollover, retention/deletion, merge, deployment or lane cleanup. No automatic retry after expiry, resume or second run."
+  }
+}
