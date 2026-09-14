@@ -60,6 +60,19 @@ const REBUILT_RECEIPT_KEYS = Object.freeze([
   'olderAcceptedRegisterFound', 'olderAcceptedRegisterSubstituted',
   'acceptanceScope', 'nextBlockedUntil',
 ]);
+const EARLIER_WINDOW_RECEIPT_KEYS = Object.freeze([
+  'schemaVersion', 'mode', 'status', 'acceptedAtUtc', 'acceptedByRef',
+  'sourceMainCommit', 'sourcePr', 'approvalPhraseSha256',
+  'acceptedProjectionSha256', 'acceptedProjectionByteCount',
+  'privateSuccessorRestrictedRegisterDigest',
+  'privateSuccessorRestrictedRegisterByteCount', 'acceptancePacketSha256',
+  'acceptancePacketByteCount', 'restrictedCommandSetDigest',
+  'restrictedCommandReceiptByteCount', 'commandCardProjectionDigest',
+  'commandCardProjectionByteCount', 'evidenceReceiptCount',
+  'commandCardCount', 'runRef', 'resourceAliasRef', 'namespaceRef',
+  'ledgerWindowRef', 'fenceRef', 'window', 'acceptanceScope',
+  'nextBlockedUntil',
+]);
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const sha256 = bytes => createHash('sha256').update(bytes, 'utf8').digest('hex');
@@ -261,11 +274,14 @@ function inspectLegacyAcceptedRunArtifacts({ register, projectionBytes, acceptan
 function isRebuiltSuccessorArtifactSet(register, projection, receipt) {
   return (isObject(register) && register.mode === 'ignored-successor-restricted-register-rebuild')
     || (isObject(projection) && projection.mode === 'source-safe-successor-restricted-evidence-rebuild-projection')
-    || (isObject(receipt) && receipt.mode === 'rebuilt-successor-evidence-acceptance-receipt');
+    || (isObject(receipt) && (receipt.mode === 'rebuilt-successor-evidence-acceptance-receipt'
+      || receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'));
 }
 
 function inspectRebuiltSuccessorReceipt(receipt, receiptSha256, errors, evidence) {
-  if (!exact(receipt, REBUILT_RECEIPT_KEYS)) {
+  const receiptKeys = receipt && receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'
+    ? EARLIER_WINDOW_RECEIPT_KEYS : REBUILT_RECEIPT_KEYS;
+  if (!exact(receipt, receiptKeys)) {
     errors.add('REBUILT_ACCEPTANCE_RECEIPT_SHAPE_INVALID');
     return;
   }
@@ -280,7 +296,8 @@ function inspectRebuiltSuccessorReceipt(receipt, receiptSha256, errors, evidence
     || receipt.commandCardProjectionDigest !== evidence.commandCardProjectionDigest
     || receipt.evidenceReceiptCount !== evidence.requiredEvidenceReceipts
     || receipt.commandCardCount !== REQUIRED_CARDS.length
-    || receipt.olderAcceptedRegisterSubstituted !== false) {
+    || (receipt.mode === 'rebuilt-successor-evidence-acceptance-receipt'
+      && receipt.olderAcceptedRegisterSubstituted !== false)) {
     errors.add('REBUILT_ACCEPTANCE_RECEIPT_DIGEST_MISMATCH');
   }
   if (!isObject(receipt.acceptanceScope)
