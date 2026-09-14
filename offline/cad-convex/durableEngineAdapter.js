@@ -4,15 +4,15 @@ const { blocked } = require('./durableAdapter');
 const { inspectSyntheticEvidence } = require('./durableEvidenceBinding');
 
 const FUNCTIONS = Object.freeze({
-  initialize: Object.freeze({ name: 'cadDurableEngine:initialize', kind: 'mutation' }),
-  readExact: Object.freeze({ name: 'cadDurableEngine:readExact', kind: 'query' }),
-  readAuthority: Object.freeze({ name: 'cadDurableEngine:readAuthority', kind: 'query' }),
-  transact: Object.freeze({ name: 'cadDurableEngine:transact', kind: 'mutation' }),
-  changeAuthority: Object.freeze({ name: 'cadDurableEngine:changeAuthority', kind: 'mutation' }),
-  claim: Object.freeze({ name: 'cadDurableEngine:claim', kind: 'mutation' }),
-  settle: Object.freeze({ name: 'cadDurableEngine:settle', kind: 'mutation' }),
-  scanPage: Object.freeze({ name: 'cadDurableEngine:scanPage', kind: 'mutation' }),
-  stop: Object.freeze({ name: 'cadDurableEngine:stop', kind: 'mutation' }),
+  initialize: Object.freeze({ name: 'cadDurableEngine.js:initialize', kind: 'mutation' }),
+  readExact: Object.freeze({ name: 'cadDurableEngine.js:readExact', kind: 'query' }),
+  readAuthority: Object.freeze({ name: 'cadDurableEngine.js:readAuthority', kind: 'query' }),
+  transact: Object.freeze({ name: 'cadDurableEngine.js:transact', kind: 'mutation' }),
+  changeAuthority: Object.freeze({ name: 'cadDurableEngine.js:changeAuthority', kind: 'mutation' }),
+  claim: Object.freeze({ name: 'cadDurableEngine.js:claim', kind: 'mutation' }),
+  settle: Object.freeze({ name: 'cadDurableEngine.js:settle', kind: 'mutation' }),
+  scanPage: Object.freeze({ name: 'cadDurableEngine.js:scanPage', kind: 'mutation' }),
+  stop: Object.freeze({ name: 'cadDurableEngine.js:stop', kind: 'mutation' }),
 });
 const exact = (value, keys) => value !== null && typeof value === 'object' && !Array.isArray(value)
   && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
