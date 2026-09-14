@@ -4,6 +4,13 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'offline/cad-convex/durableAdapter.js',
+  'offline/cad-convex/durableAdapter.d.ts',
+  'offline/cad-convex/liveRunner.js',
+  'offline/cad-convex/liveRunnerOutput.json',
+  'scripts/cad-live-runner.js',
+  'scripts/cad-live-runner.test.js',
+  'docs/cad-live-runner-adapter-source.md',
   'offline/cad-convex/runnerCommandCards.json',
   'offline/cad-convex/runnerCommandCards.js',
   'scripts/cad-runner-command-cards.js',
