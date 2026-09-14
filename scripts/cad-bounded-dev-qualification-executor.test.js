@@ -83,15 +83,15 @@ function acceptedArtifacts() {
   return { register, projection, projectionBytes, acceptanceReceiptBytes };
 }
 
-function rebuiltSuccessorArtifacts(t) {
-  const base = path.join('.local', 'cad-convex', 'successor-evidence-recovery-rebuild');
+function earlierWindowSuccessorArtifacts(t) {
+  const base = path.join('.local', 'cad-convex', 'earlier-window-successor-evidence');
   const files = {
-    register: path.join(base, 'successor-restricted-register.json'),
-    projection: path.join(base, 'successor-source-safe-projection.json'),
-    receipt: path.join(base, 'rebuilt-successor-evidence-acceptance-receipt.json'),
+    register: path.join(base, 'successor-earlier-window-restricted-register.json'),
+    projection: path.join(base, 'successor-earlier-window-source-safe-projection.json'),
+    receipt: path.join(base, 'successor-earlier-window-evidence-acceptance-receipt.json'),
   };
   if (!Object.values(files).every(file => fs.existsSync(file))) {
-    t.skip('ignored rebuilt successor restricted evidence artifacts are not present in this checkout');
+    t.skip('ignored earlier-window successor restricted evidence artifacts are not present in this checkout');
     return null;
   }
   const register = JSON.parse(fs.readFileSync(files.register, 'utf8'));
@@ -142,11 +142,14 @@ test('executor packet binds accepted digests while keeping every authority gate 
   assert.equal(packet.baseCommit, 'cf066a38f30df8b4bbd04042775fcf3dca7a0810');
   assert.equal(packet.sourcePacketCommit, 'a4fd2568269e6991a8621784e73effc7a8722ad5');
   assert.equal(packet.acceptedEvidence.projectionSha256, '2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4');
-  assert.equal(packet.acceptedRebuiltSuccessorEvidence.projectionSha256, '30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8');
-  assert.equal(packet.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, 'f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d');
-  assert.equal(packet.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, '53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65');
-  assert.equal(packet.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, '7d29d14ee50269ba2a24607fe662bc95b4aea8aef3a22cda9234252ea3ddeb48');
-  assert.equal(packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '4b102923f9ff0bc4f46f618894b4503e4b63e43f0b8b3991f82fe5eaff4144c6');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.projectionSha256, '1dbdf153921a1676c8870827fd619706e1a6bd143835a6cb623be13590dae566');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, '898bf16b7078730123aa9f1416d21dcfd1e5f07a2272ac15024563a6dbb498e8');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, 'd2018ce44048a32a495a0c6095c4fafdffe375766dd0f9a4aafc5806e6ebb237');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, 'e1a74e5b4ea72c55b6b72845a1e924c4659f11eebd8ef216c3104f2a3abd51ee');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '2b79a9ca19197b12082301ef45dfe7dcc803e84238882f16304b56c8e09e5fac');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.sourceMainCommit, 'd09e40f7fd946da803b3166b60246b57b1f5ddac');
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.sourcePr, 220);
+  assert.equal(packet.acceptedRebuiltSuccessorEvidence.runRef, 'rrb-ref:successor-early-window-bounded-development-run');
   assert.equal(packet.executableBridgeSource, true);
   assert.equal(packet.providerClientBundled, false);
   for (const key of ['liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled']) assert.equal(packet[key], false);
@@ -170,8 +173,8 @@ test('accepted restricted register, projection and receipt inspect without leaki
   assert.ok(!JSON.stringify(result).includes(artifacts.register.restrictedCommandBytes.C2));
 });
 
-test('accepted rebuilt successor artifacts inspect and execute through the local fixture only', async t => {
-  const artifacts = rebuiltSuccessorArtifacts(t);
+test('accepted earlier-window successor artifacts inspect and execute through the local fixture only', async t => {
+  const artifacts = earlierWindowSuccessorArtifacts(t);
   if (!artifacts) return;
   const result = inspectAcceptedRunArtifacts(artifacts);
   assert.equal(result.structureValid, true);
@@ -197,7 +200,7 @@ test('accepted rebuilt successor artifacts inspect and execute through the local
     disabledRouteCheck,
     evidenceWriter: async value => {
       evidence = value;
-      return { ref: 'rrb-ref:rebuilt-successor-evidence-' + hash(JSON.stringify(value)).slice(0, 16) };
+      return { ref: 'rrb-ref:earlier-window-evidence-' + hash(JSON.stringify(value)).slice(0, 16) };
     },
     now: fixture.now,
   });
@@ -211,6 +214,8 @@ test('accepted rebuilt successor artifacts inspect and execute through the local
   assert.equal(evidence.acceptedProjectionSha256, packet.acceptedRebuiltSuccessorEvidence.projectionSha256);
   assert.equal(evidence.commandCardProjectionDigest, packet.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest);
   assert.ok(!JSON.stringify(evidence).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
+  assert.equal(artifacts.projection.window.startUtc, '2026-09-15T01:00:00Z');
+  assert.equal(artifacts.projection.window.expiresUtc, '2026-09-15T01:05:00Z');
 });
 
 test('restricted command bytes are descriptors, not shell or provider commands', () => {
