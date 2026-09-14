@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-safe-fresh-replacement-restricted-evidence-assembly",
+  "status": "BLOCKED_MISSING_ORIGINAL_ROLLOVER_REGISTER",
+  "sourceMainCommit": "16410eeb9653631827f115f27a4d26b1d9470e62",
+  "sourcePr": 217,
+  "observedAtUtc": "2026-09-14T18:20:54Z",
+  "clockEvidence": "LOCAL_OS_OBSERVATION_ONLY",
+  "predecessor": {
+    "sourcePr": 216,
+    "mergeCommit": "2024c8f0a3b212fbde80bb820b97bb75bd9edcba",
+    "projectionSha256": "d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9",
+    "privateRestrictedRegisterDigest": "3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724",
+    "commandCardProjectionDigest": "6a38c8b6960b33ecb8be339ffe6676a48514d42c4592f618a066e0387982a98f",
+    "restrictedCommandSetDigest": "2e2c95a7f82308efd05bb907ed8bbb9609d2b86c02659dbbe786318460c2d51e",
+    "planningEvidenceSha256": "e911f3cf4df0b4bc0579683726182746fbe1d8af5acf00b33dbbecc7847934f7",
+    "expiredRunCloseoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199"
+  },
+  "provenance": {
+    "searchedRoots": 3,
+    "expectedOriginalRelativeDirectory": ".local/cad-convex/fresh-bounded-dev-run-register-rollover",
+    "expectedOriginalRegisterDigest": "3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724",
+    "originalRolloverRegisterFound": false,
+    "predecessorProjectionBytesVerified": true,
+    "olderAcceptedRegisterFound": true,
+    "olderAcceptedRegisterCanonicalDigest": "0ed5be1773de1db4f7f9f6991a63f29473a530dfe53716ee1d955e61380c3c58",
+    "olderAcceptedRegisterSubstituted": false,
+    "historicalCloseoutBytesVerified": true,
+    "freshProviderObservation": false,
+    "custodianAcceptanceFound": false
+  },
+  "localRestrictedArtifacts": {
+    "directoryMode": "0700",
+    "fileMode": "0600",
+    "gitIgnored": true,
+    "provenanceSearchSha256": "88c2f00c56b409329288b5845fb848862bf0cd85c4f1e2bf8f24d764e4911f7a",
+    "successorIntakeSha256": "aebf37cceef5514279b6b036d87b5aafcbbcf9d3de2849f312d921b7ddbf3988",
+    "successorIntakePrepared": true,
+    "successorIntakeIsExecutableRestrictedRegister": false,
+    "rawValuesInGit": false
+  },
+  "proposedReplacementWindow": {
+    "startUtc": "2026-09-15T17:00:00Z",
+    "expiresUtc": "2026-09-15T17:05:00Z",
+    "maxRunSeconds": 300,
+    "automaticRefresh": false,
+    "approved": false,
+    "boundToRestrictedRegister": false
+  },
+  "replacement": {
+    "projectionSha256": null,
+    "privateRestrictedRegisterDigest": null,
+    "acceptanceReceiptSha256": null,
+    "commandCardProjectionDigest": null,
+    "restrictedCommandSetDigest": null,
+    "resourceBindingEvidenceDigest": null,
+    "costEvidenceDigest": null,
+    "custodyEvidenceDigest": null,
+    "utcEvidenceDigest": null
+  },
+  "evidenceStatus": {
+    "requiredFields": 45,
+    "acceptedFields": 0,
+    "commandCardsAvailable": 0,
+    "resourceBindingVerified": false,
+    "costEnforcementVerified": false,
+    "proposedCapMicros": 9000000,
+    "retainedStateCostCoverageVerified": false,
+    "custodyAccepted": false,
+    "trustedRuntimeClockVerified": false,
+    "independentReviewAccepted": false,
+    "disabledRoutePlanReady": false,
+    "reconciliationAcceptanceReady": false,
+    "rollbackAcceptanceReady": false,
+    "retainedStateCustodyAccepted": false
+  },
+  "retainedState": {
+    "expiredRunRetryAuthorized": false,
+    "deleteAuthorized": false,
+    "retainNoDeleteCustody": true,
+    "closeoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199"
+  },
+  "independentReviewAcceptanceMaterials": {
+    "acceptancePhraseAvailable": false,
+    "requiredBeforeAcceptance": [
+      "recover authentic original rollover restricted register or obtain independent provenance acceptance for a successor",
+      "verify canonical register digest, original file hash, custody source and non-substitution",
+      "fill and review all 45 restricted evidence fields with pending, fixture and planning-only values rejected",
+      "regenerate successor projection, command-card projection and restricted command set from reviewed bytes",
+      "bind exact resource, UTC, cost, custody, destination, disabled-route, reconciliation, rollback and retained-state evidence",
+      "freeze independent reviewer receipt before any evidence-completeness approval phrase is emitted"
+    ],
+    "rejectionRules": [
+      "do not reconstruct private evidence from public digests",
+      "do not use the older accepted register as a substitute",
+      "do not treat a local intake digest as a restricted register digest",
+      "do not issue a live-run approval phrase while any replacement digest is null"
+    ]
+  },
+  "blockedReasons": [
+    "original restricted rollover register not found",
+    "older accepted register digest differs from fresh rollover register digest and must not be substituted",
+    "successor intake is a restricted planning artifact, not an executable restricted register",
+    "replacement projection and command-card digests remain null",
+    "resource, cost, custody, UTC, disabled-route, reconciliation, rollback and retained-state evidence remain unaccepted"
+  ],
+  "gates": {
+    "liveRunAuthorized": false,
+    "restrictedEvidenceAccepted": false,
+    "uploadsEnabled": false,
+    "conversionEnabled": false,
+    "providerBinding": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "billingChange": false,
+    "sandbox": false,
+    "push": false,
+    "merge": false,
+    "deployment": false,
+    "cleanup": false
+  },
+  "expensesUsd": 0,
+  "nextHumanGates": {
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-fresh-replacement-restricted-evidence to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-safe CAD fresh replacement restricted evidence assembly packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets outside ignored reviewed restricted evidence artifacts, usage/billing changes, enrollment, email/SMS/Slack, store mutation outside reviewed restricted evidence artifacts, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, expired-run retry, live run, or branch/worktree cleanup.",
+    "sourceOnlyExecutorRebind": "Approve source-only executor rebind implementation on branch codex/cad-fresh-replacement-restricted-evidence after restricted provenance is restored or independently accepted, with offline fixtures only and final evidence pins blocked until authentic restricted evidence is accepted. No push, merge, deployment, live run, provider/env/billing changes, uploads, conversion, private CAD, Sandbox, external messages, or cleanup.",
+    "restrictedEvidenceAcceptance": "BLOCKED_UNTIL_AUTHENTIC_SUCCESSOR_RESTRICTED_REGISTER_AND_INDEPENDENT_REVIEW_EXIST"
+  }
+}
