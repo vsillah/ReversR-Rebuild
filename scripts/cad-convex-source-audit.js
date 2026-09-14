@@ -12,14 +12,18 @@ const files = [
   'offline/cad-convex/durableEngineQualification.json',
   'offline/cad-convex/liveDurableRunPacketAssembly.json',
   'offline/cad-convex/liveDurableRunPacketAssembly.js',
+  'offline/cad-convex/privateEvidenceCommandCardFillPlan.json',
+  'offline/cad-convex/privateEvidenceCommandCardFillPlan.js',
   'convex/cadDurableEngine.ts',
   'scripts/helpers/cad-durable-engine-fixture.js',
   'scripts/cad-durable-engine.test.js',
   'scripts/cad-durable-engine-atomicity.test.js',
   'scripts/cad-durable-engine-source.test.js',
   'scripts/cad-live-durable-run-packet-assembly.test.js',
+  'scripts/cad-private-evidence-command-card-fill.test.js',
   'docs/cad-durable-engine-implementation.md',
   'docs/cad-live-durable-run-packet-assembly.md',
+  'docs/cad-private-evidence-command-card-fill.md',
 
   'offline/cad-convex/durableEvidenceBinding.js',
   'offline/cad-convex/durableEvidencePrerequisites.json',
@@ -255,3 +259,13 @@ assert.ok(Object.values(durableAssembly.gates).every(value => value === false));
 assert.ok(durableAssembly.remainingEvidence.some(item => item.id === 'identity.privateResourceBindingRef'));
 assert.ok(durableAssembly.nextHumanGates.publication.includes('No merge, deployment, live tests'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/liveDurableRunPacketAssembly.js')));
+
+const fillPlan = JSON.parse(read('offline/cad-convex/privateEvidenceCommandCardFillPlan.json'));
+for (const key of ['executable', 'liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled',
+  'privateEvidenceComplete', 'commandCardsComplete', 'readyForLiveRunApproval']) assert.equal(fillPlan[key], false);
+assert.ok(Object.values(fillPlan.gates).every(value => value === false));
+assert.equal(fillPlan.sourceBindings.liveDurableRunPacketAssemblyCommit, 'c785c79e7ed3b1b5eea1868a82a41740fa2451ed');
+assert.equal(fillPlan.privateResourceBindingPlan.privateValueInGit, false);
+assert.equal(fillPlan.costAndTimePlan.maxEnforcedCapMicros, 9000000);
+assert.ok(fillPlan.nextHumanGates.liveQualificationTemplate.includes('Keep uploads disabled'));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/privateEvidenceCommandCardFillPlan.js')));

@@ -1,5 +1,5 @@
 {
-  "version": 34,
+  "version": 35,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -85,14 +85,18 @@
     "offline/cad-convex/durableEngineQualification.json": "1b9c29bed49044116de76289eb7f867886d0c3b9d3c550578b3d5f9cf92fc73a",
     "offline/cad-convex/liveDurableRunPacketAssembly.json": "b391295111d19a17ec4db01ef077191c823e70597d22a8088ad827c27cc0fa6d",
     "offline/cad-convex/liveDurableRunPacketAssembly.js": "7368217a935e04aa8a465780cd8598fd413a37c548ad73f064af8ff472c0f7b2",
+    "offline/cad-convex/privateEvidenceCommandCardFillPlan.json": "73357631e15d071a4565dcad7f041d24fc52621618fb84594f05471652e00918",
+    "offline/cad-convex/privateEvidenceCommandCardFillPlan.js": "60e7199850ff5962788f90e901dc4cbe57938167d6856490866a1ae2f5d495e2",
     "convex/cadDurableEngine.ts": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3",
     "scripts/helpers/cad-durable-engine-fixture.js": "1e9492326058d3914ac9d3879a89777e58b5d38824cd85891a318fca3908c09b",
     "scripts/cad-durable-engine.test.js": "ea38c517b830eedab944581dfbba354fed584ab59c59b58791b34a000f6b26e1",
     "scripts/cad-durable-engine-atomicity.test.js": "b545115a401ae2efa70f3607159a61a29ef04c496964e2174388337ba5597024",
     "scripts/cad-durable-engine-source.test.js": "1a907c14476d20e0f5c1176df88379fc24e48c1dfd4ed5e3a1da90ab096f8354",
     "scripts/cad-live-durable-run-packet-assembly.test.js": "525cfeab39a83e8b02a7a40c751109cb5ab7da9e122ad651eab12462d7f7a714",
+    "scripts/cad-private-evidence-command-card-fill.test.js": "622c1e700e7b5080689c03ac6c96d372e2aa126d0e228a12558fd69e97ec6369",
     "docs/cad-durable-engine-implementation.md": "594b11bbc62c9c11ddb9a73c0fb1dc46355ce31f877a8cb3d0d429343effef09",
     "docs/cad-live-durable-run-packet-assembly.md": "94671bbce62b42117d0b5003fabf3bbda3b0d202bf895e027c851e34007ed7e5",
+    "docs/cad-private-evidence-command-card-fill.md": "e4ebd8a11b31c516c38fe8f3abb3f5f2c2fbe39c51880c272d85f33ac7abf181",
     "offline/cad-convex/durableEvidenceBinding.js": "b4bc695da6402135d2d25dca91c33484cc771118e2260139223f062be1bf11ef",
     "offline/cad-convex/durableEvidencePrerequisites.json": "f8c1404ce00413f230e49f1bebf6b44ccfadaaf69e5d96cab31f6833c1ba7a5e",
     "scripts/helpers/cad-durable-evidence-fixture.js": "ccc912ac1a3489e7b617591eeee7078d84f94f3077d68cafebde9b842da72f51",
@@ -234,7 +238,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "fb43bbca3c3ac9da3cf006ddc1d4700097ad9ee6c8a1c418d671b8161ede127c",
     "scripts/helpers/cad-convex-source-loader.js": "1650d3a9b32701af891e8c9409c70c1e7120e815b71b7fbc75ea97436beb88d5",
-    "scripts/cad-convex-source-audit.js": "9d2931cdc701c470fb78df8088921977603110c362de0647f510d3cde31fde78",
+    "scripts/cad-convex-source-audit.js": "7b8c87ac46973524e545a3fe83b307069255c1643ecda9c29ee0c0c176179707",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -248,6 +252,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "40400efd3ae7824e703eac4f9e68fe713e095d524c5e0014e85424156234cb55"
+    "scripts/cad-convex-contract-manifest.js": "a346b55dab29859a599ee761e1f1d3843bac2713b76af5417f48ae2476c5c6fd"
   }
 }
