@@ -4,6 +4,10 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-fresh-replacement-restricted-evidence.md',
+  'docs/cad-fresh-replacement-restricted-evidence.json',
+  'offline/cad-convex/freshReplacementRestrictedEvidence.js',
+  'scripts/cad-fresh-replacement-restricted-evidence.test.js',
   'docs/cad-fresh-executor-rebind-evidence-prep.md',
   'docs/cad-fresh-executor-rebind-evidence-prep.json',
   'docs/cad-fresh-bounded-dev-run-register-rollover.md',
@@ -185,7 +189,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 37, mode: 'offline-source-unqualified',
+const manifest = { version: 38, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

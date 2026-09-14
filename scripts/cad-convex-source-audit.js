@@ -5,6 +5,10 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-fresh-replacement-restricted-evidence.md',
+  'docs/cad-fresh-replacement-restricted-evidence.json',
+  'offline/cad-convex/freshReplacementRestrictedEvidence.js',
+  'scripts/cad-fresh-replacement-restricted-evidence.test.js',
   'docs/cad-fresh-executor-rebind-evidence-prep.md',
   'docs/cad-fresh-executor-rebind-evidence-prep.json',
   'offline/cad-convex/durableEngine.js',
@@ -256,6 +260,13 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/br
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/runnerCommandCards.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/restrictedEvidenceCommandCardBytes.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/privateRestrictedRegisterReview.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/freshReplacementRestrictedEvidence.js')));
+const freshReplacement = JSON.parse(read('docs/cad-fresh-replacement-restricted-evidence.json'));
+const freshReplacementResult = require('../offline/cad-convex/freshReplacementRestrictedEvidence').inspectFreshReplacementRestrictedEvidence(freshReplacement);
+assert.equal(freshReplacementResult.structureValid, true);
+assert.equal(freshReplacementResult.decision, 'LIVE_RUN_BLOCKED');
+assert.equal(freshReplacementResult.readyForLiveRunApproval, false);
+assert.equal(freshReplacementResult.successorExecutable, false);
 
 for (const name of ['durableAdapter.js', 'liveRunner.js', 'durableEvidenceBinding.js'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
