@@ -18,6 +18,11 @@ const files = [
   'offline/cad-convex/privateRestrictedRegisterReview.js',
   'offline/cad-convex/restrictedEvidenceCommandCardBytes.json',
   'offline/cad-convex/restrictedEvidenceCommandCardBytes.js',
+  'offline/cad-convex/boundedDevQualificationExecutor.json',
+  'offline/cad-convex/boundedDevQualificationExecutor.js',
+  'scripts/cad-bounded-dev-qualification-executor.js',
+  'scripts/cad-bounded-dev-qualification-executor.test.js',
+  'docs/cad-bounded-dev-qualification-executor.md',
   'convex/cadDurableEngine.ts',
   'scripts/helpers/cad-durable-engine-fixture.js',
   'scripts/cad-durable-engine.test.js',
@@ -207,7 +212,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes|boundedDevQualificationExecutor|cad-bounded-dev-qualification-executor/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -287,5 +292,18 @@ assert.equal(privateRestrictedReview.sourceBindings.restrictedEvidenceCommandCar
 assert.equal(privateRestrictedReview.privateRegisterContract.rawValuePublic, false);
 assert.equal(privateRestrictedReview.privateRegisterContract.rawCommandBytesPublic, false);
 assert.ok(privateRestrictedReview.nextHumanGates.restrictedEvidenceAcceptanceTemplate.includes('authorizes no live run'));
+
+const boundedExecutor = JSON.parse(read('offline/cad-convex/boundedDevQualificationExecutor.json'));
+assert.equal(boundedExecutor.mode, 'source-only-bounded-development-qualification-executor');
+assert.equal(boundedExecutor.executableBridgeSource, true);
+assert.equal(boundedExecutor.providerClientBundled, false);
+for (const key of ['liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled']) assert.equal(boundedExecutor[key], false);
+assert.ok(Object.values(boundedExecutor.gates).every(value => value === false));
+assert.equal(boundedExecutor.acceptedEvidence.projectionSha256, '2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4');
+assert.equal(boundedExecutor.acceptedEvidence.acceptanceReceiptSha256, 'c1001e4c4ab59accebfa5bc49e8bf76d8799af75bfcc165fc43e5e03e61bf053');
+assert.equal(boundedExecutor.acceptedEvidence.commandCardProjectionDigest, 'f3e864320f4f6aa146cac0cacf3f1e1a7e4e90b2c0001af0bfb23bcc1698ff1a');
+assert.ok(boundedExecutor.nextHumanGates.liveQualification.includes('Keep CAD uploads disabled'));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/boundedDevQualificationExecutor.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser/.test(read('scripts/cad-bounded-dev-qualification-executor.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);

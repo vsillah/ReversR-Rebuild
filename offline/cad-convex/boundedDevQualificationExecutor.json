@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-bounded-development-qualification-executor",
+  "baseCommit": "cf066a38f30df8b4bbd04042775fcf3dca7a0810",
+  "sourcePacketCommit": "a4fd2568269e6991a8621784e73effc7a8722ad5",
+  "acceptedEvidence": {
+    "projectionSha256": "2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4",
+    "acceptanceReceiptSha256": "c1001e4c4ab59accebfa5bc49e8bf76d8799af75bfcc165fc43e5e03e61bf053",
+    "privateRestrictedRegisterDigest": "0ed5be1773de1db4f7f9f6991a63f29473a530dfe53716ee1d955e61380c3c58",
+    "restrictedCommandSetDigest": "035742b2d20ba7bb037505a609224191dd2d8898398f622bfdc308dc8861af3f",
+    "commandCardProjectionDigest": "f3e864320f4f6aa146cac0cacf3f1e1a7e4e90b2c0001af0bfb23bcc1698ff1a",
+    "requiredEvidenceReceipts": 45
+  },
+  "executableBridgeSource": true,
+  "providerClientBundled": false,
+  "shellCommandExecution": false,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "gates": {
+    "liveRun": false,
+    "providerBinding": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "deployment": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "merge": false,
+    "cleanup": false
+  },
+  "cards": [
+    {
+      "id": "C0",
+      "effect": "offline-preflight",
+      "handler": "inspectAcceptedArtifacts",
+      "remoteStoreMutation": false
+    },
+    {
+      "id": "C1",
+      "effect": "disabled-route-precheck-no-body",
+      "handler": "disabledRouteCheck",
+      "remoteStoreMutation": false
+    },
+    {
+      "id": "C2",
+      "effect": "synthetic-metadata-qualification",
+      "handler": "durableAdapterOperations",
+      "remoteStoreMutation": true
+    },
+    {
+      "id": "C3",
+      "effect": "bounded-original-selector-reconciliation",
+      "handler": "boundedReconciliationRead",
+      "remoteStoreMutation": true
+    },
+    {
+      "id": "C4",
+      "effect": "disabled-route-postcheck-no-body-and-closeout",
+      "handler": "disabledRouteCheckAndStop",
+      "remoteStoreMutation": true
+    }
+  ],
+  "operationPlan": [
+    "initialize",
+    "readAuthority",
+    "readExact",
+    "transact.reserve",
+    "transact.conflict-observation",
+    "transact.fence",
+    "transact.unknown",
+    "claim",
+    "scanPage",
+    "changeAuthority.revoke",
+    "readAuthority.revoked",
+    "stop"
+  ],
+  "requiredRuntimeBinding": {
+    "oneRunApproval": true,
+    "adapter": "reviewed development-only durable adapter",
+    "disabledRouteCheck": "reviewed non-production no-body checker",
+    "evidenceWriter": "restricted or sanitized local evidence sink",
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "nextHumanGates": {
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-bounded-dev-qualification-executor to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD bounded development qualification executor. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or branch/worktree cleanup.",
+    "liveQualification": "Approve one synthetic durable-adapter development qualification run using accepted restricted evidence projection 2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4, acceptance receipt c1001e4c4ab59accebfa5bc49e8bf76d8799af75bfcc165fc43e5e03e61bf053, private restricted register digest 0ed5be1773de1db4f7f9f6991a63f29473a530dfe53716ee1d955e61380c3c58, restricted command set digest 035742b2d20ba7bb037505a609224191dd2d8898398f622bfdc308dc8861af3f, command-card projection digest f3e864320f4f6aa146cac0cacf3f1e1a7e4e90b2c0001af0bfb23bcc1698ff1a, and executor commit [full reviewed SHA]. Scope is one bounded development-only run through the reviewed executor, accepted restricted register, injected development-only adapter, no-body disabled-route checks, synthetic metadata writes, bounded reconciliation reads, revocation without deletion, sanitized evidence output, and stop-on-unknown/no-retry handling. Keep CAD uploads disabled. No production, CAD files, private CAD, CAD upload activation, CAD conversion, Sandbox dispatch, real users, enrollment, email/SMS/Slack, new secrets, env/provider/auth/resource or usage/billing changes, deployment, merge, automatic retry, second run, or branch/worktree cleanup."
+  }
+}
