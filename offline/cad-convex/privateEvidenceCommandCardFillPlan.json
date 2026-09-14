@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-private-evidence-command-card-fill-plan",
+  "baseCommit": "c785c79e7ed3b1b5eea1868a82a41740fa2451ed",
+  "predecessor": "liveDurableRunPacketAssembly.json",
+  "expensesUsd": 0,
+  "executable": false,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "privateEvidenceComplete": false,
+  "commandCardsComplete": false,
+  "readyForLiveRunApproval": false,
+  "gates": {
+    "publication": false,
+    "configuration": false,
+    "liveRun": false,
+    "storeMutation": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "deployment": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "cleanup": false
+  },
+  "sourceBindings": {
+    "liveDurableRunPacketAssemblyCommit": "c785c79e7ed3b1b5eea1868a82a41740fa2451ed",
+    "adapterCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "runnerCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "implementationCommit": "034379cea73fc81d8502eb3e879ec27fd6d90ebf",
+    "operationCounterTemplateDigest": "b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98",
+    "commandCardTemplate": "offline/cad-convex/runnerCommandCards.json",
+    "approvalPacketTemplate": "offline/cad-convex/liveRunApprovalPacket.json",
+    "approvalEnvelopeTemplate": "offline/cad-convex/liveRunApprovalEnvelope.json"
+  },
+  "fieldFillPlan": {
+    "sourceResolved": [
+      {
+        "id": "identity.adapterCommit",
+        "publicValue": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+        "evidenceRef": "rrb-ref:source-adapter-commit-a07f97a",
+        "acceptance": "Must match the merged durable adapter source identity from PR 209."
+      },
+      {
+        "id": "identity.runnerCommit",
+        "publicValue": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+        "evidenceRef": "rrb-ref:source-runner-commit-a07f97a",
+        "acceptance": "Must match the merged durable runner source identity from PR 209."
+      },
+      {
+        "id": "identity.schemaAndIndexRef",
+        "publicValue": "rrb-ref:source-schema-index-a07f97a",
+        "evidenceRef": "rrb-ref:source-schema-index-a07f97a",
+        "acceptance": "Public opaque reference only; exact source hashes remain checked by the source packet."
+      },
+      {
+        "id": "evidence.disabledRouteBaselineRef",
+        "publicValue": "rrb-ref:disabled-upload-baseline-a07f97a",
+        "evidenceRef": "rrb-ref:disabled-upload-baseline-a07f97a",
+        "acceptance": "Public opaque reference only; no route probe or upload body is authorized here."
+      }
+    ],
+    "privateGroups": {
+      "sourceReview": [
+        "identity.sourceReviewRef"
+      ],
+      "runIdentity": [
+        "identity.runId",
+        "identity.namespace",
+        "identity.ledgerAndWindowRef",
+        "identity.ledgerId",
+        "identity.windowId",
+        "identity.fence"
+      ],
+      "resourceEvidence": [
+        "identity.resourceAlias",
+        "identity.privateResourceBindingRef",
+        "identity.engineAndIsolationRef",
+        "identity.syntheticInventoryRef",
+        "identity.privilegeEvidenceRef",
+        "identity.fixtureDigest",
+        "identity.scenarioAllocationRef",
+        "identity.independentVerifierRef"
+      ],
+      "custody": [
+        "custody.primaryRef",
+        "custody.primaryAcceptanceRef",
+        "custody.backupRef",
+        "custody.backupAcceptanceRef",
+        "custody.escalationOwnerRef",
+        "custody.recoveryOperatorRef",
+        "custody.evidenceReviewerRef",
+        "custody.retentionAcceptanceRef"
+      ],
+      "timebox": [
+        "window.startUtc",
+        "window.expiresUtc",
+        "window.trustedClockEvidenceRef",
+        "window.stopProcedureRef"
+      ],
+      "cost": [
+        "cost.enforcedCapMicros",
+        "cost.enforcementEvidenceRef",
+        "cost.pricingEvidenceRef",
+        "cost.computeMicros",
+        "cost.storageMicros",
+        "cost.operationsMicros",
+        "cost.backupMicros",
+        "cost.egressMicros",
+        "cost.taxFeesFxMicros",
+        "cost.contingencyMicros",
+        "cost.retainedStateCoverageRef"
+      ],
+      "evidence": [
+        "evidence.restrictedDestinationRef",
+        "evidence.sanitizedDestinationRef",
+        "evidence.sanitizationReviewRef",
+        "evidence.disabledRouteLivePlanRef",
+        "evidence.reconciliationAcceptanceRef",
+        "evidence.rollbackAcceptanceRef",
+        "evidence.recoveryBaselineRef"
+      ]
+    }
+  },
+  "privateResourceBindingPlan": {
+    "valueStorage": "restricted-only",
+    "publicEncoding": "resource alias plus SHA-256 binding digest",
+    "requiredReceipts": [
+      "exact existing non-production resource identity",
+      "team and deployment ownership",
+      "absence of real users, CAD, files and production data",
+      "schema/index compatibility",
+      "least-privilege operation surface",
+      "independent reviewer acceptance"
+    ],
+    "publicAliasPattern": "rrb-synthetic-[a-z0-9-]{1,40}",
+    "privateValueInGit": false
+  },
+  "runIdentityPlan": {
+    "runIdPattern": "[a-z0-9-]{1,64}",
+    "namespacePattern": "rrb/qualification/<run-id>/<32-lowercase-hex-nonce>",
+    "ledgerIdPattern": "[a-z0-9-]{1,64}",
+    "windowIdPattern": "[a-z0-9-]{1,64}",
+    "fencePattern": "[a-z0-9-]{1,64}",
+    "reuseAllowed": false,
+    "freshNonceRequired": true,
+    "privateRecordRequiredBeforeApproval": true
+  },
+  "costAndTimePlan": {
+    "maxRunSeconds": 1800,
+    "maxEnforcedCapMicros": 9000000,
+    "currency": "USD",
+    "requiresHardExternalCap": true,
+    "requiresTrustedUtcEvidence": true,
+    "requiresRetainedStateCoverage": true,
+    "estimatesAreSufficient": false
+  },
+  "evidenceDestinationPlan": {
+    "restrictedDestinationRefRequired": true,
+    "sanitizedDestinationRefRequired": true,
+    "sanitizationReviewRequired": true,
+    "rawProviderMessagesPublic": false,
+    "secretOrPrivateValuePublic": false,
+    "cadDataPublic": false
+  },
+  "commandCardPlan": {
+    "topLevelFields": [
+      "runnerCommit",
+      "adapterCommit",
+      "dossierDigest",
+      "envelopeDigest",
+      "resourceBindingDigest",
+      "selectorScopeDigest",
+      "credentialMechanismDigest",
+      "adapterContractDigest",
+      "independentReviewDigest"
+    ],
+    "perCardFields": [
+      "restrictedCommandRef",
+      "restrictedCommandDigest",
+      "executableVersionDigest",
+      "executableSha256",
+      "argvDigest",
+      "cwdDigest",
+      "inputArtifactDigest",
+      "outputContractDigest",
+      "reviewReceiptDigest",
+      "timeoutMs",
+      "allowedSelectorsDigest",
+      "allowedSideEffectsDigest",
+      "expectedResultCodesDigest",
+      "stopPlanDigest"
+    ],
+    "cards": [
+      {
+        "id": "C0",
+        "effect": "offline-preflight",
+        "restrictedBytesRequired": true,
+        "storeMutationAllowed": false
+      },
+      {
+        "id": "C1",
+        "effect": "disabled-route-precheck-no-body",
+        "restrictedBytesRequired": true,
+        "storeMutationAllowed": false
+      },
+      {
+        "id": "C2",
+        "effect": "synthetic-metadata-qualification",
+        "restrictedBytesRequired": true,
+        "storeMutationAllowed": false
+      },
+      {
+        "id": "C3",
+        "effect": "bounded-original-selector-reconciliation",
+        "restrictedBytesRequired": true,
+        "storeMutationAllowed": false
+      },
+      {
+        "id": "C4",
+        "effect": "disabled-route-postcheck-no-body-and-closeout",
+        "restrictedBytesRequired": true,
+        "storeMutationAllowed": false
+      }
+    ],
+    "restrictedCommandRecordKeys": [
+      "executable",
+      "argv",
+      "cwd",
+      "source",
+      "resource",
+      "credentials",
+      "artifacts",
+      "timeout",
+      "selectors",
+      "effects",
+      "results",
+      "stop",
+      "reviewer"
+    ],
+    "proposedAllocationDigest": "8cad4b01a7374c28b082549543384b38f478e954ea40ec6752834e8d006bec75",
+    "proposedC2C3Allocation": [
+      {
+        "operation": "read-exact-selector",
+        "c2LogicalCommands": 24,
+        "c2TransactionAttempts": 72,
+        "c3LogicalCommands": 8,
+        "c3TransactionAttempts": 24
+      },
+      {
+        "operation": "read-authority-dependencies",
+        "c2LogicalCommands": 18,
+        "c2TransactionAttempts": 54,
+        "c3LogicalCommands": 6,
+        "c3TransactionAttempts": 18
+      },
+      {
+        "operation": "seed-synthetic-metadata",
+        "c2LogicalCommands": 40,
+        "c2TransactionAttempts": 120,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      },
+      {
+        "operation": "reserve-transaction",
+        "c2LogicalCommands": 48,
+        "c2TransactionAttempts": 144,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      },
+      {
+        "operation": "authority-revoke-or-delete-synthetic",
+        "c2LogicalCommands": 16,
+        "c2TransactionAttempts": 48,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      },
+      {
+        "operation": "fence-without-dispatch",
+        "c2LogicalCommands": 24,
+        "c2TransactionAttempts": 72,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      },
+      {
+        "operation": "mark-unknown",
+        "c2LogicalCommands": 8,
+        "c2TransactionAttempts": 24,
+        "c3LogicalCommands": 8,
+        "c3TransactionAttempts": 24
+      },
+      {
+        "operation": "claim-cas",
+        "c2LogicalCommands": 8,
+        "c2TransactionAttempts": 24,
+        "c3LogicalCommands": 12,
+        "c3TransactionAttempts": 36
+      },
+      {
+        "operation": "settle-from-independent-synthetic-receipt",
+        "c2LogicalCommands": 0,
+        "c2TransactionAttempts": 0,
+        "c3LogicalCommands": 24,
+        "c3TransactionAttempts": 72
+      },
+      {
+        "operation": "scan-bounded-page",
+        "c2LogicalCommands": 0,
+        "c2TransactionAttempts": 0,
+        "c3LogicalCommands": 8,
+        "c3TransactionAttempts": 24
+      },
+      {
+        "operation": "inject-abort-or-ack-loss",
+        "c2LogicalCommands": 2,
+        "c2TransactionAttempts": 6,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      },
+      {
+        "operation": "restart-isolated-client",
+        "c2LogicalCommands": 2,
+        "c2TransactionAttempts": 0,
+        "c3LogicalCommands": 0,
+        "c3TransactionAttempts": 0
+      }
+    ]
+  },
+  "rollbackAndRetentionPlan": {
+    "unknownOutcomeAction": "stop new work and reconcile only original selectors under separate authority",
+    "retainLeases": true,
+    "retainHolds": true,
+    "deletionAuthorized": false,
+    "backupRestoreAuthorized": false,
+    "storeRestartAuthorized": false,
+    "windowRolloverAuthorized": false,
+    "retainedStateCustodyRequired": true
+  },
+  "nextHumanGates": {
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-private-evidence-command-card-fill to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD private evidence and command-card fill planning packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or branch/worktree cleanup.",
+    "liveQualificationTemplate": "Approve one synthetic durable-adapter development qualification run [run ID] at adapter commit a07f97aaa34913ba5e622d05e92cd22722fe6d55 and runner commit a07f97aaa34913ba5e622d05e92cd22722fe6d55, command-card fill plan [SHA-256], exact command cards C0-C4 [SHA-256], final dossier [SHA-256], final envelope [SHA-256], private existing resource [exact identity and binding digest], alias [alias], namespace [namespace], ledger/window/fence [values], operation/counter matrix b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98 and accepted per-row allocations [SHA-256], primary and backup custodians [accepted references and digests], independent reviewer [acceptance digest], UTC interval [start to expiry, at most 1800 seconds], enforceable all-in cap [at most USD 9 and evidence digest], restricted/sanitized evidence destinations [accepted references and digests], disabled-route pre/post plan [digest], reconciliation/rollback acceptance [digests] and retained-state custody [digest]. Permit only enumerated synthetic metadata reads/writes and non-production no-body verification within the reviewed shared counters, including revocation but no deletion. Keep uploads disabled and stop on unknown outcomes under the bounded reconciliation plan. No production access/smokes, live Auth tests, private CAD, conversion, Sandbox, enrollment, email/SMS/Slack, env/provider/auth/resource or usage/billing changes, secrets, backup/restore, store restart, rollover, retention/deletion, merge, deployment or lane cleanup. No automatic retry after expiry, resume or second run."
+  }
+}
