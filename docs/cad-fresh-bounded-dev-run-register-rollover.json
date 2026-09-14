@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "mode": "fresh-bounded-dev-run-register-rollover-planning",
+  "status": "BLOCKED_PENDING_EVIDENCE_AND_EXECUTOR_REBIND",
+  "executorCommit": "7d7a015989676d61dfe84b051d972c36d3e566e4",
+  "expiredRunCloseoutReceiptSha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199",
+  "expiredRun": {
+    "stopped": true,
+    "revision": 1,
+    "unknownOutcome": false,
+    "retainedNoDelete": true
+  },
+  "observedAtUtc": "2026-09-14T15:53:06Z",
+  "window": {
+    "startUtc": "2026-09-14T17:00:00Z",
+    "expiresUtc": "2026-09-14T17:05:00Z",
+    "maxRunSeconds": 300,
+    "automaticRefresh": false
+  },
+  "runRef": "rrb-ref:fresh-bounded-development-run",
+  "identityDigests": {
+    "runId": "98981a4ca3dae4565080b9f4d5ceec404bc2ef9014f5bca961d0f62e2764ef1a",
+    "namespace": "0059f57ba97126580ddf0edc6be73ab048fa77fe172cab3268d31b80ed20bf37",
+    "ledgerId": "6d43d20733c65ddc29e2a23badaf8ba25312b51f2e24fb6f8afd6b7bf4581580",
+    "windowId": "0b3e910387f54cbcb812e22c98b6a068408c54035c8c78b95fb3ff29a497c080",
+    "fence": "4c948d830af07ab603358f977f25385c9bad4e9b89ad1219d571eb2d0f643bc3"
+  },
+  "privateRestrictedRegisterDigest": "3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724",
+  "projectionSha256": "d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9",
+  "commandCardProjectionDigest": "6a38c8b6960b33ecb8be339ffe6676a48514d42c4592f618a066e0387982a98f",
+  "restrictedCommandSetDigest": "2e2c95a7f82308efd05bb907ed8bbb9609d2b86c02659dbbe786318460c2d51e",
+  "planningEvidenceSha256": "e911f3cf4df0b4bc0579683726182746fbe1d8af5acf00b33dbbecc7847934f7",
+  "proposedCapMicros": 9000000,
+  "liveRunAuthorized": false,
+  "restrictedEvidenceAccepted": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "automaticRetry": false,
+  "secondRun": false,
+  "expensesUsd": 0,
+  "blockers": [
+    "45 predecessor evidence fields contain fixture placeholders; no external evidence was inherited as accepted",
+    "Exact resource binding and enforced all-in cost cap including retained state require evidence",
+    "Primary, backup, independent-review and retained-state custody acceptances pending",
+    "UTC window is proposed only; expired window invalidates packet and requires new review",
+    "Executor at pinned main rejects fresh evidence digests; separately scoped source rebind and review required",
+    "Fresh restricted evidence acceptance and separate one-run approval required"
+  ],
+  "counts": {
+    "freshIdentityFields": 5,
+    "restrictedEvidenceFields": 45,
+    "commandCards": 5,
+    "operationRows": 12
+  },
+  "futureConditionalApprovalPhrase": "Approve one fresh synthetic durable-adapter development qualification attempt for rrb-ref:fresh-bounded-development-run, bound to planning projection d6c36899e75ed925b5232add3e9c8144bb8f53a59c14dbdffb1a95c5492296f9, restricted register 3bd0ec777a9f3f2ec748e17ff05591b78e22378a6ac63256b5682a7940320724, command-card projection 6a38c8b6960b33ecb8be339ffe6676a48514d42c4592f618a066e0387982a98f, restricted command set 2e2c95a7f82308efd05bb907ed8bbb9609d2b86c02659dbbe786318460c2d51e, planning evidence e911f3cf4df0b4bc0579683726182746fbe1d8af5acf00b33dbbecc7847934f7, and executor source baseline 7d7a015989676d61dfe84b051d972c36d3e566e4. Window: 2026-09-14T17:00:00Z through 2026-09-14T17:05:00Z, maximum 300 seconds; enforceable all-in cap USD 9 including retained-state costs. This approval takes effect only after fresh independent restricted-evidence acceptance, resource and cost enforcement verification, primary and backup custody acceptance, and a separately reviewed executor rebind to these exact artifacts. Permit only reviewed C0-C4 synthetic development metadata operations, bounded reconciliation, revocation without deletion, and non-production no-body disabled-route checks. Preserve expired-run closeout 25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199 and all retained state. Keep uploads disabled. Stop on unknown outcome or expiry. No expired-run retry or resume, automatic retry, second run, deletion, production access, live Auth tests, CAD files, private CAD, upload activation, conversion, Sandbox, real users, enrollment, email/SMS/Slack, new secrets, env/provider/auth/resource or usage/billing changes, backup/restore, store restart, push, merge, deployment or lane cleanup."
+}
