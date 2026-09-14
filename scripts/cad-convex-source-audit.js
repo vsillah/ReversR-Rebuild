@@ -14,6 +14,8 @@ const files = [
   'offline/cad-convex/liveDurableRunPacketAssembly.js',
   'offline/cad-convex/privateEvidenceCommandCardFillPlan.json',
   'offline/cad-convex/privateEvidenceCommandCardFillPlan.js',
+  'offline/cad-convex/privateRestrictedRegisterReview.json',
+  'offline/cad-convex/privateRestrictedRegisterReview.js',
   'offline/cad-convex/restrictedEvidenceCommandCardBytes.json',
   'offline/cad-convex/restrictedEvidenceCommandCardBytes.js',
   'convex/cadDurableEngine.ts',
@@ -23,10 +25,12 @@ const files = [
   'scripts/cad-durable-engine-source.test.js',
   'scripts/cad-live-durable-run-packet-assembly.test.js',
   'scripts/cad-private-evidence-command-card-fill.test.js',
+  'scripts/cad-private-restricted-register-review.test.js',
   'scripts/cad-restricted-evidence-command-card-bytes.test.js',
   'docs/cad-durable-engine-implementation.md',
   'docs/cad-live-durable-run-packet-assembly.md',
   'docs/cad-private-evidence-command-card-fill.md',
+  'docs/cad-private-restricted-register-review.md',
   'docs/cad-restricted-evidence-command-card-bytes.md',
 
   'offline/cad-convex/durableEvidenceBinding.js',
@@ -203,7 +207,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|restrictedEvidenceCommandCardBytes/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
@@ -228,8 +232,6 @@ assert.equal(retention.custodianRef, null);
 assert.equal(retention.expiresAtUtc, null);
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/browser|console\./.test(read('offline/cad-convex/boundedRetentionPolicy.js')));
 
-console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);
-
 const lockout = JSON.parse(read('offline/cad-convex/lockoutReadiness.json'));
 for (const key of ['enabled', 'liveReady', 'cleanupVerified']) assert.equal(lockout[key], false);
 assert.ok(Object.values(lockout.gates).every(v => v === false));
@@ -246,6 +248,7 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request|@convex-dev\/auth|convex\/br
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/runnerCommandCards.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/restrictedEvidenceCommandCardBytes.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/privateRestrictedRegisterReview.js')));
 
 for (const name of ['durableAdapter.js', 'liveRunner.js', 'durableEvidenceBinding.js'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
@@ -274,3 +277,15 @@ assert.equal(fillPlan.privateResourceBindingPlan.privateValueInGit, false);
 assert.equal(fillPlan.costAndTimePlan.maxEnforcedCapMicros, 9000000);
 assert.ok(fillPlan.nextHumanGates.liveQualificationTemplate.includes('Keep uploads disabled'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/privateEvidenceCommandCardFillPlan.js')));
+
+const privateRestrictedReview = JSON.parse(read('offline/cad-convex/privateRestrictedRegisterReview.json'));
+for (const key of ['executable', 'liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled',
+  'restrictedEvidenceAccepted', 'readyForLiveRunApproval']) assert.equal(privateRestrictedReview[key], false);
+assert.ok(Object.values(privateRestrictedReview.gates).every(value => value === false));
+assert.equal(privateRestrictedReview.publicProjectionOnly, true);
+assert.equal(privateRestrictedReview.sourceBindings.restrictedEvidenceCommandCardBytesCommit, '882ebfe1b1aeccc11825843981ff1e569c8350e5');
+assert.equal(privateRestrictedReview.privateRegisterContract.rawValuePublic, false);
+assert.equal(privateRestrictedReview.privateRegisterContract.rawCommandBytesPublic, false);
+assert.ok(privateRestrictedReview.nextHumanGates.restrictedEvidenceAcceptanceTemplate.includes('authorizes no live run'));
+
+console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);

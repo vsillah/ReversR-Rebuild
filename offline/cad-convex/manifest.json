@@ -87,6 +87,8 @@
     "offline/cad-convex/liveDurableRunPacketAssembly.js": "7368217a935e04aa8a465780cd8598fd413a37c548ad73f064af8ff472c0f7b2",
     "offline/cad-convex/privateEvidenceCommandCardFillPlan.json": "73357631e15d071a4565dcad7f041d24fc52621618fb84594f05471652e00918",
     "offline/cad-convex/privateEvidenceCommandCardFillPlan.js": "60e7199850ff5962788f90e901dc4cbe57938167d6856490866a1ae2f5d495e2",
+    "offline/cad-convex/privateRestrictedRegisterReview.json": "de4a1aa4b8b6f66374401a9c43b87fbd2ce41528845ef3a2ce0b40ea2ac1d3cd",
+    "offline/cad-convex/privateRestrictedRegisterReview.js": "01caf4d33290146113493d0e2c30e1294b3d7facc1889b5209a28befe4b993b9",
     "offline/cad-convex/restrictedEvidenceCommandCardBytes.json": "bd1ef584006480ed828fd3912c82d4543d038a482fd252e434bd94849f487cc9",
     "offline/cad-convex/restrictedEvidenceCommandCardBytes.js": "a3f90f000f3ccb78f49d4e5130df43830f52639045f35fc6f6145407a8a479dd",
     "convex/cadDurableEngine.ts": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3",
@@ -96,10 +98,12 @@
     "scripts/cad-durable-engine-source.test.js": "1a907c14476d20e0f5c1176df88379fc24e48c1dfd4ed5e3a1da90ab096f8354",
     "scripts/cad-live-durable-run-packet-assembly.test.js": "525cfeab39a83e8b02a7a40c751109cb5ab7da9e122ad651eab12462d7f7a714",
     "scripts/cad-private-evidence-command-card-fill.test.js": "622c1e700e7b5080689c03ac6c96d372e2aa126d0e228a12558fd69e97ec6369",
+    "scripts/cad-private-restricted-register-review.test.js": "025e490bbef032c29de4fbf40c3ca82d962f6e2a9e6d3fefe6290392f5385650",
     "scripts/cad-restricted-evidence-command-card-bytes.test.js": "bb290f7f758e17533d79718223d9a1f6df2d2a20b2d927c44652c52308451a25",
     "docs/cad-durable-engine-implementation.md": "594b11bbc62c9c11ddb9a73c0fb1dc46355ce31f877a8cb3d0d429343effef09",
     "docs/cad-live-durable-run-packet-assembly.md": "94671bbce62b42117d0b5003fabf3bbda3b0d202bf895e027c851e34007ed7e5",
     "docs/cad-private-evidence-command-card-fill.md": "e4ebd8a11b31c516c38fe8f3abb3f5f2c2fbe39c51880c272d85f33ac7abf181",
+    "docs/cad-private-restricted-register-review.md": "93820824bc17053e2a750f9512c8c28e3fd5fd05d4f92c883d8514b1f0212786",
     "docs/cad-restricted-evidence-command-card-bytes.md": "258e6fe3c7a333367e1d4a111d20adf5bc12ae60df1bd5e7aaabe352325e43f7",
     "offline/cad-convex/durableEvidenceBinding.js": "b4bc695da6402135d2d25dca91c33484cc771118e2260139223f062be1bf11ef",
     "offline/cad-convex/durableEvidencePrerequisites.json": "f8c1404ce00413f230e49f1bebf6b44ccfadaaf69e5d96cab31f6833c1ba7a5e",
@@ -242,7 +246,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "fb43bbca3c3ac9da3cf006ddc1d4700097ad9ee6c8a1c418d671b8161ede127c",
     "scripts/helpers/cad-convex-source-loader.js": "1650d3a9b32701af891e8c9409c70c1e7120e815b71b7fbc75ea97436beb88d5",
-    "scripts/cad-convex-source-audit.js": "096e7f47474cfab66d3b1dcde9bcf9a1b65aef7e06d8cb0943410b384abe2b10",
+    "scripts/cad-convex-source-audit.js": "c60e8bcc536e8092fe50cdbdb57dce72c419bd8f76efb4e8d79a4474dcf0742f",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -256,6 +260,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "3aad2e2d546374731f1b08b599105394cf2d47aa5221100b50e18af20303b348"
+    "scripts/cad-convex-contract-manifest.js": "cf23fb61a31be3ea5f488ebf98238664120c976b007896c976def362cd839b74"
   }
 }

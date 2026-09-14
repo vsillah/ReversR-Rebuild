@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-safe-private-restricted-register-review",
+  "baseCommit": "882ebfe1b1aeccc11825843981ff1e569c8350e5",
+  "predecessor": "restrictedEvidenceCommandCardBytes.json",
+  "expensesUsd": 0,
+  "executable": false,
+  "liveRunAuthorized": false,
+  "uploadsEnabled": false,
+  "conversionEnabled": false,
+  "restrictedEvidenceAccepted": false,
+  "readyForLiveRunApproval": false,
+  "publicProjectionOnly": true,
+  "gates": {
+    "publication": false,
+    "restrictedEvidenceAcceptance": false,
+    "configuration": false,
+    "liveRun": false,
+    "storeMutation": false,
+    "resourceMutation": false,
+    "envChange": false,
+    "secretGeneration": false,
+    "deployment": false,
+    "uploadActivation": false,
+    "conversion": false,
+    "sandbox": false,
+    "cleanup": false
+  },
+  "sourceBindings": {
+    "restrictedEvidenceCommandCardBytesCommit": "882ebfe1b1aeccc11825843981ff1e569c8350e5",
+    "restrictedEvidenceCommandCardBytesSha256": "bd1ef584006480ed828fd3912c82d4543d038a482fd252e434bd94849f487cc9",
+    "restrictedEvidenceCommandCardBytesInspectorSha256": "a3f90f000f3ccb78f49d4e5130df43830f52639045f35fc6f6145407a8a479dd",
+    "privateEvidenceCommandCardFillPlanSha256": "73357631e15d071a4565dcad7f041d24fc52621618fb84594f05471652e00918",
+    "runnerCommandCardTemplateSha256": "b7754a6b538079cd505ed68c24a1ec9a120690ecdddd87d16b003ddd4732a3c6",
+    "adapterCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "runnerCommit": "a07f97aaa34913ba5e622d05e92cd22722fe6d55",
+    "implementationCommit": "034379cea73fc81d8502eb3e879ec27fd6d90ebf",
+    "operationCounterTemplateDigest": "b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98",
+    "proposedAllocationDigest": "8cad4b01a7374c28b082549543384b38f478e954ea40ec6752834e8d006bec75"
+  },
+  "inventory": {
+    "sourceResolvedApprovalFields": 4,
+    "restrictedApprovalFields": 45,
+    "totalApprovalFields": 49,
+    "commandCards": 5,
+    "commandCardTopLevelFields": 9,
+    "commandCardPerCardFields": 14,
+    "operationRows": 12
+  },
+  "limits": {
+    "maxProjectionBytes": 65536,
+    "maxRestrictedReceiptBytes": 1048576,
+    "maxRestrictedCommandBytesPerCard": 65536,
+    "maxTotalRestrictedCommandBytes": 327680,
+    "maxRunSeconds": 1800,
+    "maxEnforcedCapMicros": 9000000,
+    "maxLogicalCommands": 256,
+    "maxTransactionAttemptsTotal": 768
+  },
+  "privateRegisterContract": {
+    "mode": "private-restricted-register-draft",
+    "storage": "ignored-local-or-restricted-destination-only",
+    "publicOutput": "refs-digests-byte-counts-only",
+    "requiredEvidenceReceipts": 45,
+    "requiredCommandCards": [
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "requiredDestinationRefs": [
+      "sanitizedDestinationRef",
+      "restrictedDestinationRef",
+      "independentReviewRef"
+    ],
+    "rawValuePublic": false,
+    "rawCommandBytesPublic": false,
+    "secretGenerationAuthorized": false,
+    "providerReadAuthorized": false,
+    "providerMutationAuthorized": false,
+    "liveRunAuthorized": false
+  },
+  "reviewRules": {
+    "completeProjectionMeaning": "syntax-only projection completeness; not evidence authenticity or live authority",
+    "privateRegisterDigestMeaning": "digest binds hidden register bytes but does not publish those bytes",
+    "independentReviewMeaning": "review reference is required in the projection and must be separately accepted by a human approval gate",
+    "uploadState": "CAD upload routes remain disabled until a later activation gate",
+    "unknownOutcomePolicy": "stop new work, retain holds and reconcile only original selectors under separate authority"
+  },
+  "blockedUntil": [
+    "private-register-filled-outside-git",
+    "source-safe-projection-reviewed",
+    "independent-review-accepted-by-human",
+    "separate-restricted-evidence-acceptance-approval",
+    "separate-one-run-human-approval"
+  ],
+  "nextHumanGates": {
+    "publication": "Approve pushing only commit [full reviewed SHA] from codex/cad-private-restricted-register-review to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-safe CAD private restricted-register review packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation outside reviewed restricted evidence artifacts, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or branch/worktree cleanup.",
+    "restrictedEvidenceAcceptanceTemplate": "Approve accepting restricted evidence projection [projection SHA-256] for synthetic durable-adapter development run [run ID] with private restricted register [binding digest], command cards C0-C4 byte-count/digest receipts [digest set], resource alias [alias], namespace/ledger/window/fence [restricted references], UTC/cost cap evidence [digests], custody and reviewer acceptances [digests], disabled-route pre/post plan [digest], reconciliation/rollback acceptance [digests] and retained-state custody [digest]. This accepts evidence completeness only and authorizes no live run, provider/resource/env mutation, upload activation, conversion, private CAD, Sandbox dispatch, deployment, merge or cleanup.",
+    "liveRunTemplate": "Approve one synthetic durable-adapter development qualification run [run ID] at adapter commit a07f97aaa34913ba5e622d05e92cd22722fe6d55 and runner commit a07f97aaa34913ba5e622d05e92cd22722fe6d55, accepted restricted evidence projection [SHA-256], exact command cards C0-C4 [SHA-256], private existing resource [exact identity and binding digest], alias [alias], namespace [namespace], ledger/window/fence [values], operation/counter matrix b71156a06e5716fd32094cbe7dcba1bc615b7d1f689f9341765c89e026356e98 and accepted per-row allocations [SHA-256], primary and backup custodians [accepted references and digests], independent reviewer [acceptance digest], UTC interval [start to expiry, at most 1800 seconds], enforceable all-in cap [at most USD 9 and evidence digest], restricted/sanitized evidence destinations [accepted references and digests], disabled-route pre/post plan [digest], reconciliation/rollback acceptance [digests] and retained-state custody [digest]. Permit only enumerated synthetic metadata reads/writes and non-production no-body verification within the reviewed shared counters, including revocation but no deletion. Keep uploads disabled and stop on unknown outcomes under the bounded reconciliation plan. No production access/smokes, live Auth tests, private CAD, conversion, Sandbox, enrollment, email/SMS/Slack, env/provider/auth/resource or usage/billing changes, secrets, backup/restore, store restart, rollover, retention/deletion, merge, deployment or lane cleanup. No automatic retry after expiry, resume or second run."
+  }
+}
