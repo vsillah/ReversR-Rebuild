@@ -1,18 +1,18 @@
 // Source binding for one bounded development upload-session qualification run.
-// This binds only the reviewed 2026-09-15T21:30Z tuple; it does not authorize
+// This binds only the reviewed 2026-09-15T22:30Z tuple; it does not authorize
 // a live run by itself.
 export const cadDevUploadSessionQualificationBinding = {
   enabled: true,
-  mode: 'cad-dev-upload-session-2130z-rebind',
+  mode: 'cad-dev-upload-session-2230z-rebind',
   target: {
     deploymentName: 'majestic-alligator-31',
   },
   run: {
-    runKeySha256: 'ce5f7f60202f6ee08ab10e9efa21ab90b25799ddc77be995d5b2810f259bfa8d',
-    acceptedProjectionSha256: '9ba800eb47ccec11923149a0af9f3c05558abbce38a2a9c0c856db75783cf036',
-    acceptanceReceiptSha256: 'de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc',
-    windowStartMs: 1789507800000,
-    windowEndMs: 1789508700000,
+    runKeySha256: '6c78389d586db2db5ff30a2adde83a44f4f4f8caf497be718aa0da0adad3b50d',
+    acceptedProjectionSha256: '5d56b109da11edc6ca71cd48fcaa9a960055e71aeb2f1ea4ca690b3ca7ba7383',
+    acceptanceReceiptSha256: 'e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56',
+    windowStartMs: 1789511400000,
+    windowEndMs: 1789512300000,
   },
   constraints: {
     bodyAdmissionAuthorized: false,
