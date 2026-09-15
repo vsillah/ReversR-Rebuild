@@ -189,6 +189,9 @@ const files = [
   'docs/cad-dev-auth-reviewed-source-gate.md',
   'docs/cad-dev-auth-reviewed-source-gate.json',
   'scripts/cad-dev-auth-reviewed-source-gate.test.js',
+  'docs/cad-dev-reviewed-source-deploy-binding.md',
+  'docs/cad-dev-reviewed-source-deploy-binding.json',
+  'scripts/cad-dev-reviewed-source-deploy-binding.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -263,6 +266,20 @@ assert.equal(reviewedSourceGate.commandBindingEffect.deploymentAuthorityNow, fal
 assert.equal(reviewedSourceGate.commandBindingEffect.rollbackAuthorityNow, false);
 assert.equal(reviewedSourceGate.nextSafeAction.branch, 'codex/cad-dev-reviewed-source-deploy-binding');
 for (const value of Object.values(reviewedSourceGate.authorityPreserved)) assert.equal(value, false);
+const reviewedSourceDeployBinding = JSON.parse(read('docs/cad-dev-reviewed-source-deploy-binding.json'));
+assert.equal(reviewedSourceDeployBinding.runtimeSourceState.candidateSourceSha, 'ce00edb676b3209b96c01c90dd057eed44d81113');
+assert.equal(reviewedSourceDeployBinding.runtimeSourceState.developmentAuthReviewed, true);
+assert.equal(reviewedSourceDeployBinding.runtimeSourceState.cadUploadsRemainDisabled, true);
+assert.equal(reviewedSourceDeployBinding.runtimeSourceState.cadConversionRemainDisabled, true);
+assert.equal(reviewedSourceDeployBinding.exactCommandBinding.deployCommand.sourceSha,
+  reviewedSourceDeployBinding.runtimeSourceState.candidateSourceSha);
+assert.equal(reviewedSourceDeployBinding.exactCommandBinding.deployCommand.authorityNow, false);
+assert.equal(reviewedSourceDeployBinding.exactCommandBinding.disabledRollbackCommand.authorityNow, false);
+assert.equal(reviewedSourceDeployBinding.exactCommandBinding.executableAuthorityNow, false);
+assert.equal(reviewedSourceDeployBinding.freshWindowProposal.acceptedNow, false);
+assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentDeploymentExecutionMayContinueAfterMerge, true);
+assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentLiveAuthRunMustStop, true);
+for (const value of Object.values(reviewedSourceDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));

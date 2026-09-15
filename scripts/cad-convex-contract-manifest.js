@@ -191,6 +191,9 @@ const files = [
   'docs/cad-dev-auth-reviewed-source-gate.md',
   'docs/cad-dev-auth-reviewed-source-gate.json',
   'scripts/cad-dev-auth-reviewed-source-gate.test.js',
+  'docs/cad-dev-reviewed-source-deploy-binding.md',
+  'docs/cad-dev-reviewed-source-deploy-binding.json',
+  'scripts/cad-dev-reviewed-source-deploy-binding.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -238,7 +241,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 52, mode: 'offline-source-unqualified',
+const manifest = { version: 53, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
