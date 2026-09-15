@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-upload-session-qualification-plan",
+  "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_PLAN_READY",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "baseMainCommit": "ef27012db68e8ee6a0728d1cc52e9b75c975cf84",
+  "dependsOn": {
+    "authSessionCloseout": {
+      "path": "docs/cad-dev-auth-session-run-closeout.json",
+      "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "runId": "cad-dev-auth-session-qualification-1925z",
+      "evidenceSha256": "7cbb352cdefd3d190e30db67cd22c31a3712f5728addfc5024e37511ba161203",
+      "receiptSha256": "55f4b45bd74bc051ba8217f2b4946736bc27f5993c064a8e3ca8aa6bcbbd7ee0"
+    },
+    "disabledRouteContract": {
+      "route": "POST /api/cad/user-import",
+      "source": "server/cadUserUploadRouter.js",
+      "bodyAdmissionAuthorized": false,
+      "defaultUploadSessionServiceConfigured": false,
+      "operatorImportUnchanged": true,
+      "noBodyBeforeDisabledGate": true
+    }
+  },
+  "currentEvidence": {
+    "routeTests": [
+      "scripts/cad-user-upload-route.test.js",
+      "scripts/cad-user-upload-admission.test.js",
+      "scripts/cad-upload-session.test.js",
+      "scripts/cad-upload-session-store.test.js",
+      "scripts/cad-convex-positive-synthetic-session.test.js"
+    ],
+    "expectedDefaultStatuses": {
+      "missingSession": "USER_SESSION_REQUIRED",
+      "unconfiguredAuth": "USER_AUTH_UNAVAILABLE",
+      "validSyntheticSessionWhileDisabled": "USER_UPLOADS_DISABLED",
+      "permissionDenied": "USER_UPLOAD_FORBIDDEN",
+      "csrfOrOriginRejected": "ORIGIN_OR_CSRF_REJECTED"
+    },
+    "disabledProductionSmokeRetained": true,
+    "cadFilesRequiredNow": false,
+    "privateCadAllowedNow": false
+  },
+  "nextExecutableSlice": {
+    "branch": "codex/cad-dev-upload-session-qualification-executor",
+    "scope": "local source-only implementation and tests for a development-only upload-session qualification executor",
+    "mustBind": [
+      "completed Auth/session closeout evidence",
+      "development-only Convex target majestic-alligator-31",
+      "exact upload-session issue/lookup/revoke operation set",
+      "disabled route precheck before any body-bearing request",
+      "sanitized local evidence output",
+      "rollback and revocation without deletion"
+    ],
+    "mustNotDo": [
+      "enable BODY_ADMISSION_AUTHORIZED",
+      "enable production upload activation",
+      "dispatch CAD conversion",
+      "use private CAD",
+      "send email/SMS/Slack",
+      "retry on unknown outcome",
+      "start a second run"
+    ],
+    "liveRunAuthorizedByThisPacket": false
+  },
+  "authorityPreserved": {
+    "liveRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "hardStops": [
+    "BODY_ADMISSION_AUTHORIZED not literal false",
+    "production route smoke fails closed",
+    "unknown live outcome",
+    "missing rollback or revocation evidence",
+    "private CAD requested",
+    "real user requested",
+    "cost cap uncertainty",
+    "provider/resource mutation outside reversr-cad-auth-dev"
+  ],
+  "expensesUsd": 0
+}
