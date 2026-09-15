@@ -182,6 +182,9 @@ const files = [
   'docs/cad-dev-cost-custody-rollback-window-evidence.md',
   'docs/cad-dev-cost-custody-rollback-window-evidence.json',
   'scripts/cad-dev-cost-custody-rollback-window-evidence.test.js',
+  'docs/cad-dev-exact-deploy-rollback-window-binding.md',
+  'docs/cad-dev-exact-deploy-rollback-window-binding.json',
+  'scripts/cad-dev-exact-deploy-rollback-window-binding.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -229,7 +232,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 49, mode: 'offline-source-unqualified',
+const manifest = { version: 50, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
