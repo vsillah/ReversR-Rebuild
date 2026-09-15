@@ -6,7 +6,7 @@ const crypto = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const defaultUploadRegisterPath = path.join(
   root,
-  '.local/cad-convex/upload-session-qualification-rebind/private-upload-session-qualification-register.json',
+  '.local/cad-convex/upload-session-qualification-rebind-2230z/private-upload-session-qualification-register.json',
 );
 const defaultAuthRegisterPath = path.join(
   root,
@@ -14,11 +14,11 @@ const defaultAuthRegisterPath = path.join(
 );
 const defaultProjectionPath = path.join(
   root,
-  '.local/cad-convex/upload-session-qualification-rebind/source-safe-rebind-projection.json',
+  '.local/cad-convex/upload-session-qualification-rebind-2230z/source-safe-rebind-projection.json',
 );
 const defaultAcceptanceReceiptPath = path.join(
   root,
-  '.local/cad-convex/upload-session-qualification-rebind/rebind-acceptance-receipt.json',
+  '.local/cad-convex/upload-session-qualification-rebind-2230z/rebind-acceptance-receipt.json',
 );
 const defaultEvidenceRoot = path.join(root, '.local/cad-convex/upload-session-qualification-runs');
 

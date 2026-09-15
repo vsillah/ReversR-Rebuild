@@ -5,25 +5,25 @@
   "sourceOnly": true,
   "production": false,
   "developmentDeployment": "majestic-alligator-31",
-  "baseMainCommit": "c0194fba15bcdb340b006758f45fbfcc4aeba6ef",
-  "branch": "codex/cad-dev-upload-session-qualification-rebind",
+  "baseMainCommit": "4ad8ff8e50ac78e8171c4ff8ae6cb6e0d2b14467",
+  "branch": "codex/cad-upload-session-2230z-rebind",
   "liveRunAuthorizedByThisPacket": false,
   "run": {
-    "runId": "cad-dev-upload-session-2130z",
-    "windowStartUtc": "2026-09-15T21:30:00Z",
-    "windowEndUtc": "2026-09-15T21:45:00Z",
-    "windowStartMs": 1789507800000,
-    "windowEndMs": 1789508700000,
-    "runKeySha256": "ce5f7f60202f6ee08ab10e9efa21ab90b25799ddc77be995d5b2810f259bfa8d",
-    "privateRegisterSha256": "fbfba940d28e565a89d43535c83a0f647e2197dea3c1a5fcd9df8f5c9427200f",
-    "acceptedProjectionSha256": "9ba800eb47ccec11923149a0af9f3c05558abbce38a2a9c0c856db75783cf036",
-    "acceptanceReceiptSha256": "de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc"
+    "runId": "cad-dev-upload-session-2230z",
+    "windowStartUtc": "2026-09-15T22:30:00Z",
+    "windowEndUtc": "2026-09-15T22:45:00Z",
+    "windowStartMs": 1789511400000,
+    "windowEndMs": 1789512300000,
+    "runKeySha256": "6c78389d586db2db5ff30a2adde83a44f4f4f8caf497be718aa0da0adad3b50d",
+    "privateRegisterSha256": "0dbdedbc727fed0e5f87dfa636b638a1cf9a5780df5c004d81643ac2089a6a74",
+    "acceptedProjectionSha256": "5d56b109da11edc6ca71cd48fcaa9a960055e71aeb2f1ea4ca690b3ca7ba7383",
+    "acceptanceReceiptSha256": "e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56"
   },
   "ignoredLocalArtifacts": {
-    "directory": ".local/cad-convex/upload-session-qualification-rebind",
-    "privateRegisterPath": ".local/cad-convex/upload-session-qualification-rebind/private-upload-session-qualification-register.json",
-    "sourceSafeProjectionPath": ".local/cad-convex/upload-session-qualification-rebind/source-safe-rebind-projection.json",
-    "acceptanceReceiptPath": ".local/cad-convex/upload-session-qualification-rebind/rebind-acceptance-receipt.json",
+    "directory": ".local/cad-convex/upload-session-qualification-rebind-2230z",
+    "privateRegisterPath": ".local/cad-convex/upload-session-qualification-rebind-2230z/private-upload-session-qualification-register.json",
+    "sourceSafeProjectionPath": ".local/cad-convex/upload-session-qualification-rebind-2230z/source-safe-rebind-projection.json",
+    "acceptanceReceiptPath": ".local/cad-convex/upload-session-qualification-rebind-2230z/rebind-acceptance-receipt.json",
     "directoryMode": "0700",
     "fileMode": "0600",
     "gitIgnored": true
@@ -47,8 +47,8 @@
   "binding": {
     "source": "convex/cadDevUploadSessionQualificationBinding.ts",
     "enabled": true,
-    "mode": "cad-dev-upload-session-2130z-rebind",
-    "action": "cadDevUploadSessionQualification:issueReadRevoke",
+    "mode": "cad-dev-upload-session-2230z-rebind",
+    "action": "cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority",
     "bodyAdmissionAuthorized": false,
     "maxWindowMs": 900000,
     "maxOperationBudgetMs": 800,
@@ -57,10 +57,12 @@
   "expectedOperationSequence": [
     "validate run key digest, projection digest and receipt digest",
     "verify UTC window is open and at most fifteen minutes",
+    "provision one run-owned synthetic CAD authority row and membership row",
     "insert one synthetic upload-session record if absent",
     "read the active synthetic record",
-    "revoke the synthetic record without deletion",
-    "read again and require revocation to be observed"
+    "revoke the synthetic upload-session record without deletion",
+    "revoke synthetic CAD authority and membership rows without deletion",
+    "read again and require upload-session revocation to be observed"
   ],
   "authorityPreserved": {
     "liveRunAuthorized": false,
@@ -84,7 +86,7 @@
     "requiresBeforeLiveRun": [
       "PR merge and production fail-closed smoke for this source rebind",
       "Convex development deployment of reviewed source to majestic-alligator-31",
-      "one scheduler or immediate run inside 2026-09-15T21:30:00Z through 2026-09-15T21:45:00Z",
+      "one scheduler or immediate run inside 2026-09-15T22:30:00Z through 2026-09-15T22:45:00Z",
       "stop on unknown outcome with no automatic retry",
       "sanitized local evidence and retained-state closeout"
     ]

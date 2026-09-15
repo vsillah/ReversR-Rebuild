@@ -23,20 +23,25 @@
   "sourceFiles": [
     "convex/cadDevUploadSessionQualificationBinding.ts",
     "convex/cadDevUploadSessionQualification.ts",
-    "scripts/cad-dev-upload-session-qualification-bridge.test.js"
+    "scripts/cad-dev-upload-session-qualification-bridge.test.js",
+    "convex/cadDevUploadSessionQualificationAuthority.ts"
   ],
   "bridge": {
-    "publicAction": "cadDevUploadSessionQualification:issueReadRevoke",
+    "publicAction": "cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority",
     "internalFunctionsUsed": [
+      "internal.cadDevUploadSessionQualificationAuthority.provisionSyntheticAuthority",
       "internal.cad.insertIfAbsent",
       "internal.cad.read",
-      "internal.cad.revoke"
+      "internal.cad.revoke",
+      "internal.cadDevUploadSessionQualificationAuthority.revokeSyntheticAuthority"
     ],
     "defaultBindingEnabled": false,
     "rawCredentialAccepted": false,
     "credentialDigestOnly": true,
     "bodyAdmissionAuthorized": false,
-    "retainedRevokedState": true
+    "retainedRevokedState": true,
+    "syntheticAuthorityProvisioning": true,
+    "signOutInFinally": true
   },
   "authorityPreserved": {
     "liveRunAuthorized": false,

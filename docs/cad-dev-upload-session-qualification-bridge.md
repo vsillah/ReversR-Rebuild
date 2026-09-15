@@ -14,13 +14,15 @@ sequence server-side after a future source rebind supplies one exact run tuple.
 
 ## Bridge Contract
 
-`cadDevUploadSessionQualification:issueReadRevoke`:
+`cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority`:
 
 - accepts only a credential digest, never a raw upload credential,
 - requires the reviewed run key/projection/receipt tuple,
 - checks the UTC window before any store operation,
+- provisions only run-owned synthetic CAD authority and membership rows,
 - calls only `internal.cad.insertIfAbsent`, `internal.cad.read` and
-  `internal.cad.revoke`,
+  `internal.cad.revoke` for the upload-session sequence,
+- revokes synthetic CAD authority and membership rows without deletion,
 - returns sanitized booleans and fixed status codes,
 - keeps CAD uploads disabled and `BODY_ADMISSION_AUTHORIZED = false`,
 - retains the revoked upload-session row rather than deleting it.

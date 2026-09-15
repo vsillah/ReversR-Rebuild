@@ -30,12 +30,12 @@ test('binding is disabled by default or bound to one exact reviewed run tuple', 
     && /windowStartMs: null/.test(binding)
     && /windowEndMs: null/.test(binding);
   const exactRebind = /enabled: true/.test(binding)
-    && /cad-dev-upload-session-2130z-rebind/.test(binding)
-    && /ce5f7f60202f6ee08ab10e9efa21ab90b25799ddc77be995d5b2810f259bfa8d/.test(binding)
-    && /9ba800eb47ccec11923149a0af9f3c05558abbce38a2a9c0c856db75783cf036/.test(binding)
-    && /de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc/.test(binding)
-    && /windowStartMs: 1789507800000/.test(binding)
-    && /windowEndMs: 1789508700000/.test(binding);
+    && /cad-dev-upload-session-2230z-rebind/.test(binding)
+    && /6c78389d586db2db5ff30a2adde83a44f4f4f8caf497be718aa0da0adad3b50d/.test(binding)
+    && /5d56b109da11edc6ca71cd48fcaa9a960055e71aeb2f1ea4ca690b3ca7ba7383/.test(binding)
+    && /e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56/.test(binding)
+    && /windowStartMs: 1789511400000/.test(binding)
+    && /windowEndMs: 1789512300000/.test(binding);
   assert.equal(disabledDefault || exactRebind, true);
   assert.match(binding, /bodyAdmissionAuthorized: false/);
 });
