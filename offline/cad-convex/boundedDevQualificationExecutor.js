@@ -98,6 +98,7 @@ const ACCEPTED_EVIDENCE = Object.freeze(Object.entries({
   acceptedEvidence: packet.acceptedEvidence,
   acceptedRebuiltSuccessorEvidence: packet.acceptedRebuiltSuccessorEvidence,
   acceptedFreshWindowEvidence: packet.acceptedFreshWindowEvidence,
+  acceptedFreshWindow1030Evidence: packet.acceptedFreshWindow1030Evidence,
 }).filter(([, value]) => isObject(value)).map(([key, value]) => Object.freeze({ key, ...value })));
 const ACCEPTED_SUCCESSOR_EVIDENCE = Object.freeze(ACCEPTED_EVIDENCE
   .filter(evidence => evidence.key !== 'acceptedEvidence'));

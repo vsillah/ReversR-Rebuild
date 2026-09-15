@@ -119,6 +119,24 @@ function freshWindowSuccessorArtifacts(t) {
   return { register, projection, projectionBytes, acceptanceReceiptBytes };
 }
 
+function freshWindow1030SuccessorArtifacts(t) {
+  const base = path.join('.local', 'cad-convex', 'fresh-window-1030-evidence-assembly');
+  const files = {
+    register: path.join(base, 'fresh-window-1030-restricted-register.json'),
+    projection: path.join(base, 'fresh-window-1030-source-safe-projection.json'),
+    receipt: path.join(base, 'fresh-window-1030-evidence-acceptance-receipt.json'),
+  };
+  if (!Object.values(files).every(file => fs.existsSync(file))) {
+    t.skip('ignored fresh-window-1030 successor restricted evidence artifacts are not present in this checkout');
+    return null;
+  }
+  const register = JSON.parse(fs.readFileSync(files.register, 'utf8'));
+  const projectionBytes = fs.readFileSync(files.projection, 'utf8');
+  const acceptanceReceiptBytes = fs.readFileSync(files.receipt, 'utf8');
+  const projection = JSON.parse(projectionBytes);
+  return { register, projection, projectionBytes, acceptanceReceiptBytes };
+}
+
 function oneRunApproval(artifacts) {
   return {
     projectionSha256: hash(artifacts.projectionBytes),
@@ -179,6 +197,17 @@ test('executor packet binds accepted digests while keeping every authority gate 
   assert.equal(packet.acceptedFreshWindowEvidence.runRef, 'rrb-ref:fresh-window-0300-bounded-development-run');
   assert.equal(packet.acceptedFreshWindowEvidence.window.startUtc, '2026-09-15T03:00:00Z');
   assert.equal(packet.acceptedFreshWindowEvidence.window.expiresUtc, '2026-09-15T03:05:00Z');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.projectionSha256, '8cfdb4f8b6fdce4a6de3b494c060f518130707cccd2e514295773a226c5e5fbd');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.acceptanceReceiptSha256, '9170213b22b3945dd448670de615c71e3aad948dfd120fcc9b3ed3c42301d142');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.privateRestrictedRegisterDigest, 'c1cd10673951d7407be95fb77a5ae98d135d00976c8eab48d687f67b25283bfc');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.restrictedCommandSetDigest, '7beedfe71bad86353ccbf467390d38aaa188a6b30975521a34e546be3c42384e');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.commandCardProjectionDigest, '13f0a71d1ea7de9b2ad97374ecda246beed97b1cdff63184a0b4f445b9209910');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.sourceMainCommit, '4ac1deb6acecc4841716c5a98993ba0d823b56a4');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.sourcePacketCommit, '3d7ec5c3585886c6032f7f3ccce8fa3af5fd42f0');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.sourcePr, 223);
+  assert.equal(packet.acceptedFreshWindow1030Evidence.runRef, 'rrb-ref:fresh-window-1030-bounded-development-run');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.window.startUtc, '2026-09-15T10:30:00Z');
+  assert.equal(packet.acceptedFreshWindow1030Evidence.window.expiresUtc, '2026-09-15T10:35:00Z');
   assert.equal(packet.executableBridgeSource, true);
   assert.equal(packet.providerClientBundled, false);
   for (const key of ['liveRunAuthorized', 'uploadsEnabled', 'conversionEnabled']) assert.equal(packet[key], false);
@@ -291,6 +320,52 @@ test('accepted fresh-window successor artifacts inspect and execute through the 
   assert.ok(!JSON.stringify(evidence).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
   assert.equal(artifacts.projection.window.startUtc, '2026-09-15T03:00:00Z');
   assert.equal(artifacts.projection.window.expiresUtc, '2026-09-15T03:05:00Z');
+});
+
+test('accepted fresh-window-1030 successor artifacts inspect and execute through the local fixture only', async t => {
+  const artifacts = freshWindow1030SuccessorArtifacts(t);
+  if (!artifacts) return;
+  const result = inspectAcceptedRunArtifacts(artifacts);
+  assert.equal(result.structureValid, true);
+  assert.equal(result.acceptedArtifacts, true);
+  assert.equal(result.decision, 'EXECUTOR_BINDING_READY');
+  assert.equal(result.acceptedEvidenceKey, 'acceptedFreshWindow1030Evidence');
+  assert.equal(result.projectionSha256, packet.acceptedFreshWindow1030Evidence.projectionSha256);
+  assert.equal(result.acceptanceReceiptSha256, packet.acceptedFreshWindow1030Evidence.acceptanceReceiptSha256);
+  assert.equal(result.privateRestrictedRegisterDigest, packet.acceptedFreshWindow1030Evidence.privateRestrictedRegisterDigest);
+  assert.equal(result.restrictedCommandSetDigest, packet.acceptedFreshWindow1030Evidence.restrictedCommandSetDigest);
+  assert.equal(result.commandCardProjectionDigest, packet.acceptedFreshWindow1030Evidence.commandCardProjectionDigest);
+  assert.deepEqual(result.commandCards.map(card => card.cardId), ['C0', 'C1', 'C2', 'C3', 'C4']);
+  assert.ok(!JSON.stringify(result).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
+  const direct = inspectRebuiltSuccessorRunArtifacts(artifacts);
+  assert.equal(direct.structureValid, true);
+  assert.equal(direct.acceptedEvidenceKey, 'acceptedFreshWindow1030Evidence');
+
+  const fixture = createFixture();
+  let evidence = null;
+  const executed = await executeBoundedDevelopmentQualificationRun({
+    ...artifacts,
+    oneRunApproval: oneRunApproval(artifacts),
+    adapter: fixtureAdapter(fixture),
+    disabledRouteCheck,
+    evidenceWriter: async value => {
+      evidence = value;
+      return { ref: 'rrb-ref:fresh-window-1030-evidence-' + hash(JSON.stringify(value)).slice(0, 16) };
+    },
+    now: fixture.now,
+  });
+  assert.equal(executed.decision, 'DEVELOPMENT_QUALIFICATION_EXECUTED');
+  assert.equal(executed.runCompleted, true);
+  assert.equal(executed.automaticRetry, false);
+  assert.equal(executed.secondRun, false);
+  assert.equal(executed.uploadsEnabled, false);
+  assert.equal(executed.conversionEnabled, false);
+  assert.equal(evidence.acceptedEvidenceKey, 'acceptedFreshWindow1030Evidence');
+  assert.equal(evidence.acceptedProjectionSha256, packet.acceptedFreshWindow1030Evidence.projectionSha256);
+  assert.equal(evidence.commandCardProjectionDigest, packet.acceptedFreshWindow1030Evidence.commandCardProjectionDigest);
+  assert.ok(!JSON.stringify(evidence).includes(artifacts.register.restrictedCommandCards.C2.restrictedCommandBytes));
+  assert.equal(artifacts.projection.window.startUtc, '2026-09-15T10:30:00Z');
+  assert.equal(artifacts.projection.window.expiresUtc, '2026-09-15T10:35:00Z');
 });
 
 test('restricted command bytes are descriptors, not shell or provider commands', () => {
