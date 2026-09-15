@@ -177,6 +177,9 @@ const files = [
   'docs/cad-dev-cost-cap-hard-stop-evidence.md',
   'docs/cad-dev-cost-cap-hard-stop-evidence.json',
   'scripts/cad-dev-cost-cap-hard-stop-evidence.test.js',
+  'docs/cad-dev-cost-custody-rollback-window-evidence.md',
+  'docs/cad-dev-cost-custody-rollback-window-evidence.json',
+  'scripts/cad-dev-cost-custody-rollback-window-evidence.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -208,6 +211,13 @@ assert.match(read('convex/developmentAuth.ts'), /developmentAuthReviewed: boolea
 assert.match(read('convex/developmentAuth.ts'), /return developmentAuthReviewed \? developmentCohort : \[\]/);
 assert.match(read('convex/auth.ts'), /developmentPassword\(developmentPasswordCohort\(\)\)/);
 assert.ok(!/fetch\s*\(|process\.env/.test(read('offline/cad-convex/developmentService.js')));
+const costCustodyWindow = JSON.parse(read('docs/cad-dev-cost-custody-rollback-window-evidence.json'));
+assert.equal(costCustodyWindow.convexSpendingDecision.teamSpendingDisableThresholdUsdPerMonth, 50);
+assert.equal(costCustodyWindow.custodyDecision.backupCustodian, 'Amina');
+assert.equal(costCustodyWindow.fastFollowCostLedger.requiredBeforeFeePerRunDecision, true);
+assert.equal(costCustodyWindow.deploymentCommandReview.exactCommandsExecutableNow, false);
+assert.equal(costCustodyWindow.freshRunWindow.acceptedNow, false);
+for (const value of Object.values(costCustodyWindow.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));

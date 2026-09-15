@@ -1,0 +1,138 @@
+{
+  "mode": "source-only-cad-development-cost-custody-rollback-window-evidence",
+  "status": "CONVEX_THRESHOLD_AND_BACKUP_CUSTODIAN_ACCEPTED_COMMANDS_AND_WINDOW_PENDING",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "fa480868ddfd28cc99c2420ab341859f525e83a2",
+  "branch": "codex/cad-dev-cost-custody-rollback-window-evidence",
+  "observedAtUtc": "2026-09-15T15:19:31Z",
+  "expensesUsd": 0,
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamId": 405220,
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentKind": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "convexSpendingDecision": {
+    "teamSpendingDisableThresholdObservedReadOnly": true,
+    "teamSpendingDisableThresholdUsdPerMonth": 50,
+    "thresholdMaintainedWithoutMutation": true,
+    "acceptedAsInternalTestingCushion": true,
+    "lowerThanStandingSmallExpenseAuthorization": false,
+    "explicitOperatorDecision": "Maintain the existing USD 50 monthly Convex usage spending disable threshold for internal testing so Mark's low-volume evaluation is less likely to disable the backend unexpectedly.",
+    "scopeLimit": "This accepts only the existing Convex team usage spending disable threshold as the internal-testing hard shutoff. It is not a per-run price, not a target spend, not Vercel or Sandbox cost evidence, and not production activation authority.",
+    "costCapUncertaintyResolvedForConvexTeamThreshold": true,
+    "endToEndCadRunCostKnown": false
+  },
+  "custodyDecision": {
+    "primaryCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "backupCustodianAccepted": true,
+    "markRole": "tester-reviewer",
+    "markIsCustodian": false,
+    "scope": "rollback and value-free secret-custody accountability naming only; no secret read, generation, storage or external delivery is authorized"
+  },
+  "fastFollowCostLedger": {
+    "roadmapBlockingNow": false,
+    "requiredBeforeFeePerRunDecision": true,
+    "requiredBeforeProductionCadActivation": true,
+    "reason": "The USD 50 threshold protects internal testing continuity, but it does not explain the end-to-end economics of one CAD run.",
+    "lineItems": [
+      "Convex function calls",
+      "Convex query and mutation compute",
+      "Convex database IO",
+      "Convex storage and retained evidence",
+      "Convex egress",
+      "Vercel application hosting and functions",
+      "Vercel Sandbox active CPU",
+      "Vercel Sandbox provisioned memory",
+      "CAD conversion or render compute",
+      "artifact storage",
+      "upload and result transfer",
+      "failed-run stop and cleanup overhead",
+      "taxes fees and currency effects"
+    ],
+    "outputsRequired": [
+      "cost per successful CAD run",
+      "cost per stopped or failed CAD run",
+      "expected Mark testing budget",
+      "recommended internal cap per test window",
+      "recommended fee per production CAD run"
+    ],
+    "nextSourceSlice": "source-only CAD run cost ledger packet after Auth/session and upload/conversion instrumentation is available"
+  },
+  "deploymentCommandReview": {
+    "exactCommandsExecutableNow": false,
+    "deploymentAuthorityNow": false,
+    "rollbackAuthorityNow": false,
+    "digestKind": "template-digest",
+    "reason": "The exact source SHA, disabled rollback SHA, env-file custody receipt and future UTC window still need to be bound before a development deployment.",
+    "deployTemplate": {
+      "command": "npx --no-install convex deploy --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable --message cad-dev-auth-edt:<source-sha>",
+      "sha256": "5f97744682053df701e8e3c17b407ad0cc591d7c07dcf3e97d1eaaf1d225deeb"
+    },
+    "disabledRollbackTemplate": {
+      "command": "git -C <worktree> checkout <disabled-rollback-sha> && npx --no-install convex deploy --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable --message cad-dev-auth-disabled-rollback:<disabled-rollback-sha>",
+      "sha256": "5d59af398764917b610af27019efc000ec4ceda5c5c19220fe47d09f575e666f"
+    },
+    "mustBeReplacedBeforeDeployment": [
+      "source-sha",
+      "disabled-rollback-sha",
+      "ignored env-file custody receipt",
+      "operator and backup receipt",
+      "future UTC deployment and rollback deadline"
+    ]
+  },
+  "freshRunWindow": {
+    "acceptedNow": false,
+    "selectionPolicy": "pick a future UTC window only after the exact deploy and rollback command digests are bound to reviewed source",
+    "maxDurationMinutes": 15,
+    "noRetry": true,
+    "noSecondRun": true
+  },
+  "remainingGates": [
+    {
+      "id": "D-ROLLBACK-COMMANDS",
+      "status": "TEMPLATE_DIGESTS_PRESENT_EXACT_COMMANDS_PENDING",
+      "requirement": "bind exact development deploy command, rollback command, source SHA, disabled rollback SHA and command digest before development deployment"
+    },
+    {
+      "id": "T-FRESH-RUN-WINDOW",
+      "status": "PENDING",
+      "requirement": "accept one fresh future UTC run window for a single development-only attempt"
+    },
+    {
+      "id": "CAD-RUN-COST-LEDGER",
+      "status": "FAST_FOLLOW_NONBLOCKING_FOR_AUTH_SESSION",
+      "requirement": "measure and publish end-to-end per-run economics before deciding production CAD run pricing or broader tester budget"
+    }
+  ],
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false,
+    "billingMutationAuthorizedNow": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-dev-exact-deploy-rollback-window-binding",
+    "scope": "source-only exact command binding and one proposed fresh UTC window using the accepted USD 50 Convex threshold and Amina backup custodian",
+    "canProceedWithoutUserInput": true,
+    "stopBefore": "development env mutation, deployment, live run, upload activation or conversion"
+  }
+}
