@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-local-cad-development-env-custody-rollback-receipts",
+  "status": "VALUE_FREE_ENV_CUSTODY_ROLLBACK_RECEIPTS_PROJECTED_NO_LIVE_MUTATION",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-env-custody-rollback-receipts",
+  "baseMainCommit": "a5b98e4e72563b48061efeece679e816e8e068d9",
+  "observedAtUtc": "2026-09-15T15:43:38Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamId": 405220,
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "sourceInputs": {
+    "exactDeployRollbackWindowBinding": {
+      "path": "docs/cad-dev-exact-deploy-rollback-window-binding.json",
+      "mergeCommit": "a5b98e4e72563b48061efeece679e816e8e068d9",
+      "sha256": "6cc4aa461cee61f03bc3eca5bffca756a62e6cb41f44269dae6c7da7a2fcfd93"
+    },
+    "costCustodyRollbackWindowEvidence": {
+      "path": "docs/cad-dev-cost-custody-rollback-window-evidence.json",
+      "mergeCommit": "c30af570b2baede03e1a78739f176beb30f32bfa",
+      "sha256": "f1ceedf9e7130e661e27d0c58ca4825d51b56811b11a2339b98e20ed6c5f5a4d"
+    },
+    "restrictedEdtAcceptancePacket": {
+      "path": "docs/cad-dev-restricted-edt-acceptance-packet.json",
+      "mergeCommit": "bfc32b615517e84db75f0d65af4905d0f7a5ae9e",
+      "sha256": "238f5e784356fdb86ba16a5144033304669acd524b544b9dfdce22917e72b68b"
+    },
+    "dashboardEvidence": {
+      "path": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "mergeCommit": "ce89f32080e83e2d496c1736a1b25aecee139a45",
+      "sha256": "ec9cb7ec0dbd4a73e732a1eb4cd1660b33116f76a1733ab77c37ce6381207b7c"
+    }
+  },
+  "ignoredLocalReceipt": {
+    "pathRef": ".local/cad-convex/dev-auth-edt/env-custody-rollback-receipt.json",
+    "sha256": "9ae02fe3dcbdbf7c45cdf8efb21fa1c1cf5706b067db54eef02a20e4b651de6a",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnored": true,
+    "containsSecretValues": false,
+    "containsValueHashes": false,
+    "containsPrivateCad": false,
+    "containsRealUsers": false,
+    "containsPrivatePaths": false
+  },
+  "custodyProjection": {
+    "primaryCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "markRole": "tester-reviewer",
+    "markIsCustodian": false,
+    "scope": "value-free environment custody and rollback accountability only"
+  },
+  "envFileCustodyProjection": {
+    "pathRef": ".local/cad-convex/dev-auth-edt/convex-deployment.env",
+    "custodyRef": "rrb-ref:dev-auth-edt-env-file-custody",
+    "valueRead": false,
+    "valueHashRecorded": false,
+    "secretGeneratedByThisPacket": false,
+    "mutationAuthorizedNow": false
+  },
+  "rowRollbackProjection": [
+    {
+      "name": "JWKS",
+      "priorVersionOrAbsenceRef": "rrb-ref:dev-auth-edt-env-jwks-prior-or-absence",
+      "rollbackActionRef": "rrb-ref:dev-auth-edt-env-jwks-rollback-action",
+      "valueRead": false,
+      "valueHashRecorded": false,
+      "mutationAuthorizedNow": false
+    },
+    {
+      "name": "JWT_PRIVATE_KEY",
+      "priorVersionOrAbsenceRef": "rrb-ref:dev-auth-edt-env-jwt-private-key-prior-or-absence",
+      "rollbackActionRef": "rrb-ref:dev-auth-edt-env-jwt-private-key-rollback-action",
+      "valueRead": false,
+      "valueHashRecorded": false,
+      "mutationAuthorizedNow": false
+    },
+    {
+      "name": "SITE_URL",
+      "priorVersionOrAbsenceRef": "rrb-ref:dev-auth-edt-env-site-url-prior-or-absence",
+      "rollbackActionRef": "rrb-ref:dev-auth-edt-env-site-url-rollback-action",
+      "valueRead": false,
+      "valueHashRecorded": false,
+      "mutationAuthorizedNow": false
+    }
+  ],
+  "boundCommands": {
+    "deployCommandDigest": "f282f86280ae7f2cdd7125320721856dac6954027b3df35f7b8d16bb933ee629",
+    "disabledRollbackCommandDigest": "43d423116f521c3f0c037e79df7bccbe5ac1b1b3a7d68661eb1798a34b1b3e44",
+    "candidateSourceSha": "c30af570b2baede03e1a78739f176beb30f32bfa",
+    "disabledRollbackSourceSha": "fa480868ddfd28cc99c2420ab341859f525e83a2"
+  },
+  "acceptanceEffect": {
+    "valueFreeEnvCustodyReceiptAcceptedForPlanning": true,
+    "rowSpecificRollbackReceiptShapeAcceptedForPlanning": true,
+    "exactDeployRollbackCommandDigestsRemainBound": true,
+    "freshRunWindowAccepted": false,
+    "developmentAuthReviewedSourceGateStillFalse": true,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveAuthRunAuthorizedNow": false
+  },
+  "updatedReadinessMap": {
+    "teamSpendingLimitOrAllInCostCapNotAccepted": "RESOLVED_FOR_CONVEX_DEVELOPMENT_AUTH_INTERNAL_TESTING_ONLY",
+    "secretCustodyAndBackupNotAccepted": "RESOLVED_FOR_VALUE_FREE_PLANNING_SECRET_VALUES_STILL_UNREAD",
+    "envRollbackReceiptsNotAccepted": "RESOLVED_FOR_VALUE_FREE_PLANNING_NO_ENV_MUTATION_AUTHORITY",
+    "durableDevelopmentReleaseAndRollbackNotAccepted": "PARTIAL_EXACT_COMMAND_DIGESTS_BOUND_RELEASE_ID_PENDING_DEPLOYMENT",
+    "retentionPolicyNotAccepted": "PENDING",
+    "lockoutFenceNotAccepted": "PENDING",
+    "privateRegisterReceiptNotAccepted": "PENDING",
+    "freshRunWindowNotAccepted": "PENDING_PROPOSED_NOT_ACCEPTED"
+  },
+  "remainingGates": [
+    {
+      "id": "S-DEVELOPMENT-AUTH-SOURCE-GATE",
+      "status": "PENDING",
+      "requirement": "source-only reviewed gate flip or equivalent reviewed source path before any development Auth deployment"
+    },
+    {
+      "id": "D-DEVELOPMENT-DEPLOYMENT",
+      "status": "COMMAND_DIGESTS_AND_VALUE_FREE_ROLLBACK_RECEIPTS_BOUND_DEPLOYMENT_NOT_AUTHORIZED",
+      "requirement": "separate development deployment approval and durable release capture"
+    },
+    {
+      "id": "T-FRESH-RUN-WINDOW",
+      "status": "PROPOSED_NOT_ACCEPTED",
+      "requirement": "accept one fresh future UTC window before any development-only Auth/session qualification attempt"
+    },
+    {
+      "id": "CAD-RUN-COST-LEDGER",
+      "status": "FAST_FOLLOW_NONBLOCKING_FOR_AUTH_SESSION",
+      "requirement": "publish end-to-end per-run economics before production CAD pricing or broader tester budget decisions"
+    }
+  ],
+  "autopilotDecision": {
+    "sourcePrFlowMayContinue": true,
+    "mergeAfterGreenChecksMayContinue": true,
+    "productionFailClosedSmokeMayContinue": true,
+    "cleanupAfterVerifiedMergeMayContinue": true,
+    "developmentEnvMutationMustStop": true,
+    "developmentDeploymentMustStop": true,
+    "developmentLiveAuthRunMustStop": true,
+    "reason": "value-free env custody and rollback receipts are projected, but the Auth source gate, deployment approval and fresh run window remain separate gates"
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-dev-auth-reviewed-source-gate",
+    "scope": "local source-only implementation and tests for the reviewed development Auth source gate using the existing two-slot cohort, accepted custody, bound rollback, and disabled upload/conversion preservation",
+    "canProceedWithoutUserInput": true,
+    "stopBefore": "development env mutation, provider/resource change, development deployment, live Auth/session run, upload activation or conversion"
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveAuthRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false,
+    "billingMutationAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
