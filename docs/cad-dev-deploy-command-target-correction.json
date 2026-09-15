@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-deploy-command-target-correction",
+  "status": "DEV_DEPLOY_COMMAND_CORRECTED_NO_DEPLOYMENT",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-deploy-command-correction",
+  "baseMainCommit": "eb1a271db79e18c2478cf8bb224ceee03c527d1a",
+  "observedAtUtc": "2026-09-15T16:33:19Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamId": 405220,
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "deploymentSelector": "dev:majestic-alligator-31",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "blockedReviewedCommandEvidence": {
+    "command": "npx --no-install convex deploy --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable --message cad-dev-auth-reviewed-source-gate:ce00edb676b3209b96c01c90dd057eed44d81113",
+    "sha256": "d56b4779e479529d429cb2937d9a753f73dd0c5d5a7f2ef5fe367c307d8d6f58",
+    "exitCode": 1,
+    "outcome": "PROMPT_BLOCKED_NO_DEPLOYMENT",
+    "observedPromptTarget": {
+      "projectSlug": "reversr-cad-auth-dev",
+      "deploymentName": "wry-tapir-206",
+      "deploymentType": "production"
+    },
+    "hardStopReason": "Convex deploy targets the project production deployment when CONVEX_DEPLOYMENT selects a development deployment; the non-interactive prompt prevented mutation.",
+    "productionMutationObserved": false,
+    "developmentMutationObserved": false
+  },
+  "correctedDevelopmentCommand": {
+    "command": "npx --no-install convex dev --once --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable",
+    "sha256": "13547b0273e8712c5288ba8ebfb638a631aecaf18a6b2066fbce2050ec8d53fb",
+    "targetingBasis": "convex dev pushes code to the configured dev deployment, while --once exits after the first push attempt",
+    "envFileRef": ".local/cad-convex/dev-auth-edt/convex-deployment.env",
+    "requiresEnvFileRows": [
+      "CONVEX_DEPLOYMENT"
+    ],
+    "backendRowsExpectedPresentByNameOnly": [
+      "JWKS",
+      "JWT_PRIVATE_KEY",
+      "SITE_URL"
+    ],
+    "backendRowValuesRead": false,
+    "backendRowsMutatedByCommand": false,
+    "commandMayExecuteAfterMerge": true,
+    "stopBefore": "live Auth/session run, upload activation, conversion, private CAD, real users, external messages, production mutation"
+  },
+  "sourceBindings": {
+    "reviewedAuthSourceGateCommit": "ce00edb676b3209b96c01c90dd057eed44d81113",
+    "currentMainCommit": "eb1a271db79e18c2478cf8bb224ceee03c527d1a",
+    "disabledRollbackSourceCommit": "fa480868ddfd28cc99c2420ab341859f525e83a2",
+    "priorDeployBinding": "docs/cad-dev-reviewed-source-deploy-binding.json",
+    "convexSourceUnchangedFromReviewedAuthGate": true
+  },
+  "authorityPreserved": {
+    "productionChangeAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationPerformed": false,
+    "backendEnvMutationPerformed": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentLiveAuthRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false,
+    "billingMutationAuthorizedNow": false,
+    "sandboxDispatchAuthorizedNow": false
+  },
+  "nextSafeAction": {
+    "branch": "main",
+    "scope": "after merge and production fail-closed smoke, execute exactly one corrected Convex development push using correctedDevelopmentCommand.command, then perform read-only function/env verification and capture sanitized release evidence",
+    "canProceedWithoutUserInputUnderAutopilot": true
+  }
+}

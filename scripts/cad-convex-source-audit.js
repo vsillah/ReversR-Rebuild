@@ -192,6 +192,9 @@ const files = [
   'docs/cad-dev-reviewed-source-deploy-binding.md',
   'docs/cad-dev-reviewed-source-deploy-binding.json',
   'scripts/cad-dev-reviewed-source-deploy-binding.test.js',
+  'docs/cad-dev-deploy-command-target-correction.md',
+  'docs/cad-dev-deploy-command-target-correction.json',
+  'scripts/cad-dev-deploy-command-target-correction.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -278,6 +281,14 @@ assert.equal(reviewedSourceDeployBinding.exactCommandBinding.disabledRollbackCom
 assert.equal(reviewedSourceDeployBinding.exactCommandBinding.executableAuthorityNow, false);
 assert.equal(reviewedSourceDeployBinding.freshWindowProposal.acceptedNow, false);
 assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentDeploymentExecutionMayContinueAfterMerge, true);
+const devDeployCommandCorrection = JSON.parse(read('docs/cad-dev-deploy-command-target-correction.json'));
+assert.equal(devDeployCommandCorrection.blockedReviewedCommandEvidence.outcome, 'PROMPT_BLOCKED_NO_DEPLOYMENT');
+assert.equal(devDeployCommandCorrection.blockedReviewedCommandEvidence.productionMutationObserved, false);
+assert.match(devDeployCommandCorrection.correctedDevelopmentCommand.command, /^npx --no-install convex dev --once /);
+assert.doesNotMatch(devDeployCommandCorrection.correctedDevelopmentCommand.command, /\bdeploy\b/);
+assert.equal(devDeployCommandCorrection.correctedDevelopmentCommand.commandMayExecuteAfterMerge, true);
+assert.equal(devDeployCommandCorrection.correctedDevelopmentCommand.backendRowsMutatedByCommand, false);
+for (const value of Object.values(devDeployCommandCorrection.authorityPreserved)) assert.equal(value, false);
 assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentLiveAuthRunMustStop, true);
 for (const value of Object.values(reviewedSourceDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
