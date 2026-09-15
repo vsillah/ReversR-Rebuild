@@ -176,6 +176,9 @@ const files = [
   'docs/cad-dev-restricted-edt-acceptance-packet.md',
   'docs/cad-dev-restricted-edt-acceptance-packet.json',
   'scripts/cad-dev-restricted-edt-acceptance-packet.test.js',
+  'docs/cad-dev-cost-cap-hard-stop-evidence.md',
+  'docs/cad-dev-cost-cap-hard-stop-evidence.json',
+  'scripts/cad-dev-cost-cap-hard-stop-evidence.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -223,7 +226,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 47, mode: 'offline-source-unqualified',
+const manifest = { version: 48, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-cost-cap-hard-stop-evidence",
+  "status": "READ_ONLY_USAGE_EVIDENCE_CAPTURED_TEAM_DOLLAR_CAP_STILL_BLOCKING",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-cost-cap-hard-stop-evidence",
+  "baseMainCommit": "bfc32b615517e84db75f0d65af4905d0f7a5ae9e",
+  "observedAtUtc": "2026-09-15T14:52:21Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development"
+  },
+  "sourceInputs": {
+    "restrictedEdtAcceptancePacket": {
+      "path": "docs/cad-dev-restricted-edt-acceptance-packet.json",
+      "mergeCommit": "bfc32b615517e84db75f0d65af4905d0f7a5ae9e"
+    },
+    "officialConvexUsageLimits": {
+      "url": "https://docs.convex.dev/production/usage-limits",
+      "evidence": "deployment usage limits cap resource consumption per deployment; Convex directs teams to spending limits for a dollar cap"
+    },
+    "officialConvexTeamBilling": {
+      "url": "https://docs.convex.dev/dashboard/teams/teams",
+      "evidence": "team spending limits are configured on the billing page and disable all projects when the hard dollar threshold is exceeded"
+    },
+    "officialConvexRoleActions": {
+      "url": "https://docs.convex.dev/team-management/role-actions",
+      "evidence": "billing:view is a read permission; billing:spendingLimit:update is a separate mutation permission"
+    },
+    "officialConvexDeploymentCli": {
+      "url": "https://docs.convex.dev/cli/reference/deployment",
+      "evidence": "deployment usage and usage-limits list are read-only CLI evidence commands"
+    }
+  },
+  "readOnlyCliEvidence": {
+    "commandsRun": [
+      "npx convex deployment usage-limits list --deployment majestic-alligator-31 --json",
+      "npx convex deployment usage --deployment majestic-alligator-31 --json"
+    ],
+    "usageLimits": [
+      {
+        "metric": "functionCalls",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 100,
+        "unit": "calls",
+        "currentUsage": 17,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "queryMutationComputeGbHours",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB-hours",
+        "currentUsage": 0.000018923611111111115,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "actionComputeConvexGbHours",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB-hours",
+        "currentUsage": 0,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "actionComputeNodeJsGbHours",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB-hours",
+        "currentUsage": 0,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "actionComputeCpuGbHours",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB-hours",
+        "currentUsage": 0,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "databaseIoGb",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB",
+        "currentUsage": 0.00008503533899784088,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "searchQueryGb",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "Query-GB",
+        "currentUsage": 0,
+        "enabled": true,
+        "triggered": false
+      },
+      {
+        "metric": "dataEgressGb",
+        "window": "day",
+        "limitType": "disable",
+        "limit": 1,
+        "unit": "GB",
+        "currentUsage": 0,
+        "enabled": true,
+        "triggered": false
+      }
+    ],
+    "usageSnapshot": {
+      "functionCalls": {
+        "unit": "calls",
+        "currentDay": 17,
+        "currentMonth": 30
+      },
+      "queryMutationComputeGbHours": {
+        "unit": "GB-hours",
+        "currentDay": 0.000018923611111111115,
+        "currentMonth": 0.00004833333333333333
+      },
+      "actionComputeConvexGbHours": {
+        "unit": "GB-hours",
+        "currentDay": 0,
+        "currentMonth": 0.0000028125000000000006
+      },
+      "actionComputeNodeJsGbHours": {
+        "unit": "GB-hours",
+        "currentDay": 0,
+        "currentMonth": 0
+      },
+      "actionComputeCpuGbHours": {
+        "unit": "GB-hours",
+        "currentDay": 0,
+        "currentMonth": 7.812499999999999e-7
+      },
+      "databaseIoGb": {
+        "unit": "GB",
+        "currentDay": 0.00008503533899784088,
+        "currentMonth": 0.00009891390800476074
+      },
+      "searchQueryGb": {
+        "unit": "Query-GB",
+        "currentDay": 0,
+        "currentMonth": 0
+      },
+      "dataEgressGb": {
+        "unit": "GB",
+        "currentDay": 0,
+        "currentMonth": 0
+      }
+    },
+    "settingsMutated": false
+  },
+  "costGateDecision": {
+    "deploymentUsageLimitsObserved": true,
+    "deploymentUsageLimitsAllEnabled": true,
+    "deploymentUsageLimitsTriggered": false,
+    "deploymentUsageLimitsAreDollarCap": false,
+    "teamSpendingLimitObserved": false,
+    "teamSpendingLimitDisableThresholdBelowTenUsdObserved": false,
+    "standingSmallExpenseAuthorizationAppliesOnlyAfterEnforceableCap": true,
+    "developmentMutationAuthorizedNow": false,
+    "reason": "deployment usage limits are a resource guardrail, but the all-in team dollar cap is still not observed"
+  },
+  "requiredEvidenceToContinue": [
+    {
+      "id": "U-COST-TEAM-DISABLE-LIMIT",
+      "kind": "read-only-dashboard-evidence",
+      "requirement": "observe the Convex team billing spending-limit disable threshold below USD 10, or observe that the team is on a free hard-capped plan with no paid overage path for this run",
+      "mutationAllowed": false
+    },
+    {
+      "id": "K-BACKUP-CUSTODIAN",
+      "kind": "operator-acceptance",
+      "requirement": "name a backup custodian for rollback/secret custody before any live mutation",
+      "mutationAllowed": false
+    },
+    {
+      "id": "D-ROLLBACK-COMMANDS",
+      "kind": "source-local-command-digest",
+      "requirement": "bind the exact development deploy command, rollback command and disabled-source rollback SHA before development deployment",
+      "mutationAllowed": false
+    },
+    {
+      "id": "T-FRESH-RUN-WINDOW",
+      "kind": "operator-acceptance",
+      "requirement": "accept one fresh future UTC run window for a single development-only attempt",
+      "mutationAllowed": false
+    }
+  ],
+  "nextSafeAction": {
+    "branch": "codex/cad-dev-cost-custody-rollback-window-evidence",
+    "scope": "read-only dashboard evidence plus source-local command-digest packet for cost cap, backup custodian, deployment rollback and one future run window",
+    "canProceedWithoutUserInput": false,
+    "blockedReason": "team spending-limit evidence and backup custodian acceptance require dashboard/user-visible evidence not available from the read-only CLI"
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
