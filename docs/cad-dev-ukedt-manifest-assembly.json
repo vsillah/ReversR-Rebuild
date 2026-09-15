@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-ukedt-manifest-assembly",
+  "status": "UKEDT_MANIFESTS_ASSEMBLED_FOR_REVIEW_NOT_EXECUTION",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-ukedt-manifest-assembly",
+  "baseMainCommit": "ce89f32080e83e2d496c1736a1b25aecee139a45",
+  "observedAtUtc": "2026-09-15T13:25:17Z",
+  "inputPackets": {
+    "dashboardEvidenceRegister": {
+      "path": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "sourcePr": 226,
+      "mergeCommit": "ce89f32080e83e2d496c1736a1b25aecee139a45",
+      "observedAtUtc": "2026-09-15T13:05:27Z"
+    },
+    "successfulDevelopmentQualificationCloseout": {
+      "path": "docs/cad-successful-bounded-dev-qualification-closeout.json",
+      "sourcePr": 225,
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "remoteReadReconciliation": "READ_ONLY_RECONCILIATION_INCONCLUSIVE"
+    },
+    "planningPacket": {
+      "path": "docs/cad-live-dev-edt-approval-packet.md",
+      "status": "historical planning packet; superseded where dashboard register has fresher evidence"
+    },
+    "configurationGate": {
+      "path": "docs/cad-live-dev-auth-config-gate.md",
+      "status": "source/local review only; no live approval or execution"
+    }
+  },
+  "target": {
+    "teamSlug": "vambah-sillah",
+    "teamIdFromApproval": "405220",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "dev",
+    "region": "US East (N. Virginia)",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site",
+    "immutableProjectIdVisible": false,
+    "immutableDeploymentIdVisible": false
+  },
+  "manifests": {
+    "u": {
+      "name": "Usage guardrail evidence",
+      "status": "OBSERVED_EXISTING_LIMITS_NOT_ACTIONABLE_FOR_MUTATION",
+      "source": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "currentLimitsObserved": true,
+      "currentLimitsActive": true,
+      "currentLimitsTriggered": false,
+      "functionCallsDailyDisable": "100 calls",
+      "functionCallsCurrentAtRefresh": "17 calls",
+      "allInCostCapVerified": false,
+      "teamSpendingLimitVerified": false,
+      "mutationReady": false,
+      "blockers": [
+        "This is a point-in-time existing-limit observation, not authority to change limits.",
+        "All-in cost cap, taxes/fees, provider lag and team-level spend settings remain unverified.",
+        "No usage or billing mutation is authorized by this manifest."
+      ],
+      "nextEvidenceNeeded": [
+        "separate cost-cap evidence if future live auth/session work needs a new window",
+        "current usage refresh immediately before any future U mutation request",
+        "row-specific rollback for any proposed limit change"
+      ]
+    },
+    "k": {
+      "name": "Key and secret custody evidence",
+      "status": "ROW_PRESENCE_ONLY_SECRET_CUSTODY_BLOCKED",
+      "source": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "rowsObserved": [
+        "JWKS",
+        "JWT_PRIVATE_KEY",
+        "SITE_URL"
+      ],
+      "valuesRead": false,
+      "secretGenerationAuthorized": false,
+      "custodyVerified": false,
+      "generatorVerified": false,
+      "rotationReady": false,
+      "blockers": [
+        "No row values, value hashes, vault items, generator checksum or signer freshness were read or recorded.",
+        "Existing row presence is not proof that values are current, correctly paired or safely recoverable.",
+        "Synthetic password custody remains outside this source-only manifest."
+      ],
+      "nextEvidenceNeeded": [
+        "approved existing-vault item/version references without values",
+        "reviewed local generator checksum and sign/verify receipt if rotation is proposed",
+        "named custodian and backup acceptance",
+        "transient-copy cleanup procedure and receipt template"
+      ]
+    },
+    "e": {
+      "name": "Environment row manifest",
+      "status": "DESTINATION_AND_ROW_NAMES_VERIFIED_NO_ENV_MUTATION",
+      "source": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "destinationVerified": true,
+      "rowNamesVerified": true,
+      "rowValuesRead": false,
+      "rowMutationAuthorized": false,
+      "platformOwnedRowsExcluded": [
+        "CONVEX_SITE_URL",
+        "CONVEX_DEPLOYMENT"
+      ],
+      "rollbackReady": false,
+      "blockers": [
+        "Prior versions/absence and row-specific rollback actions were not read or prepared.",
+        "SITE_URL consuming source and exact origin remain tied to separate reviewed source and harness evidence.",
+        "No environment row add, edit, delete, overwrite or rotation is authorized."
+      ],
+      "nextEvidenceNeeded": [
+        "value-free prior-version or absence receipt for each approved row",
+        "row-specific rollback manifest",
+        "source SHA consuming each row and exact destination selector",
+        "explicit E approval before any dashboard or CLI mutation"
+      ]
+    },
+    "d": {
+      "name": "Development deployment evidence",
+      "status": "DEPLOYMENT_IDENTITY_VERIFIED_NO_DEPLOYMENT_AUTHORITY",
+      "source": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "deploymentRunning": true,
+      "runtime": "Convex 1.45.0",
+      "lastDeployedLabel": "21 hours ago",
+      "durableReleaseIdVerified": false,
+      "commandManifestReady": false,
+      "rollbackDeploymentReady": false,
+      "deploymentAuthorized": false,
+      "blockers": [
+        "The dashboard last-deployed label is not a durable release identifier.",
+        "No exact deploy command, source/function manifest, rollback source SHA or compatibility proof is bound here.",
+        "Production deployment remains outside this development manifest."
+      ],
+      "nextEvidenceNeeded": [
+        "exact source SHA and function-spec manifest before any development deployment",
+        "noninteractive pinned CLI command and working directory",
+        "disabled rollback source SHA and compatibility evidence",
+        "separate D approval"
+      ]
+    },
+    "t": {
+      "name": "Synthetic qualification test evidence",
+      "status": "PRIOR_SUCCESSFUL_RUN_RECORDED_NO_NEW_RUN_AUTHORITY",
+      "source": "docs/cad-successful-bounded-dev-qualification-closeout.json",
+      "completedRunObserved": true,
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "automaticRetry": false,
+      "secondRun": false,
+      "uploadsEnabled": false,
+      "conversionEnabled": false,
+      "remoteReadReconciliation": "READ_ONLY_RECONCILIATION_INCONCLUSIVE",
+      "newRunAuthorized": false,
+      "blockers": [
+        "The successful fresh-window-1030 run is already closed out and must not be retried.",
+        "Remote post-window read reconciliation stayed inconclusive due ENGINE_INVALID read responses.",
+        "Any future live auth/session or CAD-adjacent run needs fresh evidence, a new window and separate explicit approval."
+      ],
+      "nextEvidenceNeeded": [
+        "separate source-only scope for any future auth/session qualification",
+        "fresh restricted/local evidence packet if a new bounded run is needed",
+        "query-only reconciliation plan that does not mutate or retry"
+      ]
+    }
+  },
+  "diagnostics": {
+    "sendLogsToClient": "Default (enabled)",
+    "dashboardEditConfirmation": "Default (disabled)",
+    "diagnosticMutationAuthorized": false,
+    "note": "S/diagnostic settings remain observed evidence only. No setting change is authorized."
+  },
+  "readinessSummary": {
+    "assembledForReview": true,
+    "executable": false,
+    "mutationReady": false,
+    "liveRunReady": false,
+    "uploadActivationReady": false,
+    "providerAuthResourceReady": false,
+    "safeNextGate": "source-only review and publication of this manifest packet"
+  },
+  "authorityPreserved": {
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "authProviderConfigurationAuthorized": false,
+    "envMutationAuthorized": false,
+    "envValueReadAuthorized": false,
+    "secretGenerationAuthorized": false,
+    "secretStorageAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "diagnosticSettingChangeAuthorized": false,
+    "deploymentAuthorized": false,
+    "liveTestAuthorized": false,
+    "newRunAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false,
+    "productionAuthorized": false,
+    "pushAuthorized": false,
+    "mergeAuthorized": false,
+    "cleanupAuthorized": false,
+    "emailSmsSlackAuthorized": false
+  },
+  "remainingGates": [
+    "review and publish this source-only U/K/E/D/T assembly packet",
+    "separate merge and production fail-closed smoke after PR review",
+    "separate restricted/private operator register before any secret or env action",
+    "separate usage/cost cap packet before any usage-limit or billing change",
+    "separate provider/auth/resource setup packet before any provider mutation",
+    "separate development deployment packet before any Convex deployment",
+    "separate live auth/session test approval before any new run",
+    "separate CAD upload activation approval",
+    "separate CAD conversion/Sandbox dispatch approval"
+  ],
+  "futureApprovalPhrases": {
+    "publication": "I approve pushing only commit [full reviewed SHA] from codex/cad-dev-ukedt-manifest-assembly to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD development U/K/E/D/T manifest assembly packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets or secret reads, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, retry, second run, or branch/worktree cleanup.",
+    "merge": "I approve marking PR #[number] ready for review and merging it into main. Allow the normal Vercel production deployment from main. Preserve current production and development environment settings; do not configure provider/auth/resource settings, do not read, generate or store secrets, do not change usage or billing settings, do not enable CAD uploads, do not dispatch CAD conversion, do not run live tests, do not use private CAD, do not dispatch Sandbox work, do not retry any completed or stopped run, do not start a second run, do not send email/SMS/Slack, and do not cleanup the branch/worktree until production verification completes.",
+    "nextSourceOnlyGate": "I approve starting the next CAD Import phase for restricted operator-register and rollback-receipt preparation. Scope is source/local planning only: prepare value-free templates and tests for U rollback, K custody references, E row rollback, D source/command/rollback checks, T retained-state/reconciliation receipts, and exact future approval phrases. Do not push, merge, deploy, run live tests, start another live run, retry completed or stopped runs, read or generate secrets, change production or development env vars, configure provider/auth/resource settings, change usage or billing settings, enable CAD uploads, dispatch CAD conversion, use private CAD, mutate stores, dispatch Sandbox work, send email/SMS/Slack, or cleanup branches/worktrees."
+  },
+  "expensesUsd": 0
+}
