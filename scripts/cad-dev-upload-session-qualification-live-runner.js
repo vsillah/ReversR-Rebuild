@@ -173,15 +173,20 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
     expiresAt,
     status: 'active',
   };
-  const bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevokeWithSyntheticAuthority, {
-    runKey: uploadRegister.runKey,
-    runKeySha256: uploadRegister.runKeySha256,
-    acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
-    acceptanceReceiptSha256: acceptedArtifacts.acceptanceReceiptSha256,
-    principal,
-    credentialDigest: sha256(`upload-session-qualification:${uploadRegister.runId}:${record.sessionId}`),
-    record,
-  });
+  let bridge;
+  try {
+    bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevokeWithSyntheticAuthority, {
+      runKey: uploadRegister.runKey,
+      runKeySha256: uploadRegister.runKeySha256,
+      acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
+      acceptanceReceiptSha256: acceptedArtifacts.acceptanceReceiptSha256,
+      principal,
+      credentialDigest: sha256(`upload-session-qualification:${uploadRegister.runId}:${record.sessionId}`),
+      record,
+    });
+  } finally {
+    await authenticated.action(api.auth.signOut, {});
+  }
   if (!bridge || bridge.code !== 'SYNTHETIC_UPLOAD_SESSION_SEQUENCE_REVOKED'
     || bridge.cadUploadsDisabled !== true || bridge.bodyAdmissionAuthorized !== false
     || bridge.conversionAllowed !== false || bridge.retainedUploadSession !== true
@@ -189,7 +194,6 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
     || bridge.syntheticAuthorityRevoked !== true || bridge.authorityRowsRetained !== true) {
     fail('UPLOAD_SESSION_BRIDGE_DENIED');
   }
-  await authenticated.action(api.auth.signOut, {});
   return sanitized('DEVELOPMENT_UPLOAD_SESSION_QUALIFICATION_EXECUTED', {
     runId: uploadRegister.runId,
     deploymentName: uploadRegister.deploymentName,

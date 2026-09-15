@@ -178,3 +178,51 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
   assert.equal(evidence.rawPasswordRecorded, false);
   assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'operator-action', 'auth-action']);
 });
+
+test('runner signs out before propagating a bridge failure', async () => {
+  const { authRegister, uploadRegister } = registers();
+  const acceptedArtifacts = {
+    acceptedProjectionSha256: 'c'.repeat(64),
+    acceptanceReceiptSha256: 'd'.repeat(64),
+  };
+  const calls = [];
+  const api = {
+    auth: { signIn: 'signIn', signOut: 'signOut' },
+    cadDevUploadSessionQualificationSession: { readCurrent: 'readCurrent' },
+    cadDevUploadSessionQualification: {
+      issueReadRevokeWithSyntheticAuthority: 'issueReadRevokeWithSyntheticAuthority',
+    },
+  };
+  const clients = {
+    operator: {
+      action: async fn => {
+        calls.push(['operator-action', fn]);
+        if (fn === 'signIn') return { tokens: { token: 'token-alpha' } };
+        if (fn === 'issueReadRevokeWithSyntheticAuthority') throw new Error('AUTH_UNAVAILABLE');
+        throw new Error('unexpected operator action');
+      },
+    },
+    authenticated: token => ({
+      query: async fn => {
+        calls.push(['auth-query', fn, token]);
+        return {
+          userId: 'user-id-alpha',
+          loginSessionId: 'session-id-alpha',
+          authMethod: 'password',
+          expiresAt: Date.now() + 60000,
+          active: true,
+        };
+      },
+      action: async fn => {
+        calls.push(['auth-action', fn, token]);
+        assert.equal(fn, 'signOut');
+        return null;
+      },
+    }),
+  };
+  await assert.rejects(
+    runner.runWithClients({ uploadRegister, authRegister, acceptedArtifacts, clients, api }),
+    /AUTH_UNAVAILABLE/,
+  );
+  assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'operator-action', 'auth-action']);
+});
