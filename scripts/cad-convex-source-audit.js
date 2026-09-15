@@ -195,6 +195,9 @@ const files = [
   'docs/cad-dev-deploy-command-target-correction.md',
   'docs/cad-dev-deploy-command-target-correction.json',
   'scripts/cad-dev-deploy-command-target-correction.test.js',
+  'docs/cad-dev-once-push-evidence-codegen.md',
+  'docs/cad-dev-once-push-evidence-codegen.json',
+  'scripts/cad-dev-once-push-evidence-codegen.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -289,6 +292,16 @@ assert.doesNotMatch(devDeployCommandCorrection.correctedDevelopmentCommand.comma
 assert.equal(devDeployCommandCorrection.correctedDevelopmentCommand.commandMayExecuteAfterMerge, true);
 assert.equal(devDeployCommandCorrection.correctedDevelopmentCommand.backendRowsMutatedByCommand, false);
 for (const value of Object.values(devDeployCommandCorrection.authorityPreserved)) assert.equal(value, false);
+const devOncePushEvidence = JSON.parse(read('docs/cad-dev-once-push-evidence-codegen.json'));
+assert.equal(devOncePushEvidence.executedDevelopmentPush.exitCode, 0);
+assert.equal(devOncePushEvidence.executedDevelopmentPush.observedDeploymentType, 'Development');
+assert.equal(devOncePushEvidence.executedDevelopmentPush.liveRunExecuted, false);
+assert.deepEqual(devOncePushEvidence.readOnlyVerification.backendEnvNamesOnly, ['JWKS', 'JWT_PRIVATE_KEY', 'SITE_URL']);
+assert.equal(devOncePushEvidence.readOnlyVerification.backendEnvValuesRead, false);
+assert.equal(devOncePushEvidence.readOnlyVerification.functionSpec.totalFunctions, 21);
+assert.equal(devOncePushEvidence.readOnlyVerification.httpDiscovery.jwksPrivateFieldsObserved, false);
+assert.equal(devOncePushEvidence.codegenAlignment.runtimeSourceChanged, false);
+for (const value of Object.values(devOncePushEvidence.authorityPreserved)) assert.equal(value, false);
 assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentLiveAuthRunMustStop, true);
 for (const value of Object.values(reviewedSourceDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));

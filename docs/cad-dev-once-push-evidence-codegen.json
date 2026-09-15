@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-once-push-evidence-codegen-closeout",
+  "status": "DEVELOPMENT_SOURCE_PUSH_VERIFIED_CODEGEN_ALIGNED",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-push-evidence-codegen",
+  "baseMainCommit": "cbde1ff216948b048af6eb2fd66a40fef596bad1",
+  "observedAtUtc": "2026-09-15T16:44:20Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamId": 405220,
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "deploymentSelector": "dev:majestic-alligator-31",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "executedDevelopmentPush": {
+    "command": "npx --no-install convex dev --once --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable",
+    "sha256": "13547b0273e8712c5288ba8ebfb638a631aecaf18a6b2066fbce2050ec8d53fb",
+    "exitCode": 0,
+    "observedDeploymentType": "Development",
+    "observedDeploymentName": "majestic-alligator-31",
+    "productionPromptObserved": false,
+    "productionMutationObserved": false,
+    "liveRunExecuted": false
+  },
+  "localEvidence": {
+    "devOncePushReceiptPathRef": ".local/cad-convex/dev-auth-edt/dev-once-push-evidence-cbde1ff.json",
+    "devOncePushReceiptSha256": "d2ba8e4f362f5c0aa5f5b9c6d936ac4d5d4f7e7635a587d43794b22989124f42",
+    "deploymentSelectorReceiptPathRef": ".local/cad-convex/dev-auth-edt/deployment-selector-recreation-receipt.json",
+    "deploymentSelectorReceiptSha256": "c15e07a0260249407169bb37879d1944af8db1645bb28afed7a63208eb6b5d82",
+    "receiptsIgnored": true,
+    "receiptFileMode": "600",
+    "receiptContainsSecretValues": false,
+    "receiptContainsValueHashes": false
+  },
+  "readOnlyVerification": {
+    "backendEnvNamesOnly": [
+      "JWKS",
+      "JWT_PRIVATE_KEY",
+      "SITE_URL"
+    ],
+    "backendEnvValuesRead": false,
+    "backendEnvRowsMutated": false,
+    "functionSpec": {
+      "url": "https://majestic-alligator-31.convex.cloud",
+      "totalFunctions": 21,
+      "byType": {
+        "Query": 6,
+        "Action": 2,
+        "Mutation": 11,
+        "HttpAction": 2
+      },
+      "selectedIdentifiers": [
+        "auth.js:isAuthenticated",
+        "auth.js:signIn",
+        "auth.js:signOut",
+        "auth.js:store",
+        "cadDurableEngine.js:initialize",
+        "cadDurableEngine.js:readExact",
+        "cadDurableEngine.js:readAuthority",
+        "cadDurableEngine.js:transact",
+        "cadDurableEngine.js:changeAuthority",
+        "cadDurableEngine.js:claim",
+        "cadDurableEngine.js:settle",
+        "cadDurableEngine.js:scanPage",
+        "cadDurableEngine.js:stop"
+      ],
+      "uploadsEnabledFalseCount": 9,
+      "conversionEnabledFalseCount": 9,
+      "liveRunAuthorizedFalseCount": 9
+    },
+    "httpDiscovery": {
+      "openidStatus": 200,
+      "issuer": "https://majestic-alligator-31.convex.site",
+      "jwksStatus": 200,
+      "jwksKeys": 1,
+      "jwksUses": [
+        "sig"
+      ],
+      "jwksPrivateFieldsObserved": false,
+      "jwksKeyMaterialRecorded": false
+    }
+  },
+  "codegenAlignment": {
+    "reason": "The corrected command intentionally used --codegen enable. Convex regenerated tracked _generated files during the dev push, so this packet carries that generated source alignment instead of leaving main dirty.",
+    "files": [
+      "convex/_generated/api.d.ts",
+      "convex/_generated/api.js",
+      "convex/_generated/dataModel.d.ts",
+      "convex/_generated/server.d.ts",
+      "convex/_generated/server.js"
+    ],
+    "runtimeSourceChanged": false
+  },
+  "authorityPreserved": {
+    "productionChangeAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationPerformed": false,
+    "backendEnvMutationPerformed": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentLiveAuthRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false,
+    "billingMutationAuthorizedNow": false,
+    "sandboxDispatchAuthorizedNow": false
+  },
+  "nextSafeAction": {
+    "scope": "prepare and run bounded synthetic Auth/session qualification against development-only Password flow, if remaining gates are still satisfied",
+    "canProceedWithoutUserInputUnderAutopilot": true,
+    "stopBefore": "production upload activation, production conversion, private CAD, real users, external messages, paid commitments at or above US$10, unknown outcome retry"
+  }
+}
