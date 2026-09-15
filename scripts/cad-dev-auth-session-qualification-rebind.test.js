@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const crypto = require('node:crypto');
 
 const packet = JSON.parse(fs.readFileSync('docs/cad-dev-auth-session-immediate-rebind.json', 'utf8'));
+const closeout = JSON.parse(fs.readFileSync('docs/cad-dev-auth-session-run-closeout.json', 'utf8'));
 const markdown = fs.readFileSync('docs/cad-dev-auth-session-immediate-rebind.md', 'utf8');
 const binding = fs.readFileSync('convex/cadDevAuthQualificationBinding.ts', 'utf8');
 
@@ -30,15 +31,19 @@ test('source-safe projection digest matches accepted binding digest', () => {
   assert.equal(packet.ignoredLocalArtifacts.fileMode, '600');
 });
 
-test('binding is enabled only for the accepted one-run digest/window tuple', () => {
-  assert.match(binding, /enabled: true/);
-  assert.match(binding, /mode: 'cad-dev-auth-session-immediate-rebind-1925z'/);
-  assert.match(binding, /runId: 'cad-dev-auth-session-qualification-1925z'/);
-  assert.match(binding, new RegExp(`runKeySha256: '${packet.runKeySha256}'`));
-  assert.match(binding, new RegExp(`acceptedProjectionSha256: '${packet.acceptedProjectionSha256}'`));
-  assert.match(binding, new RegExp(`acceptanceReceiptSha256: '${packet.acceptanceReceiptSha256}'`));
-  assert.match(binding, /windowStartMs: 1789500300000/);
-  assert.match(binding, /windowEndMs: 1789501200000/);
+test('accepted one-run digest/window tuple is now historical and active binding is disabled after closeout', () => {
+  assert.equal(closeout.postRunBindingDisposition.bindingDisabled, true);
+  assert.equal(closeout.acceptedEvidence.projectionSha256, packet.acceptedProjectionSha256);
+  assert.equal(closeout.acceptedEvidence.acceptanceReceiptSha256, packet.acceptanceReceiptSha256);
+  assert.equal(closeout.acceptedEvidence.runKeySha256, packet.runKeySha256);
+  assert.match(binding, /enabled: false/);
+  assert.match(binding, /mode: 'cad-dev-auth-session-disabled-post-run-closeout'/);
+  assert.match(binding, /runId: null/);
+  assert.match(binding, /runKeySha256: null/);
+  assert.match(binding, /acceptedProjectionSha256: null/);
+  assert.match(binding, /acceptanceReceiptSha256: null/);
+  assert.match(binding, /windowStartMs: null/);
+  assert.match(binding, /windowEndMs: null/);
   assert.match(binding, /deleteUsersOrAccounts: false/);
   assert.match(binding, /retainUsersAndAccounts: true/);
 });

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-auth-session-run-closeout",
+  "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "mergedMainCommit": "e4fed4ceadc20f193978ce7255889805f11da954",
+  "executorRebindCommit": "384ecff361d82e3b945f5550b8557c315b45d1a0",
+  "sourcePr": 244,
+  "runId": "cad-dev-auth-session-qualification-1925z",
+  "window": {
+    "startUtc": "2026-09-15T19:25:00Z",
+    "endUtc": "2026-09-15T19:40:00Z",
+    "maxMinutes": 15
+  },
+  "acceptedEvidence": {
+    "projectionSha256": "66df783b8d32d30689ae604496b83d27667fc88829298d79cf9df1713b579f8e",
+    "acceptanceReceiptSha256": "872aac5716d79027e1d6b8c7c772a933e67a9a9ef882a104575eb1bf17cda4fe",
+    "privateRegisterSha256": "9fbce1f0c4909d62abfd207c329171349e7a2692b3a01282528bd658ac5e3538",
+    "runKeySha256": "b471ba4b7632d9f454dbcd0234598e47b59147481b06e7807c356f8c8d081ef9"
+  },
+  "sanitizedRunEvidence": {
+    "localIgnoredEvidenceRef": ".local/cad-convex/dev-auth-session-qualification-runs/cad-dev-auth-session-qualification-1925z/sanitized-evidence.json",
+    "localIgnoredReceiptRef": ".local/cad-convex/dev-auth-session-qualification-runs/cad-dev-auth-session-qualification-1925z/sanitized-run-receipt.json",
+    "evidenceSha256": "7cbb352cdefd3d190e30db67cd22c31a3712f5728addfc5024e37511ba161203",
+    "receiptSha256": "55f4b45bd74bc051ba8217f2b4946736bc27f5993c064a8e3ca8aa6bcbbd7ee0",
+    "modeLocked": true,
+    "gitIgnored": true,
+    "privatePatternLeakObserved": false,
+    "onlyAllowedPatternMatch": "runKeySha256"
+  },
+  "runResult": {
+    "decision": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "evidenceWritten": true,
+    "automaticRetry": false,
+    "secondRun": false,
+    "cadUploadAllowed": false,
+    "conversionAllowed": false,
+    "privateCadUsed": false,
+    "productionTouched": false
+  },
+  "operationCounts": {
+    "provisioned": 2,
+    "signIns": 2,
+    "exactSessionReads": 4,
+    "signOuts": 1,
+    "revocations": 1,
+    "userIdsObserved": 2,
+    "sessionIdsObserved": 2
+  },
+  "postRunBindingDisposition": {
+    "bindingDisabled": true,
+    "mode": "cad-dev-auth-session-disabled-post-run-closeout",
+    "oneRunWindowExpired": true,
+    "futureRunsRequireNewSourceRebind": true,
+    "runTupleCleared": true,
+    "retainUsersAndAccounts": true,
+    "deleteUsersOrAccounts": false
+  },
+  "authorityPreserved": {
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "deploymentAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false
+  },
+  "remainingGatesBeforeCadUploadActivation": [
+    "review and merge this source-only Auth/session run closeout",
+    "production fail-closed smoke after merge",
+    "source-only synthetic upload/session planning and implementation",
+    "development-only synthetic CAD upload qualification with disabled-gate evidence",
+    "separate CAD conversion/Sandbox qualification after upload evidence passes",
+    "separate provider/resource/auth review before any broader activation",
+    "separate production CAD upload activation approval",
+    "separate private-CAD handling approval before any private CAD input"
+  ],
+  "nextAutopilotPhase": {
+    "phase": "development-only synthetic upload/session flow",
+    "requiresNewSourceSlice": true,
+    "liveRunAuthorizedByThisPacket": false
+  },
+  "expensesUsd": 0
+}

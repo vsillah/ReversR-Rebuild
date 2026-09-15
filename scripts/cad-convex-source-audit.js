@@ -210,6 +210,9 @@ const files = [
   'docs/cad-dev-auth-session-immediate-rebind.md',
   'docs/cad-dev-auth-session-immediate-rebind.json',
   'scripts/cad-dev-auth-session-qualification-rebind.test.js',
+  'docs/cad-dev-auth-session-run-closeout.md',
+  'docs/cad-dev-auth-session-run-closeout.json',
+  'scripts/cad-dev-auth-session-run-closeout.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -322,10 +325,18 @@ assert.equal(devAuthSessionBridge.sourceBridge.retainUsersAndAccounts, true);
 const devAuthSessionRebind = JSON.parse(read('docs/cad-dev-auth-session-immediate-rebind.json'));
 assert.equal(devAuthSessionRebind.status, 'REBIND_READY_FOR_ONE_DEVELOPMENT_WINDOW_NO_RUN_EXECUTED');
 assert.equal(devAuthSessionRebind.authorityPreserved.liveRunExecutedByThisPacket, false);
-assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: true/);
-assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.runKeySha256));
-assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.acceptedProjectionSha256));
-assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.acceptanceReceiptSha256));
+const devAuthSessionCloseout = JSON.parse(read('docs/cad-dev-auth-session-run-closeout.json'));
+assert.equal(devAuthSessionCloseout.status, 'DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT');
+assert.equal(devAuthSessionCloseout.runResult.runCompleted, true);
+assert.equal(devAuthSessionCloseout.runResult.unknownOutcome, false);
+assert.equal(devAuthSessionCloseout.acceptedEvidence.projectionSha256, devAuthSessionRebind.acceptedProjectionSha256);
+assert.equal(devAuthSessionCloseout.acceptedEvidence.runKeySha256, devAuthSessionRebind.runKeySha256);
+assert.equal(devAuthSessionCloseout.postRunBindingDisposition.bindingDisabled, true);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: false/);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /mode: 'cad-dev-auth-session-disabled-post-run-closeout'/);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /runKeySha256: null/);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /acceptedProjectionSha256: null/);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /acceptanceReceiptSha256: null/);
 assert.match(read('convex/cadDevAuthQualification.ts'), /createAccount/);
 assert.match(read('convex/cadDevAuthQualification.ts'), /invalidateSessions/);
 assert.ok(!/ctx\.db\.delete/.test(read('convex/cadDevAuthQualification.ts')));
