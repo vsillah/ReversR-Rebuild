@@ -353,6 +353,17 @@ assert.equal(boundedExecutor.acceptedFreshWindowEvidence.sourcePr, 222);
 assert.equal(boundedExecutor.acceptedFreshWindowEvidence.runRef, 'rrb-ref:fresh-window-0300-bounded-development-run');
 assert.equal(boundedExecutor.acceptedFreshWindowEvidence.window.startUtc, '2026-09-15T03:00:00Z');
 assert.equal(boundedExecutor.acceptedFreshWindowEvidence.window.expiresUtc, '2026-09-15T03:05:00Z');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.projectionSha256, '8cfdb4f8b6fdce4a6de3b494c060f518130707cccd2e514295773a226c5e5fbd');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.acceptanceReceiptSha256, '9170213b22b3945dd448670de615c71e3aad948dfd120fcc9b3ed3c42301d142');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.privateRestrictedRegisterDigest, 'c1cd10673951d7407be95fb77a5ae98d135d00976c8eab48d687f67b25283bfc');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.restrictedCommandSetDigest, '7beedfe71bad86353ccbf467390d38aaa188a6b30975521a34e546be3c42384e');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.commandCardProjectionDigest, '13f0a71d1ea7de9b2ad97374ecda246beed97b1cdff63184a0b4f445b9209910');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.sourceMainCommit, '4ac1deb6acecc4841716c5a98993ba0d823b56a4');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.sourcePacketCommit, '3d7ec5c3585886c6032f7f3ccce8fa3af5fd42f0');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.sourcePr, 223);
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.runRef, 'rrb-ref:fresh-window-1030-bounded-development-run');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.window.startUtc, '2026-09-15T10:30:00Z');
+assert.equal(boundedExecutor.acceptedFreshWindow1030Evidence.window.expiresUtc, '2026-09-15T10:35:00Z');
 assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.transportFailureClass,
   'CLI_MUTATION_NO_COMMIT_OBSERVED');
 assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.commitState, 'NO_COMMIT_OBSERVED');
@@ -360,6 +371,8 @@ assert.ok(boundedExecutor.nextHumanGates.liveQualification.includes('Keep CAD up
 assert.ok(boundedExecutor.nextHumanGates.rebuiltSuccessorLiveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(boundedExecutor.nextHumanGates.freshWindowLiveQualification.includes('2026-09-15T03:00:00Z'));
 assert.ok(boundedExecutor.nextHumanGates.freshWindowLiveQualification.includes('Keep CAD uploads disabled'));
+assert.ok(boundedExecutor.nextHumanGates.freshWindow1030LiveQualification.includes('2026-09-15T10:30:00Z'));
+assert.ok(boundedExecutor.nextHumanGates.freshWindow1030LiveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/boundedDevQualificationExecutor.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/boundedDevQualificationTransport.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser/.test(read('scripts/cad-bounded-dev-qualification-executor.js')));
