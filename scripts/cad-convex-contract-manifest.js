@@ -121,6 +121,11 @@ const files = [
   'docs/cad-dev-upload-session-qualification-rebind.md',
   'docs/cad-dev-upload-session-qualification-rebind.json',
   'scripts/cad-dev-upload-session-qualification-rebind.test.js',
+  'docs/cad-dev-upload-session-authenticated-runner.md',
+  'docs/cad-dev-upload-session-authenticated-runner.json',
+  'convex/cadDevUploadSessionQualificationSession.ts',
+  'scripts/cad-dev-upload-session-qualification-live-runner.js',
+  'scripts/cad-dev-upload-session-qualification-live-runner.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',

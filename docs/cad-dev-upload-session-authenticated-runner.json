@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-upload-session-authenticated-runner",
+  "status": "SOURCE_ONLY_UPLOAD_SESSION_AUTHENTICATED_RUNNER_READY",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "branch": "codex/cad-dev-upload-session-authenticated-runner",
+  "liveRunAuthorizedByThisPacket": false,
+  "reason": {
+    "previousBridgePr": 248,
+    "previousRebindPr": 249,
+    "placeholderIdentityRejected": true,
+    "requiresExactConvexAuthSession": true,
+    "retainedSyntheticUsers": true,
+    "activeAuthSessionsAfterCloseout": 0
+  },
+  "sourceRepair": {
+    "authenticatedSessionQuery": "convex/cadDevUploadSessionQualificationSession.ts",
+    "localRunner": "scripts/cad-dev-upload-session-qualification-live-runner.js",
+    "bridgeAction": "cadDevUploadSessionQualification:issueReadRevoke",
+    "sessionSource": "server-verified Convex Auth session",
+    "rawCredentialsInSource": false,
+    "privateCadInSource": false
+  },
+  "authorityPreserved": {
+    "liveRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "futureGate": {
+    "nextExpectedPhase": "fresh upload-session qualification window evidence and rebind",
+    "requiresBeforeLiveRun": [
+      "merge and production fail-closed smoke for this source repair",
+      "fresh accepted upload-session private register with UTC window",
+      "source rebind to the fresh digest tuple",
+      "Convex development source push to majestic-alligator-31",
+      "one live run inside the accepted window",
+      "sanitized local evidence and retained-state closeout"
+    ]
+  },
+  "expensesUsd": 0
+}
