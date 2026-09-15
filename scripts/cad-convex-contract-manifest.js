@@ -209,6 +209,8 @@ const files = [
   'scripts/cad-dev-auth-session-qualification-bridge.test.js',
   'docs/cad-dev-auth-session-qualification-rebind.md',
   'docs/cad-dev-auth-session-qualification-rebind.json',
+  'docs/cad-dev-auth-session-immediate-rebind.md',
+  'docs/cad-dev-auth-session-immediate-rebind.json',
   'scripts/cad-dev-auth-session-qualification-rebind.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-auth-session-immediate-rebind",
+  "status": "REBIND_READY_FOR_ONE_DEVELOPMENT_WINDOW_NO_RUN_EXECUTED",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-auth-session-immediate-rebind",
+  "baseMainCommit": "199c6c8ebe444d614728735d53c1685bc12073f0",
+  "runId": "cad-dev-auth-session-qualification-1925z",
+  "window": {
+    "startUtc": "2026-09-15T19:25:00Z",
+    "endUtc": "2026-09-15T19:40:00Z",
+    "startMs": 1789500300000,
+    "endMs": 1789501200000,
+    "maxMinutes": 15
+  },
+  "target": {
+    "teamSlug": "vambah-sillah",
+    "projectName": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "kind": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "siteUrl": "https://majestic-alligator-31.convex.site",
+    "appOrigin": "http://localhost:5001"
+  },
+  "acceptedProjectionSha256": "66df783b8d32d30689ae604496b83d27667fc88829298d79cf9df1713b579f8e",
+  "acceptanceReceiptSha256": "872aac5716d79027e1d6b8c7c772a933e67a9a9ef882a104575eb1bf17cda4fe",
+  "runKeySha256": "b471ba4b7632d9f454dbcd0234598e47b59147481b06e7807c356f8c8d081ef9",
+  "privateRegisterSha256": "9fbce1f0c4909d62abfd207c329171349e7a2692b3a01282528bd658ac5e3538",
+  "ignoredLocalArtifacts": {
+    "directory": ".local/cad-convex/dev-auth-session-immediate-rebind",
+    "registerFile": "run-register.json",
+    "acceptanceReceiptFile": "immediate-rebind-acceptance-receipt.json",
+    "sourceSafeProjectionFile": "source-safe-immediate-rebind-projection.json",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "rawRunKeyInSource": false,
+    "rawPasswordsInSource": false
+  },
+  "sourceSafeProjection": {
+    "schemaVersion": 1,
+    "mode": "source-safe-cad-dev-auth-session-immediate-rebind-projection",
+    "status": "READY_FOR_ONE_DEVELOPMENT_WINDOW_NO_RUN_EXECUTED",
+    "runId": "cad-dev-auth-session-qualification-1925z",
+    "target": {
+      "teamSlug": "vambah-sillah",
+      "projectName": "reversr-cad-auth-dev",
+      "deploymentName": "majestic-alligator-31",
+      "kind": "development",
+      "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+      "siteUrl": "https://majestic-alligator-31.convex.site",
+      "appOrigin": "http://localhost:5001"
+    },
+    "cohort": [
+      "cad-test-alpha-20260915@auth-test.invalid",
+      "cad-test-beta-20260915@auth-test.invalid"
+    ],
+    "window": {
+      "startUtc": "2026-09-15T19:25:00Z",
+      "endUtc": "2026-09-15T19:40:00Z",
+      "maxMinutes": 15
+    },
+    "runKeySha256": "b471ba4b7632d9f454dbcd0234598e47b59147481b06e7807c356f8c8d081ef9",
+    "privateRegisterLocalOnly": true,
+    "rawRunKeyInSource": false,
+    "rawPasswordsInSource": false,
+    "maxProvisionedIdentities": 2,
+    "maxLiveOperations": 20,
+    "retainUsersAndAccounts": true,
+    "deleteUsersOrAccounts": false,
+    "cadUploadAllowed": false,
+    "conversionAllowed": false,
+    "retryAllowed": false,
+    "secondRunAllowed": false
+  },
+  "authorityPreserved": {
+    "productionTouched": false,
+    "cadUploadActivation": false,
+    "cadConversion": false,
+    "privateCad": false,
+    "realUsers": false,
+    "emailSmsSlack": false,
+    "providerResourceMutation": false,
+    "usageBillingMutation": false,
+    "sandboxDispatch": false,
+    "automaticRetry": false,
+    "secondRun": false,
+    "liveRunExecutedByThisPacket": false
+  },
+  "nextAutopilotStep": {
+    "deployment": "push reviewed source to Convex development deployment majestic-alligator-31",
+    "run": "execute exactly one bounded development Auth/session qualification during the accepted UTC window",
+    "cleanup": "after run evidence is accepted, rebind should be closed out or replaced by disabled source"
+  },
+  "expensesUsd": 0
+}

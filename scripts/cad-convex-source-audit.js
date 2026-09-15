@@ -207,6 +207,8 @@ const files = [
   'scripts/cad-dev-auth-session-qualification-bridge.test.js',
   'docs/cad-dev-auth-session-qualification-rebind.md',
   'docs/cad-dev-auth-session-qualification-rebind.json',
+  'docs/cad-dev-auth-session-immediate-rebind.md',
+  'docs/cad-dev-auth-session-immediate-rebind.json',
   'scripts/cad-dev-auth-session-qualification-rebind.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
@@ -317,7 +319,7 @@ assert.equal(devAuthSessionBridge.status, 'BRIDGE_DISABLED_BY_DEFAULT');
 assert.equal(devAuthSessionBridge.sourceBridge.enabledByDefault, false);
 assert.equal(devAuthSessionBridge.sourceBridge.deleteUsersOrAccounts, false);
 assert.equal(devAuthSessionBridge.sourceBridge.retainUsersAndAccounts, true);
-const devAuthSessionRebind = JSON.parse(read('docs/cad-dev-auth-session-qualification-rebind.json'));
+const devAuthSessionRebind = JSON.parse(read('docs/cad-dev-auth-session-immediate-rebind.json'));
 assert.equal(devAuthSessionRebind.status, 'REBIND_READY_FOR_ONE_DEVELOPMENT_WINDOW_NO_RUN_EXECUTED');
 assert.equal(devAuthSessionRebind.authorityPreserved.liveRunExecutedByThisPacket, false);
 assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: true/);

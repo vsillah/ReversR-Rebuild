@@ -3,7 +3,7 @@
 // and UTC window before any live development run can start.
 export const cadDevAuthQualificationBinding = {
   enabled: true,
-  mode: 'cad-dev-auth-session-qualification-rebind-1800z',
+  mode: 'cad-dev-auth-session-immediate-rebind-1925z',
   target: {
     teamSlug: 'vambah-sillah',
     projectName: 'reversr-cad-auth-dev',
@@ -18,12 +18,12 @@ export const cadDevAuthQualificationBinding = {
     'cad-test-beta-20260915@auth-test.invalid',
   ],
   run: {
-    runId: 'cad-dev-auth-session-qualification-1800z' as string | null,
-    runKeySha256: '63420aebb6c6b6b1db74c731191deb99aa0d6f62e6594560bf7ba7f9d0e550e1' as string | null,
-    acceptedProjectionSha256: 'd6c7a2e2d888c7600a98151cc615a2b4ae81127c079eb1561b179c03e0eabf56' as string | null,
-    acceptanceReceiptSha256: '77b714d03fbb365eb6e28de1456f64da817762afa6a82d0d2e8715886d4727d5' as string | null,
-    windowStartMs: 1789495200000 as number | null,
-    windowEndMs: 1789496100000 as number | null,
+    runId: 'cad-dev-auth-session-qualification-1925z' as string | null,
+    runKeySha256: 'b471ba4b7632d9f454dbcd0234598e47b59147481b06e7807c356f8c8d081ef9' as string | null,
+    acceptedProjectionSha256: '66df783b8d32d30689ae604496b83d27667fc88829298d79cf9df1713b579f8e' as string | null,
+    acceptanceReceiptSha256: '872aac5716d79027e1d6b8c7c772a933e67a9a9ef882a104575eb1bf17cda4fe' as string | null,
+    windowStartMs: 1789500300000 as number | null,
+    windowEndMs: 1789501200000 as number | null,
     maxProvisionedIdentities: 2,
     maxLiveOperations: 20,
     retainUsersAndAccounts: true,

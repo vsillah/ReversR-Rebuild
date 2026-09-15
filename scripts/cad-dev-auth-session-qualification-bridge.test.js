@@ -26,7 +26,8 @@ test('packet records a disabled-by-default source bridge with exact development 
 
 test('binding source is controlled by either the disabled bridge or a reviewed one-run rebind', () => {
   const disabled = /enabled: false/.test(binding);
-  const rebound = /enabled: true/.test(binding) && /mode: 'cad-dev-auth-session-qualification-rebind-1800z'/.test(binding);
+  const rebound = /enabled: true/.test(binding)
+    && /mode: 'cad-dev-auth-session-(qualification-rebind-1800z|immediate-rebind-1925z)'/.test(binding);
   assert.equal(disabled || rebound, true);
   if (disabled) {
     assert.match(binding, /runKeySha256: null/);
@@ -38,8 +39,8 @@ test('binding source is controlled by either the disabled bridge or a reviewed o
     assert.match(binding, /runKeySha256: '[a-f0-9]{64}'/);
     assert.match(binding, /acceptedProjectionSha256: '[a-f0-9]{64}'/);
     assert.match(binding, /acceptanceReceiptSha256: '[a-f0-9]{64}'/);
-    assert.match(binding, /windowStartMs: 1789495200000/);
-    assert.match(binding, /windowEndMs: 1789496100000/);
+    assert.match(binding, /windowStartMs: (1789495200000|1789500300000)/);
+    assert.match(binding, /windowEndMs: (1789496100000|1789501200000)/);
   }
   assert.match(binding, /deleteUsersOrAccounts: false/);
   assert.match(binding, /retainUsersAndAccounts: true/);
