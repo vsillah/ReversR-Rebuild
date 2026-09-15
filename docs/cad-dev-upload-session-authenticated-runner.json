@@ -20,6 +20,8 @@
     "localRunner": "scripts/cad-dev-upload-session-qualification-live-runner.js",
     "bridgeAction": "cadDevUploadSessionQualification:issueReadRevoke",
     "sessionSource": "server-verified Convex Auth session",
+    "acceptedDigestsSource": "adjacent ignored source-safe projection and acceptance receipt artifacts",
+    "mutatesPrivateRegister": false,
     "rawCredentialsInSource": false,
     "privateCadInSource": false
   },

@@ -31,6 +31,8 @@ This packet adds:
 - `scripts/cad-dev-upload-session-qualification-live-runner.js`
   - an inert local operator runner;
   - validates ignored private registers with mode `600`;
+  - derives the accepted projection and receipt digests from the adjacent
+    mode-locked local artifact files instead of mutating the private register;
   - signs in one fixed synthetic Password cohort identity;
   - reads the exact authenticated session through the new query;
   - calls the existing `cadDevUploadSessionQualification:issueReadRevoke`
@@ -40,6 +42,12 @@ This packet adds:
 
 The runner does not contain raw passwords, raw run keys, upload credentials,
 private CAD, production URLs or provider secrets.
+
+The accepted upload-session private register intentionally does not duplicate
+`acceptedProjectionSha256` or `acceptanceReceiptSha256`; those are custody fields
+for `source-safe-rebind-projection.json` and
+`rebind-acceptance-receipt.json`. The runner preserves the register digest by
+hashing those adjacent accepted files at execution time.
 
 ## Boundaries
 

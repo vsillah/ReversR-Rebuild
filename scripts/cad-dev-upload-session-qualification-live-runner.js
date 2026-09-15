@@ -12,6 +12,14 @@ const defaultAuthRegisterPath = path.join(
   root,
   '.local/cad-convex/dev-auth-session-immediate-rebind/run-register.json',
 );
+const defaultProjectionPath = path.join(
+  root,
+  '.local/cad-convex/upload-session-qualification-rebind/source-safe-rebind-projection.json',
+);
+const defaultAcceptanceReceiptPath = path.join(
+  root,
+  '.local/cad-convex/upload-session-qualification-rebind/rebind-acceptance-receipt.json',
+);
 const defaultEvidenceRoot = path.join(root, '.local/cad-convex/upload-session-qualification-runs');
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
@@ -56,8 +64,7 @@ function validateAuthRegister(register) {
 
 function validateUploadRegister(register) {
   const required = ['version', 'mode', 'deploymentName', 'runId', 'runKey', 'runKeySha256',
-    'acceptedProjectionSha256', 'acceptanceReceiptSha256', 'windowStartUtc', 'windowEndUtc',
-    'syntheticContext'];
+    'windowStartUtc', 'windowEndUtc', 'syntheticContext'];
   if (!register || typeof register !== 'object' || !required.every(key => Object.hasOwn(register, key))) {
     fail('UPLOAD_REGISTER_INVALID');
   }
@@ -69,8 +76,7 @@ function validateUploadRegister(register) {
   if (typeof register.runKey !== 'string' || sha256(register.runKey) !== register.runKeySha256) {
     fail('UPLOAD_REGISTER_KEY_INVALID');
   }
-  if (!hex(register.runKeySha256) || !hex(register.acceptedProjectionSha256)
-    || !hex(register.acceptanceReceiptSha256)) fail('UPLOAD_REGISTER_DIGEST_INVALID');
+  if (!hex(register.runKeySha256)) fail('UPLOAD_REGISTER_DIGEST_INVALID');
   const start = Date.parse(register.windowStartUtc);
   const end = Date.parse(register.windowEndUtc);
   if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || end <= start
@@ -79,6 +85,25 @@ function validateUploadRegister(register) {
   if (!context || typeof context !== 'object' || !safeId(context.expectedShopId)
     || context.authMethod !== 'password') fail('UPLOAD_REGISTER_CONTEXT_INVALID');
   return { start, end };
+}
+
+function readAcceptedArtifacts({ projectionPath, acceptanceReceiptPath }) {
+  assertPrivateFile(projectionPath);
+  assertPrivateFile(acceptanceReceiptPath);
+  const projectionBytes = fs.readFileSync(projectionPath);
+  const acceptanceReceiptBytes = fs.readFileSync(acceptanceReceiptPath);
+  const projection = JSON.parse(projectionBytes.toString('utf8'));
+  const acceptanceReceipt = JSON.parse(acceptanceReceiptBytes.toString('utf8'));
+  if (!projection || projection.mode !== 'source-safe-cad-dev-upload-session-qualification-rebind-projection') {
+    fail('PROJECTION_INVALID');
+  }
+  if (!acceptanceReceipt || acceptanceReceipt.mode !== 'cad-dev-upload-session-qualification-rebind-acceptance-receipt') {
+    fail('ACCEPTANCE_RECEIPT_INVALID');
+  }
+  return {
+    acceptedProjectionSha256: sha256(projectionBytes),
+    acceptanceReceiptSha256: sha256(acceptanceReceiptBytes),
+  };
 }
 
 function sanitized(status, extra = {}) {
@@ -103,9 +128,11 @@ function writeJson600(file, value) {
   fs.chmodSync(file, 0o600);
 }
 
-async function runWithClients({ uploadRegister, authRegister, clients, api, now = Date.now }) {
+async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts, clients, api, now = Date.now }) {
   validateAuthRegister(authRegister);
   const { start, end } = validateUploadRegister(uploadRegister);
+  if (!acceptedArtifacts || !hex(acceptedArtifacts.acceptedProjectionSha256)
+    || !hex(acceptedArtifacts.acceptanceReceiptSha256)) fail('ACCEPTED_ARTIFACTS_INVALID');
   const observed = now();
   if (!Number.isSafeInteger(observed) || observed < start || observed >= end) fail('RUN_WINDOW_CLOSED');
   const slot = 0;
@@ -122,8 +149,8 @@ async function runWithClients({ uploadRegister, authRegister, clients, api, now 
   const validThrough = Math.min(Date.now() + 500, end);
   const exact = await authenticated.query(api.cadDevUploadSessionQualificationSession.readCurrent, {
     runKeySha256: uploadRegister.runKeySha256,
-    acceptedProjectionSha256: uploadRegister.acceptedProjectionSha256,
-    acceptanceReceiptSha256: uploadRegister.acceptanceReceiptSha256,
+    acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
+    acceptanceReceiptSha256: acceptedArtifacts.acceptanceReceiptSha256,
     validThrough,
   });
   if (!exact || exact.authMethod !== 'password' || exact.active !== true) fail('EXACT_UPLOAD_SESSION_AUTH_DENIED');
@@ -149,8 +176,8 @@ async function runWithClients({ uploadRegister, authRegister, clients, api, now 
   const bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevoke, {
     runKey: uploadRegister.runKey,
     runKeySha256: uploadRegister.runKeySha256,
-    acceptedProjectionSha256: uploadRegister.acceptedProjectionSha256,
-    acceptanceReceiptSha256: uploadRegister.acceptanceReceiptSha256,
+    acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
+    acceptanceReceiptSha256: acceptedArtifacts.acceptanceReceiptSha256,
     principal,
     credentialDigest: sha256(`upload-session-qualification:${uploadRegister.runId}:${record.sessionId}`),
     record,
@@ -165,8 +192,8 @@ async function runWithClients({ uploadRegister, authRegister, clients, api, now 
     deploymentName: uploadRegister.deploymentName,
     windowStartUtc: uploadRegister.windowStartUtc,
     windowEndUtc: uploadRegister.windowEndUtc,
-    acceptedProjectionSha256: uploadRegister.acceptedProjectionSha256,
-    acceptanceReceiptSha256: uploadRegister.acceptanceReceiptSha256,
+    acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
+    acceptanceReceiptSha256: acceptedArtifacts.acceptanceReceiptSha256,
     runKeySha256: uploadRegister.runKeySha256,
     operationCounts: {
       signIns: 1,
@@ -190,17 +217,20 @@ async function runWithClients({ uploadRegister, authRegister, clients, api, now 
 async function main() {
   const uploadRegisterPath = path.resolve(process.argv[2] || defaultUploadRegisterPath);
   const authRegisterPath = path.resolve(process.argv[3] || defaultAuthRegisterPath);
+  const projectionPath = path.resolve(process.argv[4] || defaultProjectionPath);
+  const acceptanceReceiptPath = path.resolve(process.argv[5] || defaultAcceptanceReceiptPath);
   assertPrivateFile(uploadRegisterPath);
   assertPrivateFile(authRegisterPath);
   const uploadRegister = readJson(uploadRegisterPath);
   const authRegister = readJson(authRegisterPath);
+  const acceptedArtifacts = readAcceptedArtifacts({ projectionPath, acceptanceReceiptPath });
   const { ConvexHttpClient } = await import('convex/browser');
   const { api } = await import('../convex/_generated/api.js');
   const clients = {
     operator: new ConvexHttpClient('https://majestic-alligator-31.convex.cloud', { logger: false }),
     authenticated: token => new ConvexHttpClient('https://majestic-alligator-31.convex.cloud', { logger: false, auth: token }),
   };
-  const evidence = await runWithClients({ uploadRegister, authRegister, clients, api });
+  const evidence = await runWithClients({ uploadRegister, authRegister, acceptedArtifacts, clients, api });
   const outputDir = path.join(defaultEvidenceRoot, uploadRegister.runId);
   fs.mkdirSync(outputDir, { recursive: true, mode: 0o700 });
   fs.chmodSync(outputDir, 0o700);
@@ -231,6 +261,7 @@ if (require.main === module) {
 module.exports = {
   validateAuthRegister,
   validateUploadRegister,
+  readAcceptedArtifacts,
   runWithClients,
   sanitized,
 };
