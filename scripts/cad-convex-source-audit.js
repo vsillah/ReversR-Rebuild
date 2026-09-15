@@ -104,6 +104,9 @@ const files = [
   'offline/cad-convex/disabledUploadAdmission.json',
   'docs/cad-disabled-upload-admission.md',
   'docs/cad-user-upload-contract.md',
+  'docs/cad-dev-upload-session-qualification-plan.md',
+  'docs/cad-dev-upload-session-qualification-plan.json',
+  'scripts/cad-dev-upload-session-qualification-plan.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
@@ -342,6 +345,14 @@ assert.match(read('convex/cadDevAuthQualification.ts'), /invalidateSessions/);
 assert.ok(!/ctx\.db\.delete/.test(read('convex/cadDevAuthQualification.ts')));
 assert.match(read('convex/cadDevAuthQualificationStore.ts'), /getAuthSessionId\(ctx\)/);
 assert.match(read('scripts/cad-dev-auth-session-qualification-runner.js'), /REGISTER_PATH_INVALID/);
+const devUploadSessionPlan = JSON.parse(read('docs/cad-dev-upload-session-qualification-plan.json'));
+assert.equal(devUploadSessionPlan.status, 'SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_PLAN_READY');
+assert.equal(devUploadSessionPlan.dependsOn.authSessionCloseout.status, devAuthSessionCloseout.status);
+assert.equal(devUploadSessionPlan.dependsOn.disabledRouteContract.bodyAdmissionAuthorized, false);
+assert.equal(devUploadSessionPlan.nextExecutableSlice.liveRunAuthorizedByThisPacket, false);
+assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false/);
+assert.match(read('server/cadUserUploadRouter.js'), /USER_UPLOADS_DISABLED/);
+for (const value of Object.values(devUploadSessionPlan.authorityPreserved)) assert.equal(value, false);
 assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentLiveAuthRunMustStop, true);
 for (const value of Object.values(reviewedSourceDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));

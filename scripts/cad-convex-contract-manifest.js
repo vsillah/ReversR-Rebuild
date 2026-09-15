@@ -106,6 +106,9 @@ const files = [
   'offline/cad-convex/disabledUploadAdmission.json',
   'docs/cad-disabled-upload-admission.md',
   'docs/cad-user-upload-contract.md',
+  'docs/cad-dev-upload-session-qualification-plan.md',
+  'docs/cad-dev-upload-session-qualification-plan.json',
+  'scripts/cad-dev-upload-session-qualification-plan.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
