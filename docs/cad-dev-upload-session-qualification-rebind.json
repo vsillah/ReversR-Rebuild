@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-upload-session-qualification-rebind",
+  "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_REBIND_READY",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "baseMainCommit": "c0194fba15bcdb340b006758f45fbfcc4aeba6ef",
+  "branch": "codex/cad-dev-upload-session-qualification-rebind",
+  "liveRunAuthorizedByThisPacket": false,
+  "run": {
+    "runId": "cad-dev-upload-session-2130z",
+    "windowStartUtc": "2026-09-15T21:30:00Z",
+    "windowEndUtc": "2026-09-15T21:45:00Z",
+    "windowStartMs": 1789507800000,
+    "windowEndMs": 1789508700000,
+    "runKeySha256": "ce5f7f60202f6ee08ab10e9efa21ab90b25799ddc77be995d5b2810f259bfa8d",
+    "privateRegisterSha256": "fbfba940d28e565a89d43535c83a0f647e2197dea3c1a5fcd9df8f5c9427200f",
+    "acceptedProjectionSha256": "9ba800eb47ccec11923149a0af9f3c05558abbce38a2a9c0c856db75783cf036",
+    "acceptanceReceiptSha256": "de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc"
+  },
+  "ignoredLocalArtifacts": {
+    "directory": ".local/cad-convex/upload-session-qualification-rebind",
+    "privateRegisterPath": ".local/cad-convex/upload-session-qualification-rebind/private-upload-session-qualification-register.json",
+    "sourceSafeProjectionPath": ".local/cad-convex/upload-session-qualification-rebind/source-safe-rebind-projection.json",
+    "acceptanceReceiptPath": ".local/cad-convex/upload-session-qualification-rebind/rebind-acceptance-receipt.json",
+    "directoryMode": "0700",
+    "fileMode": "0600",
+    "gitIgnored": true
+  },
+  "dependsOn": {
+    "bridgePacket": {
+      "path": "docs/cad-dev-upload-session-qualification-bridge.json",
+      "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_BRIDGE_READY"
+    },
+    "executorPacket": {
+      "path": "docs/cad-dev-upload-session-qualification-executor.json",
+      "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_EXECUTOR_READY"
+    },
+    "authSessionCloseout": {
+      "path": "docs/cad-dev-auth-session-run-closeout.json",
+      "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "evidenceSha256": "7cbb352cdefd3d190e30db67cd22c31a3712f5728addfc5024e37511ba161203",
+      "receiptSha256": "55f4b45bd74bc051ba8217f2b4946736bc27f5993c064a8e3ca8aa6bcbbd7ee0"
+    }
+  },
+  "binding": {
+    "source": "convex/cadDevUploadSessionQualificationBinding.ts",
+    "enabled": true,
+    "mode": "cad-dev-upload-session-2130z-rebind",
+    "action": "cadDevUploadSessionQualification:issueReadRevoke",
+    "bodyAdmissionAuthorized": false,
+    "maxWindowMs": 900000,
+    "maxOperationBudgetMs": 800,
+    "retainRevokedState": true
+  },
+  "expectedOperationSequence": [
+    "validate run key digest, projection digest and receipt digest",
+    "verify UTC window is open and at most fifteen minutes",
+    "insert one synthetic upload-session record if absent",
+    "read the active synthetic record",
+    "revoke the synthetic record without deletion",
+    "read again and require revocation to be observed"
+  ],
+  "authorityPreserved": {
+    "liveRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "futureGate": {
+    "nextExpectedPhase": "deploy reviewed Convex development source and run exactly one bounded development-only upload-session qualification during the accepted window",
+    "requiresBeforeLiveRun": [
+      "PR merge and production fail-closed smoke for this source rebind",
+      "Convex development deployment of reviewed source to majestic-alligator-31",
+      "one scheduler or immediate run inside 2026-09-15T21:30:00Z through 2026-09-15T21:45:00Z",
+      "stop on unknown outcome with no automatic retry",
+      "sanitized local evidence and retained-state closeout"
+    ]
+  },
+  "expensesUsd": 0
+}

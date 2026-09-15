@@ -116,6 +116,9 @@ const files = [
   'convex/cadDevUploadSessionQualificationBinding.ts',
   'convex/cadDevUploadSessionQualification.ts',
   'scripts/cad-dev-upload-session-qualification-bridge.test.js',
+  'docs/cad-dev-upload-session-qualification-rebind.md',
+  'docs/cad-dev-upload-session-qualification-rebind.json',
+  'scripts/cad-dev-upload-session-qualification-rebind.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
