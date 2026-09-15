@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-upload-session-qualification-executor",
+  "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_EXECUTOR_READY",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "baseMainCommit": "352a3b08928f6b03dee8ef02f878a388c1184bf1",
+  "branch": "codex/cad-dev-upload-session-qualification-executor",
+  "liveRunAuthorizedByThisPacket": false,
+  "dependsOn": {
+    "authSessionCloseout": {
+      "path": "docs/cad-dev-auth-session-run-closeout.json",
+      "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "runId": "cad-dev-auth-session-qualification-1925z",
+      "evidenceSha256": "7cbb352cdefd3d190e30db67cd22c31a3712f5728addfc5024e37511ba161203",
+      "receiptSha256": "55f4b45bd74bc051ba8217f2b4946736bc27f5993c064a8e3ca8aa6bcbbd7ee0"
+    },
+    "uploadSessionPlan": {
+      "path": "docs/cad-dev-upload-session-qualification-plan.json",
+      "mode": "source-only-cad-dev-upload-session-qualification-plan",
+      "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_PLAN_READY",
+      "branch": "codex/cad-dev-upload-session-qualification-executor"
+    },
+    "disabledRouteContract": {
+      "source": "server/cadUserUploadRouter.js",
+      "bodyAdmissionAuthorized": false,
+      "requiredPrecheckStatus": 503,
+      "requiredPrecheckCode": "USER_UPLOADS_DISABLED",
+      "bodyReadsAllowedBeforeDisabledGate": 0,
+      "conversionDispatchesAllowedBeforeDisabledGate": 0
+    }
+  },
+  "executor": {
+    "script": "scripts/cad-dev-upload-session-qualification-executor.js",
+    "test": "scripts/cad-dev-upload-session-qualification-executor.test.js",
+    "exports": [
+      "validateRegister",
+      "runWithAdapters",
+      "createFixtureRegister",
+      "createFixtureAdapters",
+      "runFixture"
+    ],
+    "defaultLiveBehavior": "none",
+    "fixtureOnlyByDefault": true,
+    "rawCredentialRecorded": false
+  },
+  "operationSequence": [
+    "validate private register target, hashes and UTC window",
+    "issue one development-only synthetic upload session through injected service adapters",
+    "perform disabled user-import route precheck before body admission",
+    "verify bearer credential through the upload-session verifier",
+    "perform bounded direct lookup",
+    "revoke session without deleting retained state",
+    "verify revoked credential is denied",
+    "write or return sanitized local evidence only"
+  ],
+  "authorityPreserved": {
+    "liveRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "hardStops": [
+    "BODY_ADMISSION_AUTHORIZED not literal false",
+    "disabled route precheck is not USER_UPLOADS_DISABLED with zero body reads",
+    "issue, lookup, verify or revoke returns an unknown outcome",
+    "retained revoked state cannot be observed",
+    "raw credential or private register value would be recorded",
+    "provider/resource/env/usage/billing mutation is requested",
+    "private CAD, real user, conversion or Sandbox dispatch is requested"
+  ],
+  "futureGate": {
+    "requiredBeforeLiveRun": [
+      "fresh accepted restricted register and evidence projection",
+      "one bounded development-only run approval naming exact UTC window",
+      "sanitized local evidence destination",
+      "rollback and retained-state custody acceptance",
+      "production fail-closed smoke after this source-only PR merges"
+    ],
+    "nextExpectedPhase": "restricted evidence/register acceptance for one development-only upload-session qualification run"
+  },
+  "expensesUsd": 0
+}
