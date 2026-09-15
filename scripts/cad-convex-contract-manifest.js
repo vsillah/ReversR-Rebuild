@@ -164,6 +164,9 @@ const files = [
   'docs/cad-dev-retention-lockout-autopilot.md',
   'docs/cad-dev-retention-lockout-autopilot.json',
   'scripts/cad-dev-retention-lockout-autopilot.test.js',
+  'docs/cad-dev-auth-source-enable-autopilot.md',
+  'offline/cad-convex/developmentAuthSourceEnablement.json',
+  'scripts/cad-dev-auth-source-enable-autopilot.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -211,7 +214,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 43, mode: 'offline-source-unqualified',
+const manifest = { version: 44, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

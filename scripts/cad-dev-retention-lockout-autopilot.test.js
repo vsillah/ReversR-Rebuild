@@ -86,7 +86,8 @@ test('cost, rollback and source gates block live execution now', () => {
     assert.equal(bridge.costAndRollbackEvidenceGates[key], false, `${key} must remain false`);
   }
   assert.match(developmentAuth, /developmentAuthReviewed: boolean = false/);
-  assert.match(auth, /developmentPassword\(\[\]\)/);
+  assert.match(auth, /developmentPassword\(developmentPasswordCohort\(\)\)/);
+  assert.match(developmentAuth, /return developmentAuthReviewed \? developmentCohort : \[\]/);
   assert.deepEqual(bridge.blockingFindings.installedDevelopmentCohort, []);
   for (const value of Object.values(bridge.blockingFindings)) {
     if (Array.isArray(value)) assert.equal(value.length, 0);

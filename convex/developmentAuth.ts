@@ -5,6 +5,10 @@ import type { DataModel } from './_generated/dataModel';
 export const developmentAuthReviewed: boolean = false;
 export const developmentOrigin = 'http://localhost:5001';
 export const developmentIssuer = 'https://majestic-alligator-31.convex.site';
+export const developmentCohort = [
+  'cad-test-alpha-20260915@auth-test.invalid',
+  'cad-test-beta-20260915@auth-test.invalid',
+] as const;
 const fail = (): never => { throw new Error('AUTH_UNAVAILABLE'); };
 
 export function developmentConfiguration(env: Record<string, string | undefined>) {
@@ -13,6 +17,9 @@ export function developmentConfiguration(env: Record<string, string | undefined>
     || !env.JWT_PRIVATE_KEY?.trim() || !env.JWKS?.trim()) fail();
   // The cohort is installed only by a later reviewed source change. No env enrollment.
   return { origin: developmentOrigin, issuer: developmentIssuer };
+}
+export function developmentPasswordCohort(): readonly string[] {
+  return developmentAuthReviewed ? developmentCohort : [];
 }
 export function developmentPassword(cohort: readonly string[]) {
   if (!cohort.length || cohort.length > 2 || new Set(cohort).size !== cohort.length

@@ -25,7 +25,8 @@ test('autopilot packet binds the current repo and development target', () => {
 
 test('source and prior evidence keep live development execution blocked', () => {
   assert.match(developmentAuth, /developmentAuthReviewed: boolean = false/);
-  assert.match(auth, /developmentPassword\(\[\]\)/);
+  assert.match(auth, /developmentPassword\(developmentPasswordCohort\(\)\)/);
+  assert.match(developmentAuth, /return developmentAuthReviewed \? developmentCohort : \[\]/);
   assert.equal(packet.currentLiveExecutionReadiness.sourcePrAutomationReady, true);
   for (const key of [
     'developmentAuthSourceReady',
