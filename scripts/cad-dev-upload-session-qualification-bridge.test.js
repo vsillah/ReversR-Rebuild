@@ -21,14 +21,22 @@ test('bridge packet binds to executor and completed Auth/session closeout', () =
     closeout.sanitizedRunEvidence.evidenceSha256);
 });
 
-test('binding is disabled by default and requires a future exact run tuple', () => {
-  assert.match(binding, /enabled: false/);
-  assert.match(binding, /cad-dev-upload-session-disabled-pending-register/);
-  assert.match(binding, /runKeySha256: null/);
-  assert.match(binding, /acceptedProjectionSha256: null/);
-  assert.match(binding, /acceptanceReceiptSha256: null/);
-  assert.match(binding, /windowStartMs: null/);
-  assert.match(binding, /windowEndMs: null/);
+test('binding is disabled by default or bound to one exact reviewed run tuple', () => {
+  const disabledDefault = /enabled: false/.test(binding)
+    && /cad-dev-upload-session-disabled-pending-register/.test(binding)
+    && /runKeySha256: null/.test(binding)
+    && /acceptedProjectionSha256: null/.test(binding)
+    && /acceptanceReceiptSha256: null/.test(binding)
+    && /windowStartMs: null/.test(binding)
+    && /windowEndMs: null/.test(binding);
+  const exactRebind = /enabled: true/.test(binding)
+    && /cad-dev-upload-session-2130z-rebind/.test(binding)
+    && /ce5f7f60202f6ee08ab10e9efa21ab90b25799ddc77be995d5b2810f259bfa8d/.test(binding)
+    && /9ba800eb47ccec11923149a0af9f3c05558abbce38a2a9c0c856db75783cf036/.test(binding)
+    && /de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc/.test(binding)
+    && /windowStartMs: 1789507800000/.test(binding)
+    && /windowEndMs: 1789508700000/.test(binding);
+  assert.equal(disabledDefault || exactRebind, true);
   assert.match(binding, /bodyAdmissionAuthorized: false/);
 });
 
