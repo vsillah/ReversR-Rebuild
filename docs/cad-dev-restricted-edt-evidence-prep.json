@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-restricted-edt-evidence-prep",
+  "status": "RESTRICTED_EDT_EVIDENCE_REQUIREMENTS_ASSEMBLED_NO_LIVE_MUTATION",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-restricted-edt-evidence-prep",
+  "baseMainCommit": "9c77d01a83815e48c4dac68f36ec4b81ea3f1838",
+  "observedAtUtc": "2026-09-15T14:29:12Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "sourceInputs": {
+    "authAcceptanceManifest": {
+      "path": "docs/cad-dev-auth-acceptance-manifest.json",
+      "sha256": "da2f8f2ccb34aeb5a242980897640a72dff7254ce5c4685f0551be558b1adba8"
+    },
+    "authSourceEnablement": {
+      "path": "offline/cad-convex/developmentAuthSourceEnablement.json",
+      "sha256": "89e3eef74bc867d30901fdb9eb1450b294bc7974a47ee4cf7ef85b042532440b"
+    },
+    "retentionLockoutBridge": {
+      "path": "docs/cad-dev-retention-lockout-autopilot.json",
+      "sha256": "3a86b3f395194355b9f75509697f44efb621bda68e90d5a47e2ca4655090fd78"
+    },
+    "ukedtManifest": {
+      "path": "docs/cad-dev-ukedt-manifest-assembly.json",
+      "sha256": "3c90d4764792875ddd97e1336dd5dce876c2e374992cfcc73255de0af4259724"
+    },
+    "dashboardEvidence": {
+      "path": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "sha256": "ec9cb7ec0dbd4a73e732a1eb4cd1660b33116f76a1733ab77c37ce6381207b7c"
+    },
+    "boundedRetentionPolicy": {
+      "path": "offline/cad-convex/boundedRetentionPolicy.json",
+      "sha256": "a72592cd6215b747032574058bc0a4f8531be8923a5fa828a123f589b7d8687c"
+    },
+    "lockoutReadiness": {
+      "path": "offline/cad-convex/lockoutReadiness.json",
+      "sha256": "6a3f2a5bd8d8b6114dabb49728964be3d64e76f50914356ccbcbb2bb727be37f"
+    }
+  },
+  "valueFreeSecretCustodyTemplate": {
+    "rowNames": [
+      "JWKS",
+      "JWT_PRIVATE_KEY",
+      "SITE_URL"
+    ],
+    "secretValuesRead": false,
+    "secretValuesStoredInGit": false,
+    "secretGenerationAuthorizedNow": false,
+    "requiredReceipts": [
+      "existing-vault-item-version-ref-without-value",
+      "primary-custodian-acceptance-ref",
+      "backup-custodian-acceptance-ref",
+      "reviewed-generator-checksum-ref",
+      "transient-copy-cleanup-receipt-ref"
+    ],
+    "acceptedNow": false
+  },
+  "envRollbackReceiptTemplate": {
+    "destinationRows": [
+      "JWKS",
+      "JWT_PRIVATE_KEY",
+      "SITE_URL"
+    ],
+    "sourceShaConsumingRows": "9c77d01a83815e48c4dac68f36ec4b81ea3f1838",
+    "priorVersionOrAbsenceReceiptsRequired": true,
+    "rowSpecificRollbackReceiptsRequired": true,
+    "rollbackCanRevealValues": false,
+    "envMutationAuthorizedNow": false,
+    "acceptedNow": false
+  },
+  "costCapProofTemplate": {
+    "recommendedAllInCeilingUsd": 5,
+    "blanketPaidCommitmentHardStopUsdAtOrAbove": 10,
+    "existingFunctionCallDisableLimit": "100 calls per day",
+    "existingComputeDisableLimitsObserved": true,
+    "currentUsageRefreshRequiredBeforeMutation": true,
+    "teamSpendingLimitVerifiedNow": false,
+    "taxesFeesAndProviderLagVerifiedNow": false,
+    "usageBillingMutationAuthorizedNow": false,
+    "acceptedNow": false
+  },
+  "deploymentRollbackTemplate": {
+    "currentSourceSha": "9c77d01a83815e48c4dac68f36ec4b81ea3f1838",
+    "durableDevelopmentReleaseIdRequired": true,
+    "pinnedDeployCommandDigestRequired": true,
+    "rollbackSourceShaRequired": true,
+    "rollbackDeploymentCommandDigestRequired": true,
+    "rollbackMustPreserveDisabledUploadGates": true,
+    "developmentDeploymentAuthorizedNow": false,
+    "acceptedNow": false
+  },
+  "retentionLockoutDigestTemplate": {
+    "boundedRetentionPolicyDigest": "a72592cd6215b747032574058bc0a4f8531be8923a5fa828a123f589b7d8687c",
+    "lockoutReadinessDigest": "6a3f2a5bd8d8b6114dabb49728964be3d64e76f50914356ccbcbb2bb727be37f",
+    "noDeleteRollbackCompatibilityRequired": true,
+    "supportedDeletionStillRequiredBeforeDelete": true,
+    "acceptedNow": false
+  },
+  "freshRunWindowTemplate": {
+    "futureUtcWindowRequired": true,
+    "maxWindowMinutes": 15,
+    "singleRunOnly": true,
+    "automaticRetryAuthorized": false,
+    "secondRunAuthorized": false,
+    "liveRunAuthorizedNow": false,
+    "acceptedNow": false
+  },
+  "restrictedLocalArtifactPlan": {
+    "ignoredLocalDirectoryRef": ".local/cad-convex/restricted-edt-evidence-prep",
+    "directoryModeRequired": "700",
+    "fileModeRequired": "600",
+    "publicProjectionMustExclude": [
+      "raw secrets",
+      "secret values",
+      "raw passwords",
+      "raw tokens",
+      "private file paths",
+      "real user identifiers",
+      "private CAD"
+    ],
+    "publicProjectionAllowedKinds": [
+      "opaque refs",
+      "byte counts",
+      "hashes",
+      "review labels",
+      "authority booleans"
+    ]
+  },
+  "blockingGates": [
+    "valueFreeSecretCustodyReceiptNotAccepted",
+    "envRollbackReceiptsNotAccepted",
+    "teamSpendingLimitOrAllInCostCapNotAccepted",
+    "durableDevelopmentReleaseAndRollbackNotAccepted",
+    "retentionPolicyAndLockoutFenceNotAccepted",
+    "freshUtcRunWindowNotAccepted"
+  ],
+  "autopilotDecision": {
+    "sourcePrFlowMayContinue": true,
+    "prepareRestrictedLocalEvidenceMayContinue": true,
+    "developmentEnvMutationMustStop": true,
+    "developmentDeploymentMustStop": true,
+    "developmentLiveAuthRunMustStop": true,
+    "uploadActivationMustStop": true,
+    "conversionMustStop": true,
+    "reason": "restricted E/D/T evidence templates are assembled, but no complete acceptance bundle exists yet"
+  },
+  "nextAutomatedSourceSlice": {
+    "branch": "codex/cad-dev-restricted-edt-acceptance-packet",
+    "scope": "prepare ignored local value-free receipts and source-safe projection for secret custody, env rollback, cost cap, deployment rollback, retained-state custody, lockout acceptance, and one future development-only Auth/session run window",
+    "liveMutationAuthorized": false,
+    "developmentDeploymentAuthorized": false
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
