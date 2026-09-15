@@ -49,6 +49,23 @@ This rebind remains source-only. It grants no live run authority, no provider or
 resource mutation, no upload activation, no conversion, no private CAD access
 and no Sandbox dispatch.
 
+## Earlier-window transport diagnostic hardening
+
+The earlier-window live attempt stopped during the first
+`seed-synthetic-metadata` initialize call. A later read-only reconciliation pass
+found no ledger for that accepted run scope. The source packet now includes a
+pure transport diagnostic classifier in
+`offline/cad-convex/boundedDevQualificationTransport.js` and records the stopped
+attempt as `CLI_MUTATION_NO_COMMIT_OBSERVED` with commit state
+`NO_COMMIT_OBSERVED`.
+
+The classifier is source-only. It accepts sanitized process metadata and a
+read-only reconciliation summary, returns fixed failure classes, and never
+returns raw stdout, stderr or thrown error strings. It preserves no-delete
+rollback compatibility, no retry, no second run and disabled CAD upload gates.
+See `docs/cad-earlier-window-transport-diagnostic-hardening.md` for the
+operator-bridge contract and fresh-window approval phrase.
+
 ## Runtime boundary
 
 `offline/cad-convex/boundedDevQualificationExecutor.js` exports:
@@ -94,6 +111,7 @@ the exact development adapter binding and the no-body disabled-route target.
 
 ```sh
 node --test scripts/cad-bounded-dev-qualification-executor.test.js scripts/cad-private-restricted-register-review.test.js scripts/cad-restricted-evidence-command-card-bytes.test.js scripts/cad-live-runner.test.js scripts/cad-durable-engine.test.js scripts/cad-user-upload-route.test.js
+node --test scripts/cad-bounded-dev-qualification-transport.test.js scripts/cad-bounded-dev-qualification-executor.test.js
 npm run typecheck
 node scripts/cad-convex-codegen.js --check
 node scripts/cad-convex-contract-manifest.js --write

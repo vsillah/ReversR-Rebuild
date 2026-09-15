@@ -31,9 +31,12 @@ const files = [
   'offline/cad-convex/restrictedEvidenceCommandCardBytes.js',
   'offline/cad-convex/boundedDevQualificationExecutor.json',
   'offline/cad-convex/boundedDevQualificationExecutor.js',
+  'offline/cad-convex/boundedDevQualificationTransport.js',
   'scripts/cad-bounded-dev-qualification-executor.js',
   'scripts/cad-bounded-dev-qualification-executor.test.js',
+  'scripts/cad-bounded-dev-qualification-transport.test.js',
   'docs/cad-bounded-dev-qualification-executor.md',
+  'docs/cad-earlier-window-transport-diagnostic-hardening.md',
   'convex/cadDurableEngine.ts',
   'scripts/helpers/cad-durable-engine-fixture.js',
   'scripts/cad-durable-engine.test.js',
@@ -333,15 +336,19 @@ assert.ok(Object.values(boundedExecutor.gates).every(value => value === false));
 assert.equal(boundedExecutor.acceptedEvidence.projectionSha256, '2355757d7415cb1512d234c69f90cd670cc4c1a405c31f7102140622507e77d4');
 assert.equal(boundedExecutor.acceptedEvidence.acceptanceReceiptSha256, 'c1001e4c4ab59accebfa5bc49e8bf76d8799af75bfcc165fc43e5e03e61bf053');
 assert.equal(boundedExecutor.acceptedEvidence.commandCardProjectionDigest, 'f3e864320f4f6aa146cac0cacf3f1e1a7e4e90b2c0001af0bfb23bcc1698ff1a');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.projectionSha256, '30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, 'f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, '53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, '7d29d14ee50269ba2a24607fe662bc95b4aea8aef3a22cda9234252ea3ddeb48');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '4b102923f9ff0bc4f46f618894b4503e4b63e43f0b8b3991f82fe5eaff4144c6');
-assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.sourcePr, 219);
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.projectionSha256, '1dbdf153921a1676c8870827fd619706e1a6bd143835a6cb623be13590dae566');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.acceptanceReceiptSha256, '898bf16b7078730123aa9f1416d21dcfd1e5f07a2272ac15024563a6dbb498e8');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.privateRestrictedRegisterDigest, 'd2018ce44048a32a495a0c6095c4fafdffe375766dd0f9a4aafc5806e6ebb237');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, 'e1a74e5b4ea72c55b6b72845a1e924c4659f11eebd8ef216c3104f2a3abd51ee');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '2b79a9ca19197b12082301ef45dfe7dcc803e84238882f16304b56c8e09e5fac');
+assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.sourcePr, 220);
+assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.transportFailureClass,
+  'CLI_MUTATION_NO_COMMIT_OBSERVED');
+assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.commitState, 'NO_COMMIT_OBSERVED');
 assert.ok(boundedExecutor.nextHumanGates.liveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(boundedExecutor.nextHumanGates.rebuiltSuccessorLiveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/boundedDevQualificationExecutor.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/boundedDevQualificationTransport.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser/.test(read('scripts/cad-bounded-dev-qualification-executor.js')));
 
 console.log(`CAD source audit passed: ${files.length} files, zero leak pattern matches; internal-only and runtime isolation checks passed`);

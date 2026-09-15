@@ -28,6 +28,34 @@
   "liveRunAuthorized": false,
   "uploadsEnabled": false,
   "conversionEnabled": false,
+  "transportDiagnosticHardening": {
+    "sourceOnly": true,
+    "operatorBridgeClassifiesConvexCliTransport": true,
+    "rawOutputIncluded": false,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stoppedEarlierWindowRun": {
+      "acceptedEvidenceKey": "acceptedRebuiltSuccessorEvidence",
+      "sanitizedEvidenceSha256": "3f1f56199597d332cc68883122e2d705f50d74bf4813ae416264256a69ff54d7",
+      "sanitizedRunReceiptSha256": "43f095fd42f7e7716a8aea37b7fcf61667af4d2a4e00a948606801205c548f52",
+      "initiatedLogicalOperations": 1,
+      "readOnlyReconciliationClass": "NO_LEDGER_FOUND",
+      "transportFailureClass": "CLI_MUTATION_NO_COMMIT_OBSERVED",
+      "commitState": "NO_COMMIT_OBSERVED"
+    },
+    "failureClasses": [
+      "CLI_TIMEOUT",
+      "CLI_INTERRUPTED",
+      "CLI_NETWORK_UNAVAILABLE",
+      "CLI_OUTPUT_PARSE_FAILED",
+      "CLI_FUNCTION_ERROR",
+      "CLI_EXIT_NONZERO",
+      "CLI_TRANSPORT_UNKNOWN",
+      "CLI_MUTATION_NO_COMMIT_OBSERVED",
+      "CLI_MUTATION_COMMIT_OBSERVED",
+      "READ_ONLY_RECONCILIATION_INCONCLUSIVE"
+    ]
+  },
   "gates": {
     "liveRun": false,
     "providerBinding": false,
