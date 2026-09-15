@@ -35,8 +35,13 @@ This packet adds:
     mode-locked local artifact files instead of mutating the private register;
   - signs in one fixed synthetic Password cohort identity;
   - reads the exact authenticated session through the new query;
-  - calls the existing `cadDevUploadSessionQualification:issueReadRevoke`
-    bridge once;
+  - calls the reviewed
+    `cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority`
+    wrapper once;
+  - lets that wrapper provision only the run-owned synthetic
+    `cadUserAuthority` and `cadMemberships` rows needed for the transactional
+    insert path;
+  - revokes those synthetic authority rows in a `finally` path without deletion;
   - signs out;
   - writes sanitized local evidence and a local receipt.
 
@@ -59,6 +64,20 @@ hashing those adjacent accepted files at execution time.
 - No real users are enrolled.
 - No provider/resource/env/billing mutation is authorized by this packet.
 - No retry or second run is authorized by this packet.
+
+## 2026-09-15T21:30Z Attempt Closeout
+
+The first approved upload-session qualification attempt stopped fail-closed at
+`AUTH_UNAVAILABLE` from `internal.cad.insertIfAbsent`. Source inspection showed
+the signed-in synthetic Password user had an exact Auth session, but the CAD store
+authority path requires existing `cadUserAuthority` and `cadMemberships` rows for
+the same user/shop before an upload session can be inserted. No sanitized
+evidence file was written by the failed runner, and no retry is authorized by
+that attempt.
+
+This repair keeps the public bridge digest-bound and disabled from body
+admission, while adding an explicit development-only authority wrapper for the
+next reviewed run window.
 
 ## Validation
 

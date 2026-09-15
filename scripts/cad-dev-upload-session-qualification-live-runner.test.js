@@ -104,14 +104,16 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
   const api = {
     auth: { signIn: 'signIn', signOut: 'signOut' },
     cadDevUploadSessionQualificationSession: { readCurrent: 'readCurrent' },
-    cadDevUploadSessionQualification: { issueReadRevoke: 'issueReadRevoke' },
+    cadDevUploadSessionQualification: {
+      issueReadRevokeWithSyntheticAuthority: 'issueReadRevokeWithSyntheticAuthority',
+    },
   };
   const clients = {
     operator: {
       action: async (fn, args) => {
         calls.push(['operator-action', fn, args]);
         if (fn === 'signIn') return { tokens: { token: 'token-alpha' } };
-        if (fn === 'issueReadRevoke') {
+        if (fn === 'issueReadRevokeWithSyntheticAuthority') {
           assert.equal(args.runKey, uploadRegister.runKey);
           assert.equal(args.principal.userId, 'user-id-alpha');
           assert.equal(args.principal.loginSessionId, 'session-id-alpha');
@@ -129,6 +131,9 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
             readBeforeRevoke: true,
             revoked: true,
             readAfterRevoke: false,
+            syntheticAuthorityProvisioned: true,
+            syntheticAuthorityRevoked: true,
+            authorityRowsRetained: true,
           };
         }
         throw new Error('unexpected operator action');
@@ -162,8 +167,13 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
   assert.equal(evidence.bodyAdmissionAuthorized, false);
   assert.equal(evidence.conversionAllowed, false);
   assert.equal(evidence.operationCounts.signIns, 1);
+  assert.equal(evidence.operationCounts.syntheticAuthorityProvisions, 1);
   assert.equal(evidence.operationCounts.bridgeActions, 1);
+  assert.equal(evidence.operationCounts.syntheticAuthorityRevocations, 1);
   assert.equal(evidence.operationCounts.signOuts, 1);
+  assert.equal(evidence.syntheticAuthorityProvisioned, true);
+  assert.equal(evidence.syntheticAuthorityRevoked, true);
+  assert.equal(evidence.authorityRowsRetained, true);
   assert.equal(evidence.rawCredentialRecorded, false);
   assert.equal(evidence.rawPasswordRecorded, false);
   assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'operator-action', 'auth-action']);

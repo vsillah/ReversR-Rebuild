@@ -173,7 +173,7 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
     expiresAt,
     status: 'active',
   };
-  const bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevoke, {
+  const bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevokeWithSyntheticAuthority, {
     runKey: uploadRegister.runKey,
     runKeySha256: uploadRegister.runKeySha256,
     acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,
@@ -185,7 +185,10 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
   if (!bridge || bridge.code !== 'SYNTHETIC_UPLOAD_SESSION_SEQUENCE_REVOKED'
     || bridge.cadUploadsDisabled !== true || bridge.bodyAdmissionAuthorized !== false
     || bridge.conversionAllowed !== false || bridge.retainedUploadSession !== true
-    || bridge.readAfterRevoke !== false) fail('UPLOAD_SESSION_BRIDGE_DENIED');
+    || bridge.readAfterRevoke !== false || bridge.syntheticAuthorityProvisioned !== true
+    || bridge.syntheticAuthorityRevoked !== true || bridge.authorityRowsRetained !== true) {
+    fail('UPLOAD_SESSION_BRIDGE_DENIED');
+  }
   await authenticated.action(api.auth.signOut, {});
   return sanitized('DEVELOPMENT_UPLOAD_SESSION_QUALIFICATION_EXECUTED', {
     runId: uploadRegister.runId,
@@ -198,13 +201,18 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
     operationCounts: {
       signIns: 1,
       exactSessionReads: 1,
+      syntheticAuthorityProvisions: 1,
       bridgeActions: 1,
       uploadSessionInserts: bridge.inserted ? 1 : 0,
       uploadSessionReads: 2,
       uploadSessionRevocations: bridge.revoked ? 1 : 0,
+      syntheticAuthorityRevocations: 1,
       signOuts: 1,
     },
     retainedUploadSession: true,
+    syntheticAuthorityProvisioned: true,
+    syntheticAuthorityRevoked: true,
+    authorityRowsRetained: true,
     readBeforeRevoke: bridge.readBeforeRevoke === true,
     readAfterRevoke: bridge.readAfterRevoke === false,
     userIdObserved: true,
