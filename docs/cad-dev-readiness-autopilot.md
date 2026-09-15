@@ -16,7 +16,8 @@ live-ready for Auth/session, upload admission, conversion or production CAD.
 The current source remains intentionally closed:
 
 - `convex/developmentAuth.ts` has `developmentAuthReviewed=false`.
-- `convex/auth.ts` installs `developmentPassword([])`.
+- `convex/auth.ts` installs `developmentPassword(developmentPasswordCohort())`;
+  the cohort helper returns `[]` while `developmentAuthReviewed=false`.
 - The dashboard evidence shows env row names and usage limits, but no secret
   custody, all-in cost cap, row rollback, or source/deployment rollback receipt.
 - The pinned removal review found no reviewed account or user removal helper.

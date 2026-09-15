@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-auth-source-enablement",
+  "status": "DISABLED_BY_DEFAULT_COHORT_BOUND_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-auth-source-enable-autopilot",
+  "baseMainCommit": "b25016abe07f5351191b87af14e4786227c6e1e5",
+  "observedAtUtc": "2026-09-15T14:04:55Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development"
+  },
+  "sourceGate": {
+    "developmentAuthReviewed": false,
+    "runtimeCohortWhenGateFalse": [],
+    "preparedCohortWhenGateTrue": [
+      "cad-test-alpha-20260915@auth-test.invalid",
+      "cad-test-beta-20260915@auth-test.invalid"
+    ],
+    "installedCohortSizeNow": 0,
+    "providerEnabledNow": false,
+    "sessionTotalDurationMs": 900000,
+    "origin": "http://localhost:5001",
+    "issuer": "https://majestic-alligator-31.convex.site"
+  },
+  "preconditionsBeforeGateMayFlip": {
+    "retentionPolicyAccepted": false,
+    "lockoutFenceAccepted": false,
+    "privateRegisterReceiptAccepted": false,
+    "costCapEvidenceAccepted": false,
+    "rollbackEvidenceAccepted": false,
+    "developmentEnvCustodyAccepted": false,
+    "developmentDeploymentAuthorized": false,
+    "liveRunAuthorized": false
+  },
+  "privateRegisterBindingRequirements": [
+    "acceptedRetentionPolicyDigest",
+    "acceptedLockoutFenceDigest",
+    "acceptedPrivateRegisterReceiptDigest",
+    "acceptedCostCapDigest",
+    "acceptedRollbackDigest",
+    "twoSlotCohortDigest",
+    "operatorRef",
+    "custodianRef",
+    "runWindowRef"
+  ],
+  "rollbackRequirements": {
+    "sourceRollbackShaRequired": true,
+    "rollbackMustPreserveLockout": true,
+    "rollbackCanDeleteRows": false,
+    "envRollbackReceiptRequired": true,
+    "deploymentRollbackReceiptRequired": true
+  },
+  "exactFutureCommandManifestsRequired": [
+    "source-validation",
+    "development-env-row-verify-without-values",
+    "development-deploy-reviewed-source",
+    "single-bounded-auth-session-run",
+    "read-only-reconciliation",
+    "revocation-and-retained-state-stop"
+  ],
+  "currentAuthority": {
+    "pushSourcePr": true,
+    "mergeSourcePrAfterGreenChecks": true,
+    "productionFailClosedSmoke": true,
+    "developmentEnvMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "emailSmsSlackAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "nextAutomatedSourceSlice": {
+    "branch": "codex/cad-dev-auth-acceptance-manifest",
+    "scope": "source/local manifests and tests only to assemble accepted retention, lockout, private-register, cost and rollback evidence into one development E/D/T approval packet",
+    "liveMutationAuthorized": false,
+    "reason": "the source cohort is prepared but still gated off until evidence acceptance and separate development deployment/run gates are complete"
+  },
+  "expensesUsd": 0
+}

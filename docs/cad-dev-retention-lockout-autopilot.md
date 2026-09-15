@@ -20,7 +20,8 @@ The live path remains closed:
 - `offline/cad-convex/lockoutReadiness.json` has `enabled=false` and `liveReady=false`.
 - `offline/cad-convex/removalRetentionReview.json` keeps provisioning blocked.
 - `convex/developmentAuth.ts` keeps `developmentAuthReviewed=false`.
-- `convex/auth.ts` installs `developmentPassword([])`.
+- `convex/auth.ts` installs the reviewed cohort helper, which still returns `[]`
+  while `developmentAuthReviewed=false`.
 
 That combination blocks live synthetic Auth provisioning, development deployment,
 store writes, retry, second run, upload activation and conversion.
