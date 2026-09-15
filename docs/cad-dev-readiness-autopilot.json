@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-readiness-autopilot",
+  "status": "AUTOPILOT_ENVELOPE_RECORDED_HARD_STOP_BEFORE_LIVE_AUTH",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-autopilot-readiness",
+  "baseMainCommit": "d2ebbbf44726e3934581b35e85e77b75f4bc9790",
+  "observedAtUtc": "2026-09-15T13:46:26Z",
+  "approvedEnvelope": {
+    "sourcePrAutopilot": true,
+    "developmentExecutionAutopilot": true,
+    "privateCadAutopilot": false,
+    "productionUploadActivationAutopilot": false,
+    "productionConversionAutopilot": false,
+    "externalDeliveryAutopilot": false,
+    "expenseLimitUsdExclusive": 10
+  },
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamIdFromApproval": "405220",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "inputs": {
+    "ukedtManifest": {
+      "path": "docs/cad-dev-ukedt-manifest-assembly.json",
+      "mergeCommit": "d2ebbbf44726e3934581b35e85e77b75f4bc9790"
+    },
+    "dashboardEvidenceRegister": {
+      "path": "docs/cad-convex-dev-dashboard-evidence-register.json",
+      "mergeCommit": "ce89f32080e83e2d496c1736a1b25aecee139a45"
+    },
+    "successfulDevelopmentQualificationCloseout": {
+      "path": "docs/cad-successful-bounded-dev-qualification-closeout.json",
+      "runCompleted": true,
+      "unknownOutcome": false
+    },
+    "removalRetentionPolicy": {
+      "path": "docs/cad-removal-retention-policy.md",
+      "finding": "no reviewed account or user removal helper is available in the pinned Auth review"
+    },
+    "boundedRetentionPolicy": {
+      "path": "docs/cad-bounded-retention-policy.md",
+      "accepted": false
+    },
+    "lockoutRetainedTerminalState": {
+      "path": "docs/cad-lockout-retained-terminal-state.md",
+      "implementedLiveLockout": false
+    }
+  },
+  "currentLiveExecutionReadiness": {
+    "sourcePrAutomationReady": true,
+    "developmentAuthSourceReady": false,
+    "developmentDeploymentReady": false,
+    "developmentAuthSessionRunReady": false,
+    "syntheticUploadRunReady": false,
+    "syntheticConversionRunReady": false,
+    "productionCadReady": false
+  },
+  "hardStops": {
+    "unknownOutcome": true,
+    "failingProductionSmoke": true,
+    "missingRollback": true,
+    "costCapUncertainty": true,
+    "privateCad": true,
+    "realUsers": true,
+    "productionCadUploadActivation": true,
+    "productionConversion": true,
+    "providerResourceChangeOutsideDevelopmentTarget": true,
+    "newPaidCommitmentAtOrAboveUsd10": true,
+    "emailSmsSlack": true,
+    "externalDelivery": true
+  },
+  "blockingFindings": {
+    "developmentAuthReviewedSourceGate": false,
+    "installedDevelopmentCohort": [],
+    "supportedRemovalAdapter": false,
+    "acceptedBoundedRetentionPolicy": false,
+    "implementedLockoutFence": false,
+    "allInCostCapVerified": false,
+    "envValueReadAuthorized": false,
+    "envMutationAuthorized": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "liveRunAuthorizedNow": false
+  },
+  "autopilotPlan": [
+    {
+      "id": "A1",
+      "name": "source-readiness bridge",
+      "automated": true,
+      "currentAction": "publish this source-only autopilot guard packet",
+      "completionEvidence": "draft PR, merge, production fail-closed smoke, cleanup"
+    },
+    {
+      "id": "A2",
+      "name": "retention and lockout source implementation",
+      "automated": true,
+      "currentAction": "implement local source/tests for bounded synthetic retention acceptance, lockout fence requirements, and private-register receipts",
+      "stopBefore": "any live synthetic account provisioning or Convex store write"
+    },
+    {
+      "id": "A3",
+      "name": "development auth source enablement",
+      "automated": true,
+      "currentAction": "after A2 passes, prepare source-only cohort and auth gate implementation with disabled rollback source SHA",
+      "stopBefore": "development Convex deployment if rollback, cost cap, env custody, or target identity is missing"
+    },
+    {
+      "id": "A4",
+      "name": "development-only auth session qualification",
+      "automated": true,
+      "currentAction": "one bounded development-only run with synthetic identities and sanitized receipts",
+      "stopBefore": "retry, second run, unknown outcome, real users, email/SMS/Slack, private CAD, uploads, conversion, or production"
+    },
+    {
+      "id": "A5",
+      "name": "synthetic upload admission",
+      "automated": true,
+      "currentAction": "after A4 passes, qualify user upload admission with synthetic/public fixture bytes only and uploads disabled until its gate",
+      "stopBefore": "private CAD, production upload activation, conversion, Sandbox dispatch, or cost uncertainty"
+    },
+    {
+      "id": "A6",
+      "name": "synthetic conversion qualification",
+      "automated": true,
+      "currentAction": "after A5 passes, qualify only bounded development Sandbox conversion with synthetic/public CAD under existing resource limits",
+      "stopBefore": "private CAD or production conversion"
+    },
+    {
+      "id": "A7",
+      "name": "private CAD or production activation",
+      "automated": false,
+      "currentAction": "manual approval gate only",
+      "stopBefore": "always"
+    }
+  ],
+  "nextAutomatedSourceSlice": {
+    "branch": "codex/cad-dev-retention-lockout-autopilot",
+    "scope": "source/local implementation and tests only for bounded retention policy acceptance, lockout fence readiness, private-register receipt templates, cost/rollback evidence gates, and exact development deployment/run commands",
+    "liveMutationAuthorized": false,
+    "reason": "live provisioning remains blocked until supported removal or accepted bounded retention plus lockout evidence exists"
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorized": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
