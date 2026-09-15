@@ -66,6 +66,28 @@ rollback compatibility, no retry, no second run and disabled CAD upload gates.
 See `docs/cad-earlier-window-transport-diagnostic-hardening.md` for the
 operator-bridge contract and fresh-window approval phrase.
 
+## Fresh-window executor rebind update
+
+The executor now carries a third accepted evidence binding for the fresh
+`03:00Z` successor window accepted after PR #222:
+
+- projection `6c0289bd0d59aeb2393112291341e49c5751f0fd8c74c0a1e218cf314a57bb61`
+- acceptance receipt `6f8de5ff724ea1e19ee198fd5ba6793e6712e6684923cb7bd0c0a3e51387d23c`
+- private register digest `84e80c4a26096709e2d9b308597ec8107944d0ff321d40de8f3dd1c7ed933427`
+- restricted command set digest `f58fa1ad88e99d6cee4a96398c616b23ebfc4be415771c66acf75f671e2b9ad2`
+- command-card projection digest `296400ff9502a4a31d6eb7c1f123325e13b296875c73da43d34e5c3ad3ad5310`
+- window `2026-09-15T03:00:00Z` through `2026-09-15T03:05:00Z`
+
+`inspectAcceptedRunArtifacts` still routes successor-shaped artifacts through
+the successor validator, but it now resolves the exact accepted binding from the
+artifact digests. The fresh-window receipt has a dedicated validator for its
+`fresh-window-restricted-successor-evidence-acceptance-receipt` shape and keeps
+all live-run, provider, resource, environment, upload, conversion, Sandbox,
+deployment, merge, push and cleanup authority flags false.
+
+The older accepted bindings remain valid for inspection and fixture regression.
+The fresh-window path does not replace them and does not authorize execution.
+
 ## Runtime boundary
 
 `offline/cad-convex/boundedDevQualificationExecutor.js` exports:
@@ -125,7 +147,16 @@ Convex/Auth test.
 
 ## Future approval phrases
 
-Publication only:
+Fresh-window publication only:
+
+> Approve pushing only commit [full reviewed SHA] from codex/cad-fresh-window-evidence-assembly to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD fresh-window executor rebind packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets outside reviewed ignored restricted evidence artifacts, usage/billing changes, enrollment, email/SMS/Slack, store mutation outside reviewed restricted evidence artifacts, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, stopped-run retry, live run, or branch/worktree cleanup.
+
+Fresh-window one bounded development qualification, after source review,
+publication, merge, deployment and production fail-closed smoke:
+
+> Approve one synthetic durable-adapter development qualification run during the accepted fresh window from 2026-09-15T03:00:00Z through 2026-09-15T03:05:00Z on Convex development deployment majestic-alligator-31 using accepted fresh-window restricted successor evidence projection 6c0289bd0d59aeb2393112291341e49c5751f0fd8c74c0a1e218cf314a57bb61, acceptance receipt 6f8de5ff724ea1e19ee198fd5ba6793e6712e6684923cb7bd0c0a3e51387d23c, private register digest 84e80c4a26096709e2d9b308597ec8107944d0ff321d40de8f3dd1c7ed933427, restricted command set digest f58fa1ad88e99d6cee4a96398c616b23ebfc4be415771c66acf75f671e2b9ad2, command-card projection digest 296400ff9502a4a31d6eb7c1f123325e13b296875c73da43d34e5c3ad3ad5310, fresh-window executor rebind commit [full reviewed SHA], and deployed main commit [full reviewed SHA]. Scope is one bounded development-only run through corrected cadDurableEngine.js function references, per-call bounded deadlines, accepted fresh-window restricted successor register, injected development-only adapter, no-body disabled-route checks, synthetic metadata writes, bounded reconciliation reads, revocation without deletion, sanitized evidence output, and stop-on-unknown/no-automatic-retry handling. Keep CAD uploads disabled. No production, CAD files, private CAD, CAD upload activation, CAD conversion, Sandbox dispatch, real users, enrollment, email/SMS/Slack, new secrets, env/provider/auth/resource or usage/billing changes, deployment, merge, automatic retry, second run, stopped-run retry, or branch/worktree cleanup.
+
+Prior publication template:
 
 > Approve pushing only commit [full reviewed SHA] from codex/cad-bounded-dev-qualification-resume to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD bounded development qualification resume-handling packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or branch/worktree cleanup.
 

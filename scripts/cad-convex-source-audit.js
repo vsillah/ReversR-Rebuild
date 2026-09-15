@@ -342,11 +342,24 @@ assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.privateRestrictedR
 assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.restrictedCommandSetDigest, 'e1a74e5b4ea72c55b6b72845a1e924c4659f11eebd8ef216c3104f2a3abd51ee');
 assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.commandCardProjectionDigest, '2b79a9ca19197b12082301ef45dfe7dcc803e84238882f16304b56c8e09e5fac');
 assert.equal(boundedExecutor.acceptedRebuiltSuccessorEvidence.sourcePr, 220);
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.projectionSha256, '6c0289bd0d59aeb2393112291341e49c5751f0fd8c74c0a1e218cf314a57bb61');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.acceptanceReceiptSha256, '6f8de5ff724ea1e19ee198fd5ba6793e6712e6684923cb7bd0c0a3e51387d23c');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.privateRestrictedRegisterDigest, '84e80c4a26096709e2d9b308597ec8107944d0ff321d40de8f3dd1c7ed933427');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.restrictedCommandSetDigest, 'f58fa1ad88e99d6cee4a96398c616b23ebfc4be415771c66acf75f671e2b9ad2');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.commandCardProjectionDigest, '296400ff9502a4a31d6eb7c1f123325e13b296875c73da43d34e5c3ad3ad5310');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.sourceMainCommit, '30196c62648e4bcbb080ae5c7a6ab9396b8d48a9');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.sourcePacketCommit, '273acc9f468366536387a8dc4db15167f2b0efcd');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.sourcePr, 222);
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.runRef, 'rrb-ref:fresh-window-0300-bounded-development-run');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.window.startUtc, '2026-09-15T03:00:00Z');
+assert.equal(boundedExecutor.acceptedFreshWindowEvidence.window.expiresUtc, '2026-09-15T03:05:00Z');
 assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.transportFailureClass,
   'CLI_MUTATION_NO_COMMIT_OBSERVED');
 assert.equal(boundedExecutor.transportDiagnosticHardening.stoppedEarlierWindowRun.commitState, 'NO_COMMIT_OBSERVED');
 assert.ok(boundedExecutor.nextHumanGates.liveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(boundedExecutor.nextHumanGates.rebuiltSuccessorLiveQualification.includes('Keep CAD uploads disabled'));
+assert.ok(boundedExecutor.nextHumanGates.freshWindowLiveQualification.includes('2026-09-15T03:00:00Z'));
+assert.ok(boundedExecutor.nextHumanGates.freshWindowLiveQualification.includes('Keep CAD uploads disabled'));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/boundedDevQualificationExecutor.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./.test(read('offline/cad-convex/boundedDevQualificationTransport.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser/.test(read('scripts/cad-bounded-dev-qualification-executor.js')));

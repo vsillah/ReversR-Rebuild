@@ -73,6 +73,12 @@ const EARLIER_WINDOW_RECEIPT_KEYS = Object.freeze([
   'ledgerWindowRef', 'fenceRef', 'window', 'acceptanceScope',
   'nextBlockedUntil',
 ]);
+const FRESH_WINDOW_RECEIPT_KEYS = Object.freeze([
+  'schemaVersion', 'mode', 'status', 'acceptedAtUtc', 'acceptedByRef',
+  'sourceMainCommit', 'sourcePacketCommit', 'sourcePr', 'runRef', 'window',
+  'approvedEvidence', 'packetVerification', 'authority', 'nextBlockedUntil',
+  'receiptContentSha256',
+]);
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const sha256 = bytes => createHash('sha256').update(bytes, 'utf8').digest('hex');
@@ -91,7 +97,10 @@ const allFalse = value => isObject(value) && Object.values(value).every(item => 
 const ACCEPTED_EVIDENCE = Object.freeze(Object.entries({
   acceptedEvidence: packet.acceptedEvidence,
   acceptedRebuiltSuccessorEvidence: packet.acceptedRebuiltSuccessorEvidence,
+  acceptedFreshWindowEvidence: packet.acceptedFreshWindowEvidence,
 }).filter(([, value]) => isObject(value)).map(([key, value]) => Object.freeze({ key, ...value })));
+const ACCEPTED_SUCCESSOR_EVIDENCE = Object.freeze(ACCEPTED_EVIDENCE
+  .filter(evidence => evidence.key !== 'acceptedEvidence'));
 
 function fail(code, values = {}) {
   return Object.freeze({
@@ -275,14 +284,47 @@ function isRebuiltSuccessorArtifactSet(register, projection, receipt) {
   return (isObject(register) && register.mode === 'ignored-successor-restricted-register-rebuild')
     || (isObject(projection) && projection.mode === 'source-safe-successor-restricted-evidence-rebuild-projection')
     || (isObject(receipt) && (receipt.mode === 'rebuilt-successor-evidence-acceptance-receipt'
-      || receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'));
+      || receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'
+      || receipt.mode === 'fresh-window-restricted-successor-evidence-acceptance-receipt'));
 }
 
 function inspectRebuiltSuccessorReceipt(receipt, receiptSha256, errors, evidence) {
-  const receiptKeys = receipt && receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'
-    ? EARLIER_WINDOW_RECEIPT_KEYS : REBUILT_RECEIPT_KEYS;
+  const receiptKeys = receipt && receipt.mode === 'fresh-window-restricted-successor-evidence-acceptance-receipt'
+    ? FRESH_WINDOW_RECEIPT_KEYS
+    : receipt && receipt.mode === 'earlier-window-successor-evidence-acceptance-receipt'
+      ? EARLIER_WINDOW_RECEIPT_KEYS : REBUILT_RECEIPT_KEYS;
   if (!exact(receipt, receiptKeys)) {
     errors.add('REBUILT_ACCEPTANCE_RECEIPT_SHAPE_INVALID');
+    return;
+  }
+  if (receipt.mode === 'fresh-window-restricted-successor-evidence-acceptance-receipt') {
+    if (receiptSha256 !== evidence.acceptanceReceiptSha256
+      || receipt.status !== 'ACCEPTED_FOR_EVIDENCE_COMPLETENESS_ONLY'
+      || receipt.sourceMainCommit !== evidence.sourceMainCommit
+      || receipt.sourcePacketCommit !== evidence.sourcePacketCommit
+      || receipt.sourcePr !== evidence.sourcePr
+      || receipt.runRef !== evidence.runRef
+      || !isObject(receipt.window)
+      || receipt.window.startUtc !== evidence.window.startUtc
+      || receipt.window.expiresUtc !== evidence.window.expiresUtc
+      || receipt.window.approvedForLiveRun !== false
+      || !isObject(receipt.approvedEvidence)
+      || receipt.approvedEvidence.projectionSha256 !== evidence.projectionSha256
+      || receipt.approvedEvidence.privateRestrictedRegisterDigest !== evidence.privateRestrictedRegisterDigest
+      || receipt.approvedEvidence.restrictedCommandSetDigest !== evidence.restrictedCommandSetDigest
+      || receipt.approvedEvidence.commandCardProjectionDigest !== evidence.commandCardProjectionDigest
+      || !isObject(receipt.packetVerification)
+      || receipt.packetVerification.requiredEvidenceReceipts !== evidence.requiredEvidenceReceipts
+      || receipt.packetVerification.commandCardCount !== REQUIRED_CARDS.length
+      || !digest(receipt.receiptContentSha256)) {
+      errors.add('REBUILT_ACCEPTANCE_RECEIPT_DIGEST_MISMATCH');
+    }
+    if (!isObject(receipt.authority)
+      || receipt.authority.evidenceCompletenessAccepted !== true
+      || Object.entries(receipt.authority)
+        .some(([key, value]) => key !== 'evidenceCompletenessAccepted' && value !== false)) {
+      errors.add('REBUILT_ACCEPTANCE_SCOPE_INVALID');
+    }
     return;
   }
   if (receiptSha256 !== evidence.acceptanceReceiptSha256
@@ -308,7 +350,7 @@ function inspectRebuiltSuccessorReceipt(receipt, receiptSha256, errors, evidence
   }
 }
 
-function inspectRebuiltSuccessorCommandCards(register, projection) {
+function inspectRebuiltSuccessorCommandCards(register, projection, evidence) {
   const errors = new Set();
   const descriptors = [];
   if (!isObject(register) || !isObject(register.restrictedCommandCards)
@@ -340,9 +382,9 @@ function inspectRebuiltSuccessorCommandCards(register, projection) {
         || descriptor.id !== cardId
         || descriptor.effect !== CARD_EFFECTS[cardId]
         || descriptor.effect !== card.effect
-        || descriptor.runRef !== packet.acceptedRebuiltSuccessorEvidence.runRef
-        || descriptor.sourceMainCommit !== packet.acceptedRebuiltSuccessorEvidence.sourceMainCommit
-        || descriptor.sourcePr !== packet.acceptedRebuiltSuccessorEvidence.sourcePr
+        || descriptor.runRef !== evidence.runRef
+        || descriptor.sourceMainCommit !== evidence.sourceMainCommit
+        || descriptor.sourcePr !== evidence.sourcePr
         || descriptor.syntheticMetadataOnly !== true
         || descriptor.cadFilesAllowed !== false
         || descriptor.uploadActivationAuthorized !== false
@@ -370,21 +412,45 @@ function inspectRebuiltSuccessorCommandCards(register, projection) {
   });
 }
 
+function receiptProjectionDigest(receipt) {
+  if (!isObject(receipt)) return null;
+  if (typeof receipt.acceptedProjectionSha256 === 'string') return receipt.acceptedProjectionSha256;
+  if (isObject(receipt.approvedEvidence)) return receipt.approvedEvidence.projectionSha256;
+  return null;
+}
+
+function resolveSuccessorEvidence({ register, projection, receipt, projectionText, receiptText }) {
+  const projectionDigest = projectionText === null ? null : sha256(projectionText);
+  const receiptDigest = receiptText === null ? null : sha256(receiptText);
+  const registerDigest = isObject(register) ? sha256Json(register) : null;
+  return ACCEPTED_SUCCESSOR_EVIDENCE.find(evidence => [
+    projectionDigest === evidence.projectionSha256,
+    receiptDigest === evidence.acceptanceReceiptSha256,
+    registerDigest === evidence.privateRestrictedRegisterDigest,
+    isObject(projection) && projection.runRef === evidence.runRef
+      && projection.sourceMainCommit === evidence.sourceMainCommit
+      && projection.sourcePr === evidence.sourcePr,
+    receiptProjectionDigest(receipt) === evidence.projectionSha256,
+  ].filter(Boolean).length >= 2) || null;
+}
+
 function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, acceptanceReceiptBytes } = {}) {
   const errors = new Set();
-  const evidence = packet.acceptedRebuiltSuccessorEvidence;
   const projectionText = stringBytes(projectionBytes);
   const receiptText = stringBytes(acceptanceReceiptBytes);
   const projection = parseJsonBytes(projectionBytes, errors, 'REBUILT_PROJECTION_BYTES_INVALID');
   const receipt = parseJsonBytes(acceptanceReceiptBytes, errors, 'REBUILT_ACCEPTANCE_RECEIPT_BYTES_INVALID');
+  const evidence = resolveSuccessorEvidence({ register, projection, receipt, projectionText, receiptText });
   if (!isObject(register)) errors.add('REBUILT_RESTRICTED_REGISTER_INVALID');
   if (!isObject(evidence)) errors.add('REBUILT_ACCEPTED_EVIDENCE_MISSING');
-  if (projectionText !== null && sha256(projectionText) !== evidence.projectionSha256)
+  if (projectionText !== null && (!evidence || sha256(projectionText) !== evidence.projectionSha256))
     errors.add('REBUILT_PROJECTION_DIGEST_MISMATCH');
-  if (receiptText !== null && receipt) inspectRebuiltSuccessorReceipt(receipt, sha256(receiptText), errors, evidence);
-  if (isObject(register) && sha256Json(register) !== evidence.privateRestrictedRegisterDigest)
+  if (receiptText !== null && receipt && evidence) inspectRebuiltSuccessorReceipt(receipt, sha256(receiptText), errors, evidence);
+  if (receiptText !== null && receipt && !evidence) errors.add('REBUILT_ACCEPTANCE_RECEIPT_DIGEST_MISMATCH');
+  if (isObject(register) && (!evidence || sha256Json(register) !== evidence.privateRestrictedRegisterDigest))
     errors.add('REBUILT_RESTRICTED_REGISTER_DIGEST_MISMATCH');
-  if (!exact(register, REBUILT_REGISTER_KEYS)
+  if (!evidence
+    || !exact(register, REBUILT_REGISTER_KEYS)
     || register.schemaVersion !== 1
     || register.mode !== 'ignored-successor-restricted-register-rebuild'
     || register.sourceMainCommit !== evidence.sourceMainCommit
@@ -394,7 +460,8 @@ function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, accept
     || !allFalse(register.gates)) {
     errors.add('REBUILT_RESTRICTED_REGISTER_SHAPE_INVALID');
   }
-  if (!exact(projection, REBUILT_PROJECTION_KEYS)
+  if (!evidence
+    || !exact(projection, REBUILT_PROJECTION_KEYS)
     || projection.schemaVersion !== 1
     || projection.mode !== 'source-safe-successor-restricted-evidence-rebuild-projection'
     || projection.sourceMainCommit !== evidence.sourceMainCommit
@@ -409,7 +476,8 @@ function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, accept
   }
   if (projection) {
     const commandBytes = JSON.stringify(projection.commandCards);
-    if (projection.restrictedRegisterDigest !== evidence.privateRestrictedRegisterDigest
+    if (!evidence
+      || projection.restrictedRegisterDigest !== evidence.privateRestrictedRegisterDigest
       || projection.restrictedCommandSetDigest !== evidence.restrictedCommandSetDigest
       || projection.commandCardProjectionDigest !== evidence.commandCardProjectionDigest
       || projection.commandCardProjectionDigest !== sha256(commandBytes)
@@ -419,7 +487,9 @@ function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, accept
       errors.add('REBUILT_PROJECTION_BINDING_MISMATCH');
     }
   }
-  const commands = inspectRebuiltSuccessorCommandCards(register, projection);
+  const commands = evidence
+    ? inspectRebuiltSuccessorCommandCards(register, projection, evidence)
+    : { structureValid: false, descriptors: [], errors: ['REBUILT_COMMAND_DESCRIPTOR_SKIPPED'] };
   for (const error of commands.errors) errors.add(error);
   if (leaksPrivatePattern({ projection, receipt, descriptors: commands.descriptors }))
     errors.add('PRIVATE_PATTERN_DETECTED');
@@ -437,7 +507,7 @@ function inspectRebuiltSuccessorRunArtifacts({ register, projectionBytes, accept
     privateRestrictedRegisterDigest: isObject(register) ? sha256Json(register) : null,
     restrictedCommandSetDigest: projection ? projection.restrictedCommandSetDigest : null,
     commandCardProjectionDigest: projection ? projection.commandCardProjectionDigest : null,
-    acceptedEvidenceKey: 'acceptedRebuiltSuccessorEvidence',
+    acceptedEvidenceKey: evidence ? evidence.key : null,
     commandCards: commands.descriptors,
     errors: [...errors],
   });
