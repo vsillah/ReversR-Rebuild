@@ -1,0 +1,51 @@
+{
+  "mode": "source-only-cad-development-auth-session-qualification-bridge",
+  "status": "BRIDGE_DISABLED_BY_DEFAULT",
+  "baseMainCommit": "e02f168d85c4bf11e7a2ccf802252659c0fb66b1",
+  "target": {
+    "teamSlug": "vambah-sillah",
+    "projectName": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "kind": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "siteUrl": "https://majestic-alligator-31.convex.site",
+    "appOrigin": "http://localhost:5001"
+  },
+  "sourceBridge": {
+    "enabledByDefault": false,
+    "requiresSourceRebind": true,
+    "requiresRunKeySha256": true,
+    "requiresAcceptedProjectionSha256": true,
+    "requiresAcceptanceReceiptSha256": true,
+    "requiresUtcWindow": true,
+    "maxWindowMinutes": 15,
+    "maxSyntheticIdentities": 2,
+    "deleteUsersOrAccounts": false,
+    "retainUsersAndAccounts": true
+  },
+  "liveSequenceWhenRebound": [
+    "provision exact two-slot password cohort through Convex Auth createAccount",
+    "sign in both synthetic identities through auth.signIn",
+    "read exact current session through server-verified Convex Auth identity",
+    "sign out one session and verify exact read returns null",
+    "revoke all sessions for both run-owned users and verify denial",
+    "write sanitized local evidence and receipt"
+  ],
+  "preservedBoundaries": {
+    "productionTouched": false,
+    "cadUploadActivation": false,
+    "cadConversion": false,
+    "privateCad": false,
+    "realUsers": false,
+    "emailSmsSlack": false,
+    "providerResourceMutation": false,
+    "usageBillingMutation": false,
+    "sandboxDispatch": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "nextAutopilotStep": {
+    "branch": "codex/cad-dev-auth-session-qualification-rebind",
+    "scope": "source-only one-run binding to an ignored local register, run-key digest, accepted evidence, and fresh UTC window"
+  }
+}
