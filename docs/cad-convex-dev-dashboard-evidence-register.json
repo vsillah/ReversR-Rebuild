@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-convex-development-dashboard-evidence-register",
+  "status": "CONVEX_DEVELOPMENT_DASHBOARD_EVIDENCE_REFRESHED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-dashboard-evidence-register",
+  "baseMainCommit": "7e6498de724f57cf3ea725a0f89b8b55f2bc4fb7",
+  "observedAtUtc": "2026-09-15T13:05:27Z",
+  "target": {
+    "teamSlug": "vambah-sillah",
+    "teamIdFromApproval": "405220",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "dev",
+    "dashboardPath": "https://dashboard.convex.dev/t/vambah-sillah/reversr-cad-auth-dev/majestic-alligator-31"
+  },
+  "operatorEvidence": {
+    "displayName": "Vambah Sillah",
+    "teamRoleObserved": "Admin",
+    "projectRoleObserved": "Project Admin",
+    "teamAdminObserved": true,
+    "accountEmailRecorded": false,
+    "dashboardMemberAnchorObserved": "414315"
+  },
+  "deploymentEvidence": {
+    "region": "US East (N. Virginia)",
+    "runtime": "Convex 1.45.0",
+    "dashboardState": "This deployment is currently running.",
+    "deploymentExpiry": "Never",
+    "lastDeployedLabel": "21 hours ago",
+    "lastDeployedBy": "Vambah Sillah",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site",
+    "immutableProjectIdVisible": false,
+    "immutableDeploymentIdVisible": false,
+    "identityNote": "Dashboard and CLI exposed stable slugs, deployment name, team slug, team ID from the approval text, and a member anchor. They did not expose separate immutable project or deployment IDs during this read-only pass."
+  },
+  "environmentRows": {
+    "source": "convex env list --names-only --deployment majestic-alligator-31 plus dashboard settings/environment-variables",
+    "valueRead": false,
+    "rows": [
+      {
+        "name": "JWKS",
+        "present": true,
+        "valueRead": false
+      },
+      {
+        "name": "JWT_PRIVATE_KEY",
+        "present": true,
+        "valueRead": false
+      },
+      {
+        "name": "SITE_URL",
+        "present": true,
+        "valueRead": false
+      }
+    ],
+    "excludedRows": [
+      "CONVEX_SITE_URL",
+      "CONVEX_DEPLOYMENT",
+      "deploy keys",
+      "provider OAuth client secrets",
+      "service credentials"
+    ]
+  },
+  "authenticationEvidence": {
+    "dashboardProviderState": "This deployment has no authentication providers yet.",
+    "sourceFunctionSpecAuthFunctionsObserved": [
+      "auth.js:isAuthenticated",
+      "auth.js:signIn",
+      "auth.js:signOut",
+      "auth.js:store"
+    ],
+    "providerMutationAuthorized": false,
+    "authConfigurationChangeAuthorized": false
+  },
+  "usageLimits": {
+    "source": "convex deployment usage-limits list --deployment majestic-alligator-31",
+    "monthlyUsageResetStatementObserved": true,
+    "limits": [
+      {
+        "metric": "Function calls",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "100 calls",
+        "current": "17 calls",
+        "percent": 17,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Query/Mutation compute",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB-hours",
+        "current": "0 GB-hours",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Action compute",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB-hours",
+        "current": "0 GB-hours",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Action compute (Node.js)",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB-hours",
+        "current": "0 GB-hours",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Action compute (CPU)",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB-hours",
+        "current": "0 GB-hours",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Database I/O",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB",
+        "current": "0 GB",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Search queries",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 Query-GB",
+        "current": "0 Query-GB",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      },
+      {
+        "metric": "Data egress",
+        "timeframe": "day",
+        "action": "disable",
+        "limit": "1 GB",
+        "current": "0 GB",
+        "percent": 0,
+        "active": true,
+        "triggered": false
+      }
+    ]
+  },
+  "usageSnapshot": {
+    "source": "convex deployment usage --deployment majestic-alligator-31",
+    "functionCallsDay": "17 calls",
+    "functionCallsMonth": "30 calls",
+    "queryMutationComputeDay": "0 GB-hours",
+    "actionComputeDay": "0 GB-hours",
+    "databaseIoDay": "0 GB",
+    "searchQueriesDay": "0 Query-GB",
+    "dataEgressDay": "0 GB"
+  },
+  "diagnosticSettings": {
+    "sendLogsToClient": "Default (enabled)",
+    "dashboardEditConfirmation": "Default (disabled)",
+    "insights": [],
+    "integrationsCategoriesObserved": [
+      "Authentication",
+      "Log Stream",
+      "PostHog Logs"
+    ],
+    "backupState": "No backup yet"
+  },
+  "readOnlySources": [
+    "convex deployments",
+    "convex env list --names-only --deployment majestic-alligator-31",
+    "convex function-spec --deployment majestic-alligator-31",
+    "convex insights --json --deployment majestic-alligator-31",
+    "convex deployment usage --deployment majestic-alligator-31",
+    "convex deployment usage-limits list --deployment majestic-alligator-31",
+    "dashboard deployment settings",
+    "dashboard environment variables settings",
+    "dashboard authentication settings",
+    "dashboard integrations settings",
+    "dashboard team members settings",
+    "dashboard project settings"
+  ],
+  "manifestUse": {
+    "u": "Records currently active deployment usage-limit rows and current usage snapshot for future U review.",
+    "k": "Confirms env row names only; does not prove custody, values, generation, vault state or key freshness.",
+    "e": "Confirms row presence and destination identity; does not authorize env mutation or value read.",
+    "d": "Confirms current development deployment identity, region, runtime and running state; does not authorize deployment.",
+    "t": "Confirms source-auth functions and disabled upload/conversion flags remained part of the inspected function/source context; does not authorize another run."
+  },
+  "authorityPreserved": {
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "secretGenerationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "deploymentAuthorized": false,
+    "liveTestAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false,
+    "productionAuthorized": false,
+    "pushAuthorized": false,
+    "mergeAuthorized": false,
+    "cleanupAuthorized": false,
+    "emailSmsSlackAuthorized": false
+  },
+  "remainingGates": [
+    "review this source-only evidence register",
+    "separate push/PR approval",
+    "separate merge and production fail-closed smoke after PR review",
+    "separate provider/resource/auth setup packet before any provider mutation",
+    "separate environment mutation packet before any env value installation or rotation",
+    "separate CAD upload activation approval",
+    "separate CAD conversion/Sandbox dispatch approval",
+    "separate private-CAD handling approval before any private CAD input"
+  ],
+  "futureApprovalPhrases": {
+    "publication": "I approve pushing only commit [full reviewed SHA] from codex/cad-dev-dashboard-evidence-register to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only Convex development dashboard evidence register. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, retry, second run, or branch/worktree cleanup.",
+    "merge": "I approve marking PR #[number] ready for review and merging it into main. Allow the normal Vercel production deployment from main. Preserve current production and development environment settings; do not configure provider/auth/resource settings, do not generate or store secrets, do not change usage or billing settings, do not enable CAD uploads, do not dispatch CAD conversion, do not run live tests, do not use private CAD, do not dispatch Sandbox work, do not retry any completed or stopped run, do not start a second run, do not send email/SMS/Slack, and do not cleanup the branch/worktree until production verification completes."
+  },
+  "expensesUsd": 0
+}
