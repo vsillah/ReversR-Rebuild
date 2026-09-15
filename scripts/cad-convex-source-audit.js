@@ -186,6 +186,9 @@ const files = [
   'docs/cad-dev-env-custody-rollback-receipts.md',
   'docs/cad-dev-env-custody-rollback-receipts.json',
   'scripts/cad-dev-env-custody-rollback-receipts.test.js',
+  'docs/cad-dev-auth-reviewed-source-gate.md',
+  'docs/cad-dev-auth-reviewed-source-gate.json',
+  'scripts/cad-dev-auth-reviewed-source-gate.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -213,7 +216,7 @@ for (const name of files) for (const pattern of patterns) if (pattern.test(read(
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|require\(['"](?:convex|node:https|node:http)['"]\)/.test(read('offline/cad-convex/previewRuntime.js')));
 assert.ok(!/process\.env|fetch\s*\(|require\s*\(/.test(read('offline/cad-convex/librarySessionHarness.js')));
-assert.match(read('convex/developmentAuth.ts'), /developmentAuthReviewed: boolean = false/);
+assert.match(read('convex/developmentAuth.ts'), /developmentAuthReviewed: boolean = true/);
 assert.match(read('convex/developmentAuth.ts'), /return developmentAuthReviewed \? developmentCohort : \[\]/);
 assert.match(read('convex/auth.ts'), /developmentPassword\(developmentPasswordCohort\(\)\)/);
 assert.ok(!/fetch\s*\(|process\.env/.test(read('offline/cad-convex/developmentService.js')));
@@ -246,6 +249,20 @@ assert.ok(envCustodyRollback.rowRollbackProjection.every(row => row.valueRead ==
 assert.equal(envCustodyRollback.acceptanceEffect.developmentAuthReviewedSourceGateStillFalse, true);
 assert.equal(envCustodyRollback.autopilotDecision.developmentEnvMutationMustStop, true);
 for (const value of Object.values(envCustodyRollback.authorityPreserved)) assert.equal(value, false);
+const reviewedSourceGate = JSON.parse(read('docs/cad-dev-auth-reviewed-source-gate.json'));
+assert.equal(reviewedSourceGate.reviewedSourceGate.developmentAuthReviewed, true);
+assert.deepEqual(reviewedSourceGate.reviewedSourceGate.syntheticCohort, [
+  'cad-test-alpha-20260915@auth-test.invalid',
+  'cad-test-beta-20260915@auth-test.invalid',
+]);
+assert.equal(reviewedSourceGate.reviewedSourceGate.realUsersAuthorized, false);
+assert.equal(reviewedSourceGate.safetyProperties.cadUploadsRemainDisabled, true);
+assert.equal(reviewedSourceGate.safetyProperties.cadConversionRemainDisabled, true);
+assert.equal(reviewedSourceGate.commandBindingEffect.exactDeployCommandMustBeReboundAfterMerge, true);
+assert.equal(reviewedSourceGate.commandBindingEffect.deploymentAuthorityNow, false);
+assert.equal(reviewedSourceGate.commandBindingEffect.rollbackAuthorityNow, false);
+assert.equal(reviewedSourceGate.nextSafeAction.branch, 'codex/cad-dev-reviewed-source-deploy-binding');
+for (const value of Object.values(reviewedSourceGate.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));

@@ -1,0 +1,122 @@
+{
+  "mode": "source-only-cad-development-auth-reviewed-source-gate",
+  "status": "REVIEWED_SOURCE_GATE_ENABLED_NO_DEPLOYMENT",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "389cadad0fee8a1abe8c334933a956f9845129cb",
+  "observedAtUtc": "2026-09-15T15:59:29Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "team": "vambah-sillah",
+    "teamId": "405220"
+  },
+  "sourceInputs": {
+    "envCustodyRollbackReceipts": {
+      "path": "docs/cad-dev-env-custody-rollback-receipts.json",
+      "sha256": "f391de8296cf6af494b147c04b5c97069ea423c1e6815b5c654ec0424ee9fc56"
+    },
+    "exactDeployRollbackWindowBinding": {
+      "path": "docs/cad-dev-exact-deploy-rollback-window-binding.json",
+      "sha256": "6cc4aa461cee61f03bc3eca5bffca756a62e6cb41f44269dae6c7da7a2fcfd93"
+    },
+    "costCustodyRollbackWindowEvidence": {
+      "path": "docs/cad-dev-cost-custody-rollback-window-evidence.json",
+      "sha256": "f1ceedf9e7130e661e27d0c58ca4825d51b56811b11a2339b98e20ed6c5f5a4d"
+    },
+    "priorDevelopmentAuthSource": {
+      "path": "convex/developmentAuth.ts",
+      "sha256": "652a79381b45a1454e91eee662d147bc521a375eb6251642b1d0029a0428a322"
+    },
+    "authAssemblySource": {
+      "path": "convex/auth.ts",
+      "sha256": "4852c956f4354e1eb2fda5fb29d08ebc69c5c587d11c1f6672fa14de0f908ec0"
+    }
+  },
+  "reviewedSourceGate": {
+    "developmentAuthReviewed": true,
+    "issuer": "https://majestic-alligator-31.convex.site",
+    "localOrigin": "http://localhost:5001",
+    "requiredEnvironmentRows": [
+      "CONVEX_SITE_URL",
+      "SITE_URL",
+      "JWT_PRIVATE_KEY",
+      "JWKS"
+    ],
+    "syntheticCohort": [
+      "cad-test-alpha-20260915@auth-test.invalid",
+      "cad-test-beta-20260915@auth-test.invalid"
+    ],
+    "syntheticCohortOnly": true,
+    "realUsersAuthorized": false,
+    "passwordSignInOnly": true,
+    "signupRejected": true,
+    "passwordResetRejected": true,
+    "extraParametersRejected": true,
+    "redirectExactAllowlistOnly": true
+  },
+  "safetyProperties": {
+    "cadUploadsRemainDisabled": true,
+    "cadConversionRemainDisabled": true,
+    "privateCADAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "productionMutationAuthorized": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerAuthResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "liveAuthSessionRunAuthorizedNow": false
+  },
+  "commandBindingEffect": {
+    "priorDeployCommandDigest": "f282f86280ae7f2cdd7125320721856dac6954027b3df35f7b8d16bb933ee629",
+    "priorDisabledRollbackCommandDigest": "43d423116f521c3f0c037e79df7bccbe5ac1b1b3a7d68661eb1798a34b1b3e44",
+    "exactDeployCommandMustBeReboundAfterMerge": true,
+    "deploymentAuthorityNow": false,
+    "rollbackAuthorityNow": false
+  },
+  "custody": {
+    "primaryCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "markRole": "tester-reviewer",
+    "markIsCustodian": false
+  },
+  "remainingGates": [
+    {
+      "id": "D-REVIEWED-SOURCE-DEPLOY-BINDING",
+      "status": "PENDING_AFTER_MERGE",
+      "reason": "The exact Convex development deploy command digest must bind to the merged source-gate commit."
+    },
+    {
+      "id": "D-DEVELOPMENT-DEPLOYMENT",
+      "status": "NOT_AUTHORIZED",
+      "reason": "This packet changes source only and grants no deployment or env mutation authority."
+    },
+    {
+      "id": "T-FRESH-RUN-WINDOW",
+      "status": "PROPOSED_NOT_ACCEPTED",
+      "reason": "The next qualification window remains a separate evidence and run gate."
+    }
+  ],
+  "nextSafeAction": {
+    "branch": "codex/cad-dev-reviewed-source-deploy-binding",
+    "scope": "source-only command binding refresh to the merged reviewed source-gate commit and one fresh window proposal",
+    "canProceedWithoutUserInput": true,
+    "stopBefore": "development deployment, env/provider/resource mutation, live Auth/session run, upload activation, conversion, private CAD, external messages"
+  },
+  "authorityPreserved": {
+    "productionUploadActivation": false,
+    "productionConversion": false,
+    "privateCAD": false,
+    "realUserEnrollment": false,
+    "emailSmsSlack": false,
+    "secretValueReadOrGeneration": false,
+    "developmentEnvMutation": false,
+    "providerAuthResourceMutation": false,
+    "developmentDeployment": false,
+    "liveAuthSessionRun": false,
+    "storeMutation": false,
+    "retryOrSecondRun": false,
+    "billingMutation": false,
+    "sandboxDispatch": false
+  }
+}
