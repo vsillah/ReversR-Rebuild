@@ -2,6 +2,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
 const runner = require('./cad-dev-upload-session-qualification-live-runner');
 
@@ -38,8 +40,6 @@ function registers() {
       runId: 'cad-dev-upload-session-test',
       runKey,
       runKeySha256: sha256(runKey),
-      acceptedProjectionSha256: 'c'.repeat(64),
-      acceptanceReceiptSha256: 'd'.repeat(64),
       windowStartUtc: new Date(now - 1000).toISOString(),
       windowEndUtc: new Date(now + 60000).toISOString(),
       syntheticContext: {
@@ -69,13 +69,37 @@ test('runner validates private registers without leaking raw authority into sour
     /AUTH_REGISTER_PASSWORD_INVALID/);
   assert.throws(() => runner.validateUploadRegister({ ...uploadRegister, runKeySha256: '0'.repeat(64) }),
     /UPLOAD_REGISTER_KEY_INVALID/);
+  assert.doesNotThrow(() => runner.validateUploadRegister({
+    ...uploadRegister,
+    acceptedProjectionSha256: undefined,
+    acceptanceReceiptSha256: undefined,
+  }));
   assert.throws(() => runner.validateUploadRegister({ ...uploadRegister,
     syntheticContext: { ...uploadRegister.syntheticContext, expectedShopId: '' } }), /UPLOAD_REGISTER_CONTEXT_INVALID/);
   assert.doesNotMatch(runnerSource, /cad-test-alpha-password|cad-test-beta-password|BEGIN PRIVATE KEY|sk_live_|github_pat_|ghp_/);
 });
 
+test('runner derives accepted binding digests from adjacent mode-locked artifacts', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cad-upload-artifacts-'));
+  fs.chmodSync(dir, 0o700);
+  const projectionPath = path.join(dir, 'source-safe-rebind-projection.json');
+  const acceptanceReceiptPath = path.join(dir, 'rebind-acceptance-receipt.json');
+  const projection = { mode: 'source-safe-cad-dev-upload-session-qualification-rebind-projection', runId: 'x' };
+  const receipt = { mode: 'cad-dev-upload-session-qualification-rebind-acceptance-receipt', runId: 'x' };
+  fs.writeFileSync(projectionPath, JSON.stringify(projection, null, 2) + '\n', { mode: 0o600 });
+  fs.writeFileSync(acceptanceReceiptPath, JSON.stringify(receipt, null, 2) + '\n', { mode: 0o600 });
+  const artifacts = runner.readAcceptedArtifacts({ projectionPath, acceptanceReceiptPath });
+  assert.equal(artifacts.acceptedProjectionSha256, sha256(fs.readFileSync(projectionPath)));
+  assert.equal(artifacts.acceptanceReceiptSha256, sha256(fs.readFileSync(acceptanceReceiptPath)));
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
 test('runner signs in, reads exact authenticated session, calls bridge, and signs out once', async () => {
   const { authRegister, uploadRegister } = registers();
+  const acceptedArtifacts = {
+    acceptedProjectionSha256: 'c'.repeat(64),
+    acceptanceReceiptSha256: 'd'.repeat(64),
+  };
   const calls = [];
   const api = {
     auth: { signIn: 'signIn', signOut: 'signOut' },
@@ -115,6 +139,8 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
         calls.push(['auth-query', fn, token, args]);
         assert.equal(fn, 'readCurrent');
         assert.equal(args.runKeySha256, uploadRegister.runKeySha256);
+        assert.equal(args.acceptedProjectionSha256, acceptedArtifacts.acceptedProjectionSha256);
+        assert.equal(args.acceptanceReceiptSha256, acceptedArtifacts.acceptanceReceiptSha256);
         return {
           userId: 'user-id-alpha',
           loginSessionId: 'session-id-alpha',
@@ -130,7 +156,7 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
       },
     }),
   };
-  const evidence = await runner.runWithClients({ uploadRegister, authRegister, clients, api });
+  const evidence = await runner.runWithClients({ uploadRegister, authRegister, acceptedArtifacts, clients, api });
   assert.equal(evidence.status, 'DEVELOPMENT_UPLOAD_SESSION_QUALIFICATION_EXECUTED');
   assert.equal(evidence.cadUploadsDisabled, true);
   assert.equal(evidence.bodyAdmissionAuthorized, false);
