@@ -14,6 +14,8 @@ import type * as cad from "../cad.js";
 import type * as cadDevAuthQualification from "../cadDevAuthQualification.js";
 import type * as cadDevAuthQualificationBinding from "../cadDevAuthQualificationBinding.js";
 import type * as cadDevAuthQualificationStore from "../cadDevAuthQualificationStore.js";
+import type * as cadDevUploadSessionQualification from "../cadDevUploadSessionQualification.js";
+import type * as cadDevUploadSessionQualificationBinding from "../cadDevUploadSessionQualificationBinding.js";
 import type * as cadDurableEngine from "../cadDurableEngine.js";
 import type * as developmentAuth from "../developmentAuth.js";
 import type * as http from "../http.js";
@@ -33,6 +35,8 @@ import type * as librarySession from "../librarySession.js";
 "cadDevAuthQualification": typeof cadDevAuthQualification,
 "cadDevAuthQualificationBinding": typeof cadDevAuthQualificationBinding,
 "cadDevAuthQualificationStore": typeof cadDevAuthQualificationStore,
+"cadDevUploadSessionQualification": typeof cadDevUploadSessionQualification,
+"cadDevUploadSessionQualificationBinding": typeof cadDevUploadSessionQualificationBinding,
 "cadDurableEngine": typeof cadDurableEngine,
 "developmentAuth": typeof developmentAuth,
 "http": typeof http,

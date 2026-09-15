@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-upload-session-qualification-bridge",
+  "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_BRIDGE_READY",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "majestic-alligator-31",
+  "baseMainCommit": "ce2e38e24ca80538cfe992b05689c3d3ef11bfdb",
+  "branch": "codex/cad-dev-upload-session-qualification-bridge",
+  "liveRunAuthorizedByThisPacket": false,
+  "dependsOn": {
+    "executorPacket": {
+      "path": "docs/cad-dev-upload-session-qualification-executor.json",
+      "status": "SOURCE_ONLY_UPLOAD_SESSION_QUALIFICATION_EXECUTOR_READY"
+    },
+    "authSessionCloseout": {
+      "path": "docs/cad-dev-auth-session-run-closeout.json",
+      "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "evidenceSha256": "7cbb352cdefd3d190e30db67cd22c31a3712f5728addfc5024e37511ba161203",
+      "receiptSha256": "55f4b45bd74bc051ba8217f2b4946736bc27f5993c064a8e3ca8aa6bcbbd7ee0"
+    }
+  },
+  "sourceFiles": [
+    "convex/cadDevUploadSessionQualificationBinding.ts",
+    "convex/cadDevUploadSessionQualification.ts",
+    "scripts/cad-dev-upload-session-qualification-bridge.test.js"
+  ],
+  "bridge": {
+    "publicAction": "cadDevUploadSessionQualification:issueReadRevoke",
+    "internalFunctionsUsed": [
+      "internal.cad.insertIfAbsent",
+      "internal.cad.read",
+      "internal.cad.revoke"
+    ],
+    "defaultBindingEnabled": false,
+    "rawCredentialAccepted": false,
+    "credentialDigestOnly": true,
+    "bodyAdmissionAuthorized": false,
+    "retainedRevokedState": true
+  },
+  "authorityPreserved": {
+    "liveRunAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "productionAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "futureGate": {
+    "nextExpectedPhase": "restricted evidence/register rebind for one development-only upload-session qualification run",
+    "requiresBeforeLiveRun": [
+      "accepted private register and source-safe projection",
+      "source rebind enabling exactly one run tuple",
+      "Convex development deployment of reviewed source",
+      "one bounded development-only run approval naming exact UTC window",
+      "production fail-closed smoke after this source-only PR merges"
+    ]
+  },
+  "expensesUsd": 0
+}

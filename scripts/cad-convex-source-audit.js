@@ -111,6 +111,11 @@ const files = [
   'docs/cad-dev-upload-session-qualification-executor.json',
   'scripts/cad-dev-upload-session-qualification-executor.js',
   'scripts/cad-dev-upload-session-qualification-executor.test.js',
+  'docs/cad-dev-upload-session-qualification-bridge.md',
+  'docs/cad-dev-upload-session-qualification-bridge.json',
+  'convex/cadDevUploadSessionQualificationBinding.ts',
+  'convex/cadDevUploadSessionQualification.ts',
+  'scripts/cad-dev-upload-session-qualification-bridge.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
