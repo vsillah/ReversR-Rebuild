@@ -8,6 +8,7 @@ const binding = JSON.parse(fs.readFileSync('docs/cad-dev-exact-deploy-rollback-w
 const dashboard = JSON.parse(fs.readFileSync('docs/cad-convex-dev-dashboard-evidence-register.json', 'utf8'));
 const markdown = fs.readFileSync('docs/cad-dev-env-custody-rollback-receipts.md', 'utf8');
 const developmentAuth = fs.readFileSync('convex/developmentAuth.ts', 'utf8');
+const reviewedSourceGate = JSON.parse(fs.readFileSync('docs/cad-dev-auth-reviewed-source-gate.json', 'utf8'));
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 const fileDigest = file => sha256(fs.readFileSync(file));
@@ -75,7 +76,9 @@ test('acceptance effect closes only value-free planning receipts', () => {
   assert.equal(packet.acceptanceEffect.developmentAuthReviewedSourceGateStillFalse, true);
   assert.equal(packet.acceptanceEffect.developmentDeploymentAuthorizedNow, false);
   assert.equal(packet.acceptanceEffect.developmentLiveAuthRunAuthorizedNow, false);
-  assert.match(developmentAuth, /developmentAuthReviewed: boolean = false/);
+  assert.match(developmentAuth, /developmentAuthReviewed: boolean = true/);
+  assert.equal(reviewedSourceGate.reviewedSourceGate.developmentAuthReviewed, true);
+  assert.equal(reviewedSourceGate.commandBindingEffect.exactDeployCommandMustBeReboundAfterMerge, true);
 });
 
 test('remaining gates route to source gate work and keep live mutation stopped', () => {

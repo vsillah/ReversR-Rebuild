@@ -2,7 +2,7 @@
 import { Password } from '@convex-dev/auth/providers/Password';
 import type { PasswordConfig } from '@convex-dev/auth/providers/Password';
 import type { DataModel } from './_generated/dataModel';
-export const developmentAuthReviewed: boolean = false;
+export const developmentAuthReviewed: boolean = true;
 export const developmentOrigin = 'http://localhost:5001';
 export const developmentIssuer = 'https://majestic-alligator-31.convex.site';
 export const developmentCohort = [
