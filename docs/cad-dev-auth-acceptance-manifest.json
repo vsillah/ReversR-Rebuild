@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-auth-edt-acceptance-manifest",
+  "status": "ASSEMBLED_WITH_BLOCKING_EVIDENCE_GAPS_NO_LIVE_AUTH",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-auth-acceptance-manifest",
+  "baseMainCommit": "c29e09c8c8c1046071e5f620f17041c082f5bf81",
+  "observedAtUtc": "2026-09-15T14:17:56Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "sourceInputs": {
+    "autopilotGuard": "docs/cad-dev-readiness-autopilot.json",
+    "retentionLockoutBridge": "docs/cad-dev-retention-lockout-autopilot.json",
+    "authSourceEnablement": "offline/cad-convex/developmentAuthSourceEnablement.json",
+    "ukedtManifest": "docs/cad-dev-ukedt-manifest-assembly.json",
+    "dashboardEvidence": "docs/cad-convex-dev-dashboard-evidence-register.json",
+    "successfulPriorQualification": "docs/cad-successful-bounded-dev-qualification-closeout.json"
+  },
+  "sourceState": {
+    "developmentAuthReviewed": false,
+    "preparedSyntheticCohort": [
+      "cad-test-alpha-20260915@auth-test.invalid",
+      "cad-test-beta-20260915@auth-test.invalid"
+    ],
+    "installedRuntimeCohort": [],
+    "convexAuthProviderEnabledNow": false,
+    "cadUploadsRemainDisabled": true,
+    "cadConversionRemainDisabled": true
+  },
+  "uUsageEvidence": {
+    "existingDailyFunctionCallDisableLimit": "100 calls",
+    "latestRecordedFunctionCallsAtDashboardRefresh": "17 calls",
+    "computeAndEgressDisableLimitsObserved": true,
+    "teamSpendingLimitVerified": false,
+    "taxesFeesProviderLagVerified": false,
+    "allInCostCapAccepted": false,
+    "usageBillingMutationAuthorized": false
+  },
+  "kSecretCustodyEvidence": {
+    "rowNamesObservedWithoutValues": [
+      "JWKS",
+      "JWT_PRIVATE_KEY",
+      "SITE_URL"
+    ],
+    "secretValuesRead": false,
+    "valueHashesRecorded": false,
+    "vaultItemVersionAccepted": false,
+    "backupCustodianAccepted": false,
+    "generatorChecksumAccepted": false,
+    "secretGenerationAuthorizedNow": false
+  },
+  "eEnvironmentEvidence": {
+    "destinationRowNamesObserved": true,
+    "rowPriorVersionOrAbsenceReceiptsAccepted": false,
+    "rowSpecificRollbackCommandsAccepted": false,
+    "sourceShaConsumingRows": "c29e09c8c8c1046071e5f620f17041c082f5bf81",
+    "envMutationAuthorizedNow": false
+  },
+  "dDeploymentEvidence": {
+    "deploymentIdentityObserved": true,
+    "currentRuntime": "Convex 1.45.0",
+    "durableReleaseIdVerified": false,
+    "pinnedCliDeployCommandAccepted": false,
+    "rollbackSourceShaAccepted": false,
+    "rollbackDeploymentCommandAccepted": false,
+    "developmentDeploymentAuthorizedNow": false
+  },
+  "tQualificationEvidence": {
+    "priorFreshWindow1030RunCompleted": true,
+    "priorFreshWindow1030UnknownOutcome": false,
+    "priorRunMayBeRetried": false,
+    "freshRunWindowAccepted": false,
+    "retentionPolicyAccepted": false,
+    "lockoutFenceAccepted": false,
+    "privateRegisterReceiptAccepted": false,
+    "singleRunAuthorizedNow": false,
+    "automaticRetryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "blockingGates": [
+    "teamSpendingLimitOrAllInCostCapNotAccepted",
+    "secretCustodyAndBackupNotAccepted",
+    "envRollbackReceiptsNotAccepted",
+    "durableDevelopmentReleaseAndRollbackNotAccepted",
+    "retentionPolicyNotAccepted",
+    "lockoutFenceNotAccepted",
+    "privateRegisterReceiptNotAccepted",
+    "freshRunWindowNotAccepted"
+  ],
+  "autopilotDecision": {
+    "sourcePrFlowMayContinue": true,
+    "prepareRestrictedEvidenceMayContinue": true,
+    "developmentEnvMutationMustStop": true,
+    "developmentDeploymentMustStop": true,
+    "developmentLiveAuthRunMustStop": true,
+    "uploadActivationMustStop": true,
+    "conversionMustStop": true,
+    "reason": "the E/D/T manifest is assembled, but required U/K/E/D/T acceptance evidence is incomplete"
+  },
+  "nextAutomatedSourceSlice": {
+    "branch": "codex/cad-dev-restricted-edt-evidence-prep",
+    "scope": "restricted-local/source-safe evidence prep for value-free secret custody, row rollback receipts, cost cap proof, deployment rollback commands, accepted retention/lockout digests, and one fresh development-only Auth/session run window",
+    "liveMutationAuthorized": false,
+    "developmentDeploymentAuthorized": false
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
