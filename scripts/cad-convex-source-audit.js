@@ -183,6 +183,9 @@ const files = [
   'docs/cad-dev-exact-deploy-rollback-window-binding.md',
   'docs/cad-dev-exact-deploy-rollback-window-binding.json',
   'scripts/cad-dev-exact-deploy-rollback-window-binding.test.js',
+  'docs/cad-dev-env-custody-rollback-receipts.md',
+  'docs/cad-dev-env-custody-rollback-receipts.json',
+  'scripts/cad-dev-env-custody-rollback-receipts.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -231,6 +234,18 @@ assert.equal(exactDeployBinding.exactCommandBinding.executableAuthorityNow, fals
 assert.equal(exactDeployBinding.freshWindowProposal.acceptedNow, false);
 assert.equal(exactDeployBinding.freshWindowProposal.liveRunAuthorizedNow, false);
 for (const value of Object.values(exactDeployBinding.authorityPreserved)) assert.equal(value, false);
+const envCustodyRollback = JSON.parse(read('docs/cad-dev-env-custody-rollback-receipts.json'));
+assert.equal(envCustodyRollback.ignoredLocalReceipt.containsSecretValues, false);
+assert.equal(envCustodyRollback.ignoredLocalReceipt.containsValueHashes, false);
+assert.equal(envCustodyRollback.custodyProjection.backupCustodian, 'Amina');
+assert.equal(envCustodyRollback.envFileCustodyProjection.valueRead, false);
+assert.equal(envCustodyRollback.envFileCustodyProjection.mutationAuthorizedNow, false);
+assert.deepEqual(envCustodyRollback.rowRollbackProjection.map(row => row.name), ['JWKS', 'JWT_PRIVATE_KEY', 'SITE_URL']);
+assert.ok(envCustodyRollback.rowRollbackProjection.every(row => row.valueRead === false && row.valueHashRecorded === false
+  && row.mutationAuthorizedNow === false));
+assert.equal(envCustodyRollback.acceptanceEffect.developmentAuthReviewedSourceGateStillFalse, true);
+assert.equal(envCustodyRollback.autopilotDecision.developmentEnvMutationMustStop, true);
+for (const value of Object.values(envCustodyRollback.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));
