@@ -198,6 +198,13 @@ const files = [
   'docs/cad-dev-once-push-evidence-codegen.md',
   'docs/cad-dev-once-push-evidence-codegen.json',
   'scripts/cad-dev-once-push-evidence-codegen.test.js',
+  'docs/cad-dev-auth-session-qualification-bridge.md',
+  'docs/cad-dev-auth-session-qualification-bridge.json',
+  'convex/cadDevAuthQualificationBinding.ts',
+  'convex/cadDevAuthQualification.ts',
+  'convex/cadDevAuthQualificationStore.ts',
+  'scripts/cad-dev-auth-session-qualification-runner.js',
+  'scripts/cad-dev-auth-session-qualification-bridge.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -302,6 +309,17 @@ assert.equal(devOncePushEvidence.readOnlyVerification.functionSpec.totalFunction
 assert.equal(devOncePushEvidence.readOnlyVerification.httpDiscovery.jwksPrivateFieldsObserved, false);
 assert.equal(devOncePushEvidence.codegenAlignment.runtimeSourceChanged, false);
 for (const value of Object.values(devOncePushEvidence.authorityPreserved)) assert.equal(value, false);
+const devAuthSessionBridge = JSON.parse(read('docs/cad-dev-auth-session-qualification-bridge.json'));
+assert.equal(devAuthSessionBridge.status, 'BRIDGE_DISABLED_BY_DEFAULT');
+assert.equal(devAuthSessionBridge.sourceBridge.enabledByDefault, false);
+assert.equal(devAuthSessionBridge.sourceBridge.deleteUsersOrAccounts, false);
+assert.equal(devAuthSessionBridge.sourceBridge.retainUsersAndAccounts, true);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: false/);
+assert.match(read('convex/cadDevAuthQualification.ts'), /createAccount/);
+assert.match(read('convex/cadDevAuthQualification.ts'), /invalidateSessions/);
+assert.ok(!/ctx\.db\.delete/.test(read('convex/cadDevAuthQualification.ts')));
+assert.match(read('convex/cadDevAuthQualificationStore.ts'), /getAuthSessionId\(ctx\)/);
+assert.match(read('scripts/cad-dev-auth-session-qualification-runner.js'), /REGISTER_PATH_INVALID/);
 assert.equal(reviewedSourceDeployBinding.autopilotDecision.developmentLiveAuthRunMustStop, true);
 for (const value of Object.values(reviewedSourceDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
