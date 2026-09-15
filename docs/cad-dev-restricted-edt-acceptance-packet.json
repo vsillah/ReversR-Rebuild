@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-restricted-edt-acceptance-packet",
+  "status": "PARTIAL_RESTRICTED_EDT_ACCEPTANCE_COST_CAP_HARD_STOP",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-restricted-edt-acceptance-packet",
+  "baseMainCommit": "5e02943f9dd8527c27ea9f6b3654661d9324c620",
+  "observedAtUtc": "2026-09-15T14:38:00Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development"
+  },
+  "sourceInputs": {
+    "restrictedEdtEvidencePrep": {
+      "path": "docs/cad-dev-restricted-edt-evidence-prep.json",
+      "mergeCommit": "5e02943f9dd8527c27ea9f6b3654661d9324c620"
+    },
+    "authAcceptanceManifest": {
+      "path": "docs/cad-dev-auth-acceptance-manifest.json"
+    },
+    "dashboardEvidence": {
+      "path": "docs/cad-convex-dev-dashboard-evidence-register.json"
+    }
+  },
+  "ignoredLocalReceipt": {
+    "pathRef": ".local/cad-convex/restricted-edt-acceptance-packet/restricted-edt-local-receipts.json",
+    "sha256": "b693cb6e53943f2a9066200fd40de87b302a880f8b1f0417d20deb2fab2ebef1",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnored": true,
+    "containsSecretValues": false,
+    "containsPrivateCad": false,
+    "containsRealUsers": false
+  },
+  "acceptedForSourcePlanning": {
+    "valueFreeSecretCustodyRefs": true,
+    "envRollbackRefShape": true,
+    "retentionPolicyDigest": "a72592cd6215b747032574058bc0a4f8531be8923a5fa828a123f589b7d8687c",
+    "lockoutReadinessDigest": "6a3f2a5bd8d8b6114dabb49728964be3d64e76f50914356ccbcbb2bb727be37f",
+    "retainedStateNoDeleteCustodyRequired": true,
+    "developmentSourceShaForFutureDGate": "5e02943f9dd8527c27ea9f6b3654661d9324c620"
+  },
+  "readOnlyUsageRefresh": {
+    "commandsRun": [
+      "npx convex deployment usage-limits list --deployment majestic-alligator-31",
+      "npx convex deployment usage --deployment majestic-alligator-31"
+    ],
+    "functionCallsDailyDisableLimit": "100 calls",
+    "functionCallsCurrentDay": "17 calls",
+    "functionCallsCurrentMonth": "30 calls",
+    "computeStorageEgressObservedZero": true,
+    "usageLimitsActive": true,
+    "usageLimitsTriggered": false,
+    "settingsMutated": false,
+    "teamAllInSpendingCapVerified": false,
+    "taxesFeesProviderLagVerified": false
+  },
+  "hardStopsRemaining": [
+    "teamAllInSpendingCapUnverified",
+    "backupCustodianNotNamedForLiveMutation",
+    "durableDevelopmentReleaseIdNotBound",
+    "pinnedDeployAndRollbackCommandDigestsNotBound",
+    "freshFutureUtcRunWindowNotAccepted"
+  ],
+  "autopilotDecision": {
+    "sourcePrFlowMayContinue": true,
+    "readOnlyEvidenceMayContinue": true,
+    "developmentEnvMutationMustStop": true,
+    "developmentDeploymentMustStop": true,
+    "developmentLiveAuthRunMustStop": true,
+    "reason": "source-safe receipt projection is accepted for planning only, while cost cap, backup custodian, deployment rollback and fresh window evidence remain blocking"
+  },
+  "nextSafeAction": {
+    "kind": "hard-stop-resolution",
+    "scope": "read-only or source-only evidence only unless all-in cost cap, backup custodian, deployment rollback, and fresh run window are concretely accepted",
+    "requiresUserOrDashboardEvidence": [
+      "team all-in spending cap evidence or explicit below-USD-10 bounded cost receipt",
+      "named backup custodian acceptance",
+      "durable development release identifier and rollback command digest",
+      "fresh future UTC window for one run"
+    ]
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
