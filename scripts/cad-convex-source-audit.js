@@ -205,6 +205,9 @@ const files = [
   'convex/cadDevAuthQualificationStore.ts',
   'scripts/cad-dev-auth-session-qualification-runner.js',
   'scripts/cad-dev-auth-session-qualification-bridge.test.js',
+  'docs/cad-dev-auth-session-qualification-rebind.md',
+  'docs/cad-dev-auth-session-qualification-rebind.json',
+  'scripts/cad-dev-auth-session-qualification-rebind.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -314,7 +317,13 @@ assert.equal(devAuthSessionBridge.status, 'BRIDGE_DISABLED_BY_DEFAULT');
 assert.equal(devAuthSessionBridge.sourceBridge.enabledByDefault, false);
 assert.equal(devAuthSessionBridge.sourceBridge.deleteUsersOrAccounts, false);
 assert.equal(devAuthSessionBridge.sourceBridge.retainUsersAndAccounts, true);
-assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: false/);
+const devAuthSessionRebind = JSON.parse(read('docs/cad-dev-auth-session-qualification-rebind.json'));
+assert.equal(devAuthSessionRebind.status, 'REBIND_READY_FOR_ONE_DEVELOPMENT_WINDOW_NO_RUN_EXECUTED');
+assert.equal(devAuthSessionRebind.authorityPreserved.liveRunExecutedByThisPacket, false);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), /enabled: true/);
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.runKeySha256));
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.acceptedProjectionSha256));
+assert.match(read('convex/cadDevAuthQualificationBinding.ts'), new RegExp(devAuthSessionRebind.acceptanceReceiptSha256));
 assert.match(read('convex/cadDevAuthQualification.ts'), /createAccount/);
 assert.match(read('convex/cadDevAuthQualification.ts'), /invalidateSessions/);
 assert.ok(!/ctx\.db\.delete/.test(read('convex/cadDevAuthQualification.ts')));

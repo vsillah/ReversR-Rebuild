@@ -24,13 +24,23 @@ test('packet records a disabled-by-default source bridge with exact development 
   assert.equal(packet.sourceBridge.retainUsersAndAccounts, true);
 });
 
-test('binding source is inert until a future one-run rebind installs every gate', () => {
-  assert.match(binding, /enabled: false/);
-  assert.match(binding, /runKeySha256: null/);
-  assert.match(binding, /acceptedProjectionSha256: null/);
-  assert.match(binding, /acceptanceReceiptSha256: null/);
-  assert.match(binding, /windowStartMs: null/);
-  assert.match(binding, /windowEndMs: null/);
+test('binding source is controlled by either the disabled bridge or a reviewed one-run rebind', () => {
+  const disabled = /enabled: false/.test(binding);
+  const rebound = /enabled: true/.test(binding) && /mode: 'cad-dev-auth-session-qualification-rebind-1800z'/.test(binding);
+  assert.equal(disabled || rebound, true);
+  if (disabled) {
+    assert.match(binding, /runKeySha256: null/);
+    assert.match(binding, /acceptedProjectionSha256: null/);
+    assert.match(binding, /acceptanceReceiptSha256: null/);
+    assert.match(binding, /windowStartMs: null/);
+    assert.match(binding, /windowEndMs: null/);
+  } else {
+    assert.match(binding, /runKeySha256: '[a-f0-9]{64}'/);
+    assert.match(binding, /acceptedProjectionSha256: '[a-f0-9]{64}'/);
+    assert.match(binding, /acceptanceReceiptSha256: '[a-f0-9]{64}'/);
+    assert.match(binding, /windowStartMs: 1789495200000/);
+    assert.match(binding, /windowEndMs: 1789496100000/);
+  }
   assert.match(binding, /deleteUsersOrAccounts: false/);
   assert.match(binding, /retainUsersAndAccounts: true/);
 });
