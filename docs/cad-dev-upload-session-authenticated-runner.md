@@ -42,7 +42,7 @@ This packet adds:
     `cadUserAuthority` and `cadMemberships` rows needed for the transactional
     insert path;
   - revokes those synthetic authority rows in a `finally` path without deletion;
-  - signs out;
+  - signs out in a local `finally` path even when the bridge rejects;
   - writes sanitized local evidence and a local receipt.
 
 The runner does not contain raw passwords, raw run keys, upload credentials,
@@ -72,8 +72,10 @@ The first approved upload-session qualification attempt stopped fail-closed at
 the signed-in synthetic Password user had an exact Auth session, but the CAD store
 authority path requires existing `cadUserAuthority` and `cadMemberships` rows for
 the same user/shop before an upload session can be inserted. No sanitized
-evidence file was written by the failed runner, and no retry is authorized by
-that attempt.
+evidence file was written by the failed runner. The original runner also only
+signed out after a successful bridge response, so the hardened runner moves
+sign-out into a local `finally` path for future attempts. No retry is authorized
+by the failed attempt.
 
 This repair keeps the public bridge digest-bound and disabled from body
 admission, while adding an explicit development-only authority wrapper for the
