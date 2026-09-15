@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-development-exact-deploy-rollback-window-binding",
+  "status": "EXACT_COMMAND_DIGESTS_BOUND_WINDOW_PROPOSED_NO_LIVE_AUTH",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-exact-deploy-rollback-window-binding",
+  "baseMainCommit": "c30af570b2baede03e1a78739f176beb30f32bfa",
+  "observedAtUtc": "2026-09-15T15:32:08Z",
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "teamSlug": "vambah-sillah",
+    "teamId": 405220,
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development",
+    "cloudUrl": "https://majestic-alligator-31.convex.cloud",
+    "httpActionsUrl": "https://majestic-alligator-31.convex.site"
+  },
+  "sourceInputs": {
+    "costCustodyRollbackWindowEvidence": {
+      "path": "docs/cad-dev-cost-custody-rollback-window-evidence.json",
+      "mergeCommit": "c30af570b2baede03e1a78739f176beb30f32bfa",
+      "sha256": "f1ceedf9e7130e661e27d0c58ca4825d51b56811b11a2339b98e20ed6c5f5a4d"
+    },
+    "restrictedEdtAcceptancePacket": {
+      "path": "docs/cad-dev-restricted-edt-acceptance-packet.json",
+      "mergeCommit": "bfc32b615517e84db75f0d65af4905d0f7a5ae9e",
+      "sha256": "238f5e784356fdb86ba16a5144033304669acd524b544b9dfdce22917e72b68b"
+    },
+    "authAcceptanceManifest": {
+      "path": "docs/cad-dev-auth-acceptance-manifest.json",
+      "mergeCommit": "9c77d01a83815e48c4dac68f36ec4b81ea3f1838",
+      "sha256": "da2f8f2ccb34aeb5a242980897640a72dff7254ce5c4685f0551be558b1adba8"
+    },
+    "authSourceEnablement": {
+      "path": "offline/cad-convex/developmentAuthSourceEnablement.json",
+      "mergeCommit": "c29e09c8c8c1046071e5f620f17041c082f5bf81",
+      "sha256": "89e3eef74bc867d30901fdb9eb1450b294bc7974a47ee4cf7ef85b042532440b"
+    },
+    "developmentAuthSource": {
+      "path": "convex/developmentAuth.ts",
+      "sha256": "652a79381b45a1454e91eee662d147bc521a375eb6251642b1d0029a0428a322"
+    },
+    "convexAuthSource": {
+      "path": "convex/auth.ts",
+      "sha256": "4852c956f4354e1eb2fda5fb29d08ebc69c5c587d11c1f6672fa14de0f908ec0"
+    }
+  },
+  "resolvedDecisionInputs": {
+    "convexTeamSpendingDisableThresholdUsdPerMonth": 50,
+    "convexThresholdAcceptedForInternalTesting": true,
+    "convexThresholdMutatedByThisPacket": false,
+    "endToEndCadRunCostKnown": false,
+    "endToEndCadRunCostLedgerRequiredFastFollow": true,
+    "backupCustodian": "Amina",
+    "backupCustodianAccepted": true,
+    "markRole": "tester-reviewer",
+    "markIsCustodian": false
+  },
+  "runtimeSourceState": {
+    "candidateSourceSha": "c30af570b2baede03e1a78739f176beb30f32bfa",
+    "disabledRollbackSourceSha": "fa480868ddfd28cc99c2420ab341859f525e83a2",
+    "runtimeDiffFromOriginalDisabledAuthSource": false,
+    "developmentAuthReviewed": false,
+    "installedRuntimeCohort": [],
+    "cadUploadsRemainDisabled": true,
+    "cadConversionRemainDisabled": true
+  },
+  "exactCommandBinding": {
+    "digestKind": "exact-command-digest",
+    "deployCommand": {
+      "command": "npx --no-install convex deploy --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable --message cad-dev-auth-edt:c30af570b2baede03e1a78739f176beb30f32bfa",
+      "sha256": "f282f86280ae7f2cdd7125320721856dac6954027b3df35f7b8d16bb933ee629",
+      "sourceSha": "c30af570b2baede03e1a78739f176beb30f32bfa",
+      "envFileRef": ".local/cad-convex/dev-auth-edt/convex-deployment.env",
+      "authorityNow": false
+    },
+    "disabledRollbackCommand": {
+      "command": "git -C . checkout fa480868ddfd28cc99c2420ab341859f525e83a2 && npx --no-install convex deploy --env-file .local/cad-convex/dev-auth-edt/convex-deployment.env --typecheck try --codegen enable --message cad-dev-auth-disabled-rollback:fa480868ddfd28cc99c2420ab341859f525e83a2",
+      "sha256": "43d423116f521c3f0c037e79df7bccbe5ac1b1b3a7d68661eb1798a34b1b3e44",
+      "sourceSha": "fa480868ddfd28cc99c2420ab341859f525e83a2",
+      "rollbackCanDeleteRows": false,
+      "authorityNow": false
+    },
+    "executableAuthorityNow": false,
+    "blockedUntilAccepted": [
+      "ignored env-file custody receipt",
+      "row-specific env rollback receipt",
+      "fresh UTC window acceptance",
+      "development deployment approval"
+    ]
+  },
+  "freshWindowProposal": {
+    "proposedStartUtc": "2026-09-15T19:00:00Z",
+    "proposedEndUtc": "2026-09-15T19:15:00Z",
+    "maxDurationMinutes": 15,
+    "singleRunOnly": true,
+    "automaticRetryAuthorized": false,
+    "secondRunAuthorized": false,
+    "acceptedNow": false,
+    "liveRunAuthorizedNow": false
+  },
+  "updatedReadinessMap": {
+    "teamSpendingLimitOrAllInCostCapNotAccepted": "RESOLVED_FOR_CONVEX_DEVELOPMENT_AUTH_INTERNAL_TESTING_ONLY",
+    "secretCustodyAndBackupNotAccepted": "PARTIAL_BACKUP_ACCEPTED_SECRET_VALUE_CUSTODY_RECEIPT_STILL_REQUIRED",
+    "envRollbackReceiptsNotAccepted": "PENDING",
+    "durableDevelopmentReleaseAndRollbackNotAccepted": "PARTIAL_EXACT_COMMAND_DIGESTS_BOUND_RELEASE_ID_PENDING_DEPLOYMENT",
+    "retentionPolicyNotAccepted": "PENDING",
+    "lockoutFenceNotAccepted": "PENDING",
+    "privateRegisterReceiptNotAccepted": "PENDING",
+    "freshRunWindowNotAccepted": "PENDING_PROPOSED_NOT_ACCEPTED"
+  },
+  "remainingGates": [
+    {
+      "id": "K-E-SECRET-ENV-CUSTODY",
+      "status": "PENDING",
+      "requirement": "value-free env-file custody receipt and row-specific rollback receipt without reading or storing values"
+    },
+    {
+      "id": "D-DEVELOPMENT-DEPLOYMENT",
+      "status": "COMMAND_DIGESTS_BOUND_DEPLOYMENT_NOT_AUTHORIZED",
+      "requirement": "separate approval before any Convex development deployment or durable release ID capture"
+    },
+    {
+      "id": "T-FRESH-RUN-WINDOW",
+      "status": "PROPOSED_NOT_ACCEPTED",
+      "requirement": "accept one fresh future UTC window before any development-only Auth/session qualification attempt"
+    },
+    {
+      "id": "CAD-RUN-COST-LEDGER",
+      "status": "FAST_FOLLOW_NONBLOCKING_FOR_AUTH_SESSION",
+      "requirement": "publish end-to-end per-run economics before production CAD pricing or broader tester budget decisions"
+    }
+  ],
+  "autopilotDecision": {
+    "sourcePrFlowMayContinue": true,
+    "mergeAfterGreenChecksMayContinue": true,
+    "productionFailClosedSmokeMayContinue": true,
+    "cleanupAfterVerifiedMergeMayContinue": true,
+    "developmentEnvMutationMustStop": true,
+    "developmentDeploymentMustStop": true,
+    "developmentLiveAuthRunMustStop": true,
+    "reason": "exact command digests are source-bound, but env custody, row rollback receipts, deployment approval and live run window acceptance remain separate gates"
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-dev-env-custody-rollback-receipts",
+    "scope": "source-local value-free env custody and rollback receipt projection for JWKS, JWT_PRIVATE_KEY and SITE_URL using the bound commands and Amina backup custodian",
+    "canProceedWithoutUserInput": true,
+    "stopBefore": "secret value read, env mutation, provider or resource change, development deployment, live Auth/session run, upload activation or conversion"
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveAuthRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false,
+    "billingMutationAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}

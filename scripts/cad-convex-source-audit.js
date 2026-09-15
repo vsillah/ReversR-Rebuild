@@ -180,6 +180,9 @@ const files = [
   'docs/cad-dev-cost-custody-rollback-window-evidence.md',
   'docs/cad-dev-cost-custody-rollback-window-evidence.json',
   'scripts/cad-dev-cost-custody-rollback-window-evidence.test.js',
+  'docs/cad-dev-exact-deploy-rollback-window-binding.md',
+  'docs/cad-dev-exact-deploy-rollback-window-binding.json',
+  'scripts/cad-dev-exact-deploy-rollback-window-binding.test.js',
   'offline/cad-convex/configurationQualification.js',
   'offline/cad-convex/configurationQualification.json',
   'scripts/cad-convex-configuration-qualification.test.js',
@@ -218,6 +221,16 @@ assert.equal(costCustodyWindow.fastFollowCostLedger.requiredBeforeFeePerRunDecis
 assert.equal(costCustodyWindow.deploymentCommandReview.exactCommandsExecutableNow, false);
 assert.equal(costCustodyWindow.freshRunWindow.acceptedNow, false);
 for (const value of Object.values(costCustodyWindow.authorityPreserved)) assert.equal(value, false);
+const exactDeployBinding = JSON.parse(read('docs/cad-dev-exact-deploy-rollback-window-binding.json'));
+assert.equal(exactDeployBinding.resolvedDecisionInputs.convexTeamSpendingDisableThresholdUsdPerMonth, 50);
+assert.equal(exactDeployBinding.resolvedDecisionInputs.backupCustodian, 'Amina');
+assert.equal(exactDeployBinding.exactCommandBinding.digestKind, 'exact-command-digest');
+assert.equal(exactDeployBinding.exactCommandBinding.deployCommand.authorityNow, false);
+assert.equal(exactDeployBinding.exactCommandBinding.disabledRollbackCommand.authorityNow, false);
+assert.equal(exactDeployBinding.exactCommandBinding.executableAuthorityNow, false);
+assert.equal(exactDeployBinding.freshWindowProposal.acceptedNow, false);
+assert.equal(exactDeployBinding.freshWindowProposal.liveRunAuthorizedNow, false);
+for (const value of Object.values(exactDeployBinding.authorityPreserved)) assert.equal(value, false);
 const execution = JSON.parse(read('offline/cad-convex/developmentExecution.json'));
 assert.equal(execution.executable, false);
 assert.ok(Object.values(execution.gates).every(gate => gate.approved === false));
