@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-retention-lockout-autopilot-bridge",
+  "status": "SOURCE_LOCAL_RETENTION_LOCKOUT_BRIDGE_BLOCKS_LIVE_PROVISIONING",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-dev-retention-lockout-autopilot",
+  "baseMainCommit": "1113cb5d24b2b2f816886508719b8c01b161d488",
+  "observedAtUtc": "2026-09-15T13:58:49Z",
+  "inputs": {
+    "autopilotGuard": {
+      "path": "docs/cad-dev-readiness-autopilot.json",
+      "mergeCommit": "1113cb5d24b2b2f816886508719b8c01b161d488"
+    },
+    "boundedRetentionPolicy": {
+      "path": "offline/cad-convex/boundedRetentionPolicy.json",
+      "accepted": false
+    },
+    "lockoutReadiness": {
+      "path": "offline/cad-convex/lockoutReadiness.json",
+      "enabled": false,
+      "liveReady": false
+    },
+    "removalRetentionReview": {
+      "path": "offline/cad-convex/removalRetentionReview.json",
+      "decision": "KEEP_PROVISIONING_BLOCKED"
+    },
+    "developmentAuthSource": {
+      "path": "convex/developmentAuth.ts",
+      "reviewed": false
+    },
+    "developmentPasswordProvider": {
+      "path": "convex/auth.ts",
+      "installedCohortSize": 0
+    }
+  },
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "projectSlug": "reversr-cad-auth-dev",
+    "deploymentName": "majestic-alligator-31",
+    "deploymentType": "development"
+  },
+  "retentionPolicyAcceptanceCandidate": {
+    "acceptedNow": false,
+    "cohortSize": 2,
+    "activeGraphCapPerIdentity": 20,
+    "maxRetentionHours": 24,
+    "retainedCapsPerIdentity": {
+      "users": 1,
+      "authAccounts": 1,
+      "authSessions": 0,
+      "authRefreshTokens": 0,
+      "authVerificationCodes": 0,
+      "authVerifiers": 0,
+      "authRateLimits": 1,
+      "cadUserAuthority": 0,
+      "cadMemberships": 0,
+      "cadUploadSessions": 0
+    },
+    "terminalRetainedRowsMinimum": 4,
+    "terminalRetainedRowsMaximum": 6,
+    "expiryAction": "BLOCK_AND_ESCALATE_NO_AUTOMATIC_DELETE",
+    "custodianRefRequired": true,
+    "reviewBeforeExpiryRequired": true,
+    "eventualDispositionPlanRequired": true,
+    "supportedDeletionRequiredBeforeDelete": true,
+    "deleteAuthorizedNow": false
+  },
+  "lockoutFenceAcceptanceCandidate": {
+    "acceptedNow": false,
+    "mustDenyBeforeRevocation": true,
+    "mustCoverDirectAuthEndpoints": true,
+    "mustCoverProtectedReadersAndStaleJwt": true,
+    "mustSerializeAdmissionEpoch": true,
+    "mustPreserveSessionSelectorsAfterRevocation": true,
+    "mustDenyOnMissingOrExpiredCustody": true,
+    "mustSurviveRollbackWithoutReopeningAdmission": true,
+    "requiredCases": [
+      "correct-password",
+      "wrong-password",
+      "signup",
+      "reset",
+      "verification",
+      "extra-parameters",
+      "noncohort",
+      "direct-auth",
+      "concurrent-signin",
+      "concurrent-refresh",
+      "repeated-attempts",
+      "stale-session",
+      "missing-lockout",
+      "expired-custody",
+      "provider-failure",
+      "rollback-release"
+    ],
+    "requiredDenialPostconditions": {
+      "newSessions": 0,
+      "newRefreshTokens": 0,
+      "newVerificationRows": 0,
+      "newCadRows": 0,
+      "newRateLimitRows": 0,
+      "credentialProcessing": false,
+      "enumeration": false,
+      "unboundedLogs": false
+    }
+  },
+  "privateRegisterReceiptTemplate": {
+    "privateFieldsRequired": [
+      "runRef",
+      "sourceSha",
+      "destinationRef",
+      "operatorRef",
+      "custodianRef",
+      "createdAtUtc",
+      "reviewAtUtc",
+      "expiresAtUtc",
+      "twoSlotOwnershipRefs",
+      "exactUserIdRefs",
+      "exactAuthAccountIdRefs",
+      "optionalExactRateLimitIdentifierRefs",
+      "preservedSessionSelectorRefs",
+      "pendingBeforeDispatchReceipt",
+      "postWriteOwnershipReceipt",
+      "costCapReceipt",
+      "rollbackReceipt",
+      "dispositionPlanRef"
+    ],
+    "publicProjectionAllowedFields": [
+      "opaqueRunRef",
+      "sourceSha",
+      "destinationDigest",
+      "registerDigest",
+      "commandDigest",
+      "receiptDigest",
+      "reviewDigest",
+      "custodyDigest",
+      "costDigest",
+      "rollbackDigest"
+    ],
+    "forbiddenPublicFields": [
+      "email",
+      "password",
+      "token",
+      "secret",
+      "rawUserId",
+      "rawAccountId",
+      "credentialHash",
+      "sessionToken",
+      "privateFilePath"
+    ],
+    "receiptModeRequired": "ignored-local-files-mode-600"
+  },
+  "costAndRollbackEvidenceGates": {
+    "recommendedCostCeilingUsd": 5,
+    "blanketPaidCommitmentHardStopUsdAtOrAbove": 10,
+    "allInCostCapVerified": false,
+    "currentUsageLimitStateVerified": false,
+    "envRowRollbackReceiptVerified": false,
+    "deploymentRollbackReceiptVerified": false,
+    "retainedStateRollbackPreservesLockout": false,
+    "sourceRollbackShaRequired": true,
+    "rollbackCanDeleteRows": false
+  },
+  "blockingFindings": {
+    "retentionPolicyAccepted": false,
+    "lockoutFenceAccepted": false,
+    "privateRegisterTemplateAccepted": false,
+    "costEvidenceAccepted": false,
+    "rollbackEvidenceAccepted": false,
+    "developmentAuthReviewedSourceGate": false,
+    "installedDevelopmentCohort": [],
+    "supportedRemovalAdapter": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false
+  },
+  "nextAutomatedSourceSlice": {
+    "branch": "codex/cad-dev-auth-source-enable-autopilot",
+    "scope": "local source-only implementation and tests for disabled-by-default development Auth enablement wiring, exact two-slot synthetic cohort binding, rollback SHA checks, private-register receipt loading, and command manifests",
+    "preconditions": [
+      "retentionPolicyAccepted",
+      "lockoutFenceAccepted",
+      "privateRegisterReceiptTemplateAccepted",
+      "costAndRollbackEvidenceAccepted"
+    ],
+    "liveMutationAuthorized": false,
+    "developmentDeploymentAuthorized": false,
+    "reason": "source enablement can be prepared only after retention and lockout evidence is accepted; deployment and live run remain separate bounded development gates"
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "secretValueReadAuthorized": false,
+    "secretGenerationAuthorizedOutsideIgnoredArtifacts": false,
+    "developmentEnvMutationAuthorizedNow": false,
+    "providerResourceMutationAuthorizedNow": false,
+    "developmentDeploymentAuthorizedNow": false,
+    "developmentLiveRunAuthorizedNow": false,
+    "storeMutationAuthorizedNow": false,
+    "retryAuthorizedNow": false,
+    "secondRunAuthorizedNow": false
+  },
+  "expensesUsd": 0
+}
