@@ -42,14 +42,31 @@ test('binding is disabled by default or bound to one exact reviewed run tuple', 
 
 test('public action is digest-only and limited to insert read revoke internals', () => {
   assert.match(source, /export const issueReadRevoke = action/);
+  assert.match(source, /export const issueReadRevokeWithSyntheticAuthority = action/);
   assert.match(source, /internal\.cad\.insertIfAbsent/);
   assert.match(source, /internal\.cad\.read/);
   assert.match(source, /internal\.cad\.revoke/);
+  assert.match(source, /internal\.cadDevUploadSessionQualificationAuthority\.provisionSyntheticAuthority/);
+  assert.match(source, /internal\.cadDevUploadSessionQualificationAuthority\.revokeSyntheticAuthority/);
   assert.doesNotMatch(source, /internal\.cad\.changeAuthority/);
   assert.doesNotMatch(source, /credential:\s*v\.string|runKey:\s*v\.bytes|passwords|createAccount|invalidateSessions/);
   assert.match(source, /credentialDigest: v\.string/);
   assert.match(source, /QUALIFICATION_DISABLED/);
   assert.match(source, /QUALIFICATION_WINDOW_CLOSED/);
+});
+
+test('synthetic authority wrapper retains rows and cleans up in finally', () => {
+  const authority = fs.readFileSync('convex/cadDevUploadSessionQualificationAuthority.ts', 'utf8');
+  assert.match(authority, /export const provisionSyntheticAuthority = internalMutation/);
+  assert.match(authority, /export const revokeSyntheticAuthority = internalMutation/);
+  assert.match(authority, /ctx\.db\.insert\('cadUserAuthority'/);
+  assert.match(authority, /ctx\.db\.insert\('cadMemberships'/);
+  assert.match(authority, /enabled: false/);
+  assert.match(authority, /active: false/);
+  assert.match(authority, /cadUploadAllowed: false/);
+  assert.doesNotMatch(authority, /ctx\.db\.delete/);
+  assert.match(source, /finally/);
+  assert.match(source, /authorityRowsRetained/);
 });
 
 test('source preserves disabled upload and no-live-run authority', () => {

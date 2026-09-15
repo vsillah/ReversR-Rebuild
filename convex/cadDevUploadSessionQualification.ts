@@ -44,6 +44,39 @@ type QualificationResult = {
   readAfterRevoke: false;
 };
 
+type QualificationResultWithAuthority = QualificationResult & {
+  syntheticAuthorityProvisioned: true;
+  syntheticAuthorityRevoked: true;
+  authorityRowsRetained: true;
+};
+
+type QualificationArgs = {
+  runKey: string;
+  runKeySha256: string;
+  acceptedProjectionSha256: string;
+  acceptanceReceiptSha256: string;
+  principal: {
+    userId: string;
+    shopId: string;
+    loginSessionId: string;
+    authMethod: 'password';
+  };
+  credentialDigest: string;
+  record: {
+    schemaVersion: 2;
+    userId: string;
+    shopId: string;
+    loginSessionId: string;
+    authMethod: 'password';
+    sessionId: string;
+    cadUploadAllowed: true;
+    transport: 'bearer';
+    issuedAt: number;
+    expiresAt: number;
+    status: 'active';
+  };
+};
+
 async function guard(args: {
   runKey: string;
   runKeySha256: string;
@@ -71,6 +104,12 @@ async function guard(args: {
   return { now };
 }
 
+function deadlineAt() {
+  const current = Date.now();
+  if (!Number.isSafeInteger(current)) throw new Error('QUALIFICATION_CLOCK_INVALID');
+  return current + cadDevUploadSessionQualificationBinding.constraints.maxOperationBudgetMs;
+}
+
 function sameBinding(a: {
   userId: string; shopId: string; loginSessionId: string; authMethod: string;
 }, b: {
@@ -78,6 +117,57 @@ function sameBinding(a: {
 }) {
   return a.userId === b.userId && a.shopId === b.shopId
     && a.loginSessionId === b.loginSessionId && a.authMethod === b.authMethod;
+}
+
+function validateRecord(args: QualificationArgs, now: number) {
+  const binding = cadDevUploadSessionQualificationBinding;
+  if (!hex(args.credentialDigest) || !sameBinding(args.record, args.principal)
+    || args.record.issuedAt > now || args.record.expiresAt <= now
+    || args.record.expiresAt - args.record.issuedAt > binding.constraints.maxWindowMs) {
+    throw new Error('QUALIFICATION_RECORD_DENIED');
+  }
+}
+
+async function issueReadRevokeSequence(ctx: any, args: QualificationArgs): Promise<QualificationResult> {
+  const inserted: boolean = await ctx.runMutation(internal.cad.insertIfAbsent, {
+    principal: args.principal,
+    credentialDigest: args.credentialDigest,
+    record: args.record,
+    deadlineAt: deadlineAt(),
+  });
+  if (inserted !== true) throw new Error('QUALIFICATION_INSERT_DENIED');
+  const readBefore = await ctx.runQuery(internal.cad.read, {
+    principal: args.principal,
+    credentialDigest: args.credentialDigest,
+    deadlineAt: deadlineAt(),
+  });
+  if (readBefore === null || readBefore.status !== 'active' || !sameBinding(readBefore, args.principal)) {
+    throw new Error('QUALIFICATION_READ_DENIED');
+  }
+  const revoked: boolean = await ctx.runMutation(internal.cad.revoke, {
+    principal: args.principal,
+    credentialDigest: args.credentialDigest,
+    revokedAt: Date.now(),
+    deadlineAt: deadlineAt(),
+  });
+  if (revoked !== true) throw new Error('QUALIFICATION_REVOKE_DENIED');
+  const readAfter = await ctx.runQuery(internal.cad.read, {
+    principal: args.principal,
+    credentialDigest: args.credentialDigest,
+    deadlineAt: deadlineAt(),
+  });
+  if (readAfter !== null) throw new Error('QUALIFICATION_REVOKE_NOT_OBSERVED');
+  return {
+    code: 'SYNTHETIC_UPLOAD_SESSION_SEQUENCE_REVOKED',
+    cadUploadsDisabled: true,
+    bodyAdmissionAuthorized: false,
+    conversionAllowed: false,
+    retainedUploadSession: true,
+    inserted,
+    readBeforeRevoke: true,
+    revoked,
+    readAfterRevoke: false,
+  };
 }
 
 export const issueReadRevoke = action({
@@ -103,55 +193,66 @@ export const issueReadRevoke = action({
   }),
   handler: async (ctx, args): Promise<QualificationResult> => {
     const { now } = await guard(args);
-    const binding = cadDevUploadSessionQualificationBinding;
-    if (!hex(args.credentialDigest) || !sameBinding(args.record, args.principal)
-      || args.record.issuedAt > now || args.record.expiresAt <= now
-      || args.record.expiresAt - args.record.issuedAt > binding.constraints.maxWindowMs) {
-      throw new Error('QUALIFICATION_RECORD_DENIED');
+    validateRecord(args, now);
+    return issueReadRevokeSequence(ctx, args);
+  },
+});
+
+export const issueReadRevokeWithSyntheticAuthority = action({
+  args: {
+    runKey: v.string(),
+    runKeySha256: v.string(),
+    acceptedProjectionSha256: v.string(),
+    acceptanceReceiptSha256: v.string(),
+    principal,
+    credentialDigest: v.string(),
+    record,
+  },
+  returns: v.object({
+    code: v.literal('SYNTHETIC_UPLOAD_SESSION_SEQUENCE_REVOKED'),
+    cadUploadsDisabled: v.literal(true),
+    bodyAdmissionAuthorized: v.literal(false),
+    conversionAllowed: v.literal(false),
+    retainedUploadSession: v.literal(true),
+    inserted: v.boolean(),
+    readBeforeRevoke: v.boolean(),
+    revoked: v.boolean(),
+    readAfterRevoke: v.literal(false),
+    syntheticAuthorityProvisioned: v.literal(true),
+    syntheticAuthorityRevoked: v.literal(true),
+    authorityRowsRetained: v.literal(true),
+  }),
+  handler: async (ctx, args): Promise<QualificationResultWithAuthority> => {
+    const { now } = await guard(args);
+    validateRecord(args, now);
+    await ctx.runMutation(internal.cadDevUploadSessionQualificationAuthority.provisionSyntheticAuthority, {
+      principal: args.principal,
+      deadlineAt: deadlineAt(),
+    });
+    let cleanup;
+    try {
+      const result = await issueReadRevokeSequence(ctx, args);
+      cleanup = await ctx.runMutation(internal.cadDevUploadSessionQualificationAuthority.revokeSyntheticAuthority, {
+        principal: args.principal,
+        deadlineAt: deadlineAt(),
+      });
+      if (cleanup.userAuthorityRevoked !== true || cleanup.membershipRevoked !== true
+        || cleanup.userAuthorityRetained !== true || cleanup.membershipRetained !== true) {
+        throw new Error('QUALIFICATION_AUTHORITY_REVOKE_DENIED');
+      }
+      return {
+        ...result,
+        syntheticAuthorityProvisioned: true as const,
+        syntheticAuthorityRevoked: true as const,
+        authorityRowsRetained: true as const,
+      };
+    } finally {
+      if (cleanup === undefined) {
+        await ctx.runMutation(internal.cadDevUploadSessionQualificationAuthority.revokeSyntheticAuthority, {
+          principal: args.principal,
+          deadlineAt: deadlineAt(),
+        });
+      }
     }
-    const deadlineAt = () => {
-      const current = Date.now();
-      if (!Number.isSafeInteger(current)) throw new Error('QUALIFICATION_CLOCK_INVALID');
-      return current + binding.constraints.maxOperationBudgetMs;
-    };
-    const inserted: boolean = await ctx.runMutation(internal.cad.insertIfAbsent, {
-      principal: args.principal,
-      credentialDigest: args.credentialDigest,
-      record: args.record,
-      deadlineAt: deadlineAt(),
-    });
-    if (inserted !== true) throw new Error('QUALIFICATION_INSERT_DENIED');
-    const readBefore = await ctx.runQuery(internal.cad.read, {
-      principal: args.principal,
-      credentialDigest: args.credentialDigest,
-      deadlineAt: deadlineAt(),
-    });
-    if (readBefore === null || readBefore.status !== 'active' || !sameBinding(readBefore, args.principal)) {
-      throw new Error('QUALIFICATION_READ_DENIED');
-    }
-    const revoked: boolean = await ctx.runMutation(internal.cad.revoke, {
-      principal: args.principal,
-      credentialDigest: args.credentialDigest,
-      revokedAt: Date.now(),
-      deadlineAt: deadlineAt(),
-    });
-    if (revoked !== true) throw new Error('QUALIFICATION_REVOKE_DENIED');
-    const readAfter = await ctx.runQuery(internal.cad.read, {
-      principal: args.principal,
-      credentialDigest: args.credentialDigest,
-      deadlineAt: deadlineAt(),
-    });
-    if (readAfter !== null) throw new Error('QUALIFICATION_REVOKE_NOT_OBSERVED');
-    return {
-      code: 'SYNTHETIC_UPLOAD_SESSION_SEQUENCE_REVOKED',
-      cadUploadsDisabled: true,
-      bodyAdmissionAuthorized: false,
-      conversionAllowed: false,
-      retainedUploadSession: true,
-      inserted,
-      readBeforeRevoke: true,
-      revoked,
-      readAfterRevoke: false,
-    };
   },
 });
