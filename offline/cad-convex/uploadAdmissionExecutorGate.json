@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-executor-gate",
+  "status": "UPLOAD_ADMISSION_EXECUTOR_GATE_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "branch": "codex/cad-upload-admission-executor-gate",
+  "baseMainCommit": "8da5535909e2c4e8724a78c3e92ccf7cff53dd9b",
+  "observedAtUtc": "2026-09-16T09:47:42Z",
+  "expensesUsd": 0,
+  "liveRunAuthorizedByThisPacket": false,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import"
+  },
+  "sourceBindings": {
+    "executionPacket": "offline/cad-convex/uploadAdmissionExecutionPacket.json",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "routeSource": "server/cadUserUploadRouter.js",
+    "admissionValidator": "server/cadUserUploadAdmission.js",
+    "fixtureMatrix": "scripts/fixtures/cad-public-matrix.json#fixtures.cube",
+    "runnerCli": "scripts/run-cad-upload-admission-executor-gate.js"
+  },
+  "acceptedWindow": {
+    "runRef": "rrb-ref:cad-upload-admission-qualification-1100z",
+    "startUtc": "2026-09-16T11:00:00Z",
+    "expiresUtc": "2026-09-16T11:15:00Z",
+    "maxRunSeconds": 900,
+    "scheduleIfMoreThanFiveMinutesAway": true
+  },
+  "publicFixtureMaterialization": {
+    "package": "occt-import-js",
+    "packagePath": "node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "fileName": "public-cube.igs",
+    "mimeType": "model/iges",
+    "privateCad": false
+  },
+  "isolatedRouteGate": {
+    "usesVmInstrumentedCopy": true,
+    "mountedProductionRouteModified": false,
+    "literalFalseMustRemain": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "expectedTerminalCode": "USER_UPLOADS_DISABLED",
+    "expectedBodyValidation": true,
+    "preAndPostMountedRouteChecksRequired": true
+  },
+  "runBounds": {
+    "developmentOnly": true,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "deleteRetainedState": false,
+    "maxAllInCostUsd": 50,
+    "stopBeforeConversion": true,
+    "stopBeforeSandbox": true,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false
+  },
+  "sanitizedEvidenceDestination": {
+    "root": ".local/cad-convex/upload-admission-qualification-1100z",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "authorityPreserved": {
+    "pushAuthorizedByThisPacket": false,
+    "mergeAuthorizedByThisPacket": false,
+    "deploymentAuthorizedByThisPacket": false,
+    "liveRunAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "envMutationAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadOrGenerationAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "cleanupAuthorizedByThisPacket": false
+  },
+  "futureApprovalPhrases": {
+    "publication": "I approve pushing only commit [full reviewed SHA] from codex/cad-upload-admission-executor-gate to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD upload admission executor gate. No live tests, upload activation, conversion, Sandbox dispatch, private CAD, production/development env or provider/auth/resource changes, secrets or secret reads, usage/billing changes, enrollment, email/SMS/Slack, store mutation, retry, second run, merge, deployment, or branch/worktree cleanup.",
+    "merge": "I approve marking PR #[number] ready for review and merging it into main. Allow the normal Vercel production deployment from main, then run production fail-closed route smoke and cleanup only if smoke passes. Preserve current production and development environment settings; do not enable CAD uploads, do not dispatch CAD conversion, do not run live tests, do not use private CAD, do not dispatch Sandbox work, do not retry any completed or stopped run, do not start a second run, and do not send email/SMS/Slack.",
+    "run": "I approve one bounded development-only CAD upload admission qualification run during the accepted window from 2026-09-16T11:00:00Z through 2026-09-16T11:15:00Z using scripts/run-cad-upload-admission-executor-gate.js on the merged main commit for this source packet, public fixture node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs with SHA-256 5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3, isolated development-only route copy, in-memory synthetic upload session, sanitized evidence root .local/cad-convex/upload-admission-qualification-1100z, stop-on-unknown/no-retry/no-second-run handling, and pre/post mounted-route fail-closed checks. Keep production CAD uploads disabled. No production body admission, CAD conversion, Sandbox dispatch, private CAD, real users, enrollment, email/SMS/Slack, new secrets, env/provider/auth/resource or usage/billing changes, deployment, merge, automatic retry, second run, or branch/worktree cleanup."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionExecutorGate.json",
+  "summary": "source-only local executor gate for one future bounded CAD upload admission qualification run",
+  "baseMainCommit": "8da5535909e2c4e8724a78c3e92ccf7cff53dd9b",
+  "branch": "codex/cad-upload-admission-executor-gate",
+  "expensesUsd": 0,
+  "liveRunHappened": false,
+  "uploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "publish, merge, production fail-closed smoke, cleanup, then run or schedule one bounded development-only admission qualification during the 11:00Z window if still current"
+}
