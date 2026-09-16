@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-durable-adapter-plan",
+  "status": "DURABLE_ADAPTER_PLAN_READY_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "baseMainCommit": "cd17a5f0150894af207ca34349bff00864937c20",
+  "branch": "codex/cad-upload-admission-durable-adapter-plan",
+  "observedAtUtc": "2026-09-16T02:35:00Z",
+  "expensesUsd": 0,
+  "runtimeImported": false,
+  "bodyAdmissionAuthorized": false,
+  "executableNow": false,
+  "liveRunAuthorizedNow": false,
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import",
+    "currentTerminalCode": "USER_UPLOADS_DISABLED"
+  },
+  "bindings": {
+    "disabledAdapter": {
+      "source": "offline/cad-convex/disabledUploadAdmissionAdapter.js",
+      "manifest": "offline/cad-convex/disabledUploadAdmissionAdapter.json",
+      "terminalCode": "USER_UPLOADS_DISABLED",
+      "rollbackTarget": true
+    },
+    "activationReadiness": {
+      "manifest": "offline/cad-convex/userUploadActivationReadiness.json",
+      "latestDevelopmentUploadSessionQualification": "offline/cad-convex/userUploadActivationReadiness.json#latestDevelopmentUploadSessionQualification",
+      "gates": "offline/cad-convex/userUploadActivationReadiness.json#gates"
+    },
+    "runManifest": {
+      "manifest": "docs/cad-upload-activation-run-manifest.json",
+      "commandManifest": "docs/cad-upload-activation-run-manifest.json#commandManifest",
+      "operators": "docs/cad-upload-activation-run-manifest.json#operators",
+      "rollback": "docs/cad-upload-activation-run-manifest.json#rollback",
+      "runBounds": "docs/cad-upload-activation-run-manifest.json#runManifest"
+    },
+    "sharedControls": {
+      "model": "offline/cad-convex/sharedUploadControls.js",
+      "review": "docs/cad-shared-controls-adapter-qualification.md",
+      "qualification": "offline/cad-convex/sharedControlsAdapterQualification.json"
+    },
+    "sessionAuthority": {
+      "source": "docs/cad-dev-upload-session-successful-closeout.json",
+      "observedBridgeOutcome": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome",
+      "runResult": "docs/cad-dev-upload-session-successful-closeout.json#runResult"
+    },
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "durableAdapterDesign": {
+    "implementationBranch": "codex/cad-upload-admission-durable-adapter-source",
+    "adapterMayRead": [
+      "exact development auth session binding",
+      "server-owned upload session binding",
+      "shop membership and upload permission",
+      "shared controls ledger and run window",
+      "revocation revision and rollback gate state"
+    ],
+    "adapterMustWriteAtomically": [
+      "admission reservation",
+      "attempt accounting",
+      "cost hold",
+      "concurrency leases",
+      "selector fence",
+      "sanitized evidence reference"
+    ],
+    "adapterMustNotWrite": [
+      "CAD file bytes",
+      "conversion jobs",
+      "Sandbox dispatch",
+      "provider credentials",
+      "production records",
+      "real-user enrollment"
+    ],
+    "transactionRequirements": [
+      "server-selected selector identity",
+      "trusted transaction clock",
+      "serializable read of exact authority and ledger",
+      "compare-and-swap over authority revision, ledger window and fence",
+      "bounded conflict retry only for explicit transaction conflicts",
+      "terminal denial for schema, binding, auth, budget and revocation failures",
+      "unknown commit outcome reconciliation by original selector only"
+    ],
+    "rollbackCompatibility": [
+      "close route body admission before drain",
+      "fall back to disabled adapter returning USER_UPLOADS_DISABLED",
+      "retain unresolved reservations, cost holds, fences and evidence refs",
+      "never delete retained state without separate reviewed disposition"
+    ]
+  },
+  "planGates": {
+    "sourceImplementationReviewed": false,
+    "runtimeMounted": false,
+    "bodyParserOpened": false,
+    "developmentStoreMutationApproved": false,
+    "uploadActivationApproved": false,
+    "conversionApproved": false,
+    "sandboxDispatchApproved": false,
+    "rollbackReceiptAccepted": false,
+    "liveQualificationApproved": false
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "pushMergeDeployAuthorizedByThisPacket": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-durable-adapter-source",
+    "scope": "source-only durable upload admission adapter implementation and tests using this plan and the disabled adapter as rollback target",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation, secret reads or private CAD"
+  }
+}
