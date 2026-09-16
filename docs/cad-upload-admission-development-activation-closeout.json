@@ -1,0 +1,20 @@
+{
+  "summary": "source-only closeout for the successful CAD upload admission development activation preview",
+  "branch": "codex/cad-upload-admission-activation-preview-closeout",
+  "baseMainCommit": "06b5932278ce8f714ce9fe7f2cc9f7c608ad4545",
+  "runRef": "rrb-ref:cad-upload-admission-development-activation-1215z",
+  "evidenceSha256": "1e37b105c5adfd26ed4319bf0fed628d1b26b4cabd815dfe3f091c517cce9de6",
+  "receiptSha256": "1375b54ee2df2305138ee775f8906db81d94a45aa15d6cd12f7f62b991bbb3a2",
+  "result": "preview completed; activation not executed; uploads remain disabled",
+  "nextSafeAction": "source-only bounded development body-admission packet; no live run authorized by this closeout",
+  "authority": {
+    "rerunAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "bodyReadAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false
+  }
+}

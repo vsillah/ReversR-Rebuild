@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-activation-closeout",
+  "status": "DEVELOPMENT_UPLOAD_ACTIVATION_PREVIEW_CLOSEOUT_ACCEPTED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "06b5932278ce8f714ce9fe7f2cc9f7c608ad4545",
+  "branch": "codex/cad-upload-admission-activation-preview-closeout",
+  "observedAtUtc": "2026-09-16T12:20:00Z",
+  "expensesUsd": 0,
+  "activationPreviewCompleted": true,
+  "runRef": "rrb-ref:cad-upload-admission-development-activation-1215z",
+  "window": {
+    "startUtc": "2026-09-16T12:15:00Z",
+    "expiresUtc": "2026-09-16T12:30:00Z"
+  },
+  "sourceBindings": {
+    "activationWindow": "offline/cad-convex/uploadAdmissionDevelopmentActivationWindow.json",
+    "activationExecutor": "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.json",
+    "activationRunnerCli": "scripts/run-cad-upload-admission-development-activation-executor.js",
+    "routeSource": "server/cadUserUploadRouter.js",
+    "bodyAdmissionLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "runtimeBridgeSource": "server/cadUploadAdmissionRuntimeBridge.js"
+  },
+  "evidence": {
+    "sanitizedEvidencePath": ".local/cad-convex/upload-admission-development-activation-1215z/sanitized-evidence.json",
+    "sanitizedReceiptPath": ".local/cad-convex/upload-admission-development-activation-1215z/sanitized-run-receipt.json",
+    "sanitizedEvidenceSha256": "1e37b105c5adfd26ed4319bf0fed628d1b26b4cabd815dfe3f091c517cce9de6",
+    "sanitizedReceiptSha256": "1375b54ee2df2305138ee775f8906db81d94a45aa15d6cd12f7f62b991bbb3a2",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnored": true,
+    "privatePatternLeakObserved": false
+  },
+  "result": {
+    "decision": "UPLOAD_ADMISSION_DEVELOPMENT_ACTIVATION_EXECUTOR_PREVIEWED",
+    "code": "SOURCE_ONLY_DEVELOPMENT_ACTIVATION_PREVIEW",
+    "previewCompleted": true,
+    "activationExecuted": false,
+    "liveRunStarted": false,
+    "unknownOutcome": false,
+    "production": false,
+    "runtimeMounted": false,
+    "bodyReadAuthorized": false,
+    "admissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "uploadBodiesRead": 0,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "productionFailClosedSmoke": {
+    "preRunQa": "06b5932-activation1215-run",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "authorityPreservedByCloseout": {
+    "rerunAuthorized": false,
+    "secondRunAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "developmentUploadActivationAuthorizedNow": false,
+    "bodyReadAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "remainingGatesBeforeUploadActivation": [
+    "source-only bounded development body-admission packet with exact route isolation and rollback",
+    "one development-only public/synthetic fixture upload admission run if bounded prechecks pass",
+    "post-admission reconciliation and closeout with no unknown outcome",
+    "separate conversion and Sandbox qualification packet",
+    "manual production activation decision"
+  ],
+  "nextSafeAction": {
+    "type": "source-only-readiness",
+    "scope": "publish this closeout, then prepare the next bounded development body-admission packet without enabling production upload admission",
+    "stopBefore": "live body admission, production upload activation, CAD conversion, Sandbox dispatch, private CAD, real users or external delivery"
+  }
+}
