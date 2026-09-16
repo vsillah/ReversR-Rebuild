@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-qualification-window",
+  "status": "QUALIFICATION_WINDOW_ASSEMBLED_NOT_EXECUTABLE",
+  "sourceOnly": true,
+  "baseMainCommit": "b03540f7c5901d9f4d04372f60027f302e113c56",
+  "branch": "codex/cad-upload-admission-qualification-window",
+  "observedAtUtc": "2026-09-16T02:50:00Z",
+  "expensesUsd": 0,
+  "liveRunAuthorizedNow": false,
+  "uploadActivationAuthorizedNow": false,
+  "runtimeBridgeAvailableNow": false,
+  "bodyAdmissionAuthorized": false,
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import",
+    "currentTerminalCode": "USER_UPLOADS_DISABLED"
+  },
+  "sourceBindings": {
+    "adapterSource": "offline/cad-convex/uploadAdmissionDurableAdapter.js",
+    "adapterManifest": "offline/cad-convex/uploadAdmissionDurableAdapter.json",
+    "disabledRollbackTarget": "offline/cad-convex/disabledUploadAdmissionAdapter.js",
+    "durableAdapterPlan": "docs/cad-upload-admission-durable-adapter-plan.json",
+    "activationRunManifest": "docs/cad-upload-activation-run-manifest.json",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "sessionCloseout": "docs/cad-dev-upload-session-successful-closeout.json",
+    "sharedControls": "offline/cad-convex/sharedUploadControls.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "acceptedSessionEvidence": {
+    "runRef": "cad-dev-upload-session-0100z",
+    "projectionSha256": "3f405f0eafa4e3834b99d9ee69547402a0690e79e705dacd13a764b8e4b7e640",
+    "acceptanceReceiptSha256": "d6a09751cece8326d6a242686ca310fa9b4a3abace455dcbd23e739b9223f930",
+    "evidenceSha256": "e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866",
+    "receiptSha256": "ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825",
+    "cadUploadsDisabled": true,
+    "bodyAdmissionAuthorized": false,
+    "conversionAllowed": false
+  },
+  "fixtureCandidate": {
+    "acceptedNow": false,
+    "id": "cube",
+    "source": "occt-import-js-package",
+    "format": "iges",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "matrixRef": "scripts/fixtures/cad-public-matrix.json#fixtures.cube",
+    "hostedEvidenceRef": "docs/cad-live-hosted-public-fixture-matrix-evidence.json#fixtures.cube",
+    "privateCad": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false
+  },
+  "qualificationBounds": {
+    "acceptedNow": false,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "allInPlanningCapUsd": 50,
+    "windowDurationMinutes": 15,
+    "scheduleIfMoreThanFiveMinutesAway": true,
+    "stopOnUnknownOutcome": true,
+    "reconcileUnknownsReadOnlyFirst": true,
+    "deleteRetainedState": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false
+  },
+  "blockingBeforeRun": [
+    "guarded development runtime bridge is not implemented or mounted",
+    "BODY_ADMISSION_AUTHORIZED remains false",
+    "fresh UTC window is not accepted",
+    "exact deployment ref must be rebound after merge",
+    "synthetic cohort/window/register evidence must be accepted",
+    "rollback and post-run cleanup commands must be source-reviewed"
+  ],
+  "disabledGateChecksRequiredBeforeRun": [
+    "GET / production shell remains healthy",
+    "GET /api/cad/capabilities remains healthy",
+    "POST {} /api/cad/user-import fails closed before a valid session",
+    "POST {} /api/cad/import remains unauthorized",
+    "GET /api/cad/import-source-record remains not found"
+  ],
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "pushMergeDeployAuthorizedByThisPacket": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-guarded-route-bridge",
+    "scope": "source-only guarded development route bridge planning and tests that preserve production fail-closed behavior and keep body admission disabled until an accepted one-run window",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation, secret reads or private CAD"
+  }
+}
