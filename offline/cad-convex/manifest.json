@@ -228,6 +228,11 @@
     "docs/cad-upload-admission-development-dry-run-closeout.md": "c4e2f857a7aa01c7a84d16346e16b64f011d6e8245945d7cf77143bfbc6699bc",
     "docs/cad-upload-admission-development-dry-run-closeout.json": "5fbba45f290ddfdc4bb8922e1ccd60688b393f30ea8cbb7b6a37211f8fe45be5",
     "scripts/cad-upload-admission-development-dry-run-closeout.test.js": "6a40b5361adcc534d33bebd16a5e53968b0712b8aa3b013cd86c163f43fb74f1",
+    "offline/cad-convex/uploadAdmissionQualificationGate.js": "4c402c32ae7264906dc3bcd5b3a81b2177e146b6aa58686bcb5cb0d98c09241e",
+    "offline/cad-convex/uploadAdmissionQualificationGate.json": "1bc5ff116220e3faad46482dacab134dc5d277086b01387815ab34514ba680c9",
+    "docs/cad-upload-admission-qualification-gate.md": "2c24512765f73252dbbeaaa90e51d7cc52041d8e3433f9dd46c4e06fb98dee9b",
+    "docs/cad-upload-admission-qualification-gate.json": "619bce59ab5d01a0f83ba415a0ede033cc182cf6d412b6c9065095c2be2576aa",
+    "scripts/cad-upload-admission-qualification-gate.test.js": "e557384b1f22da4463305999920365681615d828d30b3dfc3515cc16135740d8",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -425,6 +430,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "0d81c6c458632617fad2100066373c814b354206c11862134f2af8587fe10e62"
+    "scripts/cad-convex-contract-manifest.js": "5d8e0ac881e43759dbf8499b986b792db0ec8994f8976818865c69b3588577bc"
   }
 }
