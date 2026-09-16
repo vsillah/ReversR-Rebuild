@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-body-admission-executor",
+  "status": "DEVELOPMENT_BODY_ADMISSION_EXECUTOR_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "b0f5760f886bf5028f8d2ebb92a5a7d2eb6fc536",
+  "branch": "codex/cad-upload-admission-development-body-admission-executor",
+  "observedAtUtc": "2026-09-16T15:03:35Z",
+  "expensesUsd": 0,
+  "liveRunAuthorizedByThisPacket": false,
+  "acceptedWindow": null,
+  "sourceBindings": {
+    "bodyAdmissionPacket": "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.json",
+    "bodyAdmissionPacketInspector": "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.js",
+    "activationPreviewCloseout": "offline/cad-convex/uploadAdmissionDevelopmentActivationCloseout.json",
+    "qualificationCloseout": "offline/cad-convex/uploadAdmissionQualificationCloseout.json",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "routeSource": "server/cadUserUploadRouter.js",
+    "admissionValidator": "server/cadUserUploadAdmission.js",
+    "sessionStore": "server/uploadSessionStore.js",
+    "publicFixture": "node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs",
+    "runnerCli": "scripts/run-cad-upload-admission-development-body-admission-executor.js"
+  },
+  "acceptedInputs": {
+    "activationPreviewEvidenceSha256": "1e37b105c5adfd26ed4319bf0fed628d1b26b4cabd815dfe3f091c517cce9de6",
+    "activationPreviewReceiptSha256": "1375b54ee2df2305138ee775f8906db81d94a45aa15d6cd12f7f62b991bbb3a2",
+    "qualificationEvidenceSha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+    "publicFixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "publicFixtureBytes": 11562
+  },
+  "executorCapabilities": {
+    "usesIsolatedVmRouteCopy": true,
+    "mountedProductionRouteModified": false,
+    "replacesLiteralOnlyInIsolatedCopy": true,
+    "mountedPreAndPostDisabledChecks": true,
+    "validatesPublicFixturePayload": true,
+    "writesSanitizedEvidenceForAcceptedWindow": true,
+    "bodyReadAllowedOnlyInIsolatedRouteCopyWhenWindowAccepted": true,
+    "bodyReadAuthorizedByThisPacket": false,
+    "productionBodyAdmissionAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false
+  },
+  "runPrerequisites": {
+    "developmentOnly": true,
+    "exactFutureWindowRequired": true,
+    "acceptedWindowDefault": null,
+    "windowMustBeFutureAtExecution": true,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "deleteRetainedState": false,
+    "maxAllInCostUsd": 50,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false
+  },
+  "futureWindowShape": {
+    "runRefRequired": true,
+    "startUtcRequired": true,
+    "expiresUtcRequired": true,
+    "maxRunSecondsRequired": true,
+    "evidenceRootTemplate": ".local/cad-convex/upload-admission-development-body-admission-[window-ref]"
+  },
+  "expectedFutureResult": {
+    "decision": "UPLOAD_ADMISSION_DEVELOPMENT_BODY_ADMISSION_EXECUTED",
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "mountedRouteDisabledChecks": 2,
+    "isolatedRouteBodyValidationChecks": 1,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0,
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "sanitizedEvidenceRequirements": {
+    "rootTemplate": ".local/cad-convex/upload-admission-development-body-admission-[window-ref]",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorizedByThisPacket": false,
+    "developmentBodyAdmissionRunAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "pushMergeDeployAuthorizedByThisPacket": false,
+    "cleanupAuthorizedByThisPacket": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-development-body-admission-window",
+    "scope": "source-only exact UTC body-admission run window packet and sanitized evidence destination for one future bounded development-only run",
+    "stopBefore": "live execution, mounted production upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, real users or external delivery"
+  }
+}
