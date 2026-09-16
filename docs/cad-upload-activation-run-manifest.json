@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-activation-run-manifest",
+  "status": "COMMAND_MANIFEST_AND_ROLLBACK_REFS_RECORDED_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "productionUploadActivationAuthorized": false,
+  "productionConversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "baseMainCommit": "90b66c68021e9003e5e723c0bb6ae4e81625611c",
+  "branch": "codex/cad-upload-activation-run-manifest",
+  "observedAtUtc": "2026-09-16T01:55:00Z",
+  "expensesUsd": 0,
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "productionUrl": "https://reversr.vercel.app",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "cadUserRoute": "POST /api/cad/user-import",
+    "currentTerminalCode": "USER_UPLOADS_DISABLED"
+  },
+  "operators": {
+    "primaryCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "testerReviewer": "Mark",
+    "executorRef": "rrb-ref:cad-upload-primary-operator-vambah",
+    "backupRef": "rrb-ref:cad-upload-backup-custodian-amina",
+    "testerReviewerRef": "rrb-ref:cad-upload-internal-tester-reviewer-mark",
+    "markIsCustodian": false
+  },
+  "sourceEvidence": {
+    "exactSessionAuthority": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome",
+    "payloadAdmission": "offline/cad-convex/userUploadActivationReadiness.json#gates.payloadAdmission.evidence",
+    "sharedControls": "offline/cad-convex/userUploadActivationReadiness.json#gates.sharedControls.evidence",
+    "activationReadiness": "docs/cad-live-upload-activation-readiness.md",
+    "disabledRouteContract": "docs/cad-user-upload-contract.md"
+  },
+  "failClosedSmoke": {
+    "mergeCommit": "90b66c68021e9003e5e723c0bb6ae4e81625611c",
+    "cacheBuster": "qa=90b66c6",
+    "routes": [
+      {
+        "route": "GET /",
+        "status": 200,
+        "title": "ReversR Rebuild"
+      },
+      {
+        "route": "GET /api/cad/capabilities",
+        "status": 200
+      },
+      {
+        "route": "POST /api/cad/user-import {}",
+        "status": 401,
+        "code": "USER_SESSION_REQUIRED"
+      },
+      {
+        "route": "POST /api/cad/import {}",
+        "status": 401,
+        "code": "UNAUTHORIZED"
+      },
+      {
+        "route": "GET /api/cad/import-source-record",
+        "status": 404
+      }
+    ]
+  },
+  "runManifest": {
+    "executableNow": false,
+    "activationApprovalAccepted": false,
+    "windowAccepted": false,
+    "cohortAccepted": false,
+    "fixtureAccepted": false,
+    "maxAttempts": 1,
+    "retry": false,
+    "secondRun": false,
+    "allInPlanningCapUsd": 50,
+    "admissionOnly": true,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "fixtureScope": "future synthetic or public fixture reference only; no private CAD and no CAD conversion authority",
+    "stopOnUnknownOutcome": true
+  },
+  "commandManifest": {
+    "exactCommandsExecutableNow": false,
+    "verifyDisabledRelease": {
+      "template": "git -C <worktree> checkout 90b66c68021e9003e5e723c0bb6ae4e81625611c && npm run typecheck && npm run cad:convex:codegen:check",
+      "sha256": "b9cf5df445d33af7ac6e69c8ae0a74c046a83a39ba0d4881a7b15661bec9bf24"
+    },
+    "postRollbackSmoke": {
+      "template": "GET /?qa=<rollback-sha>; GET /api/cad/capabilities?qa=<rollback-sha>; POST {} /api/cad/user-import?qa=<rollback-sha>; POST {} /api/cad/import?qa=<rollback-sha>; GET /api/cad/import-source-record?qa=<rollback-sha>",
+      "sha256": "ea46d1747ce9c453eaadc7e70dc553e40c4f509a0dcb758f162adef3d5688d80"
+    },
+    "closeAdmissionFirst": {
+      "template": "set BODY_ADMISSION_AUTHORIZED=false in server/cadUserUploadRouter.js before drain or rollback; verify USER_UPLOADS_DISABLED before any parser/executor path",
+      "sha256": "878414150628811d517333fb7f36e3d1ec8599c5b97b3640187dc68f6a671324"
+    },
+    "reconcileUnknowns": {
+      "template": "run bounded read-only reconciliation for exact run-owned selectors; retain unknown reservations; no deletion without separate disposition approval",
+      "sha256": "f57a2f4b2ba0f1bfb70e3218504b55695a1c2c02d14eeac53c3f8c78a4bc3ebe"
+    }
+  },
+  "rollback": {
+    "verifiedDisabledRelease": "90b66c68021e9003e5e723c0bb6ae4e81625611c",
+    "closeAdmissionBeforeDrain": true,
+    "rollbackCanDeleteRows": false,
+    "unknownReservationsRemainLocked": true,
+    "sessionRevocationEvidenceRequired": true,
+    "safeRetainedStateDispositionRequired": true,
+    "disabledEndpointReceipt": "docs/cad-upload-activation-run-manifest.json#failClosedSmoke",
+    "commandRefs": [
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.verifyDisabledRelease",
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.postRollbackSmoke",
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.closeAdmissionFirst",
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.reconcileUnknowns"
+    ]
+  },
+  "readinessManifestRefs": {
+    "providerReadiness.reviewedExactCommandManifest": "docs/cad-upload-activation-run-manifest.json#commandManifest",
+    "rollback.namedExecutorAndBackup": "docs/cad-upload-activation-run-manifest.json#operators",
+    "rollback.verifiedDisabledRelease": "docs/cad-upload-activation-run-manifest.json#rollback.verifiedDisabledRelease",
+    "rollback.closeAdmissionBeforeDrain": "docs/cad-upload-activation-run-manifest.json#rollback.closeAdmissionBeforeDrain",
+    "rollback.reconcileInFlightAndUnknownOutcomes": "docs/cad-upload-activation-run-manifest.json#commandManifest.reconcileUnknowns",
+    "rollback.safeRetainedStateDisposition": "docs/cad-upload-activation-run-manifest.json#rollback.safeRetainedStateDispositionRequired",
+    "rollback.disabledEndpointReceipt": "docs/cad-upload-activation-run-manifest.json#failClosedSmoke",
+    "activation.boundedRunAndCostManifest": "docs/cad-upload-activation-run-manifest.json#runManifest",
+    "activation.fixtureAndPrivacyScope": "docs/cad-upload-activation-run-manifest.json#runManifest.fixtureScope",
+    "activation.priorGateEvidence": "offline/cad-convex/userUploadActivationReadiness.json#gates"
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "pushMergeDeployAuthorizedByThisPacket": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-disabled-adapter",
+    "scope": "source-only disabled admission adapter and tests that wire reviewed manifest refs while keeping BODY_ADMISSION_AUTHORIZED false",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation or private CAD"
+  }
+}
