@@ -1,0 +1,10 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionRuntimeBridgeReview.json",
+  "summary": "source-only runtime bridge review; disabled-by-default runtime bridge may be introduced only as a follow-up while production uploads remain closed",
+  "reviewDecision": "SOURCE_ONLY_RUNTIME_BRIDGE_ALLOWED_AS_DISABLED_DEFAULT_FOLLOW_UP",
+  "currentRouteStillClosed": true,
+  "readyForSourceOnlyBridgeFollowUp": true,
+  "readyForLiveRun": false,
+  "readyForUploadActivation": false,
+  "nextSafeBranch": "codex/cad-upload-admission-runtime-bridge-source"
+}

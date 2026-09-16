@@ -121,6 +121,11 @@ const files = [
   'offline/cad-convex/uploadAdmissionGuardedRouteBridge.json',
   'docs/cad-upload-admission-guarded-route-bridge.md',
   'scripts/cad-upload-admission-guarded-route-bridge.test.js',
+  'offline/cad-convex/uploadAdmissionRuntimeBridgeReview.js',
+  'offline/cad-convex/uploadAdmissionRuntimeBridgeReview.json',
+  'docs/cad-upload-admission-runtime-bridge-review.md',
+  'docs/cad-upload-admission-runtime-bridge-review.json',
+  'scripts/cad-upload-admission-runtime-bridge-review.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -505,6 +510,20 @@ for (const name of ['durableAdapter.js', 'liveRunner.js', 'durableEvidenceBindin
 for (const name of ['durableEngine.js', 'durableEngineAdapter.js', 'durableEngineRunner.js'])
   assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('offline/cad-convex/' + name)));
 assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false;/);
+const runtimeBridgeReview = JSON.parse(read('offline/cad-convex/uploadAdmissionRuntimeBridgeReview.json'));
+const runtimeBridgeResult = require('../offline/cad-convex/uploadAdmissionRuntimeBridgeReview')
+  .inspectUploadAdmissionRuntimeBridgeReview(runtimeBridgeReview, read('server/cadUserUploadRouter.js'));
+assert.equal(runtimeBridgeResult.structureValid, true);
+assert.equal(runtimeBridgeResult.currentRouteStillClosed, true);
+assert.equal(runtimeBridgeResult.readyForSourceOnlyBridgeFollowUp, true);
+assert.equal(runtimeBridgeResult.readyForLiveRun, false);
+assert.equal(runtimeBridgeResult.readyForUploadActivation, false);
+assert.equal(runtimeBridgeReview.runtimeBridgeImplementedNow, false);
+assert.equal(runtimeBridgeReview.runtimeBridgeMountedNow, false);
+assert.equal(runtimeBridgeReview.bodyAdmissionAuthorized, false);
+assert.ok(Object.values(runtimeBridgeReview.authorityPreserved).every(value => value === false));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionRuntimeBridgeReview.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
