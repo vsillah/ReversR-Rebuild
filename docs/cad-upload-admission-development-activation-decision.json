@@ -1,0 +1,16 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentActivationDecision.json",
+  "summary": "source-only decision packet for future CAD upload admission development activation executor",
+  "baseMainCommit": "6b596b9890f835e15685910c48f793dcf4fa7b8c",
+  "branch": "codex/cad-upload-admission-activation-decision",
+  "expensesUsd": 0,
+  "qualificationCloseoutAccepted": true,
+  "qualificationEvidenceSha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+  "qualificationReceiptSha256": "176440f7c579ff709dcd8ca30ea3dad41200d7c01658a10064ccfeafc66024b4",
+  "developmentRunAuthorizedByThisPacket": false,
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only development upload activation executor while preserving mounted production route disabled"
+}
