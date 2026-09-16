@@ -1,0 +1,14 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionExecutionPacket.json",
+  "summary": "source-only execution packet for one future bounded CAD upload admission qualification attempt",
+  "baseMainCommit": "d50ec7b07ba5f12d7e41a6fcc7b4c238721dca35",
+  "branch": "codex/cad-upload-admission-execution-packet",
+  "expensesUsd": 0,
+  "liveRunHappened": false,
+  "uploadActivationAuthorized": false,
+  "bodyAdmissionExecutableNow": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only bounded upload admission executor gate"
+}
