@@ -1,0 +1,11 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.json",
+  "summary": "source-only acceptance of the CAD upload admission development dry-run executor preview and exact 04:15Z run window",
+  "acceptedExecutorPreview": true,
+  "acceptedWindowStartUtc": "2026-09-16T04:15:00Z",
+  "acceptedWindowExpiresUtc": "2026-09-16T04:30:00Z",
+  "liveDevelopmentRunAuthorizedByThisPacket": false,
+  "readyForAutopilotDevelopmentRun": true,
+  "readyForUploadActivation": false,
+  "nextSafeActionType": "bounded-development-run"
+}
