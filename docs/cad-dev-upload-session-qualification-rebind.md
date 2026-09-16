@@ -1,23 +1,24 @@
 # CAD development upload/session qualification rebind
 
-Base: `4ad8ff8e50ac78e8171c4ff8ae6cb6e0d2b14467`, after PR #248.
-Branch: `codex/cad-upload-session-2230z-rebind`.
+Base: `1f5eeae09583d51f411209a7a07a926126070e1b`, after PR #255.
+Branch: `codex/cad-upload-session-0100z-rebind`.
 Status: source-only rebind for one future development-only upload-session
 qualification run. Expenses: USD 0.
 
 ## What Changed
 
-This slice binds the disabled-by-default bridge from PR #248 to one accepted
-restricted local register and one fresh UTC window after the stopped `21:30Z` attempt:
+This slice binds the disabled-by-default bridge to one accepted restricted local
+register and one fresh UTC window after the stopped `22:30Z` attempt and the
+source-only authenticated bridge-call repair:
 
-- run ID: `cad-dev-upload-session-2230z`
-- window: `2026-09-15T22:30:00Z` through `2026-09-15T22:45:00Z`
-- projection digest: `5d56b109da11edc6ca71cd48fcaa9a960055e71aeb2f1ea4ca690b3ca7ba7383`
-- acceptance receipt digest: `e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56`
-- private register digest: `0dbdedbc727fed0e5f87dfa636b638a1cf9a5780df5c004d81643ac2089a6a74`
+- run ID: `cad-dev-upload-session-0100z`
+- window: `2026-09-16T01:00:00Z` through `2026-09-16T01:15:00Z`
+- projection digest: `3f405f0eafa4e3834b99d9ee69547402a0690e79e705dacd13a764b8e4b7e640`
+- acceptance receipt digest: `d6a09751cece8326d6a242686ca310fa9b4a3abace455dcbd23e739b9223f930`
+- private register digest: `a491d8ac48374942ecb2662b88e148cf4d42e45bac048cfdc92e50c3eb262dce`
 
 The raw run key remains only in ignored local evidence under
-`.local/cad-convex/upload-session-qualification-rebind-2230z/`.
+`.local/cad-convex/upload-session-qualification-rebind-0100z/`.
 
 ## Boundary
 
@@ -32,12 +33,13 @@ When separately triggered inside the accepted window on development deployment
 `majestic-alligator-31`, the bridge may perform only:
 
 1. digest and UTC-window validation,
-2. one run-owned synthetic authority provision,
-3. one synthetic upload-session insert-if-absent,
-4. one active read,
-5. one upload-session revoke without deletion,
-6. one synthetic authority revoke without deletion,
-7. one post-revoke read that must observe revocation.
+2. execution through the authenticated synthetic session client,
+3. one run-owned synthetic authority provision,
+4. one synthetic upload-session insert-if-absent,
+5. one active read,
+6. one upload-session revoke without deletion,
+7. one synthetic authority revoke without deletion,
+8. one post-revoke read that must observe revocation.
 
 The route gate remains disabled: `bodyAdmissionAuthorized` is false, conversion
 is false and retained revoked state is required.

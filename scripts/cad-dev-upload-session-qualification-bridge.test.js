@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const packet = JSON.parse(fs.readFileSync('docs/cad-dev-upload-session-qualification-bridge.json', 'utf8'));
 const executor = JSON.parse(fs.readFileSync('docs/cad-dev-upload-session-qualification-executor.json', 'utf8'));
 const closeout = JSON.parse(fs.readFileSync('docs/cad-dev-auth-session-run-closeout.json', 'utf8'));
+const rebind = JSON.parse(fs.readFileSync('docs/cad-dev-upload-session-qualification-rebind.json', 'utf8'));
 const binding = fs.readFileSync('convex/cadDevUploadSessionQualificationBinding.ts', 'utf8');
 const source = fs.readFileSync('convex/cadDevUploadSessionQualification.ts', 'utf8');
 const route = fs.readFileSync('server/cadUserUploadRouter.js', 'utf8');
@@ -30,12 +31,12 @@ test('binding is disabled by default or bound to one exact reviewed run tuple', 
     && /windowStartMs: null/.test(binding)
     && /windowEndMs: null/.test(binding);
   const exactRebind = /enabled: true/.test(binding)
-    && /cad-dev-upload-session-2230z-rebind/.test(binding)
-    && /6c78389d586db2db5ff30a2adde83a44f4f4f8caf497be718aa0da0adad3b50d/.test(binding)
-    && /5d56b109da11edc6ca71cd48fcaa9a960055e71aeb2f1ea4ca690b3ca7ba7383/.test(binding)
-    && /e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56/.test(binding)
-    && /windowStartMs: 1789511400000/.test(binding)
-    && /windowEndMs: 1789512300000/.test(binding);
+    && binding.includes(rebind.binding.mode)
+    && binding.includes(rebind.run.runKeySha256)
+    && binding.includes(rebind.run.acceptedProjectionSha256)
+    && binding.includes(rebind.run.acceptanceReceiptSha256)
+    && binding.includes(`windowStartMs: ${rebind.run.windowStartMs}`)
+    && binding.includes(`windowEndMs: ${rebind.run.windowEndMs}`);
   assert.equal(disabledDefault || exactRebind, true);
   assert.match(binding, /bodyAdmissionAuthorized: false/);
 });
