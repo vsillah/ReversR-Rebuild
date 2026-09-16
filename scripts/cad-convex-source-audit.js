@@ -174,6 +174,11 @@ const files = [
   'docs/cad-upload-admission-development-body-admission-window.md',
   'docs/cad-upload-admission-development-body-admission-window.json',
   'scripts/cad-upload-admission-development-body-admission-window.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.json',
+  'docs/cad-upload-admission-development-body-admission-closeout.md',
+  'docs/cad-upload-admission-development-body-admission-closeout.json',
+  'scripts/cad-upload-admission-development-body-admission-closeout.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -691,6 +696,23 @@ assert.ok(!/uploadAdmissionDevelopmentBodyAdmissionWindow|cad-upload-admission-d
 assert.ok(!/process\.env|https?\.request|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionWindow.js')
     + read('scripts/run-cad-upload-admission-development-body-admission-window.js')));
+const bodyAdmissionCloseout = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.json'));
+const bodyAdmissionCloseoutResult =
+  require('../offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout')
+    .inspectUploadAdmissionDevelopmentBodyAdmissionCloseout(bodyAdmissionCloseout);
+assert.equal(bodyAdmissionCloseoutResult.structureValid, true);
+assert.equal(bodyAdmissionCloseoutResult.uploadActivationAuthorized, false);
+assert.equal(bodyAdmissionCloseoutResult.productionBodyAdmissionAuthorized, false);
+assert.equal(bodyAdmissionCloseoutResult.conversionAuthorized, false);
+assert.equal(bodyAdmissionCloseoutResult.sandboxDispatchAuthorized, false);
+assert.equal(bodyAdmissionCloseoutResult.privateCadAuthorized, false);
+assert.equal(bodyAdmissionCloseout.operationCounts.uploadBodiesRead, 1);
+assert.equal(bodyAdmissionCloseout.operationCounts.storeMutations, 0);
+assert.ok(Object.values(bodyAdmissionCloseout.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentBodyAdmissionCloseout|cad-upload-admission-development-body-admission-closeout/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
