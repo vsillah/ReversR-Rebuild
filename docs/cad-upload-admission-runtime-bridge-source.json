@@ -1,0 +1,12 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionRuntimeBridgeSource.json",
+  "summary": "source-only disabled-by-default runtime bridge source; route remains unmounted and BODY_ADMISSION_AUTHORIZED remains false",
+  "runtimeBridgeSourceImplemented": true,
+  "runtimeBridgeMountedNow": false,
+  "enabledByDefault": false,
+  "bodyAdmissionAuthorized": false,
+  "readyForDevelopmentDryRunPlanning": true,
+  "readyForLiveRun": false,
+  "readyForUploadActivation": false,
+  "nextSafeBranch": "codex/cad-upload-admission-development-dry-run-plan"
+}
