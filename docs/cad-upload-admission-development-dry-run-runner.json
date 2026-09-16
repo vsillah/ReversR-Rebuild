@@ -1,0 +1,13 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentDryRunRunner.json",
+  "summary": "source-only local CAD upload admission development dry-run runner for the 04:45Z synthetic window",
+  "baseMainCommit": "ad06d66430d45cc24bfd5fad7501e2a04e0e68a4",
+  "branch": "codex/cad-upload-admission-development-dry-run-runner",
+  "expensesUsd": 0,
+  "liveRunHappened": false,
+  "uploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "publish, merge, production fail-closed smoke, cleanup, then run or schedule one bounded development dry-run during the 04:45Z window if still current"
+}
