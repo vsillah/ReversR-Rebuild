@@ -65,7 +65,7 @@ async function main() {
     evidenceSha256: sha(evidenceBytes),
     evidencePath: path.relative(root, evidencePath),
     runRef: config.acceptedWindow.runRef,
-    mainCommit: 'ad06d66430d45cc24bfd5fad7501e2a04e0e68a4',
+    mainCommit: '2319c1288217b78bdfeae028a62ab29e45fd635a',
     production: false,
     uploadActivationAuthorized: false,
     conversionAuthorized: false,
