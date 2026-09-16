@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-activation-executor",
+  "status": "DEVELOPMENT_UPLOAD_ACTIVATION_EXECUTOR_PREVIEW_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "189f82739cea2f9ca86721cc237b4260f227e0bf",
+  "branch": "codex/cad-upload-admission-development-activation-executor",
+  "observedAtUtc": "2026-09-16T11:25:00Z",
+  "expensesUsd": 0,
+  "liveRunAuthorizedByThisPacket": false,
+  "sourceBindings": {
+    "decisionPacket": "offline/cad-convex/uploadAdmissionDevelopmentActivationDecision.json",
+    "runtimeBridge": "server/cadUploadAdmissionRuntimeBridge.js",
+    "runnerCli": "scripts/run-cad-upload-admission-development-activation-executor.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "qualificationCloseout": "offline/cad-convex/uploadAdmissionQualificationCloseout.json"
+  },
+  "previewBounds": {
+    "developmentOnly": true,
+    "mountedProductionRouteModified": false,
+    "runtimeBridgeMounted": false,
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "admissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "automaticRetry": false,
+    "secondRun": false,
+    "maxAllInCostUsd": 50
+  },
+  "expectedPreview": {
+    "decision": "UPLOAD_ADMISSION_DEVELOPMENT_ACTIVATION_EXECUTOR_PREVIEWED",
+    "code": "SOURCE_ONLY_DEVELOPMENT_ACTIVATION_PREVIEW",
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "activationExecuted": false,
+    "liveRunStarted": false,
+    "uploadBodiesRead": 0,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "developmentRunAuthorizedByThisPacket": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "pushMergeDeployAuthorizedByThisPacket": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-development-activation-window",
+    "scope": "source-only packet binding one exact UTC window and sanitized evidence destination for a future bounded development-only activation preview",
+    "stopBefore": "live execution, production upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, real users or external delivery"
+  }
+}

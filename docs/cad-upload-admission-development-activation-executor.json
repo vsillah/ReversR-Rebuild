@@ -1,0 +1,14 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.json",
+  "summary": "source-only preview executor for a future CAD upload admission development activation window",
+  "baseMainCommit": "189f82739cea2f9ca86721cc237b4260f227e0bf",
+  "branch": "codex/cad-upload-admission-development-activation-executor",
+  "expensesUsd": 0,
+  "previewReady": true,
+  "liveRunAuthorizedByThisPacket": false,
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only activation window packet with exact UTC window and sanitized evidence destination"
+}
