@@ -1,0 +1,18 @@
+{
+  "summary": "source-only activation window packet for one future bounded CAD upload admission development preview",
+  "branch": "codex/cad-upload-admission-development-activation-window",
+  "baseMainCommit": "1dbbd4fffa423b240e39ed09a93d7e4eca693c2b",
+  "window": "2026-09-16T12:15:00Z/2026-09-16T12:30:00Z",
+  "runRef": "rrb-ref:cad-upload-admission-development-activation-1215z",
+  "maxAllInPlanningCapUsd": 50,
+  "nextSafeAction": "publish, merge, production fail-closed smoke, cleanup, then run or schedule one bounded development-only activation preview during the 12:15Z window if still current",
+  "authority": {
+    "liveRunAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  }
+}
