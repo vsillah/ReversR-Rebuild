@@ -238,6 +238,12 @@
     "docs/cad-upload-admission-execution-packet.md": "07efe0645d8e38024b3c88932b67c74a4ad3c61ba2659b0444b2d474ad91df7d",
     "docs/cad-upload-admission-execution-packet.json": "0be2289520ca380448f06a76c67d17d5fa16952a1592ea854e58e55d9ec49c12",
     "scripts/cad-upload-admission-execution-packet.test.js": "ed2ac8c78939db671fed7eb731e91db235ab39ba023fb31d0cc603e5ed51856d",
+    "offline/cad-convex/uploadAdmissionExecutorGate.js": "5d9098340ea5b0da813f797ef7cef585384be3d41f0cc78601b2db002c6b70ae",
+    "offline/cad-convex/uploadAdmissionExecutorGate.json": "ef1d7da981d31a109a2bb95835af37202c98d7789038809bb00e7326f6520ab3",
+    "scripts/run-cad-upload-admission-executor-gate.js": "7ca0e3daf4f2ab2e31a1e43026b42221cb29c81eccfe1c665d418be61161722b",
+    "docs/cad-upload-admission-executor-gate.md": "6f169a08653d7d13893742026f22bc3493d11f0b574fc2773d2505784c96de10",
+    "docs/cad-upload-admission-executor-gate.json": "9d35ef02505d3ec49c6fa33310e3eb90dd9b06bf44b051b92ce943c0a0e4afbb",
+    "scripts/cad-upload-admission-executor-gate.test.js": "c832eeac41fc078b9d3788a743776db4576ea9abfad2d8406a8c103ee47d1aba",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -435,6 +441,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "cb70ff4dec421bc50d50390c53b70834d93163fb16f0db7c4b8bacb8c75f57d2"
+    "scripts/cad-convex-contract-manifest.js": "9499424662e7c54b26c4ccbca34487ce0bc5b3392de5a84927682b647bf6092c"
   }
 }
