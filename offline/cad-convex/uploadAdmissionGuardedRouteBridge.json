@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-guarded-route-bridge",
+  "status": "GUARDED_ROUTE_BRIDGE_MODEL_READY_UNMOUNTED",
+  "sourceOnly": true,
+  "enabled": false,
+  "runtimeMounted": false,
+  "bodyAdmissionAuthorized": false,
+  "routeTerminalCode": "USER_UPLOADS_DISABLED",
+  "source": "offline/cad-convex/uploadAdmissionGuardedRouteBridge.js",
+  "qualificationWindow": "docs/cad-upload-admission-qualification-window.json",
+  "adapterSource": "offline/cad-convex/uploadAdmissionDurableAdapter.js",
+  "disabledRollbackTarget": "offline/cad-convex/disabledUploadAdmissionAdapter.js",
+  "allowedSourceOnlyOperations": [
+    "validate closed qualification window",
+    "return disabled route decision while bridge is not accepted",
+    "preview durable adapter dry-run only when a future accepted window is injected by tests"
+  ],
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-runtime-bridge-review",
+    "scope": "source-only review of whether a disabled-by-default runtime bridge can be introduced without opening production uploads",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation, secret reads or private CAD"
+  }
+}
