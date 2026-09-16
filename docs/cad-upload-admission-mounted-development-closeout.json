@@ -1,0 +1,24 @@
+{
+  "summary": "source-only closeout for the successful CAD mounted-development upload-admission run",
+  "branch": "codex/cad-mounted-dev-upload-run-closeout",
+  "baseMainCommit": "8bcbca81d24aa0f483bbc7a95274a6590fab56ef",
+  "sourcePr": 287,
+  "runRef": "rrb-ref:cad-upload-admission-mounted-development-1800z",
+  "window": "2026-09-16T18:00:00Z through 2026-09-16T18:15:00Z",
+  "evidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+  "receiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+  "result": "mounted-development upload body admission validated; checked-in user upload route remains disabled",
+  "terminalCode": "USER_UPLOADS_DISABLED",
+  "nextSafeAction": "source-only CAD upload activation decision refresh; no activation authorized by this closeout",
+  "authority": {
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  }
+}

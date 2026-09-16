@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-mounted-development-closeout",
+  "status": "MOUNTED_DEVELOPMENT_UPLOAD_ADMISSION_COMPLETED_SOURCE_CLOSEOUT",
+  "sourceOnly": true,
+  "production": false,
+  "developmentDeployment": "local-mounted-development-harness",
+  "branch": "codex/cad-mounted-dev-upload-run-closeout",
+  "baseMainCommit": "8bcbca81d24aa0f483bbc7a95274a6590fab56ef",
+  "sourcePr": 287,
+  "executorBridgeCommit": "379e47aa8ece3bf1608ef7324bdfc852ed37826e",
+  "mergedMainCommit": "8bcbca81d24aa0f483bbc7a95274a6590fab56ef",
+  "runRef": "rrb-ref:cad-upload-admission-mounted-development-1800z",
+  "acceptedWindow": {
+    "startUtc": "2026-09-16T18:00:00Z",
+    "expiresUtc": "2026-09-16T18:15:00Z",
+    "maxRunSeconds": 900
+  },
+  "sanitizedRunEvidence": {
+    "evidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+    "receiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+    "evidencePath": ".local/cad-convex/upload-admission-mounted-development-1800z/sanitized-evidence.json",
+    "receiptPath": ".local/cad-convex/upload-admission-mounted-development-1800z/sanitized-run-receipt.json",
+    "gitIgnored": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "privatePatternLeakObserved": false,
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "runResult": {
+    "decision": "UPLOAD_ADMISSION_MOUNTED_DEVELOPMENT_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "bodyAdmissionValidated": true,
+    "completedAtUtc": "2026-09-16T18:00:43.190Z",
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "fixture": {
+    "id": "public-cube",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "privateCad": false
+  },
+  "operationCounts": {
+    "mountedRouteDisabledChecks": 2,
+    "mountedDevelopmentBodyValidationChecks": 1,
+    "uploadBodiesRead": 1,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0
+  },
+  "runFlags": {
+    "productionUploadActivationAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "productionFailClosedSmoke": {
+    "source": "PR #287 post-merge smoke",
+    "mergeCommit": "8bcbca81d24aa0f483bbc7a95274a6590fab56ef",
+    "qa": "8bcbca8",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "providerResourceChangeAuthorized": false,
+    "envChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "externalMessageAuthorized": false
+  },
+  "whatThisProves": [
+    "reviewed mounted-development harness can admit and validate the public cube IGES body",
+    "checked-in user upload route stayed disabled before and after the mounted-development check",
+    "the run completed once with a known terminal disabled code and no unknown outcome",
+    "sanitized local evidence records no raw credential, contentBase64 or private CAD"
+  ],
+  "whatThisDoesNotProve": [
+    "production CAD upload activation",
+    "production body admission",
+    "private CAD handling",
+    "CAD conversion or Sandbox dispatch",
+    "real-user readiness",
+    "provider, resource, environment or billing authority"
+  ],
+  "remainingGatesBeforeCadUploadActivation": [
+    "source-only activation decision refresh with this mounted-development closeout",
+    "explicit approval for any production or development upload activation",
+    "separate conversion and Sandbox dispatch approval",
+    "separate private CAD approval if ever needed",
+    "post-activation fail-closed rollback and cleanup evidence"
+  ],
+  "nextSafeAction": {
+    "type": "source-only-cad-upload-activation-decision-refresh",
+    "scope": "bind the successful mounted-development upload-admission closeout into the activation-readiness evidence chain and decide the next bounded activation packet",
+    "stopBefore": "production upload activation, production body admission, CAD conversion, Sandbox dispatch, private CAD, real users, provider/resource/env changes, usage/billing changes, retry or second run"
+  }
+}
