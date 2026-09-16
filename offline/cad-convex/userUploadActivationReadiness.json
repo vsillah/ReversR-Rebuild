@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "mode": "source-only-activation-readiness",
-  "baseCommit": "4878257480ffadd0e3714746f9c3b07795f9fa42",
+  "baseCommit": "c8aa62aea0e7c0b98127d4da1bdb6b4acc652559",
   "enabled": false,
   "liveReady": false,
   "executable": false,
@@ -40,23 +40,23 @@
     "payloadAdmission": {
       "approved": false,
       "evidence": {
-        "preParserAuthOrdering": null,
-        "streamingJsonLimit": null,
-        "encodingAndMediaType": null,
-        "exactFieldsAndSafeName": null,
-        "canonicalBase64AndDecodedLimit": null,
-        "igesContentAndExternalReferenceRejection": null,
-        "sanitizedParserErrors": null
+        "preParserAuthOrdering": "scripts/cad-user-upload-route.test.js#valid-sessions-stay-disabled",
+        "streamingJsonLimit": "scripts/cad-user-upload-admission.test.js#streaming-limits-cover-chunked-bodies",
+        "encodingAndMediaType": "server/cadUserUploadAdmission.js#validateRequestBody",
+        "exactFieldsAndSafeName": "scripts/cad-user-upload-admission.test.js#strict-three-field-admission",
+        "canonicalBase64AndDecodedLimit": "scripts/cad-user-upload-admission.test.js#canonical-base64-encoded-and-decoded-limits",
+        "igesContentAndExternalReferenceRejection": "scripts/cad-user-upload-activation-readiness.test.js#pure-iges-payload-checks",
+        "sanitizedParserErrors": "scripts/cad-user-upload-admission.test.js#actual-route-instrumentation"
       }
     },
     "sharedControls": {
       "approved": false,
       "evidence": {
-        "atomicUserShopLease": null,
-        "crossInstanceRateLimit": null,
-        "enforcedAllInCostCap": null,
-        "unknownOutcomeReconciliation": null,
-        "abortAndRetryAccounting": null
+        "atomicUserShopLease": "offline/cad-convex/sharedUploadControls.js#transition",
+        "crossInstanceRateLimit": "scripts/cad-upload-shared-controls.test.js#stale-snapshot-cas-loses",
+        "enforcedAllInCostCap": "scripts/cad-upload-shared-controls.test.js#all-in-integer-reservations",
+        "unknownOutcomeReconciliation": "scripts/cad-upload-shared-controls.test.js#unknown-outcomes-retain-money-and-capacity",
+        "abortAndRetryAccounting": "scripts/cad-upload-shared-controls.test.js#cancellation-before-fence"
       }
     },
     "sandboxDispatch": {

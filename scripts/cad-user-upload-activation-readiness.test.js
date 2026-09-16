@@ -8,7 +8,7 @@ const { LIMITS, upload } = require('../server/cadWorkerContract');
 const { SANDBOX_LIMITS } = require('../server/cadSandboxConfig');
 const root = path.resolve(__dirname, '..');
 
-test('readiness evidence is unresolved and every separate approval gate is closed', () => {
+test('readiness evidence records reviewed source gates while approvals stay closed', () => {
   assert.equal(packet.mode, 'source-only-activation-readiness');
   for (const flag of ['enabled', 'liveReady', 'executable']) assert.equal(packet[flag], false);
   assert.deepEqual(Object.keys(packet.gates).sort(), [
@@ -24,8 +24,30 @@ test('readiness evidence is unresolved and every separate approval gate is close
   assert.equal(packet.gates.exactSessionAuthority.evidence.concurrentRevocationFence, null);
   assert.equal(packet.gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf, null);
   assert.equal(packet.gates.uploadPermission.evidence.nativeBearerTransportReview, null);
-  assert.equal(packet.gates.payloadAdmission.evidence.preParserAuthOrdering, null);
-  assert.equal(packet.gates.sharedControls.evidence.enforcedAllInCostCap, null);
+  assert.equal(packet.gates.payloadAdmission.evidence.preParserAuthOrdering,
+    'scripts/cad-user-upload-route.test.js#valid-sessions-stay-disabled');
+  assert.equal(packet.gates.payloadAdmission.evidence.streamingJsonLimit,
+    'scripts/cad-user-upload-admission.test.js#streaming-limits-cover-chunked-bodies');
+  assert.equal(packet.gates.payloadAdmission.evidence.encodingAndMediaType,
+    'server/cadUserUploadAdmission.js#validateRequestBody');
+  assert.equal(packet.gates.payloadAdmission.evidence.exactFieldsAndSafeName,
+    'scripts/cad-user-upload-admission.test.js#strict-three-field-admission');
+  assert.equal(packet.gates.payloadAdmission.evidence.canonicalBase64AndDecodedLimit,
+    'scripts/cad-user-upload-admission.test.js#canonical-base64-encoded-and-decoded-limits');
+  assert.equal(packet.gates.payloadAdmission.evidence.igesContentAndExternalReferenceRejection,
+    'scripts/cad-user-upload-activation-readiness.test.js#pure-iges-payload-checks');
+  assert.equal(packet.gates.payloadAdmission.evidence.sanitizedParserErrors,
+    'scripts/cad-user-upload-admission.test.js#actual-route-instrumentation');
+  assert.equal(packet.gates.sharedControls.evidence.atomicUserShopLease,
+    'offline/cad-convex/sharedUploadControls.js#transition');
+  assert.equal(packet.gates.sharedControls.evidence.crossInstanceRateLimit,
+    'scripts/cad-upload-shared-controls.test.js#stale-snapshot-cas-loses');
+  assert.equal(packet.gates.sharedControls.evidence.enforcedAllInCostCap,
+    'scripts/cad-upload-shared-controls.test.js#all-in-integer-reservations');
+  assert.equal(packet.gates.sharedControls.evidence.unknownOutcomeReconciliation,
+    'scripts/cad-upload-shared-controls.test.js#unknown-outcomes-retain-money-and-capacity');
+  assert.equal(packet.gates.sharedControls.evidence.abortAndRetryAccounting,
+    'scripts/cad-upload-shared-controls.test.js#cancellation-before-fence');
   assert.equal(packet.gates.sandboxDispatch.evidence.reviewedExecutorAndAssetHashes, null);
   assert.equal(packet.gates.activation.evidence.explicitUploadActivationApproval, null);
   assert.ok(Object.values(packet.authority).every(value => value === null));
