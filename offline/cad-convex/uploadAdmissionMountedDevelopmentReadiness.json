@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-mounted-development-readiness",
+  "status": "MOUNTED_DEVELOPMENT_UPLOAD_READINESS_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "0b30989c0458763aa20fa6609430e07e5bedeb60",
+  "branch": "codex/cad-mounted-dev-upload-readiness",
+  "observedAtUtc": "2026-09-16T17:12:59Z",
+  "expensesUsd": 0,
+  "developmentProject": "reversr-cad-auth-dev",
+  "developmentDeployment": "majestic-alligator-31",
+  "acceptedBodyAdmissionCloseout": {
+    "source": "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.json",
+    "docs": "docs/cad-upload-admission-development-body-admission-closeout.md",
+    "sourcePr": 283,
+    "closeoutPr": 284,
+    "bodyAdmissionMergeCommit": "ce6494ca1bd250b7d0051ffcaff3e8ac86a3054d",
+    "mergedMainCommit": "ce6494ca1bd250b7d0051ffcaff3e8ac86a3054d",
+    "closeoutMergeCommit": "0b30989c0458763aa20fa6609430e07e5bedeb60",
+    "runRef": "rrb-ref:cad-upload-admission-development-body-admission-1630z",
+    "window": {
+      "startUtc": "2026-09-16T16:30:00Z",
+      "expiresUtc": "2026-09-16T16:45:00Z"
+    },
+    "evidenceSha256": "d5d561c9dbb69fd8c398e46290e960a9078f74c3966671dd88bef71c318ca604",
+    "receiptSha256": "90840cf2af29203e17ec2234ef99d662abd77518f012b3b9bbe4be74bd465b84",
+    "runDecision": "UPLOAD_ADMISSION_DEVELOPMENT_BODY_ADMISSION_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "isolatedRouteBodyAdmissionValidated": true,
+    "mountedRouteRemainedDisabled": true
+  },
+  "mountedRouteGate": {
+    "route": "POST /api/cad/user-import",
+    "source": "server/cadUserUploadRouter.js",
+    "requiredDisabledLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "mountedRouteCurrentlyDisabled": true,
+    "sourcePacketMayFlipLiteral": false,
+    "futureRunRequiresSeparateExactWindow": true,
+    "preFlightDisabledCheckRequired": true,
+    "postRunDisabledOrRollbackCheckRequired": true,
+    "productionFailClosedSmokeMustRemain": {
+      "userImport": "401 USER_SESSION_REQUIRED",
+      "import": "401 UNAUTHORIZED",
+      "sourceRecord": 404
+    }
+  },
+  "readinessForFutureMountedDevelopmentRun": {
+    "usesAcceptedIsolatedBodyAdmissionCloseout": true,
+    "requiresNewExactUtcWindowPacket": true,
+    "requiresLiveRunApproval": true,
+    "developmentOnly": true,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "allInPlanningCapUsd": 50,
+    "publicSyntheticFixtureOnly": true,
+    "publicFixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "publicFixtureBytes": 11562,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "mountedDevelopmentBodyAdmissionMayBeReviewed": true,
+    "mountedProductionBodyAdmissionAuthorized": false
+  },
+  "evidenceRequirements": {
+    "rootTemplate": ".local/cad-convex/upload-admission-mounted-development-[window-ref]",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "mustNotRecordContentBase64": true,
+    "mustNotRecordRawCredential": true,
+    "mustNotRecordPrivateCad": true,
+    "mustRecordOnlyFixtureDigestAndCounts": true,
+    "mustRecordRouteGatePrePost": true,
+    "mustRecordOperationCounts": true,
+    "mustRecordRollbackOrRetainedStateOutcome": true
+  },
+  "rollbackAndReconciliation": {
+    "rollbackTarget": "USER_UPLOADS_DISABLED",
+    "deleteRetainedState": false,
+    "unknownReservationsRemainLocked": true,
+    "boundedReadOnlyReconciliationOnly": true,
+    "postRollbackSmokeRequired": true,
+    "mustPreserveNoDeleteCustody": true,
+    "commandRefs": [
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.closeAdmissionFirst",
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.postRollbackSmoke",
+      "docs/cad-upload-activation-run-manifest.json#commandManifest.reconcileUnknowns"
+    ]
+  },
+  "operators": {
+    "primaryCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "testerReviewer": "Mark",
+    "markIsCustodian": false
+  },
+  "authorityPreserved": {
+    "liveRunAuthorizedByThisPacket": false,
+    "mountedDevelopmentUploadActivationAuthorizedByThisPacket": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "cleanupAuthorized": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-mounted-dev-upload-exact-window",
+    "scope": "source-only exact UTC window packet for one future mounted development upload-admission run using the public synthetic fixture, disabled-route pre/post checks, sanitized evidence, no-delete rollback custody, and stop-on-unknown handling",
+    "stopBefore": "live mounted upload execution, production upload activation, CAD conversion, Sandbox dispatch, provider/resource/env changes, private CAD, real users, retry or second run"
+  }
+}
