@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-activation-window",
+  "status": "DEVELOPMENT_UPLOAD_ACTIVATION_WINDOW_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "1dbbd4fffa423b240e39ed09a93d7e4eca693c2b",
+  "branch": "codex/cad-upload-admission-development-activation-window",
+  "observedAtUtc": "2026-09-16T11:40:00Z",
+  "expensesUsd": 0,
+  "acceptedExecutorPreview": true,
+  "acceptedWindow": {
+    "runRef": "rrb-ref:cad-upload-admission-development-activation-1215z",
+    "startUtc": "2026-09-16T12:15:00Z",
+    "expiresUtc": "2026-09-16T12:30:00Z",
+    "maxRunSeconds": 900,
+    "scheduleIfMoreThanFiveMinutesAway": true
+  },
+  "sourceBindings": {
+    "activationExecutorManifest": "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.json",
+    "activationExecutorSource": "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.js",
+    "activationRunnerCli": "scripts/run-cad-upload-admission-development-activation-executor.js",
+    "activationDecision": "offline/cad-convex/uploadAdmissionDevelopmentActivationDecision.json",
+    "qualificationCloseout": "offline/cad-convex/uploadAdmissionQualificationCloseout.json",
+    "runtimeBridgeSource": "server/cadUploadAdmissionRuntimeBridge.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "publicFixture": "node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs"
+  },
+  "acceptedEvidence": {
+    "executorPreviewStatus": "DEVELOPMENT_UPLOAD_ACTIVATION_EXECUTOR_PREVIEW_READY_SOURCE_ONLY",
+    "activationPreviewDecision": "UPLOAD_ADMISSION_DEVELOPMENT_ACTIVATION_EXECUTOR_PREVIEWED",
+    "qualificationEvidenceSha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+    "qualificationReceiptSha256": "176440f7c579ff709dcd8ca30ea3dad41200d7c01658a10064ccfeafc66024b4",
+    "publicFixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "publicFixtureBytes": 11562,
+    "recordsPrivateValues": false,
+    "recordsCadBytes": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false,
+    "recordsOnlyRefsAndDigests": true
+  },
+  "runBounds": {
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "deleteRetainedState": false,
+    "allInPlanningCapUsd": 50,
+    "bodyAdmissionAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "developmentUploadActivationAuthorizedByThisPacket": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUsersAuthorized": false
+  },
+  "requiredPreRunChecks": [
+    "production route smoke remains fail-closed before run",
+    "accepted window is current and not expired",
+    "local main is at or after 1dbbd4fffa423b240e39ed09a93d7e4eca693c2b",
+    "route source still contains const BODY_ADMISSION_AUTHORIZED = false;",
+    "no private CAD or CAD bytes are present",
+    "sanitized evidence destination is ignored and mode locked",
+    "one-shot schedule is used if execution is more than five minutes away"
+  ],
+  "sanitizedEvidenceDestination": {
+    "root": ".local/cad-convex/upload-admission-development-activation-1215z",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600"
+  },
+  "custody": {
+    "accountableCustodian": "Vambah",
+    "backupCustodian": "Amina",
+    "testerReviewer": "Mark",
+    "rollbackTarget": "USER_UPLOADS_DISABLED",
+    "retainUnknownState": true
+  },
+  "authorityPreservedByThisPacket": {
+    "liveDevelopmentRunAuthorizedNow": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "developmentUploadActivationAuthorizedByThisPacket": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "bounded-development-activation-preview",
+    "scope": "one bounded development-only activation preview during 2026-09-16T12:15:00Z through 2026-09-16T12:30:00Z, using synthetic refs and public fixture metadata only, if pre-run checks pass under the existing autopilot gate",
+    "stopBefore": "production upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, real users, retry or second run"
+  }
+}
