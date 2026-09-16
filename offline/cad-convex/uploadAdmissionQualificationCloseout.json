@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-qualification-closeout",
+  "status": "UPLOAD_ADMISSION_QUALIFICATION_CLOSEOUT_ACCEPTED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "50f5283d7f574439c968d54115aa61d2769a9752",
+  "branch": "codex/cad-upload-admission-qualification-closeout",
+  "observedAtUtc": "2026-09-16T11:02:31.900Z",
+  "expensesUsd": 0,
+  "runCompleted": true,
+  "runRef": "rrb-ref:cad-upload-admission-qualification-1100z",
+  "acceptedWindow": {
+    "startUtc": "2026-09-16T11:00:00Z",
+    "expiresUtc": "2026-09-16T11:15:00Z",
+    "maxRunSeconds": 900
+  },
+  "sourceBindings": {
+    "executorGate": "offline/cad-convex/uploadAdmissionExecutorGate.json",
+    "runnerCli": "scripts/run-cad-upload-admission-executor-gate.js",
+    "routeSource": "server/cadUserUploadRouter.js",
+    "bodyAdmissionLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "admissionValidator": "server/cadUserUploadAdmission.js",
+    "publicFixture": "node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs"
+  },
+  "preflight": {
+    "status": "READY_WAITING_FOR_WINDOW",
+    "fixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "fixtureBytes": 11562,
+    "productionUploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "evidence": {
+    "sanitizedEvidencePath": ".local/cad-convex/upload-admission-qualification-1100z/sanitized-evidence.json",
+    "sanitizedReceiptPath": ".local/cad-convex/upload-admission-qualification-1100z/sanitized-run-receipt.json",
+    "sanitizedEvidenceSha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+    "sanitizedReceiptSha256": "176440f7c579ff709dcd8ca30ea3dad41200d7c01658a10064ccfeafc66024b4",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnored": true,
+    "privatePatternLeakObserved": false
+  },
+  "fixture": {
+    "id": "cube",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "privateCad": false
+  },
+  "result": {
+    "decision": "UPLOAD_ADMISSION_EXECUTOR_GATE_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "mountedRouteDisabledChecks": 2,
+    "isolatedRouteBodyValidationChecks": 1,
+    "uploadBodiesRead": 1,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "uploadBodyValidated": true,
+    "recordsContentBase64": false,
+    "recordsRawCredential": false
+  },
+  "productionFailClosedSmoke": {
+    "mergeCommit": "50f5283d7f574439c968d54115aa61d2769a9752",
+    "qa": "50f5283",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "scheduler": {
+    "id": "cad-upload-admission-11-00z-qualification-run",
+    "deletedAfterCompletion": true,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "authorityPreservedByCloseout": {
+    "rerunAuthorized": false,
+    "secondRunAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "remainingGatesBeforeActivation": [
+    "source-reviewed development upload activation decision packet with exact rollback",
+    "development-only admission activation using synthetic or public fixture only",
+    "post-admission reconciliation with no unknown outcome",
+    "separate conversion and Sandbox qualification packet",
+    "manual production activation gate"
+  ],
+  "nextSafeAction": {
+    "type": "source-only-readiness",
+    "scope": "publish this closeout, then assemble the next bounded development upload activation decision packet without enabling production upload admission",
+    "stopBefore": "production upload activation, CAD conversion, Sandbox dispatch, private CAD, real users or external delivery"
+  }
+}
