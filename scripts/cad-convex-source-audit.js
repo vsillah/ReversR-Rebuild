@@ -210,6 +210,12 @@ const files = [
   'docs/cad-upload-admission-activation-exact-window.md',
   'docs/cad-upload-admission-activation-exact-window.json',
   'scripts/cad-upload-admission-activation-exact-window.test.js',
+  'offline/cad-convex/uploadAdmissionActivationRunnerRebind.js',
+  'offline/cad-convex/uploadAdmissionActivationRunnerRebind.json',
+  'scripts/run-cad-upload-activation-exact-window.js',
+  'docs/cad-upload-admission-activation-runner-rebind.md',
+  'docs/cad-upload-admission-activation-runner-rebind.json',
+  'scripts/cad-upload-admission-activation-runner-rebind.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -868,6 +874,31 @@ assert.ok(!/uploadAdmissionActivationExactWindow|cad-upload-admission-activation
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionActivationExactWindow.js')));
+const uploadActivationRunnerRebind =
+  JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json'));
+const uploadActivationRunnerRebindResult =
+  require('../offline/cad-convex/uploadAdmissionActivationRunnerRebind')
+    .inspectUploadAdmissionActivationRunnerRebind(
+      uploadActivationRunnerRebind,
+      uploadActivationExactWindow,
+      uploadActivationDecisionRefresh,
+      mountedDevelopmentCloseout,
+    );
+assert.equal(uploadActivationRunnerRebindResult.readyForWindowExecution, true);
+assert.equal(uploadActivationRunnerRebindResult.liveRunAuthorizedByThisPacket, false);
+assert.equal(uploadActivationRunnerRebind.acceptedWindow.startUtc, '2026-09-16T20:30:00Z');
+assert.equal(uploadActivationRunnerRebind.acceptedWindow.expiresUtc, '2026-09-16T20:45:00Z');
+assert.equal(uploadActivationRunnerRebind.runner.trackedRouteModified, false);
+assert.equal(uploadActivationRunnerRebind.runBounds.allInPlanningCapUsd, 50);
+assert.equal(uploadActivationRunnerRebind.runBounds.productionUploadActivationAuthorized, false);
+assert.equal(uploadActivationRunnerRebind.runBounds.cadConversionAuthorized, false);
+assert.equal(uploadActivationRunnerRebind.runBounds.sandboxDispatchAuthorized, false);
+assert.ok(Object.values(uploadActivationRunnerRebind.authorityPreservedByThisPacket)
+  .every(value => value === false));
+assert.ok(!/uploadAdmissionActivationRunnerRebind|run-cad-upload-activation-exact-window/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
