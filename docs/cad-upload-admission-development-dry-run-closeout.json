@@ -1,0 +1,16 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentDryRunCloseout.json",
+  "summary": "source-only closeout for the successful CAD upload admission development dry-run and stale receipt mainCommit caveat",
+  "baseMainCommit": "2319c1288217b78bdfeae028a62ab29e45fd635a",
+  "branch": "codex/cad-upload-admission-dry-run-closeout",
+  "expensesUsd": 0,
+  "dryRunCompleted": true,
+  "unknownOutcome": false,
+  "staleReceiptMainCommitCaveat": true,
+  "rerunAuthorized": false,
+  "uploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only readiness for remaining CAD upload activation gates"
+}

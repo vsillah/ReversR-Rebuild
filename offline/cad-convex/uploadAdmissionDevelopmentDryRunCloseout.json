@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-dry-run-closeout",
+  "status": "DEVELOPMENT_DRY_RUN_CLOSEOUT_ACCEPTED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "2319c1288217b78bdfeae028a62ab29e45fd635a",
+  "branch": "codex/cad-upload-admission-dry-run-closeout",
+  "observedAtUtc": "2026-09-16T08:52:05Z",
+  "expensesUsd": 0,
+  "dryRunCompleted": true,
+  "runRef": "rrb-ref:cad-upload-admission-development-dry-run-0445z",
+  "window": {
+    "startUtc": "2026-09-16T04:45:00Z",
+    "expiresUtc": "2026-09-16T05:00:00Z"
+  },
+  "evidence": {
+    "sanitizedEvidencePath": ".local/cad-convex/upload-admission-development-dry-run-0445z/sanitized-evidence.json",
+    "sanitizedReceiptPath": ".local/cad-convex/upload-admission-development-dry-run-0445z/sanitized-run-receipt.json",
+    "sanitizedEvidenceSha256": "78d5817a5d886b1b0646356bfa5c1fe53d6de9584f93e27e2c6ceb21dfc6064b",
+    "sanitizedReceiptSha256": "0d8f48293e6fab39727b7cfb10985480352c06e9e46f534fd6f2c3c02bc32968",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnored": true,
+    "privatePatternLeakObserved": false
+  },
+  "result": {
+    "decision": "UPLOAD_ADMISSION_DEVELOPMENT_DRY_RUN_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "disabledRouteChecks": 2,
+    "syntheticReservations": 1,
+    "boundedReconciliationReads": 1,
+    "revocationsWithoutDeletion": 1,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "uploadBodiesRead": 0
+  },
+  "receiptCaveat": {
+    "type": "STALE_RECEIPT_MAIN_COMMIT",
+    "receiptMainCommit": "ad06d66430d45cc24bfd5fad7501e2a04e0e68a4",
+    "verifiedRuntimeMainCommit": "2319c1288217b78bdfeae028a62ab29e45fd635a",
+    "receiptStatusTrusted": true,
+    "requiresRerun": false,
+    "sourceStampCorrected": "scripts/run-cad-upload-admission-development-dry-run.js"
+  },
+  "productionFailClosedSmokes": {
+    "preRunQa": "2319c12-pre",
+    "postRunQa": "2319c12-post",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "authorityPreservedByCloseout": {
+    "rerunAuthorized": false,
+    "secondRunAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "source-only-readiness",
+    "scope": "document remaining gates before any CAD upload activation; no live rerun required for this dry-run closeout",
+    "stopBefore": "production upload activation, CAD conversion, Sandbox dispatch, private CAD, real users or external delivery"
+  }
+}
