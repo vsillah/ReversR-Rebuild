@@ -141,6 +141,11 @@ const files = [
   'docs/cad-upload-admission-development-dry-run-executor.md',
   'docs/cad-upload-admission-development-dry-run-executor.json',
   'scripts/cad-upload-admission-development-dry-run-executor.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.json',
+  'docs/cad-upload-admission-development-dry-run-acceptance.md',
+  'docs/cad-upload-admission-development-dry-run-acceptance.json',
+  'scripts/cad-upload-admission-development-dry-run-acceptance.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -584,6 +589,22 @@ assert.ok(!/uploadAdmissionDevelopmentDryRunExecutor|cad-upload-admission-develo
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.js')));
+const dryRunAcceptance = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.json'));
+assert.equal(dryRunAcceptance.mode, 'source-only-cad-upload-admission-development-dry-run-acceptance');
+assert.equal(dryRunAcceptance.acceptedExecutorPreview, true);
+assert.equal(dryRunAcceptance.acceptedWindow.startUtc, '2026-09-16T04:15:00Z');
+assert.equal(dryRunAcceptance.acceptedWindow.expiresUtc, '2026-09-16T04:30:00Z');
+assert.equal(dryRunAcceptance.acceptedWindow.scheduleIfMoreThanFiveMinutesAway, true);
+assert.equal(dryRunAcceptance.runBounds.maxAttempts, 1);
+assert.equal(dryRunAcceptance.runBounds.automaticRetry, false);
+assert.equal(dryRunAcceptance.runBounds.secondRun, false);
+assert.equal(dryRunAcceptance.runBounds.allInPlanningCapUsd, 50);
+assert.equal(dryRunAcceptance.authorityPreservedByThisPacket.liveDevelopmentRunAuthorizedNow, false);
+assert.ok(Object.values(dryRunAcceptance.authorityPreservedByThisPacket).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentDryRunAcceptance|cad-upload-admission-development-dry-run-acceptance/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
