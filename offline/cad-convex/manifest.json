@@ -254,6 +254,12 @@
     "docs/cad-upload-admission-development-activation-decision.md": "c899560d712ab27ba9636dba39e8b7b739b1a4d6404fdde0938a0d99f6d0b34b",
     "docs/cad-upload-admission-development-activation-decision.json": "2b7188e1e94714900556f98910895c1c6ad52efeb44634e920f3763b83da2dfe",
     "scripts/cad-upload-admission-development-activation-decision.test.js": "df4a6b274af794841a43940213719361a0cecbae494b284201bb0f871e5209f1",
+    "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.js": "7957712d63b5716fa88a9e74b5cf33987c56e98b4142402f0ad2dff7a53f9c28",
+    "offline/cad-convex/uploadAdmissionDevelopmentActivationExecutor.json": "1753d8e4a375c0739d03b816598daa93e72b785e7788300818313a4f66b1b861",
+    "scripts/run-cad-upload-admission-development-activation-executor.js": "63f28d8cbb719d1e0cd157429af195fe1d3e353982504a2d3dc294d1b9fb9243",
+    "docs/cad-upload-admission-development-activation-executor.md": "f86aa8055fef3f5c98caca423ba1b5a9cd036298f6f7e0bc6eb4cfc80558a001",
+    "docs/cad-upload-admission-development-activation-executor.json": "08bd36ad35653aefb6d23f908beb98376b213752153db6db17f55b296acd0e0f",
+    "scripts/cad-upload-admission-development-activation-executor.test.js": "def6531c26fe6cc15f9bdea1a00974cc647d379bfde9c3b38bf6847e1a7e3fbf",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -451,6 +457,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "90f7dedcaaf127684f23ad57f171fc00788365e3a2a589272b825f318668179f"
+    "scripts/cad-convex-contract-manifest.js": "504fcf99f3801dab282392e1b200985703d70f18a483c9658ee0b2a458794c1c"
   }
 }
