@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-dry-run-runner",
+  "status": "DEVELOPMENT_DRY_RUN_RUNNER_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "ad06d66430d45cc24bfd5fad7501e2a04e0e68a4",
+  "branch": "codex/cad-upload-admission-development-dry-run-runner",
+  "observedAtUtc": "2026-09-16T03:55:00Z",
+  "expensesUsd": 0,
+  "acceptedWindow": {
+    "runRef": "rrb-ref:cad-upload-admission-development-dry-run-0445z",
+    "startUtc": "2026-09-16T04:45:00Z",
+    "expiresUtc": "2026-09-16T05:00:00Z",
+    "maxRunSeconds": 900,
+    "scheduleIfMoreThanFiveMinutesAway": true
+  },
+  "sourceBindings": {
+    "runnerSource": "offline/cad-convex/uploadAdmissionDevelopmentDryRunRunner.js",
+    "runnerCli": "scripts/run-cad-upload-admission-development-dry-run.js",
+    "acceptedPreview": "offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.json",
+    "runtimeBridgeSource": "server/cadUploadAdmissionRuntimeBridge.js",
+    "sharedControls": "offline/cad-convex/sharedUploadControls.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "syntheticRefs": {
+    "userId": "dryrun-user",
+    "shopId": "dryrun-shop",
+    "sessionId": "dryrun-session",
+    "loginSessionId": "dryrun-login",
+    "reservationKey": "dryrun-reservation"
+  },
+  "costAndUsage": {
+    "allInPlanningCapUsd": 50,
+    "reservationMicros": 500000,
+    "budgetMicros": 5000000,
+    "currency": "USD"
+  },
+  "runBounds": {
+    "developmentDeployment": "majestic-alligator-31",
+    "project": "reversr-cad-auth-dev",
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "deleteRetainedState": false,
+    "bodyAdmissionAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false
+  },
+  "sanitizedEvidenceDestination": {
+    "root": ".local/cad-convex/upload-admission-development-dry-run-0445z",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600"
+  },
+  "authorityPreservedByThisPacket": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "bounded-development-run",
+    "scope": "one local development-only upload admission dry-run during 2026-09-16T04:45:00Z through 2026-09-16T05:00:00Z using synthetic refs only",
+    "stopBefore": "production, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, retry or second run"
+  }
+}
