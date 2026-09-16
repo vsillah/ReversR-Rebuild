@@ -157,6 +157,17 @@ const files = [
   'docs/cad-upload-admission-development-dry-run-closeout.md',
   'docs/cad-upload-admission-development-dry-run-closeout.json',
   'scripts/cad-upload-admission-development-dry-run-closeout.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.json',
+  'docs/cad-upload-admission-development-body-admission-packet.md',
+  'docs/cad-upload-admission-development-body-admission-packet.json',
+  'scripts/cad-upload-admission-development-body-admission-packet.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor.json',
+  'scripts/run-cad-upload-admission-development-body-admission-executor.js',
+  'docs/cad-upload-admission-development-body-admission-executor.md',
+  'docs/cad-upload-admission-development-body-admission-executor.json',
+  'scripts/cad-upload-admission-development-body-admission-executor.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -616,6 +627,40 @@ assert.ok(!/uploadAdmissionDevelopmentDryRunAcceptance|cad-upload-admission-deve
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunAcceptance.js')));
+const bodyAdmissionPacket = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.json'));
+const activationCloseout = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentActivationCloseout.json'));
+const qualificationCloseout = JSON.parse(read('offline/cad-convex/uploadAdmissionQualificationCloseout.json'));
+const bodyAdmissionPacketResult = require('../offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket')
+  .inspectUploadAdmissionDevelopmentBodyAdmissionPacket(bodyAdmissionPacket, activationCloseout, qualificationCloseout);
+assert.equal(bodyAdmissionPacketResult.readyForExecutorSourceSlice, true);
+assert.equal(bodyAdmissionPacketResult.liveRunAuthorizedByThisPacket, false);
+assert.ok(Object.values(bodyAdmissionPacket.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentBodyAdmissionPacket|cad-upload-admission-development-body-admission-packet/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.js')));
+const bodyAdmissionExecutor = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor.json'));
+const bodyAdmissionExecutorResult =
+  require('../offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor')
+    .inspectUploadAdmissionDevelopmentBodyAdmissionExecutor(
+      bodyAdmissionExecutor,
+      bodyAdmissionPacket,
+      activationCloseout,
+      qualificationCloseout,
+    );
+assert.equal(bodyAdmissionExecutorResult.readyForSourceMerge, true);
+assert.equal(bodyAdmissionExecutorResult.readyForLiveRun, false);
+assert.equal(bodyAdmissionExecutor.acceptedWindow, null);
+assert.equal(bodyAdmissionExecutor.executorCapabilities.bodyReadAuthorizedByThisPacket, false);
+assert.equal(bodyAdmissionExecutor.executorCapabilities.productionBodyAdmissionAuthorized, false);
+assert.equal(bodyAdmissionExecutor.runPrerequisites.maxAttempts, 1);
+assert.equal(bodyAdmissionExecutor.runPrerequisites.automaticRetry, false);
+assert.equal(bodyAdmissionExecutor.runPrerequisites.secondRun, false);
+assert.ok(Object.values(bodyAdmissionExecutor.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentBodyAdmissionExecutor|cad-upload-admission-development-body-admission-executor/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 

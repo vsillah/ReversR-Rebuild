@@ -1,0 +1,16 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionExecutor.json",
+  "summary": "source-only executor for a future bounded development body-admission run",
+  "baseMainCommit": "b0f5760f886bf5028f8d2ebb92a5a7d2eb6fc536",
+  "branch": "codex/cad-upload-admission-development-body-admission-executor",
+  "expensesUsd": 0,
+  "executorReady": true,
+  "acceptedWindow": null,
+  "liveRunAuthorizedByThisPacket": false,
+  "productionUploadActivationAuthorized": false,
+  "productionBodyAdmissionAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only body-admission exact UTC window packet with sanitized evidence destination"
+}
