@@ -181,6 +181,10 @@
     "docs/cad-upload-admission-durable-adapter-plan.md": "a5bd2b4be90d8fe23a29f6afbf7cf5471c82c14ba1bed274fc0ee1df5bf7edd5",
     "docs/cad-upload-admission-durable-adapter-plan.json": "ac0b48b71b504d23dd2e07bef9189274d41ab234d90e0b196bb330a35f48e392",
     "scripts/cad-upload-admission-durable-adapter-plan.test.js": "3c3bfc732076a63fc94d75d764f15d8c75565761f113c2f6a58c84375573eeab",
+    "offline/cad-convex/uploadAdmissionDurableAdapter.js": "82ae9d9b0bd13e33bca4eaaff0c9ebf467636085f13c0d259973fb262c5354fe",
+    "offline/cad-convex/uploadAdmissionDurableAdapter.json": "fdd5bf56f684b74109915525845dececba45c8f2d04859b52586357d0d1bb463",
+    "docs/cad-upload-admission-durable-adapter-source.md": "eac61c9f21d658f12411b876e5d4d8c594b264f85c29756a7a2a0bd20064c57c",
+    "scripts/cad-upload-admission-durable-adapter-source.test.js": "1f596e8f98cd99c6c201a9e233dd216bcaed25ad0c0384932a04cd1d4354685b",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -364,7 +368,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "fb43bbca3c3ac9da3cf006ddc1d4700097ad9ee6c8a1c418d671b8161ede127c",
     "scripts/helpers/cad-convex-source-loader.js": "1650d3a9b32701af891e8c9409c70c1e7120e815b71b7fbc75ea97436beb88d5",
-    "scripts/cad-convex-source-audit.js": "5d515131a28dc0ef2eec79a1267b934c1147deb0195a5ca1d75c99ae03f14a5e",
+    "scripts/cad-convex-source-audit.js": "7bb087d9ac5ae1dbc47f3fa983452a5bda125e5fd200d2dbe0445901e67e521d",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -378,6 +382,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "98909f7f5942ed1618c966ece3f1d219b0e7467fd07b187f6401ab8a31934d49"
+    "scripts/cad-convex-contract-manifest.js": "5d5b8794783596ad178709c40fec856b185716113c7b2f2b93391441928d5974"
   }
 }
