@@ -1,18 +1,31 @@
 # CAD live user-upload activation readiness
 
 Status: source-only packet; uploads disabled, execution unapproved, expense $0.
-Base: `bf983bdad89d4373fd3000fb5e4474f593bd27db`.
-Branch: `codex/cad-live-upload-activation-readiness`.
-Worktree suffix: `ReversR-Rebuild.worktrees/cad-live-upload-activation-readiness`.
+Base: `4878257480ffadd0e3714746f9c3b07795f9fa42`, after PR #257.
+Branch: `codex/cad-upload-activation-readiness-refresh`.
+Worktree suffix: `ReversR-Rebuild.worktrees/cad-upload-activation-readiness-refresh`.
 
 ## What this packet establishes
 
 [The manifest](../offline/cad-convex/userUploadActivationReadiness.json) inventories
-nine separate approval gates with unresolved evidence slots. Every approval is
-false; all authority references are null. It is a review checklist, never an
-execution authorization or runtime configuration. Filling a field or passing a
-test cannot enable admission. No production, development or provider state was
-queried by this lane. Historical deployment receipts are not fresh evidence.
+nine separate approval gates with reviewed source-safe evidence references where
+they now exist and unresolved slots where they do not. Every approval remains
+false and all runtime authority references remain null. It is a review checklist,
+never an execution authorization or runtime configuration. Filling a field or
+passing a test cannot enable admission.
+
+The September 16, 2026 upload-session development qualification closeout is now
+recorded as the latest accepted source-safe evidence:
+
+- PR #257 merge commit `4878257480ffadd0e3714746f9c3b07795f9fa42`
+- run `cad-dev-upload-session-0100z`
+- development deployment `majestic-alligator-31`
+- sanitized evidence `e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866`
+- sanitized receipt `ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825`
+
+That evidence narrows the exact-session and synthetic permission questions, but
+it does not approve user upload admission, payload parsing, shared controls,
+Sandbox dispatch, conversion or production activation.
 
 Current source at the base has these boundaries:
 
@@ -55,9 +68,11 @@ requests currently return 503 `USER_UPLOADS_DISABLED` even for malformed bodies.
    transactional fence so revocation during queueing cannot reuse stale permission.
 4. Before decoding, reserve atomic cross-instance user/shop concurrency, attempt
    rate and an enforceable all-in cost cap. Proposed initial ceilings: one request
-   per user/shop and five attempts per user/minute. No budget is approved here.
-   Missing controls return 503 `UPLOAD_CONTROLS_UNAVAILABLE`; exhaustion returns
-   429 `UPLOAD_LIMIT_REACHED`. Define bounded lease expiry and idempotent retries.
+   per user/shop, five attempts per user/minute and a source-planning all-in cap
+   of USD 50 per bounded development qualification run. No spend, payment change
+   or paid commitment is approved here. Missing controls return 503
+   `UPLOAD_CONTROLS_UNAVAILABLE`; exhaustion returns 429 `UPLOAD_LIMIT_REACHED`.
+   Define bounded lease expiry and idempotent retries.
 5. Require uncompressed JSON, streaming 384 KiB cap including chunked requests and
    dishonest Content-Length, then exactly `fileName`, `mimeType`, `contentBase64`.
    Reject arrays, extra fields, empty/unsafe names, paths, unsupported extensions
@@ -80,6 +95,27 @@ Future acceptance must cover the full synthetic enabled pipeline (including
 chunking, parser errors, concurrent revocation, shared quota, cancellation and
 unknown cleanup). Pure worker tests and disabled-route tests cannot substitute
 for those missing integration tests or real provider qualification.
+
+## Evidence slots refreshed by PR #257
+
+The upload-session closeout fills source-safe references for:
+
+- verified synthetic password transport against `majestic-alligator-31`
+- exact server-owned Convex `users` and `authSessions` observations
+- logout, upload-session revocation and synthetic authority revocation
+- synthetic membership/permission provision and revocation
+- authenticated-session bridge execution without operator/profile fallback
+- value-free credential custody and sanitized local evidence receipts
+
+Still unresolved before admission work:
+
+- concurrent revocation fence under actual admission load
+- cookie Origin/CSRF contract or separate bearer contract
+- payload parser implementation and malformed-body matrix
+- shared rate/concurrency/cost controls
+- reviewed command manifest, rollback commands and backup operator
+- supported retained-state disposition and lockout/reconciliation
+- explicit upload activation approval
 
 ## Dependencies and rollback gates
 

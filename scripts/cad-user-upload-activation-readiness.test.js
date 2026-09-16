@@ -18,11 +18,37 @@ test('readiness evidence is unresolved and every separate approval gate is close
   for (const gate of Object.values(packet.gates)) {
     assert.equal(gate.approved, false);
     assert.ok(Object.keys(gate.evidence).length >= 3);
-    assert.ok(Object.values(gate.evidence).every(value => value === null));
   }
+  assert.equal(packet.gates.exactSessionAuthority.evidence.verifiedTransport,
+    'docs/cad-dev-upload-session-successful-closeout.json#runResult');
+  assert.equal(packet.gates.exactSessionAuthority.evidence.concurrentRevocationFence, null);
+  assert.equal(packet.gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf, null);
+  assert.equal(packet.gates.uploadPermission.evidence.nativeBearerTransportReview, null);
+  assert.equal(packet.gates.payloadAdmission.evidence.preParserAuthOrdering, null);
+  assert.equal(packet.gates.sharedControls.evidence.enforcedAllInCostCap, null);
+  assert.equal(packet.gates.sandboxDispatch.evidence.reviewedExecutorAndAssetHashes, null);
+  assert.equal(packet.gates.activation.evidence.explicitUploadActivationApproval, null);
   assert.ok(Object.values(packet.authority).every(value => value === null));
-  assert.equal(packet.proposedBounds.allInCostCapUsd, null);
+  assert.equal(packet.proposedBounds.allInCostCapUsd, 50);
   assert.equal(packet.currentTerminalCode, 'USER_UPLOADS_DISABLED');
+});
+
+test('latest development upload-session qualification is recorded without activation authority', () => {
+  assert.deepEqual(packet.latestDevelopmentUploadSessionQualification, {
+    sourcePr: 257,
+    mergedMainCommit: '4878257480ffadd0e3714746f9c3b07795f9fa42',
+    runRef: 'cad-dev-upload-session-0100z',
+    developmentDeployment: 'majestic-alligator-31',
+    evidenceSha256: 'e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866',
+    receiptSha256: 'ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825',
+    acceptedProjectionSha256: '3f405f0eafa4e3834b99d9ee69547402a0690e79e705dacd13a764b8e4b7e640',
+    acceptanceReceiptSha256: 'd6a09751cece8326d6a242686ca310fa9b4a3abace455dcbd23e739b9223f930',
+    cadUploadsDisabled: true,
+    bodyAdmissionAuthorized: false,
+    conversionAllowed: false,
+    retry: false,
+    secondRun: false,
+  });
 });
 
 test('proposed admission and Sandbox bounds cannot silently drift from worker limits', () => {
