@@ -189,6 +189,12 @@ const files = [
   'docs/cad-upload-admission-mounted-development-window.md',
   'docs/cad-upload-admission-mounted-development-window.json',
   'scripts/cad-upload-admission-mounted-development-window.test.js',
+  'offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge.js',
+  'offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge.json',
+  'scripts/run-cad-upload-admission-mounted-development-window.js',
+  'docs/cad-upload-admission-mounted-development-executor-bridge.md',
+  'docs/cad-upload-admission-mounted-development-executor-bridge.json',
+  'scripts/cad-upload-admission-mounted-development-executor-bridge.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -762,6 +768,31 @@ assert.ok(!/uploadAdmissionMountedDevelopmentWindow|cad-upload-admission-mounted
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionMountedDevelopmentWindow.js')));
+const mountedDevelopmentExecutorBridge =
+  JSON.parse(read('offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge.json'));
+const mountedDevelopmentExecutorBridgeResult =
+  require('../offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge')
+    .inspectUploadAdmissionMountedDevelopmentExecutorBridge(
+      mountedDevelopmentExecutorBridge,
+      mountedDevelopmentWindow,
+      mountedDevelopmentReadiness,
+    );
+assert.equal(mountedDevelopmentExecutorBridgeResult.readyForMountedDevelopmentRun, true);
+assert.equal(mountedDevelopmentExecutorBridgeResult.liveRunAuthorizedByThisPacket, false);
+assert.equal(mountedDevelopmentExecutorBridge.acceptedWindow.startUtc, '2026-09-16T18:00:00Z');
+assert.equal(mountedDevelopmentExecutorBridge.acceptedWindow.expiresUtc, '2026-09-16T18:15:00Z');
+assert.equal(mountedDevelopmentExecutorBridge.executorCapabilities.trackedRouteModified, false);
+assert.equal(mountedDevelopmentExecutorBridge.runBounds.maxAttempts, 1);
+assert.equal(mountedDevelopmentExecutorBridge.runBounds.productionUploadActivationAuthorized, false);
+assert.equal(mountedDevelopmentExecutorBridge.runBounds.cadConversionAuthorized, false);
+assert.equal(mountedDevelopmentExecutorBridge.runBounds.sandboxDispatchAuthorized, false);
+assert.ok(Object.values(mountedDevelopmentExecutorBridge.authorityPreservedByThisPacket)
+  .every(value => value === false));
+assert.ok(!/uploadAdmissionMountedDevelopmentExecutorBridge|run-cad-upload-admission-mounted-development-window/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|https?\.request|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge.js')
+    + read('scripts/run-cad-upload-admission-mounted-development-window.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
