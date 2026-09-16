@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-activation-exact-window",
+  "status": "UPLOAD_ACTIVATION_EXACT_WINDOW_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5",
+  "branch": "codex/cad-upload-activation-exact-window",
+  "observedAtUtc": "2026-09-16T18:34:45Z",
+  "expensesUsd": 0,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import",
+    "productionUrl": "https://reversr.vercel.app"
+  },
+  "acceptedDecisionRefresh": {
+    "source": "offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json",
+    "docs": "docs/cad-upload-admission-activation-decision-refresh.md",
+    "sourcePr": 289,
+    "decisionRefreshCommit": "ee0ce8b571fc23ad90492d319d63bbc33aa42f23",
+    "decisionRefreshMergeCommit": "fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5",
+    "mountedCloseoutMergeCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+    "mountedCloseoutEvidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+    "mountedCloseoutReceiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+    "publicFixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "publicFixtureBytes": 11562
+  },
+  "acceptedMountedDevelopmentCloseout": {
+    "source": "offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json",
+    "sourcePr": 288,
+    "mergedMainCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+    "runRef": "rrb-ref:cad-upload-admission-mounted-development-1800z",
+    "decision": "UPLOAD_ADMISSION_MOUNTED_DEVELOPMENT_EXECUTED",
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "evidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+    "receiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "bodyAdmissionValidated": true
+  },
+  "acceptedWindow": {
+    "runRef": "rrb-ref:cad-upload-activation-exact-window-2030z",
+    "startUtc": "2026-09-16T20:30:00Z",
+    "expiresUtc": "2026-09-16T20:45:00Z",
+    "maxRunSeconds": 900,
+    "scheduleIfMoreThanFiveMinutesAway": true,
+    "evidenceRoot": ".local/cad-convex/upload-activation-exact-window-2030z"
+  },
+  "routeGate": {
+    "route": "POST /api/cad/user-import",
+    "source": "server/cadUserUploadRouter.js",
+    "requiredDisabledLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "checkedInRouteMustRemainDisabled": true,
+    "sourcePacketMayFlipLiteral": false,
+    "preFlightDisabledCheckRequired": true,
+    "postRunDisabledOrRollbackCheckRequired": true
+  },
+  "runnerDisposition": {
+    "existingMountedRunner": "scripts/run-cad-upload-admission-mounted-development-window.js",
+    "existingMountedRunnerBoundToExpiredWindow": true,
+    "sourceOnlyRunnerRebindRequiredBeforeLiveRun": true,
+    "liveRunAuthorizedByThisPacket": false,
+    "automaticRetryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "sourceBindings": {
+    "decisionRefresh": "offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json",
+    "mountedCloseout": "offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json",
+    "mountedExecutorBridge": "offline/cad-convex/uploadAdmissionMountedDevelopmentExecutorBridge.json",
+    "mountedRunnerCli": "scripts/run-cad-upload-admission-mounted-development-window.js",
+    "runtimeBridgeSource": "server/cadUploadAdmissionRuntimeBridge.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "publicFixture": "node_modules/occt-import-js/test/testfiles/cube-10x10mm/Cube 10x10.igs"
+  },
+  "runBounds": {
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "deleteRetainedState": false,
+    "allInPlanningCapUsd": 50,
+    "publicSyntheticFixtureOnly": true,
+    "developmentUploadActivationAuthorizedNow": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUsersAuthorized": false
+  },
+  "requiredPreRunChecks": [
+    "source-only runner rebind is reviewed and merged for this 20:30Z window",
+    "production route smoke remains fail-closed after this packet and runner rebind merge",
+    "accepted window is current and not expired",
+    "local main is at or after fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5",
+    "route source still contains const BODY_ADMISSION_AUTHORIZED = false;",
+    "no private CAD or CAD bytes are present",
+    "sanitized evidence destination is ignored and mode locked",
+    "one-shot schedule is used if execution is more than five minutes away"
+  ],
+  "sanitizedEvidenceDestination": {
+    "root": ".local/cad-convex/upload-activation-exact-window-2030z",
+    "evidence": "sanitized-evidence.json",
+    "receipt": "sanitized-run-receipt.json",
+    "gitIgnoredRequired": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "custody": {
+    "accountableCustodian": "Vambah Sillah",
+    "backupCustodian": "Amina",
+    "testerReviewer": "Mark",
+    "rollbackTarget": "USER_UPLOADS_DISABLED",
+    "retainUnknownState": true
+  },
+  "authorityPreservedByThisPacket": {
+    "liveDevelopmentRunAuthorizedNow": false,
+    "developmentUploadActivationAuthorizedNow": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "cleanupAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "source-only-upload-activation-runner-rebind",
+    "branch": "codex/cad-upload-activation-runner-rebind",
+    "scope": "source-only runner rebind for one bounded development-only synthetic upload activation attempt during 2026-09-16T20:30:00Z through 2026-09-16T20:45:00Z",
+    "stopBefore": "live execution, production upload activation, production body admission, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, real users, retry or second run"
+  }
+}

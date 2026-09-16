@@ -1,0 +1,31 @@
+{
+  "summary": "source-only exact UTC window packet for a future development-only synthetic CAD upload activation attempt",
+  "source": "offline/cad-convex/uploadAdmissionActivationExactWindow.json",
+  "branch": "codex/cad-upload-activation-exact-window",
+  "baseMainCommit": "fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5",
+  "decisionRefreshMergeCommit": "fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5",
+  "mountedDevelopmentCloseoutMergeCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+  "runRef": "rrb-ref:cad-upload-activation-exact-window-2030z",
+  "windowStartUtc": "2026-09-16T20:30:00Z",
+  "windowEndUtc": "2026-09-16T20:45:00Z",
+  "liveRunHappened": false,
+  "liveRunAuthorizedByThisPacket": false,
+  "sourceOnlyRunnerRebindRequiredBeforeLiveRun": true,
+  "uploadActivationHappened": false,
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only upload activation runner rebind for this exact window",
+  "authority": {
+    "liveDevelopmentRunAuthorizedNow": false,
+    "developmentUploadActivationAuthorizedNow": false,
+    "productionUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  }
+}
