@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-runtime-bridge-source",
+  "status": "RUNTIME_BRIDGE_SOURCE_READY_UNMOUNTED_DISABLED_DEFAULT",
+  "sourceOnly": true,
+  "baseMainCommit": "17b79c511dfe47eb6b7c250f8840849403ff0cd4",
+  "branch": "codex/cad-upload-admission-runtime-bridge-source",
+  "observedAtUtc": "2026-09-16T03:25:00Z",
+  "expensesUsd": 0,
+  "runtimeBridgeSourceImplemented": true,
+  "runtimeBridgeMountedNow": false,
+  "enabledByDefault": false,
+  "bodyAdmissionAuthorized": false,
+  "routeTerminalCode": "USER_UPLOADS_DISABLED",
+  "source": "server/cadUploadAdmissionRuntimeBridge.js",
+  "sourceBindings": {
+    "runtimeBridgeReview": "offline/cad-convex/uploadAdmissionRuntimeBridgeReview.json",
+    "guardedBridgeModel": "offline/cad-convex/uploadAdmissionGuardedRouteBridge.js",
+    "disabledRollbackTarget": "offline/cad-convex/disabledUploadAdmissionAdapter.js",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "sessionVerifier": "server/uploadSession.js#createUploadSessionVerifier",
+    "sharedControls": "offline/cad-convex/sharedUploadControls.js"
+  },
+  "defaultBehavior": {
+    "withoutAcceptedWindow": "USER_UPLOADS_DISABLED",
+    "withoutDryRun": "USER_UPLOADS_DISABLED",
+    "withoutValidPrincipal": "SESSION_CONTEXT_REQUIRED",
+    "bodyAdmissionTrue": "BODY_ADMISSION_MUST_REMAIN_FALSE",
+    "unsafeProposal": "UNSAFE_PROPOSAL_REJECTED"
+  },
+  "allowedSourceOnlyOperations": [
+    "return USER_UPLOADS_DISABLED while disabled or unaccepted",
+    "accept only injected dry-run proposals after explicit acceptedWindow=true",
+    "reject proposals that authorize admission, conversion, Sandbox dispatch or store mutation",
+    "preserve no body-read authority and keep the mounted route unmodified"
+  ],
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-development-dry-run-plan",
+    "scope": "source-only planning packet for a bounded development dry-run of the disabled runtime bridge using synthetic session/shared-control refs",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation, secret reads or private CAD"
+  }
+}
