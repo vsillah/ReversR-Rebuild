@@ -216,6 +216,11 @@ const files = [
   'docs/cad-upload-admission-activation-runner-rebind.md',
   'docs/cad-upload-admission-activation-runner-rebind.json',
   'scripts/cad-upload-admission-activation-runner-rebind.test.js',
+  'offline/cad-convex/uploadAdmissionActivationWindowRollover.js',
+  'offline/cad-convex/uploadAdmissionActivationWindowRollover.json',
+  'docs/cad-upload-admission-activation-window-rollover.md',
+  'docs/cad-upload-admission-activation-window-rollover.json',
+  'scripts/cad-upload-admission-activation-window-rollover.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -874,6 +879,28 @@ assert.ok(!/uploadAdmissionActivationExactWindow|cad-upload-admission-activation
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionActivationExactWindow.js')));
+const uploadActivationWindowRollover =
+  JSON.parse(read('offline/cad-convex/uploadAdmissionActivationWindowRollover.json'));
+const uploadActivationWindowRolloverResult =
+  require('../offline/cad-convex/uploadAdmissionActivationWindowRollover')
+    .inspectUploadAdmissionActivationWindowRollover(
+      uploadActivationWindowRollover,
+      uploadActivationExactWindow,
+      JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json')),
+      uploadActivationDecisionRefresh,
+      mountedDevelopmentCloseout,
+    );
+assert.equal(uploadActivationWindowRolloverResult.readyForSourceOnlyRunnerRebind, true);
+assert.equal(uploadActivationWindowRolloverResult.liveDevelopmentRunAuthorizedByThisPacket, false);
+assert.equal(uploadActivationWindowRollover.acceptedWindow.startUtc, '2026-09-16T22:30:00Z');
+assert.equal(uploadActivationWindowRollover.acceptedWindow.expiresUtc, '2026-09-16T23:00:00Z');
+assert.equal(uploadActivationWindowRollover.runBounds.allInPlanningCapUsd, 50);
+assert.ok(Object.values(uploadActivationWindowRollover.authorityPreservedByThisPacket)
+  .every(value => value === false));
+assert.ok(!/uploadAdmissionActivationWindowRollover|cad-upload-admission-activation-window-rollover/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionActivationWindowRollover.js')));
 const uploadActivationRunnerRebind =
   JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json'));
 const uploadActivationRunnerRebindResult =
