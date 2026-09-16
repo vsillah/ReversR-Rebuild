@@ -1,9 +1,9 @@
 # CAD live user-upload activation readiness
 
 Status: source-only packet; uploads disabled, execution unapproved, expense $0.
-Base: `4878257480ffadd0e3714746f9c3b07795f9fa42`, after PR #257.
-Branch: `codex/cad-upload-activation-readiness-refresh`.
-Worktree suffix: `ReversR-Rebuild.worktrees/cad-upload-activation-readiness-refresh`.
+Base: `c8aa62aea0e7c0b98127d4da1bdb6b4acc652559`, after PR #258.
+Branch: `codex/cad-upload-admission-evidence-refresh`.
+Worktree suffix: `ReversR-Rebuild.worktrees/cad-upload-admission-evidence-refresh`.
 
 ## What this packet establishes
 
@@ -23,24 +23,28 @@ recorded as the latest accepted source-safe evidence:
 - sanitized evidence `e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866`
 - sanitized receipt `ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825`
 
-That evidence narrows the exact-session and synthetic permission questions, but
-it does not approve user upload admission, payload parsing, shared controls,
-Sandbox dispatch, conversion or production activation.
+That evidence narrows the exact-session and synthetic permission questions. PR
+#258 also refreshed the planning cap to USD 50. This packet now binds the existing
+source-reviewed payload-admission parser and shared-control model to the readiness
+manifest. It still does not approve user upload admission, Sandbox dispatch,
+conversion or production activation.
 
 Current source at the base has these boundaries:
 
 | Surface | Existing source behavior | Evidence still required |
 | --- | --- | --- |
-| `POST /api/cad/user-import` | Session verification followed by terminal 503 `USER_UPLOADS_DISABLED`; no body parser or executor | Reviewed runtime implementation and explicit activation |
+| `POST /api/cad/user-import` | Session verification followed by terminal 503 `USER_UPLOADS_DISABLED`; body admission remains behind a literal false source gate and no executor is reachable | Reviewed runtime implementation and explicit activation |
 | Upload session service | Refreshes exact `loginSessionId`, user/shop, auth method, permission and expiry on lookup | Verified live transport, current authority, concurrent revocation enforcement |
-| Worker input validator | Pure IGES shape, filename, canonical base64 and size checks; external-reference rejection | HTTP streaming/type/encoding/MIME layer and complete downstream admission |
-| Sandbox limits | Source constants and existing operator executor | Exact future executor qualification, shared controls, cleanup and cost evidence |
+| Payload admission | Reviewed source-only HTTP JSON streaming, MIME/encoding, field, filename, base64, size, IGES-shape, external-reference and sanitized-error checks | Enabled-route integration, live provider/store qualification and explicit activation |
+| Shared controls | Reviewed source-only transaction model for user/shop leases, rate/attempts, USD microbudget holds, idempotency, cancellation and reconciliation | Durable adapter, real cross-instance store qualification, rollback commands and explicit activation |
+| Sandbox limits | Source constants and existing operator executor | Exact future executor qualification, cleanup and cost evidence |
 | Retention/private adapters | Offline fixtures and closed readiness packets | Durable ownership, lockout, reconciliation and supported disposition evidence |
 
-This adds source/limit regressions and pure payload rejection tests. It does not
-implement an enabled upload pipeline. Existing route tests exercise loopback HTTP
-with synthetic adapters and zero conversion/body reads. Existing session tests
-use synthetic test-only stores; no provider store is contacted or mutated.
+This refresh records source/limit regressions, pure payload rejection tests and
+the source-only shared-control model. It does not implement an enabled upload
+pipeline. Existing route tests exercise loopback HTTP with synthetic adapters and
+zero conversion/body reads. Existing session/control tests use synthetic test-only
+stores or pure in-memory proposals; no provider store is contacted or mutated.
 
 ## Ordered admission contract for future implementation
 
@@ -96,7 +100,7 @@ chunking, parser errors, concurrent revocation, shared quota, cancellation and
 unknown cleanup). Pure worker tests and disabled-route tests cannot substitute
 for those missing integration tests or real provider qualification.
 
-## Evidence slots refreshed by PR #257
+## Evidence slots refreshed by PR #257 and this packet
 
 The upload-session closeout fills source-safe references for:
 
@@ -107,12 +111,21 @@ The upload-session closeout fills source-safe references for:
 - authenticated-session bridge execution without operator/profile fallback
 - value-free credential custody and sanitized local evidence receipts
 
+This packet fills source-safe references for:
+
+- pre-parser auth ordering and terminal disabled route behavior
+- streaming JSON limits, media type, encoding, exact field and safe filename checks
+- canonical base64, decoded-size and IGES external-reference rejection checks
+- sanitized parser errors and response shape
+- source-only user/shop lease, rate, idempotency and USD microbudget control model
+- unknown-outcome reconciliation, cancellation and retry accounting
+
 Still unresolved before admission work:
 
 - concurrent revocation fence under actual admission load
 - cookie Origin/CSRF contract or separate bearer contract
-- payload parser implementation and malformed-body matrix
-- shared rate/concurrency/cost controls
+- enabled-route integration for payload parser and malformed-body matrix
+- durable shared rate/concurrency/cost adapter with real cross-instance store evidence
 - reviewed command manifest, rollback commands and backup operator
 - supported retained-state disposition and lockout/reconciliation
 - explicit upload activation approval
@@ -161,7 +174,7 @@ neither replaces nor broadens them.
 
 Publication only (the immediate next decision):
 
-> Approve pushing only commit [full SHA] from codex/cad-live-upload-activation-readiness to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD live user-upload activation readiness packet. No merge, deploy, live tests, env/provider/auth/resource or usage/billing changes, secrets, enrollment, email/SMS, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or lane cleanup.
+> Approve pushing only commit [full SHA] from codex/cad-upload-admission-evidence-refresh to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD upload admission evidence refresh packet. No merge, deploy, live tests, env/provider/auth/resource or usage/billing changes, secrets, enrollment, email/SMS, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch or lane cleanup.
 
 Future bounded upload admission, only after implementation and all prerequisites:
 
