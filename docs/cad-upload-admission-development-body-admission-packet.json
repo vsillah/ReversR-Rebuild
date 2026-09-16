@@ -1,0 +1,19 @@
+{
+  "summary": "source-only body-admission packet for the next bounded CAD upload admission development executor",
+  "branch": "codex/cad-upload-admission-development-body-admission-packet",
+  "baseMainCommit": "3be095edb1c8968c9a6e49b9feef355a2f0e3690",
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.json",
+  "liveRunHappened": false,
+  "nextSafeAction": "source-only development body-admission executor and tests",
+  "authority": {
+    "liveRunAuthorizedByThisPacket": false,
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  }
+}
