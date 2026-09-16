@@ -244,6 +244,11 @@
     "docs/cad-upload-admission-executor-gate.md": "6f169a08653d7d13893742026f22bc3493d11f0b574fc2773d2505784c96de10",
     "docs/cad-upload-admission-executor-gate.json": "9d35ef02505d3ec49c6fa33310e3eb90dd9b06bf44b051b92ce943c0a0e4afbb",
     "scripts/cad-upload-admission-executor-gate.test.js": "c832eeac41fc078b9d3788a743776db4576ea9abfad2d8406a8c103ee47d1aba",
+    "offline/cad-convex/uploadAdmissionQualificationCloseout.js": "670e009ae7508e18aaf914f8aa24443075f6ba21692432431495ce1ecd2b24d1",
+    "offline/cad-convex/uploadAdmissionQualificationCloseout.json": "8d9f6c496edd25721d42a9df8f1df213541dfcc11a0d7c3916d70299559cac44",
+    "docs/cad-upload-admission-qualification-closeout.md": "c0123c85687b99ebd21b5fe569b247721fcbd7266a2ff1bf756f8bec19c5224a",
+    "docs/cad-upload-admission-qualification-closeout.json": "2fc3c480a92e9bd4096c7eab3d7a2f999cf487b1e93c4f133217fad5d4c9938d",
+    "scripts/cad-upload-admission-qualification-closeout.test.js": "7276694ab32a142298190e8711e38516fd673d6b27a03d215f72223d1ef5ab79",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -441,6 +446,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "9499424662e7c54b26c4ccbca34487ce0bc5b3392de5a84927682b647bf6092c"
+    "scripts/cad-convex-contract-manifest.js": "544e206a0f38070ec508a60c339af708dd43cfa6e75a72ce2c910c58b1b53e54"
   }
 }

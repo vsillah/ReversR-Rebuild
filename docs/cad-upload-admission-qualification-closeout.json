@@ -1,0 +1,18 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionQualificationCloseout.json",
+  "summary": "source-only closeout for the successful CAD upload admission qualification executor-gate run",
+  "baseMainCommit": "50f5283d7f574439c968d54115aa61d2769a9752",
+  "branch": "codex/cad-upload-admission-qualification-closeout",
+  "expensesUsd": 0,
+  "qualificationCompleted": true,
+  "unknownOutcome": false,
+  "sanitizedEvidenceSha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+  "sanitizedReceiptSha256": "176440f7c579ff709dcd8ca30ea3dad41200d7c01658a10064ccfeafc66024b4",
+  "terminalCode": "USER_UPLOADS_DISABLED",
+  "uploadBodyValidated": true,
+  "uploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only development upload activation decision packet with exact rollback and stop-before-conversion boundaries"
+}
