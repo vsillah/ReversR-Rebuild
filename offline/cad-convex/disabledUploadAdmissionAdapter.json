@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-disabled-upload-admission-adapter",
+  "enabled": false,
+  "liveReady": false,
+  "runtimeImported": false,
+  "bodyAdmissionAuthorized": false,
+  "terminalCode": "USER_UPLOADS_DISABLED",
+  "sourceRefs": {
+    "readiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "validation": [
+    "readiness manifest remains closed",
+    "run manifest remains closed",
+    "route literal BODY_ADMISSION_AUTHORIZED remains false",
+    "adapter returns USER_UPLOADS_DISABLED",
+    "runtime code does not import this adapter"
+  ],
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-durable-adapter-plan",
+    "scope": "source-only plan for a durable development adapter that would keep this disabled adapter as the rollback target",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation or private CAD"
+  }
+}
