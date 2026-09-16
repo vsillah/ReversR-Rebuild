@@ -48,6 +48,26 @@ test('readiness evidence records reviewed source gates while approvals stay clos
     'scripts/cad-upload-shared-controls.test.js#unknown-outcomes-retain-money-and-capacity');
   assert.equal(packet.gates.sharedControls.evidence.abortAndRetryAccounting,
     'scripts/cad-upload-shared-controls.test.js#cancellation-before-fence');
+  assert.equal(packet.gates.providerReadiness.evidence.reviewedExactCommandManifest,
+    'docs/cad-upload-activation-run-manifest.json#commandManifest');
+  assert.equal(packet.gates.rollback.evidence.namedExecutorAndBackup,
+    'docs/cad-upload-activation-run-manifest.json#operators');
+  assert.equal(packet.gates.rollback.evidence.verifiedDisabledRelease,
+    'docs/cad-upload-activation-run-manifest.json#rollback.verifiedDisabledRelease');
+  assert.equal(packet.gates.rollback.evidence.closeAdmissionBeforeDrain,
+    'docs/cad-upload-activation-run-manifest.json#rollback.closeAdmissionBeforeDrain');
+  assert.equal(packet.gates.rollback.evidence.reconcileInFlightAndUnknownOutcomes,
+    'docs/cad-upload-activation-run-manifest.json#commandManifest.reconcileUnknowns');
+  assert.equal(packet.gates.rollback.evidence.safeRetainedStateDisposition,
+    'docs/cad-upload-activation-run-manifest.json#rollback.safeRetainedStateDispositionRequired');
+  assert.equal(packet.gates.rollback.evidence.disabledEndpointReceipt,
+    'docs/cad-upload-activation-run-manifest.json#failClosedSmoke');
+  assert.equal(packet.gates.activation.evidence.fixtureAndPrivacyScope,
+    'docs/cad-upload-activation-run-manifest.json#runManifest.fixtureScope');
+  assert.equal(packet.gates.activation.evidence.boundedRunAndCostManifest,
+    'docs/cad-upload-activation-run-manifest.json#runManifest');
+  assert.equal(packet.gates.activation.evidence.priorGateEvidence,
+    'offline/cad-convex/userUploadActivationReadiness.json#gates');
   assert.equal(packet.gates.sandboxDispatch.evidence.reviewedExecutorAndAssetHashes, null);
   assert.equal(packet.gates.activation.evidence.explicitUploadActivationApproval, null);
   assert.ok(Object.values(packet.authority).every(value => value === null));

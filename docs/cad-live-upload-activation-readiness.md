@@ -26,8 +26,10 @@ recorded as the latest accepted source-safe evidence:
 That evidence narrows the exact-session and synthetic permission questions. PR
 #258 also refreshed the planning cap to USD 50. This packet now binds the existing
 source-reviewed payload-admission parser and shared-control model to the readiness
-manifest. It still does not approve user upload admission, Sandbox dispatch,
-conversion or production activation.
+manifest. This packet also adds a source-only command/rollback packet that names
+the primary and backup custodians, disabled release, fail-closed smoke receipt
+and future command-template digests. It still does not approve user upload
+admission, Sandbox dispatch, conversion or production activation.
 
 Current source at the base has these boundaries:
 
@@ -119,6 +121,9 @@ This packet fills source-safe references for:
 - sanitized parser errors and response shape
 - source-only user/shop lease, rate, idempotency and USD microbudget control model
 - unknown-outcome reconciliation, cancellation and retry accounting
+- command-template digests, disabled release, fail-closed smoke and rollback order
+- primary custodian Vambah Sillah, backup custodian Amina and tester reviewer Mark
+- source-only bounded run manifest placeholders with USD 50 planning cap
 
 Still unresolved before admission work:
 
@@ -126,7 +131,7 @@ Still unresolved before admission work:
 - cookie Origin/CSRF contract or separate bearer contract
 - enabled-route integration for payload parser and malformed-body matrix
 - durable shared rate/concurrency/cost adapter with real cross-instance store evidence
-- reviewed command manifest, rollback commands and backup operator
+- exact executable commands, cohort, fixture, deployment reference and UTC window
 - supported retained-state disposition and lockout/reconciliation
 - explicit upload activation approval
 

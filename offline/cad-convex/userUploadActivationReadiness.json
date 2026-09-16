@@ -74,7 +74,7 @@
       "approved": false,
       "evidence": {
         "freshImmutableDevelopmentDestination": "docs/cad-dev-upload-session-successful-closeout.json#developmentDeployment",
-        "reviewedExactCommandManifest": null,
+        "reviewedExactCommandManifest": "docs/cad-upload-activation-run-manifest.json#commandManifest",
         "credentialCustody": "docs/cad-dev-upload-session-successful-closeout.json#sanitizedRunEvidence",
         "supportedDispositionOrApprovedBoundedRetention": null,
         "durablePrivateRegisterAndLockout": null,
@@ -84,13 +84,13 @@
     "rollback": {
       "approved": false,
       "evidence": {
-        "namedExecutorAndBackup": null,
-        "verifiedDisabledRelease": null,
-        "closeAdmissionBeforeDrain": null,
-        "reconcileInFlightAndUnknownOutcomes": null,
+        "namedExecutorAndBackup": "docs/cad-upload-activation-run-manifest.json#operators",
+        "verifiedDisabledRelease": "docs/cad-upload-activation-run-manifest.json#rollback.verifiedDisabledRelease",
+        "closeAdmissionBeforeDrain": "docs/cad-upload-activation-run-manifest.json#rollback.closeAdmissionBeforeDrain",
+        "reconcileInFlightAndUnknownOutcomes": "docs/cad-upload-activation-run-manifest.json#commandManifest.reconcileUnknowns",
         "sessionRevocationEvidence": null,
-        "safeRetainedStateDisposition": null,
-        "disabledEndpointReceipt": null
+        "safeRetainedStateDisposition": "docs/cad-upload-activation-run-manifest.json#rollback.safeRetainedStateDispositionRequired",
+        "disabledEndpointReceipt": "docs/cad-upload-activation-run-manifest.json#failClosedSmoke"
       }
     },
     "activation": {
@@ -99,9 +99,9 @@
         "reviewedRuntimeImplementationCommit": null,
         "exactDeploymentAndRoute": null,
         "exactCohortAndWindow": null,
-        "fixtureAndPrivacyScope": null,
-        "boundedRunAndCostManifest": null,
-        "priorGateEvidence": null,
+        "fixtureAndPrivacyScope": "docs/cad-upload-activation-run-manifest.json#runManifest.fixtureScope",
+        "boundedRunAndCostManifest": "docs/cad-upload-activation-run-manifest.json#runManifest",
+        "priorGateEvidence": "offline/cad-convex/userUploadActivationReadiness.json#gates",
         "explicitUploadActivationApproval": null,
         "separateConversionAndSandboxApproval": null
       }
