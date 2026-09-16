@@ -270,6 +270,11 @@
     "docs/cad-upload-admission-development-activation-closeout.md": "6af2452ed2a76cd55aa3393d036e62f02e28e12b552119bae90a19d3ec450382",
     "docs/cad-upload-admission-development-activation-closeout.json": "1c2b3695ce0a603e6f9d0702cb08a5323c8bddca8dc1f65a902f57af3baf0afc",
     "scripts/cad-upload-admission-development-activation-closeout.test.js": "085384a513c37a045289ad0a774397a8fa4fe523b4edbff128a656e480f6269b",
+    "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.js": "c6f32920b77d8a8de6ab2dc7a1dff44dcab6311c9d74565db7bf79946d583291",
+    "offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionPacket.json": "81ec5543a83efb81b4b616f08ba1dc6e5db8945997a253329859c793d8a199de",
+    "docs/cad-upload-admission-development-body-admission-packet.md": "d478dfefe50c1d687039fc47dacbee0a4df5b9b8a7fbc8076027da9b183eafd6",
+    "docs/cad-upload-admission-development-body-admission-packet.json": "ad9d35ab7a3f139761acd4bc1e8c70be90461270ca036713b7476b210e9782d0",
+    "scripts/cad-upload-admission-development-body-admission-packet.test.js": "ba4229740a920ff44c3553d21a82cdb350a02b1d20fa78b6e93af656d6fa5972",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -467,6 +472,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "1500525ee9899b7890540e0f2560ada19b18136d35999adb2283710e0e5efb87"
+    "scripts/cad-convex-contract-manifest.js": "864d9083b39a82ec7a2074040f20c823f1f0066ecf842eee42c1c845cb4c45a7"
   }
 }
