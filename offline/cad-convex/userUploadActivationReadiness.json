@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "mode": "source-only-activation-readiness",
-  "baseCommit": "bf983bdad89d4373fd3000fb5e4474f593bd27db",
+  "baseCommit": "4878257480ffadd0e3714746f9c3b07795f9fa42",
   "enabled": false,
   "liveReady": false,
   "executable": false,
@@ -19,22 +19,22 @@
     "exactSessionAuthority": {
       "approved": false,
       "evidence": {
-        "verifiedTransport": null,
-        "exactLoginSessionOwner": null,
-        "expiryLogoutRevocation": null,
-        "membershipPermissionRefresh": null,
-        "noAlternateSessionFallback": null,
+        "verifiedTransport": "docs/cad-dev-upload-session-successful-closeout.json#runResult",
+        "exactLoginSessionOwner": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome",
+        "expiryLogoutRevocation": "docs/cad-dev-upload-session-successful-closeout.json#operationCounts",
+        "membershipPermissionRefresh": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome",
+        "noAlternateSessionFallback": "docs/cad-dev-upload-session-authenticated-runner.json#requiresAuthenticatedSyntheticSessionCall",
         "concurrentRevocationFence": null
       }
     },
     "uploadPermission": {
       "approved": false,
       "evidence": {
-        "serverOwnedUserShopBinding": null,
-        "explicitCadEntitlement": null,
+        "serverOwnedUserShopBinding": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome",
+        "explicitCadEntitlement": "docs/cad-dev-upload-session-successful-closeout.json#observedBridgeOutcome.syntheticAuthorityProvisioned",
         "cookieExactHttpsOriginAndSessionCsrf": null,
         "nativeBearerTransportReview": null,
-        "noProfileOrOperatorFallback": null
+        "noProfileOrOperatorFallback": "docs/cad-dev-upload-session-authenticated-runner.json#authenticated-session-bridge"
       }
     },
     "payloadAdmission": {
@@ -73,9 +73,9 @@
     "providerReadiness": {
       "approved": false,
       "evidence": {
-        "freshImmutableDevelopmentDestination": null,
+        "freshImmutableDevelopmentDestination": "docs/cad-dev-upload-session-successful-closeout.json#developmentDeployment",
         "reviewedExactCommandManifest": null,
-        "credentialCustody": null,
+        "credentialCustody": "docs/cad-dev-upload-session-successful-closeout.json#sanitizedRunEvidence",
         "supportedDispositionOrApprovedBoundedRetention": null,
         "durablePrivateRegisterAndLockout": null,
         "separateEnvironmentDeploymentTestApprovals": null
@@ -124,7 +124,7 @@
     "perUserConcurrency": 1,
     "perShopConcurrency": 1,
     "attemptsPerUserMinute": 5,
-    "allInCostCapUsd": null,
+    "allInCostCapUsd": 50,
     "sandbox": {
       "vcpus": 1,
       "memoryMb": 2048,
@@ -149,6 +149,21 @@
     "executorRef": null,
     "rollbackReleaseRef": null,
     "runManifestRef": null
+  },
+  "latestDevelopmentUploadSessionQualification": {
+    "sourcePr": 257,
+    "mergedMainCommit": "4878257480ffadd0e3714746f9c3b07795f9fa42",
+    "runRef": "cad-dev-upload-session-0100z",
+    "developmentDeployment": "majestic-alligator-31",
+    "evidenceSha256": "e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866",
+    "receiptSha256": "ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825",
+    "acceptedProjectionSha256": "3f405f0eafa4e3834b99d9ee69547402a0690e79e705dacd13a764b8e4b7e640",
+    "acceptanceReceiptSha256": "d6a09751cece8326d6a242686ca310fa9b4a3abace455dcbd23e739b9223f930",
+    "cadUploadsDisabled": true,
+    "bodyAdmissionAuthorized": false,
+    "conversionAllowed": false,
+    "retry": false,
+    "secondRun": false
   },
   "evidencePolicy": "Sanitized opaque references only; never credentials, identities, filenames, CAD bytes or provider responses."
 }
