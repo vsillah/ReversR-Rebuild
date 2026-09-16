@@ -136,6 +136,11 @@ const files = [
   'docs/cad-upload-admission-development-dry-run-plan.md',
   'docs/cad-upload-admission-development-dry-run-plan.json',
   'scripts/cad-upload-admission-development-dry-run-plan.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.json',
+  'docs/cad-upload-admission-development-dry-run-executor.md',
+  'docs/cad-upload-admission-development-dry-run-executor.json',
+  'scripts/cad-upload-admission-development-dry-run-executor.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -564,6 +569,21 @@ assert.ok(!/uploadAdmissionDevelopmentDryRunPlan|cad-upload-admission-developmen
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunPlan.js')));
+const dryRunExecutor = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.json'));
+assert.equal(dryRunExecutor.mode, 'source-only-cad-upload-admission-development-dry-run-executor');
+assert.equal(dryRunExecutor.executorCapabilities.sourceOnlyPreview, true);
+assert.equal(dryRunExecutor.executorCapabilities.liveDevelopmentRun, false);
+assert.equal(dryRunExecutor.executorCapabilities.developmentStoreMutationAuthorizedNow, false);
+assert.equal(dryRunExecutor.executorCapabilities.bodyAdmissionAuthorized, false);
+assert.equal(dryRunExecutor.runGuards.maxAttempts, 1);
+assert.equal(dryRunExecutor.runGuards.automaticRetry, false);
+assert.equal(dryRunExecutor.runGuards.secondRun, false);
+assert.equal(dryRunExecutor.runGuards.allInPlanningCapUsd, 50);
+assert.ok(Object.values(dryRunExecutor.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentDryRunExecutor|cad-upload-admission-development-dry-run-executor/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
