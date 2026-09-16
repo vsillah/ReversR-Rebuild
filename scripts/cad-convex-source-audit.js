@@ -886,7 +886,6 @@ const uploadActivationWindowRolloverResult =
     .inspectUploadAdmissionActivationWindowRollover(
       uploadActivationWindowRollover,
       uploadActivationExactWindow,
-      JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json')),
       uploadActivationDecisionRefresh,
       mountedDevelopmentCloseout,
     );
@@ -907,14 +906,14 @@ const uploadActivationRunnerRebindResult =
   require('../offline/cad-convex/uploadAdmissionActivationRunnerRebind')
     .inspectUploadAdmissionActivationRunnerRebind(
       uploadActivationRunnerRebind,
-      uploadActivationExactWindow,
+      uploadActivationWindowRollover,
       uploadActivationDecisionRefresh,
       mountedDevelopmentCloseout,
     );
 assert.equal(uploadActivationRunnerRebindResult.readyForWindowExecution, true);
 assert.equal(uploadActivationRunnerRebindResult.liveRunAuthorizedByThisPacket, false);
-assert.equal(uploadActivationRunnerRebind.acceptedWindow.startUtc, '2026-09-16T20:30:00Z');
-assert.equal(uploadActivationRunnerRebind.acceptedWindow.expiresUtc, '2026-09-16T20:45:00Z');
+assert.equal(uploadActivationRunnerRebind.acceptedWindow.startUtc, '2026-09-16T22:30:00Z');
+assert.equal(uploadActivationRunnerRebind.acceptedWindow.expiresUtc, '2026-09-16T23:00:00Z');
 assert.equal(uploadActivationRunnerRebind.runner.trackedRouteModified, false);
 assert.equal(uploadActivationRunnerRebind.runBounds.allInPlanningCapUsd, 50);
 assert.equal(uploadActivationRunnerRebind.runBounds.productionUploadActivationAuthorized, false);

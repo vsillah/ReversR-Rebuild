@@ -5,7 +5,6 @@ const path = require('node:path');
 
 const packet = require('../offline/cad-convex/uploadAdmissionActivationWindowRollover.json');
 const previousWindow = require('../offline/cad-convex/uploadAdmissionActivationExactWindow.json');
-const previousRebind = require('../offline/cad-convex/uploadAdmissionActivationRunnerRebind.json');
 const refresh = require('../offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json');
 const closeout = require('../offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json');
 const docsSummary = require('../docs/cad-upload-admission-activation-window-rollover.json');
@@ -16,7 +15,7 @@ const root = path.resolve(__dirname, '..');
 
 test('rollover records the missed window without retrying it', () => {
   const result = inspectUploadAdmissionActivationWindowRollover(
-    packet, previousWindow, previousRebind, refresh, closeout,
+    packet, previousWindow, refresh, closeout,
   );
   assert.equal(result.structureValid, true);
   assert.equal(result.priorWindowBound, true);
@@ -29,7 +28,7 @@ test('rollover records the missed window without retrying it', () => {
 
 test('rollover binds a distinct 22:30Z run and ignored evidence root', () => {
   const result = inspectUploadAdmissionActivationWindowRollover(
-    packet, previousWindow, previousRebind, refresh, closeout,
+    packet, previousWindow, refresh, closeout,
   );
   assert.equal(result.windowValid, true);
   assert.equal(result.evidenceDestinationValid, true);
@@ -44,7 +43,7 @@ test('rollover binds a distinct 22:30Z run and ignored evidence root', () => {
 
 test('accepted inputs, bounds and closed authorities remain valid', () => {
   const result = inspectUploadAdmissionActivationWindowRollover(
-    packet, previousWindow, previousRebind, refresh, closeout,
+    packet, previousWindow, refresh, closeout,
   );
   assert.equal(result.refreshBound, true);
   assert.equal(result.closeoutBound, true);

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const rebind = require('../offline/cad-convex/uploadAdmissionActivationRunnerRebind.json');
-const exactWindow = require('../offline/cad-convex/uploadAdmissionActivationExactWindow.json');
+const rollover = require('../offline/cad-convex/uploadAdmissionActivationWindowRollover.json');
 const refresh = require('../offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json');
 const closeout = require('../offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json');
 const docsSummary = require('../docs/cad-upload-admission-activation-runner-rebind.json');
@@ -15,35 +15,35 @@ const { compatibilityBridge, compatibilityWindow, executeUploadActivationExactWi
 
 const root = path.resolve(__dirname, '..');
 
-test('activation runner rebind binds the PR 290 exact window and accepted evidence', () => {
-  const result = inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refresh, closeout);
+test('activation runner rebind binds the PR 292 rollover window and accepted evidence', () => {
+  const result = inspectUploadAdmissionActivationRunnerRebind(rebind, rollover, refresh, closeout);
   assert.equal(result.structureValid, true);
-  assert.equal(result.exactWindowBound, true);
+  assert.equal(result.rolloverWindowBound, true);
   assert.equal(result.refreshBound, true);
   assert.equal(result.closeoutBound, true);
   assert.equal(result.runnerValid, true);
   assert.equal(result.readyForWindowExecution, true);
   assert.equal(result.liveRunAuthorizedByThisPacket, false);
-  assert.equal(rebind.acceptedExactWindow.sourcePr, 290);
-  assert.equal(rebind.acceptedExactWindow.exactWindowMergeCommit,
-    'f848b56449c6e192cf3ea57ed8119776eba73481');
+  assert.equal(rebind.acceptedRollover.sourcePr, 292);
+  assert.equal(rebind.acceptedRollover.rolloverMergeCommit,
+    '11f45049f1ce138c887482d5d68d25d9642e7284');
 });
 
-test('compatibility config maps the reviewed mounted harness to the new 20:30Z window', () => {
+test('compatibility config maps the reviewed mounted harness to the 22:30Z rollover window', () => {
   const bridge = compatibilityBridge();
   const windowPacket = compatibilityWindow();
-  assert.equal(bridge.acceptedWindow.runRef, 'rrb-ref:cad-upload-activation-exact-window-2030z');
-  assert.equal(bridge.acceptedWindow.startUtc, '2026-09-16T20:30:00Z');
-  assert.equal(bridge.acceptedWindow.expiresUtc, '2026-09-16T20:45:00Z');
+  assert.equal(bridge.acceptedWindow.runRef, 'rrb-ref:cad-upload-activation-window-rollover-2230z');
+  assert.equal(bridge.acceptedWindow.startUtc, '2026-09-16T22:30:00Z');
+  assert.equal(bridge.acceptedWindow.expiresUtc, '2026-09-16T23:00:00Z');
   assert.equal(windowPacket.acceptedWindow.runRef, bridge.acceptedWindow.runRef);
   assert.equal(windowPacket.sanitizedEvidenceDestination.root,
-    '.local/cad-convex/upload-activation-exact-window-2030z');
+    '.local/cad-convex/upload-activation-window-rollover-2230z');
   assert.equal(bridge.executorCapabilities.trackedRouteModified, false);
 });
 
 test('runner blocks outside the accepted window and succeeds in simulated window', async () => {
   const before = await executeUploadActivationExactWindow({
-    now: () => Date.parse('2026-09-16T20:29:59Z'),
+    now: () => Date.parse('2026-09-16T22:29:59Z'),
     writeEvidence: false,
   });
   assert.equal(before.decision, 'BLOCKED');
@@ -51,13 +51,13 @@ test('runner blocks outside the accepted window and succeeds in simulated window
   assert.equal(before.unknownOutcome, false);
 
   const result = await executeUploadActivationExactWindow({
-    now: () => Date.parse('2026-09-16T20:30:05Z'),
+    now: () => Date.parse('2026-09-16T22:30:05Z'),
     writeEvidence: false,
   });
-  assert.equal(result.decision, 'UPLOAD_ACTIVATION_EXACT_WINDOW_EXECUTED');
+  assert.equal(result.decision, 'UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED');
   assert.equal(result.runCompleted, true);
   assert.equal(result.unknownOutcome, false);
-  assert.equal(result.runRef, 'rrb-ref:cad-upload-activation-exact-window-2030z');
+  assert.equal(result.runRef, 'rrb-ref:cad-upload-activation-window-rollover-2230z');
   assert.equal(result.bodyAdmissionValidated, true);
   assert.equal(result.terminalCode, 'USER_UPLOADS_DISABLED');
   assert.equal(result.counts.mountedRouteDisabledChecks, 2);
@@ -67,7 +67,7 @@ test('runner blocks outside the accepted window and succeeds in simulated window
   assert.equal(result.counts.storeMutations, 0);
 
   const after = await executeUploadActivationExactWindow({
-    now: () => Date.parse('2026-09-16T20:45:00Z'),
+    now: () => Date.parse('2026-09-16T23:00:00Z'),
     writeEvidence: false,
   });
   assert.equal(after.decision, 'BLOCKED');
@@ -83,7 +83,7 @@ test('tracked route remains source-closed and isolated from activation runner so
 });
 
 test('bounds and authorities stay closed by this source-only rebind', () => {
-  const result = inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refresh, closeout);
+  const result = inspectUploadAdmissionActivationRunnerRebind(rebind, rollover, refresh, closeout);
   assert.equal(result.boundsValid, true);
   assert.equal(result.expectedResultValid, true);
   assert.equal(result.evidenceDestinationValid, true);

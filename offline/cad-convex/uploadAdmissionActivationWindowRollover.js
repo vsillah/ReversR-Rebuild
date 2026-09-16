@@ -11,7 +11,6 @@ function allFalse(record) {
 function inspectUploadAdmissionActivationWindowRollover(
   packet,
   previousWindow,
-  previousRebind,
   refresh,
   closeout,
 ) {
@@ -28,8 +27,8 @@ function inspectUploadAdmissionActivationWindowRollover(
     && previousWindow?.acceptedWindow?.runRef === packet?.missedWindow?.runRef
     && previousWindow?.acceptedWindow?.startUtc === packet?.missedWindow?.startUtc
     && previousWindow?.acceptedWindow?.expiresUtc === packet?.missedWindow?.expiresUtc
-    && previousRebind?.status === 'UPLOAD_ACTIVATION_RUNNER_REBIND_READY_SOURCE_ONLY'
-    && previousRebind?.acceptedWindow?.runRef === packet?.missedWindow?.runRef
+    && packet?.missedWindow?.sourcePr === 290
+    && packet?.missedWindow?.runnerPr === 291
     && packet?.missedWindow?.executionObserved === false
     && packet?.missedWindow?.evidenceObserved === false
     && packet?.missedWindow?.unknownOutcome === false

@@ -2,26 +2,26 @@ function allFalse(record) {
   return Object.values(record || {}).every(value => value === false);
 }
 
-function inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refresh, closeout) {
+function inspectUploadAdmissionActivationRunnerRebind(rebind, rollover, refresh, closeout) {
   const structureValid = rebind?.schemaVersion === 1
     && rebind?.mode === 'source-only-cad-upload-admission-activation-runner-rebind'
     && rebind?.status === 'UPLOAD_ACTIVATION_RUNNER_REBIND_READY_SOURCE_ONLY'
     && rebind?.sourceOnly === true
     && rebind?.production === false
-    && rebind?.baseMainCommit === 'f848b56449c6e192cf3ea57ed8119776eba73481'
-    && rebind?.branch === 'codex/cad-upload-activation-runner-rebind'
+    && rebind?.baseMainCommit === '11f45049f1ce138c887482d5d68d25d9642e7284'
+    && rebind?.branch === 'codex/cad-upload-activation-runner-rebind-2230z'
     && rebind?.target?.developmentDeployment === 'majestic-alligator-31';
 
-  const exactWindowBound = exactWindow?.status === 'UPLOAD_ACTIVATION_EXACT_WINDOW_READY_SOURCE_ONLY'
-    && exactWindow?.acceptedWindow?.runRef === rebind?.acceptedWindow?.runRef
-    && exactWindow?.acceptedWindow?.startUtc === rebind?.acceptedWindow?.startUtc
-    && exactWindow?.acceptedWindow?.expiresUtc === rebind?.acceptedWindow?.expiresUtc
-    && exactWindow?.sanitizedEvidenceDestination?.root === rebind?.sanitizedEvidenceDestination?.root
-    && exactWindow?.runnerDisposition?.sourceOnlyRunnerRebindRequiredBeforeLiveRun === true
-    && exactWindow?.acceptedDecisionRefresh?.decisionRefreshMergeCommit
+  const rolloverWindowBound = rollover?.status === 'UPLOAD_ACTIVATION_WINDOW_ROLLOVER_READY_SOURCE_ONLY'
+    && rollover?.acceptedWindow?.runRef === rebind?.acceptedWindow?.runRef
+    && rollover?.acceptedWindow?.startUtc === rebind?.acceptedWindow?.startUtc
+    && rollover?.acceptedWindow?.expiresUtc === rebind?.acceptedWindow?.expiresUtc
+    && rollover?.sanitizedEvidenceDestination?.root === rebind?.sanitizedEvidenceDestination?.root
+    && rollover?.runnerDisposition?.sourceOnlyRunnerRebindRequiredBeforeLiveRun === true
+    && rollover?.acceptedDecisionRefresh?.decisionRefreshMergeCommit
       === rebind?.acceptedDecisionRefresh?.decisionRefreshMergeCommit
-    && rebind?.acceptedExactWindow?.exactWindowMergeCommit
-      === 'f848b56449c6e192cf3ea57ed8119776eba73481';
+    && rebind?.acceptedRollover?.rolloverMergeCommit
+      === '11f45049f1ce138c887482d5d68d25d9642e7284';
 
   const refreshBound = refresh?.status === 'UPLOAD_ACTIVATION_DECISION_REFRESH_PREPARED_SOURCE_ONLY'
     && refresh?.acceptedMountedDevelopmentCloseout?.evidenceSha256
@@ -64,7 +64,7 @@ function inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refre
     && rebind?.runBounds?.privateCadAuthorized === false
     && rebind?.runBounds?.realUsersAuthorized === false;
 
-  const expectedResultValid = rebind?.expectedFutureResult?.decision === 'UPLOAD_ACTIVATION_EXACT_WINDOW_EXECUTED'
+  const expectedResultValid = rebind?.expectedFutureResult?.decision === 'UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED'
     && rebind?.expectedFutureResult?.runCompleted === true
     && rebind?.expectedFutureResult?.unknownOutcome === false
     && rebind?.expectedFutureResult?.terminalCode === 'USER_UPLOADS_DISABLED'
@@ -75,7 +75,7 @@ function inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refre
     && rebind?.expectedFutureResult?.storeMutations === 0;
 
   const evidenceDestinationValid = rebind?.sanitizedEvidenceDestination?.root
-      === '.local/cad-convex/upload-activation-exact-window-2030z'
+      === '.local/cad-convex/upload-activation-window-rollover-2230z'
     && rebind?.sanitizedEvidenceDestination?.gitIgnoredRequired === true
     && rebind?.sanitizedEvidenceDestination?.directoryMode === '700'
     && rebind?.sanitizedEvidenceDestination?.fileMode === '600'
@@ -87,7 +87,7 @@ function inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refre
 
   return {
     structureValid,
-    exactWindowBound,
+    rolloverWindowBound,
     refreshBound,
     closeoutBound,
     runnerValid,
@@ -96,7 +96,7 @@ function inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refre
     evidenceDestinationValid,
     authoritiesClosed,
     readyForWindowExecution: structureValid
-      && exactWindowBound
+      && rolloverWindowBound
       && refreshBound
       && closeoutBound
       && runnerValid

@@ -1,12 +1,12 @@
 # CAD upload admission activation runner rebind
 
 Status: source-only runner rebind. No live run happened. Base:
-`f848b56449c6e192cf3ea57ed8119776eba73481`. Branch:
-`codex/cad-upload-activation-runner-rebind`. Expenses: USD 0.
+`11f45049f1ce138c887482d5d68d25d9642e7284`. Branch:
+`codex/cad-upload-activation-runner-rebind-2230z`. Expenses: USD 0.
 
-This packet binds the reviewed mounted-development upload harness to PR #290's
-accepted exact window: `2026-09-16T20:30:00Z` through
-`2026-09-16T20:45:00Z`.
+This packet binds the reviewed mounted-development upload harness to PR #292's
+accepted rollover window: `2026-09-16T22:30:00Z` through
+`2026-09-16T23:00:00Z`.
 
 The wrapper command is:
 
@@ -16,14 +16,14 @@ NODE_PATH=<installed-node-modules> node scripts/run-cad-upload-activation-exact-
 
 It reuses the already reviewed mounted-development route harness in memory, maps
 it to the exact-window run ref, and writes a fresh activation-window evidence
-receipt under `.local/cad-convex/upload-activation-exact-window-2030z`.
+receipt under `.local/cad-convex/upload-activation-window-rollover-2230z`.
 
 ## Accepted inputs
 
-- Exact-window PR #290 merge commit:
-  `f848b56449c6e192cf3ea57ed8119776eba73481`
-- Exact-window source commit:
-  `3f1590f157d89b917501cdd4ac5e0496e4d58668`
+- Rollover-window PR #292 merge commit:
+  `11f45049f1ce138c887482d5d68d25d9642e7284`
+- Rollover-window source commit:
+  `77d9a71a8e07c180493ebb13e7d6eda5c1c8e7d8`
 - Decision refresh PR #289 merge commit:
   `fbd8628efc52d9ec0df55f106c1b5ce0c6487cd5`
 - Mounted-development closeout evidence:
@@ -73,14 +73,14 @@ Still blocked:
 
 After this source-only rebind merges, run production fail-closed smoke and
 cleanup. If the current time is more than five minutes before
-`2026-09-16T20:30:00Z`, create a one-shot scheduler for the command above.
+`2026-09-16T22:30:00Z`, create a one-shot scheduler for the command above.
 If the current time is already inside the accepted window and all preflight
 checks pass, execute the command once. Stop on unknown outcome.
 
 ## Validation
 
 ```sh
-NODE_PATH=<installed-node-modules> node --test scripts/cad-upload-admission-activation-runner-rebind.test.js scripts/cad-upload-admission-activation-exact-window.test.js
+NODE_PATH=<installed-node-modules> node --test scripts/cad-upload-admission-activation-runner-rebind.test.js scripts/cad-upload-admission-activation-window-rollover.test.js
 node scripts/cad-convex-contract-manifest.js
 node scripts/cad-convex-source-audit.js
 npm run cad:convex:codegen:check
