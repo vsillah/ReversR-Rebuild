@@ -117,6 +117,10 @@ const files = [
   'docs/cad-upload-admission-qualification-window.md',
   'docs/cad-upload-admission-qualification-window.json',
   'scripts/cad-upload-admission-qualification-window.test.js',
+  'offline/cad-convex/uploadAdmissionGuardedRouteBridge.js',
+  'offline/cad-convex/uploadAdmissionGuardedRouteBridge.json',
+  'docs/cad-upload-admission-guarded-route-bridge.md',
+  'scripts/cad-upload-admission-guarded-route-bridge.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -432,7 +436,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|disabledUploadAdmissionAdapter|cad-upload-admission-disabled-adapter|cad-upload-admission-durable-adapter-plan|uploadAdmissionDurableAdapterPlan|uploadAdmissionDurableAdapter|cad-upload-admission-durable-adapter-source|cad-upload-admission-qualification-window|uploadAdmissionQualificationWindow|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes|boundedDevQualificationExecutor|cad-bounded-dev-qualification-executor/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|disabledUploadAdmissionAdapter|cad-upload-admission-disabled-adapter|cad-upload-admission-durable-adapter-plan|uploadAdmissionDurableAdapterPlan|uploadAdmissionDurableAdapter|cad-upload-admission-durable-adapter-source|cad-upload-admission-qualification-window|uploadAdmissionQualificationWindow|uploadAdmissionGuardedRouteBridge|cad-upload-admission-guarded-route-bridge|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes|boundedDevQualificationExecutor|cad-bounded-dev-qualification-executor/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
