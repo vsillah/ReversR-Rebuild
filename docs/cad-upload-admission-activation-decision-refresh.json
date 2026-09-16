@@ -1,0 +1,16 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json",
+  "summary": "source-only decision refresh for CAD upload activation after successful mounted-development closeout",
+  "baseMainCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+  "branch": "codex/cad-upload-activation-decision-refresh",
+  "expensesUsd": 0,
+  "mountedDevelopmentCloseoutAccepted": true,
+  "mountedDevelopmentEvidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+  "mountedDevelopmentReceiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+  "developmentRunAuthorizedByThisPacket": false,
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only exact-window packet for one future development-only synthetic upload activation attempt"
+}

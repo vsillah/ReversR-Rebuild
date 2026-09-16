@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-activation-decision-refresh",
+  "status": "UPLOAD_ACTIVATION_DECISION_REFRESH_PREPARED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "enabled": false,
+  "liveRunAuthorizedByThisPacket": false,
+  "baseMainCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+  "branch": "codex/cad-upload-activation-decision-refresh",
+  "observedAtUtc": "2026-09-16T18:22:33Z",
+  "expensesUsd": 0,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import",
+    "productionUrl": "https://reversr.vercel.app"
+  },
+  "acceptedMountedDevelopmentCloseout": {
+    "sourcePr": 288,
+    "mergedMainCommit": "c74de5b1deecfd1bb8741190ef702e670dce41c4",
+    "closeoutSource": "offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json",
+    "runRef": "rrb-ref:cad-upload-admission-mounted-development-1800z",
+    "decision": "UPLOAD_ADMISSION_MOUNTED_DEVELOPMENT_EXECUTED",
+    "evidenceSha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+    "receiptSha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+    "publicFixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "publicFixtureBytes": 11562,
+    "bodyAdmissionValidated": true,
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "terminalCode": "USER_UPLOADS_DISABLED"
+  },
+  "carriedForwardInputs": {
+    "uploadSessionQualification": "docs/cad-dev-upload-session-successful-closeout.json",
+    "bodyAdmissionCloseout": "docs/cad-upload-admission-development-body-admission-closeout.json",
+    "activationPreviewCloseout": "docs/cad-upload-admission-development-activation-closeout.json",
+    "readinessManifest": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runtimeBridgeSource": "offline/cad-convex/uploadAdmissionRuntimeBridgeSource.json"
+  },
+  "sourceGuards": {
+    "checkedInRouteMustRemainDisabled": true,
+    "routeGateLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "runtimeBridgeMountedNow": false,
+    "productionBodyAdmissionAuthorizedNow": false,
+    "currentTerminalCode": "USER_UPLOADS_DISABLED",
+    "conversionAllowedNow": false,
+    "sandboxDispatchAllowedNow": false
+  },
+  "decision": {
+    "developmentSyntheticUploadPathCanProceedToExactWindowPacket": true,
+    "requiresExactUtcWindowBeforeRun": true,
+    "requiresReviewedRunnerBeforeRun": true,
+    "requiresPreAndPostDisabledRouteChecks": true,
+    "requiresRollbackAndEvidenceDestinationBeforeRun": true,
+    "productionUploadActivationReady": false,
+    "realUserReady": false,
+    "privateCadReady": false,
+    "conversionSandboxReady": false
+  },
+  "futureRunBounds": {
+    "developmentOnly": true,
+    "productionAllowed": false,
+    "fixtureScope": "public synthetic cube fixture only",
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "maxAllInCostUsd": 50,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "stopBeforeConversion": true,
+    "stopBeforeSandbox": true,
+    "retainedStateDeletionAllowed": false
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "developmentRunAuthorizedByThisPacket": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "remainingBeforeAnyDevelopmentUploadActivationRun": [
+    "source-only exact-window packet bound to the merged runner and public fixture",
+    "sanitized local evidence destination and rollback receipt contract",
+    "preflight proving checked-in production route remains disabled",
+    "one-run scheduler or immediate-run decision inside the accepted window"
+  ],
+  "remainingBeforeProductionUploadActivation": [
+    "successful development-only upload activation closeout with no unknown outcome",
+    "separate production activation approval",
+    "separate conversion and Sandbox dispatch approval",
+    "separate real-user and private-CAD approval if ever needed",
+    "rollback and post-activation fail-closed evidence"
+  ],
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-activation-exact-window",
+    "scope": "source-only exact-window packet for one future development-only synthetic upload activation attempt using the accepted mounted-development closeout",
+    "stopBefore": "live execution, production upload activation, production body admission, CAD conversion, Sandbox dispatch, private CAD, real users, env/provider/resource changes, usage/billing changes, retry or second run"
+  }
+}
