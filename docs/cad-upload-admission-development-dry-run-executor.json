@@ -1,0 +1,14 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionDevelopmentDryRunExecutor.json",
+  "summary": "source-only executor/evidence preview for a future bounded development dry-run of the disabled CAD upload admission runtime bridge",
+  "executorPreviewReady": true,
+  "developmentDryRunExecuted": false,
+  "liveRunAuthorizedNow": false,
+  "developmentStoreMutationAuthorizedNow": false,
+  "bodyAdmissionAuthorized": false,
+  "sanitizedEvidenceTemplateReady": true,
+  "readyForSourceAcceptanceFollowUp": true,
+  "readyForLiveRun": false,
+  "readyForUploadActivation": false,
+  "nextSafeBranch": "codex/cad-upload-admission-development-dry-run-acceptance"
+}
