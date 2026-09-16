@@ -131,6 +131,11 @@ const files = [
   'docs/cad-upload-admission-runtime-bridge-source.md',
   'docs/cad-upload-admission-runtime-bridge-source.json',
   'scripts/cad-upload-admission-runtime-bridge-source.test.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunPlan.js',
+  'offline/cad-convex/uploadAdmissionDevelopmentDryRunPlan.json',
+  'docs/cad-upload-admission-development-dry-run-plan.md',
+  'docs/cad-upload-admission-development-dry-run-plan.json',
+  'scripts/cad-upload-admission-development-dry-run-plan.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -545,6 +550,20 @@ assert.ok(!/cadUploadAdmissionRuntimeBridge|createCadUploadAdmissionRuntimeBridg
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('server/cadUploadAdmissionRuntimeBridge.js')));
+const dryRunPlan = JSON.parse(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunPlan.json'));
+assert.equal(dryRunPlan.mode, 'source-only-cad-upload-admission-development-dry-run-plan');
+assert.equal(dryRunPlan.syntheticDryRun.acceptedNow, false);
+assert.equal(dryRunPlan.syntheticDryRun.liveRunAuthorizedNow, false);
+assert.equal(dryRunPlan.syntheticDryRun.developmentStoreMutationAuthorizedNow, false);
+assert.equal(dryRunPlan.syntheticDryRun.bodyAdmissionAuthorized, false);
+assert.equal(dryRunPlan.costAndUsage.allInPlanningCapUsd, 50);
+assert.equal(dryRunPlan.rollbackAndCustody.deleteRetainedState, false);
+assert.equal(dryRunPlan.rollbackAndCustody.backupCustodian, 'Amina');
+assert.ok(Object.values(dryRunPlan.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionDevelopmentDryRunPlan|cad-upload-admission-development-dry-run-plan/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionDevelopmentDryRunPlan.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 

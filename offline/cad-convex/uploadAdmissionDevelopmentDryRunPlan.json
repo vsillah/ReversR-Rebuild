@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-development-dry-run-plan",
+  "status": "DEVELOPMENT_DRY_RUN_PLAN_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "baseMainCommit": "2d13fdbb72a5369bd4edfd6fa802a75f94ddd02f",
+  "branch": "codex/cad-upload-admission-development-dry-run-plan",
+  "observedAtUtc": "2026-09-16T03:35:00Z",
+  "expensesUsd": 0,
+  "target": {
+    "repo": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "route": "POST /api/cad/user-import",
+    "currentTerminalCode": "USER_UPLOADS_DISABLED"
+  },
+  "sourceBindings": {
+    "runtimeBridgeSource": "server/cadUploadAdmissionRuntimeBridge.js",
+    "runtimeBridgeSourceManifest": "offline/cad-convex/uploadAdmissionRuntimeBridgeSource.json",
+    "runtimeBridgeReview": "offline/cad-convex/uploadAdmissionRuntimeBridgeReview.json",
+    "uploadSessionCloseout": "docs/cad-dev-upload-session-successful-closeout.json",
+    "sharedControls": "offline/cad-convex/sharedUploadControls.js",
+    "sharedControlsManifest": "offline/cad-convex/sharedUploadControls.json",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "syntheticDryRun": {
+    "runRef": "rrb-ref:cad-upload-admission-development-dry-run",
+    "principalRef": "rrb-ref:synthetic-upload-session-principal",
+    "bindingRef": "rrb-ref:synthetic-upload-session-binding",
+    "authorityRef": "rrb-ref:synthetic-upload-authority",
+    "reservationKeyRef": "rrb-ref:synthetic-upload-reservation-key",
+    "windowRef": "rrb-ref:cad-upload-admission-dry-run-window",
+    "acceptedNow": false,
+    "liveRunAuthorizedNow": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "bodyAdmissionAuthorized": false,
+    "dryRunOnly": true,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "scheduleIfMoreThanFiveMinutesAway": true
+  },
+  "costAndUsage": {
+    "allInPlanningCapUsd": 50,
+    "reservationMicros": 500000,
+    "budgetMicros": 5000000,
+    "currency": "USD",
+    "costModelSource": "offline/cad-convex/sharedUploadControls.json#money",
+    "liveCostEvidenceAccepted": false
+  },
+  "prePostRouteChecks": [
+    "GET / production shell remains 200",
+    "GET /api/cad/capabilities remains 200",
+    "POST {} /api/cad/user-import remains 401 USER_SESSION_REQUIRED without credentials",
+    "POST {} /api/cad/import remains 401 UNAUTHORIZED",
+    "GET /api/cad/import-source-record remains 404"
+  ],
+  "rollbackAndCustody": {
+    "deleteRetainedState": false,
+    "retainUnknownState": true,
+    "cleanupRequiresSeparateReceipt": true,
+    "backupCustodian": "Amina",
+    "accountableCustodian": "Vambah",
+    "rollbackTarget": "USER_UPLOADS_DISABLED"
+  },
+  "previewExpectation": {
+    "sourceOnlyPreviewPasses": true,
+    "runtimeMounted": false,
+    "admissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "storeMutationAuthorized": false
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorizedNow": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "externalDeliveryAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "branch": "codex/cad-upload-admission-development-dry-run-executor",
+    "scope": "source-only executor and evidence harness for one future bounded development dry-run using synthetic upload-session/shared-control refs",
+    "stopBefore": "live tests, upload activation, CAD conversion, Sandbox dispatch, env/provider/resource changes, store mutation, secret reads or private CAD"
+  }
+}
