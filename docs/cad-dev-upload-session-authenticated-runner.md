@@ -48,6 +48,12 @@ This packet adds:
 The runner does not contain raw passwords, raw run keys, upload credentials,
 private CAD, production URLs or provider secrets.
 
+The runner must call the upload-session bridge action through the authenticated
+synthetic session client, not the unauthenticated operator client. The
+server-side CAD backend rechecks `getAuthSessionId(ctx)` inside the
+`internal.cad.insertIfAbsent` mutation, so using the operator client drops the
+exact Convex Auth context and must fail closed with `AUTH_UNAVAILABLE`.
+
 The accepted upload-session private register intentionally does not duplicate
 `acceptedProjectionSha256` or `acceptanceReceiptSha256`; those are custody fields
 for `source-safe-rebind-projection.json` and
@@ -80,6 +86,24 @@ by the failed attempt.
 This repair keeps the public bridge digest-bound and disabled from body
 admission, while adding an explicit development-only authority wrapper for the
 next reviewed run window.
+
+## 2026-09-15T22:30Z Attempt Closeout
+
+The fresh `22:30Z` upload-session qualification attempt stopped fail-closed at
+`AUTH_UNAVAILABLE` from `internal.cad.insertIfAbsent`. Preflight had verified the
+reviewed source on `majestic-alligator-31`, the fresh `2230z` accepted evidence
+tuple and the absence of prior evidence. The runner signed in the synthetic
+Password user and read the exact current Auth session, but then called
+`cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority` through
+the unauthenticated operator client. That discarded the user auth context needed
+by `readExactLibrarySession` inside the internal CAD backend. No sanitized
+evidence file was written, no retry was attempted and no second run is
+authorized by that failed attempt.
+
+This repair changes only the runner call site and regression tests: the bridge
+now executes through the authenticated synthetic session client, while sign-out
+still runs in `finally` if the bridge rejects. A fresh accepted run window is
+required before any future development-only upload-session qualification run.
 
 ## Validation
 

@@ -94,7 +94,7 @@ test('runner derives accepted binding digests from adjacent mode-locked artifact
   fs.rmSync(dir, { recursive: true, force: true });
 });
 
-test('runner signs in, reads exact authenticated session, calls bridge, and signs out once', async () => {
+test('runner signs in, reads exact authenticated session, calls bridge as that session, and signs out once', async () => {
   const { authRegister, uploadRegister } = registers();
   const acceptedArtifacts = {
     acceptedProjectionSha256: 'c'.repeat(64),
@@ -113,6 +113,26 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
       action: async (fn, args) => {
         calls.push(['operator-action', fn, args]);
         if (fn === 'signIn') return { tokens: { token: 'token-alpha' } };
+        throw new Error('unexpected operator action');
+      },
+    },
+    authenticated: token => ({
+      query: async (fn, args) => {
+        calls.push(['auth-query', fn, token, args]);
+        assert.equal(fn, 'readCurrent');
+        assert.equal(args.runKeySha256, uploadRegister.runKeySha256);
+        assert.equal(args.acceptedProjectionSha256, acceptedArtifacts.acceptedProjectionSha256);
+        assert.equal(args.acceptanceReceiptSha256, acceptedArtifacts.acceptanceReceiptSha256);
+        return {
+          userId: 'user-id-alpha',
+          loginSessionId: 'session-id-alpha',
+          authMethod: 'password',
+          expiresAt: Date.now() + 60000,
+          active: true,
+        };
+      },
+      action: async (fn, args) => {
+        calls.push(['auth-action', fn, token, args]);
         if (fn === 'issueReadRevokeWithSyntheticAuthority') {
           assert.equal(args.runKey, uploadRegister.runKey);
           assert.equal(args.principal.userId, 'user-id-alpha');
@@ -136,28 +156,8 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
             authorityRowsRetained: true,
           };
         }
-        throw new Error('unexpected operator action');
-      },
-    },
-    authenticated: token => ({
-      query: async (fn, args) => {
-        calls.push(['auth-query', fn, token, args]);
-        assert.equal(fn, 'readCurrent');
-        assert.equal(args.runKeySha256, uploadRegister.runKeySha256);
-        assert.equal(args.acceptedProjectionSha256, acceptedArtifacts.acceptedProjectionSha256);
-        assert.equal(args.acceptanceReceiptSha256, acceptedArtifacts.acceptanceReceiptSha256);
-        return {
-          userId: 'user-id-alpha',
-          loginSessionId: 'session-id-alpha',
-          authMethod: 'password',
-          expiresAt: Date.now() + 60000,
-          active: true,
-        };
-      },
-      action: async fn => {
-        calls.push(['auth-action', fn, token]);
-        assert.equal(fn, 'signOut');
-        return null;
+        if (fn === 'signOut') return null;
+        throw new Error('unexpected authenticated action');
       },
     }),
   };
@@ -176,7 +176,9 @@ test('runner signs in, reads exact authenticated session, calls bridge, and sign
   assert.equal(evidence.authorityRowsRetained, true);
   assert.equal(evidence.rawCredentialRecorded, false);
   assert.equal(evidence.rawPasswordRecorded, false);
-  assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'operator-action', 'auth-action']);
+  assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'auth-action', 'auth-action']);
+  assert.equal(calls[2][1], 'issueReadRevokeWithSyntheticAuthority');
+  assert.equal(calls[3][1], 'signOut');
 });
 
 test('runner signs out before propagating a bridge failure', async () => {
@@ -198,7 +200,6 @@ test('runner signs out before propagating a bridge failure', async () => {
       action: async fn => {
         calls.push(['operator-action', fn]);
         if (fn === 'signIn') return { tokens: { token: 'token-alpha' } };
-        if (fn === 'issueReadRevokeWithSyntheticAuthority') throw new Error('AUTH_UNAVAILABLE');
         throw new Error('unexpected operator action');
       },
     },
@@ -215,8 +216,9 @@ test('runner signs out before propagating a bridge failure', async () => {
       },
       action: async fn => {
         calls.push(['auth-action', fn, token]);
-        assert.equal(fn, 'signOut');
-        return null;
+        if (fn === 'issueReadRevokeWithSyntheticAuthority') throw new Error('AUTH_UNAVAILABLE');
+        if (fn === 'signOut') return null;
+        throw new Error('unexpected authenticated action');
       },
     }),
   };
@@ -224,5 +226,7 @@ test('runner signs out before propagating a bridge failure', async () => {
     runner.runWithClients({ uploadRegister, authRegister, acceptedArtifacts, clients, api }),
     /AUTH_UNAVAILABLE/,
   );
-  assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'operator-action', 'auth-action']);
+  assert.deepEqual(calls.map(call => call[0]), ['operator-action', 'auth-query', 'auth-action', 'auth-action']);
+  assert.equal(calls[2][1], 'issueReadRevokeWithSyntheticAuthority');
+  assert.equal(calls[3][1], 'signOut');
 });

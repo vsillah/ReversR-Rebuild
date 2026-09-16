@@ -38,6 +38,7 @@
     "defaultBindingEnabled": false,
     "rawCredentialAccepted": false,
     "credentialDigestOnly": true,
+    "requiresAuthenticatedSyntheticSessionCall": true,
     "bodyAdmissionAuthorized": false,
     "retainedRevokedState": true,
     "syntheticAuthorityProvisioning": true,
