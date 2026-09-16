@@ -4,9 +4,9 @@
   "status": "UPLOAD_ACTIVATION_RUNNER_REBIND_READY_SOURCE_ONLY",
   "sourceOnly": true,
   "production": false,
-  "baseMainCommit": "f848b56449c6e192cf3ea57ed8119776eba73481",
-  "branch": "codex/cad-upload-activation-runner-rebind",
-  "observedAtUtc": "2026-09-16T18:45:41Z",
+  "baseMainCommit": "11f45049f1ce138c887482d5d68d25d9642e7284",
+  "branch": "codex/cad-upload-activation-runner-rebind-2230z",
+  "observedAtUtc": "2026-09-16T21:18:00Z",
   "expensesUsd": 0,
   "target": {
     "repository": "vsillah/ReversR-Rebuild",
@@ -15,12 +15,12 @@
     "route": "POST /api/cad/user-import",
     "productionUrl": "https://reversr.vercel.app"
   },
-  "acceptedExactWindow": {
-    "source": "offline/cad-convex/uploadAdmissionActivationExactWindow.json",
-    "docs": "docs/cad-upload-admission-activation-exact-window.md",
-    "sourcePr": 290,
-    "exactWindowCommit": "3f1590f157d89b917501cdd4ac5e0496e4d58668",
-    "exactWindowMergeCommit": "f848b56449c6e192cf3ea57ed8119776eba73481"
+  "acceptedRollover": {
+    "source": "offline/cad-convex/uploadAdmissionActivationWindowRollover.json",
+    "docs": "docs/cad-upload-admission-activation-window-rollover.md",
+    "sourcePr": 292,
+    "rolloverCommit": "77d9a71a8e07c180493ebb13e7d6eda5c1c8e7d8",
+    "rolloverMergeCommit": "11f45049f1ce138c887482d5d68d25d9642e7284"
   },
   "acceptedDecisionRefresh": {
     "source": "offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json",
@@ -33,9 +33,9 @@
     "publicFixtureBytes": 11562
   },
   "acceptedWindow": {
-    "runRef": "rrb-ref:cad-upload-activation-exact-window-2030z",
-    "startUtc": "2026-09-16T20:30:00Z",
-    "expiresUtc": "2026-09-16T20:45:00Z",
+    "runRef": "rrb-ref:cad-upload-activation-window-rollover-2230z",
+    "startUtc": "2026-09-16T22:30:00Z",
+    "expiresUtc": "2026-09-16T23:00:00Z",
     "maxRunSeconds": 900,
     "scheduleIfMoreThanFiveMinutesAway": true
   },
@@ -52,7 +52,7 @@
   },
   "sourceBindings": {
     "runnerRebind": "offline/cad-convex/uploadAdmissionActivationRunnerRebind.json",
-    "exactWindow": "offline/cad-convex/uploadAdmissionActivationExactWindow.json",
+    "rolloverWindow": "offline/cad-convex/uploadAdmissionActivationWindowRollover.json",
     "decisionRefresh": "offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json",
     "mountedCloseout": "offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json",
     "mountedRunnerCli": "scripts/run-cad-upload-admission-mounted-development-window.js",
@@ -79,7 +79,7 @@
     "realUsersAuthorized": false
   },
   "sanitizedEvidenceDestination": {
-    "root": ".local/cad-convex/upload-activation-exact-window-2030z",
+    "root": ".local/cad-convex/upload-activation-window-rollover-2230z",
     "evidence": "sanitized-evidence.json",
     "receipt": "sanitized-run-receipt.json",
     "gitIgnoredRequired": true,
@@ -90,7 +90,7 @@
     "recordsPrivateCad": false
   },
   "expectedFutureResult": {
-    "decision": "UPLOAD_ACTIVATION_EXACT_WINDOW_EXECUTED",
+    "decision": "UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED",
     "runCompleted": true,
     "unknownOutcome": false,
     "terminalCode": "USER_UPLOADS_DISABLED",
@@ -122,7 +122,7 @@
   },
   "nextSafeAction": {
     "type": "bounded-development-upload-activation-run",
-    "scope": "one bounded development-only synthetic upload activation run during 2026-09-16T20:30:00Z through 2026-09-16T20:45:00Z if production smoke and pre-run checks pass",
+    "scope": "one bounded development-only synthetic upload activation run during 2026-09-16T22:30:00Z through 2026-09-16T23:00:00Z if production smoke and pre-run checks pass",
     "stopBefore": "production upload activation, production body admission, CAD conversion, Sandbox dispatch, env/provider/resource changes, private CAD, real users, retry or second run"
   }
 }

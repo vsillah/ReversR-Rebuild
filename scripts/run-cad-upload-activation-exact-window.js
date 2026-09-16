@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const rebind = require('../offline/cad-convex/uploadAdmissionActivationRunnerRebind.json');
-const exactWindow = require('../offline/cad-convex/uploadAdmissionActivationExactWindow.json');
+const rollover = require('../offline/cad-convex/uploadAdmissionActivationWindowRollover.json');
 const refresh = require('../offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json');
 const closeout = require('../offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.json');
 const readiness = require('../offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.json');
@@ -33,9 +33,9 @@ function compatibilityBridge() {
     sourceOnly: true,
     baseMainCommit: '816c773a128a3d44ba26ce54227fa45be1db8d1b',
     acceptedWindow: Object.freeze({
-      source: rebind.acceptedExactWindow.source,
-      sourcePr: rebind.acceptedExactWindow.sourcePr,
-      windowMergeCommit: rebind.acceptedExactWindow.exactWindowMergeCommit,
+      source: rebind.acceptedRollover.source,
+      sourcePr: rebind.acceptedRollover.sourcePr,
+      windowMergeCommit: rebind.acceptedRollover.rolloverMergeCommit,
       runRef: rebind.acceptedWindow.runRef,
       startUtc: rebind.acceptedWindow.startUtc,
       expiresUtc: rebind.acceptedWindow.expiresUtc,
@@ -110,7 +110,7 @@ function compatibilityWindow() {
 
 async function executeUploadActivationExactWindow({
   rebindConfig = rebind,
-  exactWindowConfig = exactWindow,
+  exactWindowConfig = rollover,
   refreshConfig = refresh,
   closeoutConfig = closeout,
   readinessConfig = readiness,
@@ -158,7 +158,7 @@ async function executeUploadActivationExactWindow({
     flags: result.flags,
     terminalCode: result.terminalCode,
     bodyAdmissionValidated: result.bodyAdmissionValidated,
-    sourceOnlyRunnerRebind: rebindConfig.acceptedExactWindow.exactWindowMergeCommit,
+    sourceOnlyRunnerRebind: rebindConfig.acceptedRollover.rolloverMergeCommit,
     recordsContentBase64: false,
     recordsRawCredential: false,
     recordsPrivateCad: false,
@@ -198,7 +198,7 @@ async function executeUploadActivationExactWindow({
 
 async function main() {
   if (process.argv.includes('--preflight')) {
-    const inspected = inspectUploadAdmissionActivationRunnerRebind(rebind, exactWindow, refresh, closeout);
+    const inspected = inspectUploadAdmissionActivationRunnerRebind(rebind, rollover, refresh, closeout);
     emit({
       status: inspected.readyForWindowExecution ? 'READY_WAITING_FOR_WINDOW' : 'BLOCKED',
       runRef: rebind.acceptedWindow.runRef,
