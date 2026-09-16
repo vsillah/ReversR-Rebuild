@@ -200,6 +200,11 @@ const files = [
   'docs/cad-upload-admission-mounted-development-closeout.md',
   'docs/cad-upload-admission-mounted-development-closeout.json',
   'scripts/cad-upload-admission-mounted-development-closeout.test.js',
+  'offline/cad-convex/uploadAdmissionActivationDecisionRefresh.js',
+  'offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json',
+  'docs/cad-upload-admission-activation-decision-refresh.md',
+  'docs/cad-upload-admission-activation-decision-refresh.json',
+  'scripts/cad-upload-admission-activation-decision-refresh.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -816,6 +821,24 @@ assert.ok(!/uploadAdmissionMountedDevelopmentCloseout|cad-upload-admission-mount
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionMountedDevelopmentCloseout.js')));
+const uploadActivationDecisionRefresh =
+  JSON.parse(read('offline/cad-convex/uploadAdmissionActivationDecisionRefresh.json'));
+const uploadActivationDecisionRefreshResult =
+  require('../offline/cad-convex/uploadAdmissionActivationDecisionRefresh')
+    .inspectUploadAdmissionActivationDecisionRefresh(uploadActivationDecisionRefresh);
+assert.equal(uploadActivationDecisionRefreshResult.structureValid, true);
+assert.equal(uploadActivationDecisionRefreshResult.liveRunAuthorized, false);
+assert.equal(uploadActivationDecisionRefreshResult.productionUploadActivationAuthorized, false);
+assert.equal(uploadActivationDecisionRefreshResult.conversionAuthorized, false);
+assert.equal(uploadActivationDecisionRefreshResult.sandboxDispatchAuthorized, false);
+assert.equal(uploadActivationDecisionRefresh.acceptedMountedDevelopmentCloseout.evidenceSha256,
+  'a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75');
+assert.ok(Object.values(uploadActivationDecisionRefresh.authorityPreserved)
+  .every(value => value === false));
+assert.ok(!/uploadAdmissionActivationDecisionRefresh|cad-upload-admission-activation-decision-refresh/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionActivationDecisionRefresh.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 
