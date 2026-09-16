@@ -265,6 +265,11 @@
     "docs/cad-upload-admission-development-activation-window.md": "7dc183d0195165c6673b7f143ea8c5c74451af82579cda3672d928fb3d0d0566",
     "docs/cad-upload-admission-development-activation-window.json": "e53b1e4d13e40902f20a75e722642e2bf5e93a4ee360cdf2deea7b9873c27950",
     "scripts/cad-upload-admission-development-activation-window.test.js": "8c8aaee1c92d9e86869dc0e9ba14bade608a8111ae4d57edde402054ebc58f37",
+    "offline/cad-convex/uploadAdmissionDevelopmentActivationCloseout.js": "40c510710089d7c37d0013e0ecf2f8ce77b783f1d56d3d8bc311576ed4520f9d",
+    "offline/cad-convex/uploadAdmissionDevelopmentActivationCloseout.json": "beab0942b8aa2e7012ef379e14b051cfa051d3fa6e04100afbafa7dd06619012",
+    "docs/cad-upload-admission-development-activation-closeout.md": "6af2452ed2a76cd55aa3393d036e62f02e28e12b552119bae90a19d3ec450382",
+    "docs/cad-upload-admission-development-activation-closeout.json": "1c2b3695ce0a603e6f9d0702cb08a5323c8bddca8dc1f65a902f57af3baf0afc",
+    "scripts/cad-upload-admission-development-activation-closeout.test.js": "085384a513c37a045289ad0a774397a8fa4fe523b4edbff128a656e480f6269b",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -462,6 +467,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "c713035c0e2dfcfa4d923ee5bfeec53f37cd387124c0a07c7b0dfa8f9c937290"
+    "scripts/cad-convex-contract-manifest.js": "1500525ee9899b7890540e0f2560ada19b18136d35999adb2283710e0e5efb87"
   }
 }
