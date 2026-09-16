@@ -77,6 +77,8 @@ test('source preserves disabled upload and no-live-run authority', () => {
   assert.equal(packet.bridge.defaultBindingEnabled, false);
   assert.equal(packet.bridge.rawCredentialAccepted, false);
   assert.equal(packet.bridge.bodyAdmissionAuthorized, false);
+  assert.equal(packet.bridge.requiresAuthenticatedSyntheticSessionCall, true);
+  assert.match(markdown, /signed-in synthetic development session/);
   for (const [gate, value] of Object.entries(packet.authorityPreserved)) {
     assert.equal(value, false, `${gate} must remain false`);
   }

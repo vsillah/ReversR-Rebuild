@@ -175,7 +175,7 @@ async function runWithClients({ uploadRegister, authRegister, acceptedArtifacts,
   };
   let bridge;
   try {
-    bridge = await clients.operator.action(api.cadDevUploadSessionQualification.issueReadRevokeWithSyntheticAuthority, {
+    bridge = await authenticated.action(api.cadDevUploadSessionQualification.issueReadRevokeWithSyntheticAuthority, {
       runKey: uploadRegister.runKey,
       runKeySha256: uploadRegister.runKeySha256,
       acceptedProjectionSha256: acceptedArtifacts.acceptedProjectionSha256,

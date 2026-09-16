@@ -22,6 +22,8 @@ sequence server-side after a future source rebind supplies one exact run tuple.
 - provisions only run-owned synthetic CAD authority and membership rows,
 - calls only `internal.cad.insertIfAbsent`, `internal.cad.read` and
   `internal.cad.revoke` for the upload-session sequence,
+- must be called by the signed-in synthetic development session so the internal
+  CAD backend can revalidate the exact Convex Auth session,
 - revokes synthetic CAD authority and membership rows without deletion,
 - returns sanitized booleans and fixed status codes,
 - keeps CAD uploads disabled and `BODY_ADMISSION_AUTHORIZED = false`,
