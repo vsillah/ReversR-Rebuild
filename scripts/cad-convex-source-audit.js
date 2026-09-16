@@ -179,6 +179,11 @@ const files = [
   'docs/cad-upload-admission-development-body-admission-closeout.md',
   'docs/cad-upload-admission-development-body-admission-closeout.json',
   'scripts/cad-upload-admission-development-body-admission-closeout.test.js',
+  'offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.js',
+  'offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.json',
+  'docs/cad-upload-admission-mounted-development-readiness.md',
+  'docs/cad-upload-admission-mounted-development-readiness.json',
+  'scripts/cad-upload-admission-mounted-development-readiness.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -713,6 +718,25 @@ assert.ok(!/uploadAdmissionDevelopmentBodyAdmissionCloseout|cad-upload-admission
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionDevelopmentBodyAdmissionCloseout.js')));
+const mountedDevelopmentReadiness = JSON.parse(read('offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.json'));
+const mountedDevelopmentReadinessResult =
+  require('../offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness')
+    .inspectUploadAdmissionMountedDevelopmentReadiness(mountedDevelopmentReadiness, bodyAdmissionCloseout);
+assert.equal(mountedDevelopmentReadinessResult.readyForExactWindowSourcePacket, true);
+assert.equal(mountedDevelopmentReadinessResult.liveRunAuthorizedByThisPacket, false);
+assert.equal(mountedDevelopmentReadinessResult.uploadActivationAuthorizedByThisPacket, false);
+assert.equal(mountedDevelopmentReadinessResult.conversionAuthorized, false);
+assert.equal(mountedDevelopmentReadinessResult.sandboxDispatchAuthorized, false);
+assert.equal(mountedDevelopmentReadinessResult.privateCadAuthorized, false);
+assert.equal(mountedDevelopmentReadiness.mountedRouteGate.requiredDisabledLiteral,
+  'const BODY_ADMISSION_AUTHORIZED = false;');
+assert.equal(mountedDevelopmentReadiness.readinessForFutureMountedDevelopmentRun.maxAttempts, 1);
+assert.equal(mountedDevelopmentReadiness.readinessForFutureMountedDevelopmentRun.allInPlanningCapUsd, 50);
+assert.ok(Object.values(mountedDevelopmentReadiness.authorityPreserved).every(value => value === false));
+assert.ok(!/uploadAdmissionMountedDevelopmentReadiness|cad-upload-admission-mounted-development-readiness/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.js')));
 
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser/.test(read('scripts/helpers/cad-durable-evidence-fixture.js')));
 

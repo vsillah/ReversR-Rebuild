@@ -1,0 +1,23 @@
+{
+  "summary": "source-only readiness packet for a future mounted development CAD upload-admission run",
+  "source": "offline/cad-convex/uploadAdmissionMountedDevelopmentReadiness.json",
+  "branch": "codex/cad-mounted-dev-upload-readiness",
+  "baseMainCommit": "0b30989c0458763aa20fa6609430e07e5bedeb60",
+  "acceptedBodyAdmissionCloseoutEvidenceSha256": "d5d561c9dbb69fd8c398e46290e960a9078f74c3966671dd88bef71c318ca604",
+  "acceptedBodyAdmissionCloseoutReceiptSha256": "90840cf2af29203e17ec2234ef99d662abd77518f012b3b9bbe4be74bd465b84",
+  "acceptedBodyAdmissionRunRef": "rrb-ref:cad-upload-admission-development-body-admission-1630z",
+  "liveRunHappened": false,
+  "uploadActivationHappened": false,
+  "nextSafeAction": "source-only exact UTC window packet for one future mounted development upload-admission run; no live run or activation is authorized by this packet",
+  "authority": {
+    "liveRunAuthorizedByThisPacket": false,
+    "mountedDevelopmentUploadActivationAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "cadConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  }
+}
