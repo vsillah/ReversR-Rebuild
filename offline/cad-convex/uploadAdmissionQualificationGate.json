@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-qualification-gate",
+  "status": "UPLOAD_ADMISSION_QUALIFICATION_GATE_PREPARED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "branch": "codex/cad-upload-admission-qualification-gate",
+  "baseMainCommit": "320572706ffd5a773ed0ec9e0fbef4afaa030908",
+  "expensesUsd": 0,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "developmentDeployment": "majestic-alligator-31",
+    "productionHost": "https://reversr.vercel.app",
+    "currentProductionMergeCommit": "320572706ffd5a773ed0ec9e0fbef4afaa030908"
+  },
+  "sourceBindings": {
+    "uploadSessionCloseout": "docs/cad-dev-upload-session-successful-closeout.json",
+    "dryRunCloseout": "docs/cad-upload-admission-development-dry-run-closeout.json",
+    "activationRunManifest": "docs/cad-upload-activation-run-manifest.json",
+    "qualificationWindow": "docs/cad-upload-admission-qualification-window.json",
+    "routeGate": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "runtimeBridge": "server/cadUploadAdmissionRuntimeBridge.js",
+    "disabledRollbackAdapter": "offline/cad-convex/disabledUploadAdmissionAdapter.js"
+  },
+  "inputs": {
+    "uploadSessionCloseout": {
+      "path": "docs/cad-dev-upload-session-successful-closeout.json",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "evidenceSha256": "e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866",
+      "receiptSha256": "ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825",
+      "loginSessionIdObserved": true,
+      "retainedUploadSession": true,
+      "bodyAdmissionAuthorized": false,
+      "conversionAllowed": false,
+      "privateCadUsed": false,
+      "secondRun": false
+    },
+    "dryRunCloseout": {
+      "path": "docs/cad-upload-admission-development-dry-run-closeout.json",
+      "dryRunCompleted": true,
+      "unknownOutcome": false,
+      "evidenceSha256": "78d5817a5d886b1b0646356bfa5c1fe53d6de9584f93e27e2c6ceb21dfc6064b",
+      "receiptSha256": "0d8f48293e6fab39727b7cfb10985480352c06e9e46f534fd6f2c3c02bc32968",
+      "disabledRouteChecks": 2,
+      "syntheticReservations": 1,
+      "boundedReconciliationReads": 1,
+      "revocationsWithoutDeletion": 1,
+      "uploadBodiesRead": 0,
+      "conversionDispatches": 0,
+      "sandboxDispatches": 0,
+      "staleReceiptMainCommitCaveatRequiresRerun": false
+    }
+  },
+  "currentGate": {
+    "uploadSessionPathQualified": true,
+    "uploadAdmissionDryRunQualified": true,
+    "productionFailClosedSmokePassedForCurrentMain": true,
+    "bodyAdmissionAuthorizedNow": false,
+    "liveRunAuthorizedNow": false,
+    "readyForSourceReviewedFutureWindow": true
+  },
+  "remainingExecutionBlockers": [
+    "fresh UTC execution window is not accepted in this packet",
+    "exact deployment reference must be rebound after merge",
+    "future run manifest hash must be accepted before execution",
+    "body admission remains literal false until separately approved bounded execution",
+    "post-run rollback and reconciliation commands must be bound to exact merged source",
+    "conversion and Sandbox dispatch remain separate later gates"
+  ],
+  "futureBoundedAdmissionRun": {
+    "route": "POST /api/cad/user-import",
+    "developmentOnly": true,
+    "publicSyntheticFixtureOnly": true,
+    "fixtureRef": "scripts/fixtures/cad-public-matrix.json#cube",
+    "fixtureSha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "fixtureBytes": 11562,
+    "maxAllInCostUsd": 50,
+    "stopBeforeConversion": true,
+    "stopBeforeSandbox": true,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "authorityPreserved": {
+    "pushAuthorizedByThisPacket": false,
+    "mergeAuthorizedByThisPacket": false,
+    "deploymentAuthorizedByThisPacket": false,
+    "liveRunAuthorizedByThisPacket": false,
+    "bodyAdmissionAuthorizedByThisPacket": false,
+    "productionUploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "envMutationAuthorized": false,
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadOrGenerationAuthorized": false,
+    "emailSmsSlackAuthorized": false,
+    "cleanupAuthorizedByThisPacket": false
+  },
+  "liveRunAuthorized": false,
+  "productionUploadActivationAuthorized": false,
+  "bodyAdmissionAuthorizedNow": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "futureApprovalPhrases": {
+    "publication": "I approve pushing only commit [full reviewed SHA] from codex/cad-upload-admission-qualification-gate to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD upload admission qualification gate packet. No live tests, upload activation, conversion, Sandbox dispatch, private CAD, production/development env or provider/auth/resource changes, secrets or secret reads, usage/billing changes, enrollment, email/SMS/Slack, store mutation, retry, second run, merge, deployment, or branch/worktree cleanup.",
+    "merge": "I approve marking PR #[number] ready for review and merging it into main. Allow the normal Vercel production deployment from main, then run production fail-closed route smoke and cleanup only if smoke passes. Preserve current production and development environment settings; do not enable CAD uploads, do not dispatch CAD conversion, do not run live tests, do not use private CAD, do not dispatch Sandbox work, do not retry any completed or stopped run, do not start a second run, and do not send email/SMS/Slack.",
+    "nextSourceGate": "I approve starting the next CAD Import phase for source-only bounded upload admission execution packet assembly. Scope is local source-only docs/tests/manifests to bind an exact future UTC window, merged source SHA, deployment reference, public synthetic fixture, route gate, rollback/reconciliation command hashes, USD 50 cap, and sanitized evidence destinations for one future development-only POST /api/cad/user-import admission qualification run. Do not run live tests, enable CAD uploads outside the reviewed bounded gate, dispatch conversion, dispatch Sandbox work, use private CAD, mutate stores, change env/provider/auth/resource or usage/billing settings, read or generate secrets, send email/SMS/Slack, retry, start a second run, push, merge, deploy, or cleanup branches/worktrees."
+  }
+}

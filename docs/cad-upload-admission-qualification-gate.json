@@ -1,0 +1,17 @@
+{
+  "source": "offline/cad-convex/uploadAdmissionQualificationGate.json",
+  "summary": "source-only gate packet for the future bounded CAD upload admission qualification run",
+  "baseMainCommit": "320572706ffd5a773ed0ec9e0fbef4afaa030908",
+  "branch": "codex/cad-upload-admission-qualification-gate",
+  "expensesUsd": 0,
+  "uploadSessionQualificationCompleted": true,
+  "uploadAdmissionDryRunCompleted": true,
+  "readyForFutureSourceRunManifest": true,
+  "liveRunAuthorized": false,
+  "bodyAdmissionAuthorizedNow": false,
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only bounded upload admission execution packet assembly"
+}
