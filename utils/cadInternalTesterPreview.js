@@ -43,11 +43,26 @@ function getCadInternalTesterPreview() {
   return inspectCadInternalTesterPreview(window.location);
 }
 
+function getCadCapabilitiesRequest(previewEnabled, apiBase) {
+  if (previewEnabled) {
+    return Object.freeze({
+      url: '/api/cad/capabilities',
+      credentials: 'same-origin',
+    });
+  }
+
+  return Object.freeze({
+    url: `${String(apiBase || '')}/api/cad/capabilities`,
+    credentials: 'omit',
+  });
+}
+
 module.exports = {
   PREVIEW_QUERY_KEY,
   PREVIEW_QUERY_VALUE,
   PUBLIC_CUBE_RESULT,
   inspectCadInternalTesterPreview,
   getCadInternalTesterPreview,
+  getCadCapabilitiesRequest,
   isAllowedPreviewHostname,
 };

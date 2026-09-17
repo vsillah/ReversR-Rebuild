@@ -3,6 +3,7 @@ const test = require('node:test');
 
 const {
   PUBLIC_CUBE_RESULT,
+  getCadCapabilitiesRequest,
   inspectCadInternalTesterPreview,
 } = require('../utils/cadInternalTesterPreview');
 
@@ -39,5 +40,16 @@ test('keeps the replay bound to the accepted public fixture and qualified output
     vertices: 24,
     triangles: 12,
     sourceConfidence: 'Unqualified',
+  });
+});
+
+test('keeps preview status checks on the protected preview origin', () => {
+  assert.deepEqual(getCadCapabilitiesRequest(true, 'https://reversr.vercel.app'), {
+    url: '/api/cad/capabilities',
+    credentials: 'same-origin',
+  });
+  assert.deepEqual(getCadCapabilitiesRequest(false, 'https://reversr.vercel.app'), {
+    url: 'https://reversr.vercel.app/api/cad/capabilities',
+    credentials: 'omit',
   });
 });

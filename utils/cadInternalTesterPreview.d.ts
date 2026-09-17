@@ -22,3 +22,7 @@ export function inspectCadInternalTesterPreview(locationLike?: {
   search?: unknown;
 } | null): CadInternalTesterPreview;
 export function getCadInternalTesterPreview(): CadInternalTesterPreview;
+export function getCadCapabilitiesRequest(previewEnabled: boolean, apiBase: string): Readonly<{
+  url: string;
+  credentials: 'same-origin' | 'omit';
+}>;
