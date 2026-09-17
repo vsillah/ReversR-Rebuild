@@ -226,6 +226,12 @@ const files = [
   'docs/cad-upload-admission-activation-rollover-closeout.md',
   'docs/cad-upload-admission-activation-rollover-closeout.json',
   'scripts/cad-upload-admission-activation-rollover-closeout.test.js',
+  'offline/cad-convex/uploadConversionSandboxReadiness.js',
+  'offline/cad-convex/uploadConversionSandboxReadiness.json',
+  'docs/cad-upload-conversion-sandbox-readiness.md',
+  'docs/cad-upload-conversion-sandbox-readiness.json',
+  'scripts/run-cad-upload-conversion-sandbox-qualification.js',
+  'scripts/cad-upload-conversion-sandbox-readiness.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -926,6 +932,26 @@ assert.ok(!/uploadAdmissionActivationRolloverCloseout|cad-upload-admission-activ
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionActivationRolloverCloseout.js')));
+const uploadConversionSandboxReadiness =
+  JSON.parse(read('offline/cad-convex/uploadConversionSandboxReadiness.json'));
+const uploadConversionSandboxReadinessResult =
+  require('../offline/cad-convex/uploadConversionSandboxReadiness')
+    .inspectUploadConversionSandboxReadiness(
+      uploadConversionSandboxReadiness,
+      uploadActivationRolloverCloseout,
+    );
+assert.equal(uploadConversionSandboxReadinessResult.readyForOneFutureDevelopmentConversionRun, true);
+assert.equal(uploadConversionSandboxReadinessResult.liveRunAuthorizedByThisPacket, false);
+assert.equal(uploadConversionSandboxReadiness.qualificationDecision.newStandaloneSandboxProofRequired, false);
+assert.equal(uploadConversionSandboxReadiness.futureRunBounds.maxAttempts, 1);
+assert.equal(uploadConversionSandboxReadiness.futureRunBounds.allInPlanningCapUsd, 50);
+assert.equal(uploadConversionSandboxReadiness.futureRunBounds.privateCadAllowed, false);
+assert.ok(Object.values(uploadConversionSandboxReadiness.authorityPreservedByThisPacket)
+  .every(value => value === false));
+assert.ok(!/uploadConversionSandboxReadiness|run-cad-upload-conversion-sandbox/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadConversionSandboxReadiness.js')));
 const uploadActivationRunnerRebind =
   JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json'));
 const uploadActivationRunnerRebindResult =

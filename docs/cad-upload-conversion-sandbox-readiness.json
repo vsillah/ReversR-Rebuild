@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "source": "offline/cad-convex/uploadConversionSandboxReadiness.json",
+  "status": "CONVERSION_SANDBOX_BRIDGE_READY_SOURCE_ONLY",
+  "qualificationDecision": "REUSE_EXISTING_SOURCE_BOUND_SANDBOX_QUALIFICATION",
+  "newStandaloneSandboxProofRequired": false,
+  "runner": "scripts/run-cad-upload-conversion-sandbox-qualification.js",
+  "liveRunHappened": false,
+  "liveRunAuthorizedByThisPacket": false,
+  "productionUploadActivationAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "merge this source-only packet, then run one bounded development-only public-fixture conversion inside an exact UTC window"
+}

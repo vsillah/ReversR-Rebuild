@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-conversion-sandbox-readiness",
+  "status": "CONVERSION_SANDBOX_BRIDGE_READY_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "dcddbcf8b0a0d636749cacc9084c63b7c4f346e9",
+  "branch": "codex/cad-upload-conversion-sandbox-readiness",
+  "observedAtUtc": "2026-09-17T01:28:00Z",
+  "expensesUsd": 0,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "executionSurface": "local-development-runner-to-vercel-sandbox",
+    "productionUrl": "https://reversr.vercel.app"
+  },
+  "acceptedUploadPathCloseout": {
+    "source": "offline/cad-convex/uploadAdmissionActivationRolloverCloseout.json",
+    "sourceSha256": "1ad47ef23a3432748c48b1e32574b5e26871cf8fc322789af81bb970645d8abc",
+    "pr": 294,
+    "mergeCommit": "dcddbcf8b0a0d636749cacc9084c63b7c4f346e9",
+    "runDecision": "UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED",
+    "evidenceSha256": "29be0ace835239dcaa46ebdb71b247a850b360e072a7043f446b0a418c7e4a8f",
+    "receiptSha256": "298f25e13ca43aee29432954853bd4cc13924b2c39c3767a70552575f313e847",
+    "bodyAdmissionValidated": true,
+    "unknownOutcome": false
+  },
+  "fixture": {
+    "id": "public-cube",
+    "source": "occt-import-js-package",
+    "format": "iges",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "privateCad": false
+  },
+  "qualificationDecision": {
+    "decision": "REUSE_EXISTING_SOURCE_BOUND_SANDBOX_QUALIFICATION",
+    "newStandaloneSandboxProofRequired": false,
+    "rationale": [
+      "the identical public cube hash already converted successfully through the hosted Sandbox executor",
+      "the executor, config, guest runner and worker contract are unchanged from the accepted private-pilot execution boundary",
+      "the remaining gap is the upload-path-to-conversion bridge, not basic Sandbox creation or OCCT conversion"
+    ]
+  },
+  "historicalQualification": {
+    "livePublicFixtureMatrix": {
+      "source": "docs/cad-live-hosted-public-fixture-matrix-evidence.json",
+      "evidenceSha256": "2d982c39c0318f69e074a99c7822d11596dc9b1243c81cd257608cd826ab6b54",
+      "status": "pass",
+      "generatedAtUtc": "2026-09-12T01:53:46.860Z",
+      "sourceCommit": "b42123ab685d12b9966f4516544828c8384c9083",
+      "publicCubeDispatches": 2,
+      "totalSuccessfulDispatches": 7,
+      "cleanupConfirmed": true
+    },
+    "privatePilot": {
+      "source": "docs/cad-private-pilot.md",
+      "sourceSha256": "642a05ce2ab3e877cf4d3cdd415a60c51a67e15c9c3839919ffa928ee5046778",
+      "status": "pass",
+      "executionCommit": "a46eb8789b45babca171f428098128860d144012",
+      "cleanupConfirmed": true
+    },
+    "sourceContinuity": {
+      "executorSha256": "445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7",
+      "configSha256": "927da7487422d92b5e2e9506cb811321966d8321fcae19c1ac890afacb6d7426",
+      "guestRunnerSha256": "0ea8b945fd091b13c860c029f8c0a6624798c2341febf31b90524b4d4eb79418",
+      "workerContractSha256": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
+      "executorChangedSincePrivatePilot": false,
+      "configChangedSincePrivatePilot": false,
+      "runnerChangedSincePrivatePilot": false,
+      "workerContractChangedSincePrivatePilot": false
+    }
+  },
+  "routeGate": {
+    "source": "server/cadUserUploadRouter.js",
+    "sourceSha256": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb",
+    "requiredDisabledLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "trackedRouteModified": false,
+    "productionUploadActivationAuthorized": false
+  },
+  "runner": {
+    "cli": "scripts/run-cad-upload-conversion-sandbox-qualification.js",
+    "requiresLiveFlag": true,
+    "requiresApprovalEnvironment": "CAD_UPLOAD_CONVERSION_QUALIFICATION_APPROVED=true",
+    "requiresExactUtcWindow": true,
+    "writesSanitizedEvidence": true,
+    "readsFixedPublicFixtureOnly": true,
+    "readsPrivatePath": false,
+    "automaticRetry": false
+  },
+  "futureRunBounds": {
+    "developmentOnly": true,
+    "productionAllowed": false,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "maxWindowSeconds": 1800,
+    "allInPlanningCapUsd": 50,
+    "publicSyntheticFixtureOnly": true,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "networkPolicy": "deny-all",
+    "persistent": false,
+    "vcpus": 1,
+    "memoryMb": 2048,
+    "sandboxLifetimeMs": 60000,
+    "commandTimeoutMs": 10000,
+    "cleanupTimeoutMs": 5000,
+    "storeMutationsAllowed": false,
+    "productionUploadActivationAllowed": false
+  },
+  "sanitizedEvidenceRequirements": {
+    "rootPrefix": ".local/cad-convex/",
+    "directoryMode": "700",
+    "fileMode": "600",
+    "gitIgnoredRequired": true,
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false,
+    "recordsRawMeshPayload": false
+  },
+  "authorityPreservedByThisPacket": {
+    "liveRunAuthorizedNow": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorizedByPacket": false,
+    "externalMessageAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "one-bounded-development-public-fixture-conversion-run",
+    "scope": "after this source packet is merged, run the fixed public cube through the source-only bridge once inside an exact UTC window and preserve sanitized evidence",
+    "stopBefore": "production user upload activation, private CAD, real users, store mutation, retry, second run or external delivery"
+  }
+}
