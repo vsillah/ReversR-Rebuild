@@ -40,7 +40,20 @@ test('keeps the replay bound to the accepted public fixture and qualified output
     vertices: 24,
     triangles: 12,
     sourceConfidence: 'Unqualified',
+    previewGeometry: {
+      kind: 'box',
+      normalizedScale: [1, 1, 1],
+    },
   });
+});
+
+test('binds the visual to normalized fixture geometry without dimensional claims', () => {
+  assert.deepEqual(PUBLIC_CUBE_RESULT.previewGeometry, {
+    kind: 'box',
+    normalizedScale: [1, 1, 1],
+  });
+  assert.equal(Object.isFrozen(PUBLIC_CUBE_RESULT.previewGeometry), true);
+  assert.equal(Object.isFrozen(PUBLIC_CUBE_RESULT.previewGeometry.normalizedScale), true);
 });
 
 test('keeps preview status checks on the protected preview origin', () => {

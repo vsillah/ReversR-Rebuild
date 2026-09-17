@@ -11,6 +11,10 @@ const PUBLIC_CUBE_RESULT = Object.freeze({
   vertices: 24,
   triangles: 12,
   sourceConfidence: 'Unqualified',
+  previewGeometry: Object.freeze({
+    kind: 'box',
+    normalizedScale: Object.freeze([1, 1, 1]),
+  }),
 });
 
 function isAllowedPreviewHostname(hostname) {
