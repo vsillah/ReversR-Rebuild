@@ -221,6 +221,11 @@ const files = [
   'docs/cad-upload-admission-activation-window-rollover.md',
   'docs/cad-upload-admission-activation-window-rollover.json',
   'scripts/cad-upload-admission-activation-window-rollover.test.js',
+  'offline/cad-convex/uploadAdmissionActivationRolloverCloseout.js',
+  'offline/cad-convex/uploadAdmissionActivationRolloverCloseout.json',
+  'docs/cad-upload-admission-activation-rollover-closeout.md',
+  'docs/cad-upload-admission-activation-rollover-closeout.json',
+  'scripts/cad-upload-admission-activation-rollover-closeout.test.js',
   'docs/cad-user-upload-contract.md',
   'docs/cad-dev-upload-session-qualification-plan.md',
   'docs/cad-dev-upload-session-qualification-plan.json',
@@ -900,6 +905,27 @@ assert.ok(!/uploadAdmissionActivationWindowRollover|cad-upload-admission-activat
   .test(read('server/cadUserUploadRouter.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-convex/uploadAdmissionActivationWindowRollover.js')));
+const uploadActivationRolloverCloseout =
+  JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRolloverCloseout.json'));
+const uploadActivationRolloverCloseoutResult =
+  require('../offline/cad-convex/uploadAdmissionActivationRolloverCloseout')
+    .inspectUploadAdmissionActivationRolloverCloseout(
+      uploadActivationRolloverCloseout,
+      uploadActivationWindowRollover,
+      JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json')),
+    );
+assert.equal(uploadActivationRolloverCloseoutResult.developmentSyntheticUploadPathQualified, true);
+assert.equal(uploadActivationRolloverCloseoutResult.productionUploadActivationAuthorized, false);
+assert.equal(uploadActivationRolloverCloseoutResult.conversionAuthorized, false);
+assert.equal(uploadActivationRolloverCloseoutResult.sandboxDispatchAuthorized, false);
+assert.equal(uploadActivationRolloverCloseout.operationCounts.uploadBodiesRead, 1);
+assert.equal(uploadActivationRolloverCloseout.operationCounts.conversionDispatches, 0);
+assert.ok(Object.values(uploadActivationRolloverCloseout.authorityPreserved)
+  .every(value => value === false));
+assert.ok(!/uploadAdmissionActivationRolloverCloseout|cad-upload-admission-activation-rollover-closeout/
+  .test(read('server/cadUserUploadRouter.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-convex/uploadAdmissionActivationRolloverCloseout.js')));
 const uploadActivationRunnerRebind =
   JSON.parse(read('offline/cad-convex/uploadAdmissionActivationRunnerRebind.json'));
 const uploadActivationRunnerRebindResult =
