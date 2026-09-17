@@ -2,7 +2,6 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 
 const packet = require('../offline/cad-convex/uploadConversionSandboxReadiness.json');
@@ -11,8 +10,8 @@ const { inspectUploadConversionSandboxReadiness } =
   require('../offline/cad-convex/uploadConversionSandboxReadiness');
 
 const root = path.resolve(__dirname, '..');
-const DEFAULT_AUTH_PATH = path.join(os.homedir(), 'Library/Application Support/com.vercel.cli/auth.json');
 const DEFAULT_PROJECT_PATH = path.join(root, '.vercel/project.json');
+const AUTHORIZATION_PREFLIGHT_MS = 10000;
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 
 function blocked(code, details = {}) {
@@ -34,13 +33,31 @@ function readJson(file) {
 
 function readOperatorConfig(env = process.env) {
   const project = readJson(env.VERCEL_PROJECT_JSON || DEFAULT_PROJECT_PATH);
-  const token = env.VERCEL_TOKEN || readJson(env.VERCEL_AUTH_JSON || DEFAULT_AUTH_PATH).token;
-  const teamId = env.VERCEL_TEAM_ID || project.orgId;
-  const projectId = env.VERCEL_PROJECT_ID || project.projectId;
-  assert.match(token || '', /^vca_[A-Za-z0-9_-]+$/);
+  const teamId = project.orgId;
+  const projectId = project.projectId;
   assert.match(teamId || '', /^(team|team_[A-Za-z0-9]+|[A-Za-z0-9_-]+)$/);
   assert.match(projectId || '', /^prj_[A-Za-z0-9]+$/);
-  return { token, teamId, projectId, projectName: project.projectName };
+  assert.equal(project.projectName, 'reversr');
+  return { teamId, projectId, projectName: project.projectName };
+}
+
+async function sandboxAuthorizationPreflight({ list, timeoutMs = AUTHORIZATION_PREFLIGHT_MS } = {}) {
+  assert.ok(Number.isInteger(timeoutMs) && timeoutMs > 0
+    && timeoutMs <= AUTHORIZATION_PREFLIGHT_MS);
+  const listSandboxes = list || (await import('@vercel/sandbox')).Sandbox.list;
+  const control = new AbortController();
+  const timer = setTimeout(() => control.abort(), timeoutMs);
+  try {
+    await listSandboxes({ limit: 1, signal: control.signal });
+    return { status: 'authorized' };
+  } catch {
+    const error = new Error('SANDBOX_AUTHORIZATION_FAILED');
+    error.code = 'SANDBOX_AUTHORIZATION_FAILED';
+    error.preDispatch = true;
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function fixedFixture() {
@@ -147,15 +164,20 @@ function persistEvidence(paths, evidence) {
   };
 }
 
-async function liveConverter({ env = process.env, onStage }) {
+async function liveConverter({
+  env = process.env,
+  onStage,
+  authorize = sandboxAuthorizationPreflight,
+  executorFactory,
+} = {}) {
   const operator = readOperatorConfig(env);
-  const executorEnv = {
-    VERCEL_TOKEN: operator.token,
-    VERCEL_TEAM_ID: operator.teamId,
-    VERCEL_PROJECT_ID: operator.projectId,
-  };
-  const { createSandboxExecutor } = require('../server/cadSandboxExecutor');
-  const executor = createSandboxExecutor({ env: executorEnv, onStage });
+  await authorize();
+  onStage?.({ name: 'sandbox_authorization_preflight', status: 'authorized' });
+  const createExecutor = executorFactory
+    || require('../server/cadSandboxExecutor').createSandboxExecutor;
+  // Let the SDK refresh and infer the linked project's credentials. Passing the
+  // generic CLI token here bypasses that path and can leave a stale bearer token.
+  const executor = createExecutor({ env: {}, onStage });
   return {
     project: { id: operator.projectId, teamId: operator.teamId, name: operator.projectName },
     convert: body => executor.convert(body),
@@ -171,6 +193,7 @@ async function runUploadConversionSandboxQualification({
   evidenceRoot,
   now = Date.now,
   converter,
+  converterFactory = liveConverter,
   writeEvidence = true,
   env = process.env,
 } = {}) {
@@ -199,18 +222,21 @@ async function runUploadConversionSandboxQualification({
   let active;
   let result;
   try {
-    active = converter || await liveConverter({ env, onStage: stage => stages.push(stage) });
+    active = converter || await converterFactory({ env, onStage: stage => stages.push(stage) });
     result = await active.convert(fixture.body);
   } catch (error) {
+    const preDispatchFailure = error.preDispatch === true;
     const failure = {
       schemaVersion: 1,
       decision: 'UPLOAD_CONVERSION_SANDBOX_QUALIFICATION_STOPPED',
       code: error.code || error.message || 'CONVERSION_FAILED',
       runCompleted: false,
-      unknownOutcome: true,
+      unknownOutcome: !preDispatchFailure,
       automaticRetry: false,
       secondRun: false,
-      cleanupBlocked: typeof active?.cleanupBlocked === 'function' ? active.cleanupBlocked() : true,
+      cleanupBlocked: preDispatchFailure
+        ? false
+        : (typeof active?.cleanupBlocked === 'function' ? active.cleanupBlocked() : true),
       runRef,
       acceptedWindow: { startUtc, endUtc },
       production: false,
@@ -324,9 +350,12 @@ if (require.main === module) {
 module.exports = {
   exactWindow,
   fixedFixture,
+  liveConverter,
   preflight,
   prepareEvidenceDestination,
+  readOperatorConfig,
   routeClosed,
   runUploadConversionSandboxQualification,
+  sandboxAuthorizationPreflight,
   safeEvidenceRoot,
 };

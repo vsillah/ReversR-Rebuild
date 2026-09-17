@@ -11,8 +11,11 @@ const { inspectUploadConversionSandboxReadiness } =
   require('../offline/cad-convex/uploadConversionSandboxReadiness');
 const {
   exactWindow,
+  liveConverter,
   preflight,
+  readOperatorConfig,
   runUploadConversionSandboxQualification,
+  sandboxAuthorizationPreflight,
 } = require('./run-cad-upload-conversion-sandbox-qualification');
 
 const root = path.resolve(__dirname, '..');
@@ -83,6 +86,75 @@ test('preflight is provider-free and verifies fixed fixture plus disabled route'
   assert.equal(result.fixture.privateCad, false);
 });
 
+test('operator config reads linked project metadata without reading a raw token', () => {
+  const directory = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'cad-sandbox-project-'));
+  const projectPath = path.join(directory, 'project.json');
+  fs.writeFileSync(projectPath, JSON.stringify({
+    orgId: 'team_e1YXCCGoccmBLfbBfXGhwbd4',
+    projectId: 'prj_Geremoki2OhowX1579EolsuPWXPy',
+    projectName: 'reversr',
+  }));
+  try {
+    const result = readOperatorConfig({
+      VERCEL_PROJECT_JSON: projectPath,
+      VERCEL_TOKEN: 'must-not-be-read',
+    });
+    assert.deepEqual(result, {
+      teamId: 'team_e1YXCCGoccmBLfbBfXGhwbd4',
+      projectId: 'prj_Geremoki2OhowX1579EolsuPWXPy',
+      projectName: 'reversr',
+    });
+    assert.equal(Object.hasOwn(result, 'token'), false);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('authorization preflight is read-only and reports a sanitized known failure', async () => {
+  let params;
+  const success = await sandboxAuthorizationPreflight({
+    list: async value => { params = value; return { sandboxes: [] }; },
+  });
+  assert.equal(success.status, 'authorized');
+  assert.equal(params.limit, 1);
+  assert.ok(params.signal instanceof AbortSignal);
+
+  await assert.rejects(
+    sandboxAuthorizationPreflight({ list: async () => { throw new Error('raw provider detail'); } }),
+    error => error.code === 'SANDBOX_AUTHORIZATION_FAILED'
+      && error.preDispatch === true
+      && !error.message.includes('raw provider detail'),
+  );
+});
+
+test('live converter authorizes before constructing an inferred-credential executor', async () => {
+  const directory = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'cad-sandbox-project-'));
+  const projectPath = path.join(directory, 'project.json');
+  fs.writeFileSync(projectPath, JSON.stringify({
+    orgId: 'team_e1YXCCGoccmBLfbBfXGhwbd4',
+    projectId: 'prj_Geremoki2OhowX1579EolsuPWXPy',
+    projectName: 'reversr',
+  }));
+  const events = [];
+  let executorOptions;
+  try {
+    const converter = await liveConverter({
+      env: { VERCEL_PROJECT_JSON: projectPath, VERCEL_TOKEN: 'must-not-be-forwarded' },
+      onStage: event => events.push(event),
+      authorize: async () => ({ status: 'authorized' }),
+      executorFactory: options => {
+        executorOptions = options;
+        return { convert: async () => ({}), cleanupBlocked: () => false };
+      },
+    });
+    assert.deepEqual(executorOptions.env, {});
+    assert.equal(events[0].name, 'sandbox_authorization_preflight');
+    assert.equal(converter.project.id, 'prj_Geremoki2OhowX1579EolsuPWXPy');
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test('window parser requires a valid bounded open window', () => {
   assert.equal(exactWindow({ startUtc: '', endUtc: '' }).code, 'WINDOW_INVALID');
   assert.equal(exactWindow({
@@ -143,6 +215,33 @@ test('one failed conversion stops with unknown outcome and no retry', async () =
   assert.equal(adapter.calls(), 1);
   assert.equal(result.runCompleted, false);
   assert.equal(result.unknownOutcome, true);
+  assert.equal(result.automaticRetry, false);
+  assert.equal(result.secondRun, false);
+});
+
+test('authorization failure blocks before dispatch with a known outcome', async () => {
+  let calls = 0;
+  const result = await runUploadConversionSandboxQualification({
+    approved: true,
+    startUtc: '2026-09-17T02:00:00Z',
+    endUtc: '2026-09-17T02:30:00Z',
+    runRef: 'rrb-ref:cad-upload-conversion-sandbox-qualification',
+    now: () => Date.parse('2026-09-17T02:00:05Z'),
+    converterFactory: async () => {
+      calls += 1;
+      const error = new Error('SANDBOX_AUTHORIZATION_FAILED');
+      error.code = 'SANDBOX_AUTHORIZATION_FAILED';
+      error.preDispatch = true;
+      throw error;
+    },
+    writeEvidence: false,
+  });
+  assert.equal(calls, 1);
+  assert.equal(result.code, 'SANDBOX_AUTHORIZATION_FAILED');
+  assert.equal(result.runCompleted, false);
+  assert.equal(result.unknownOutcome, false);
+  assert.equal(result.cleanupBlocked, false);
+  assert.equal(result.stages.length, 0);
   assert.equal(result.automaticRetry, false);
   assert.equal(result.secondRun, false);
 });
