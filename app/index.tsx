@@ -56,6 +56,7 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
+import { getCadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -519,6 +520,7 @@ export default function HomeScreen() {
   const { account, profile } = useCommercialization();
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
+  const cadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
   const [started, setStarted] = useState(false);
   const [welcomeIntroLoaded, setWelcomeIntroLoaded] = useState(!WELCOME_INTRO_ENABLED);
   const [welcomeIntroVisible, setWelcomeIntroVisible] = useState(false);
@@ -691,9 +693,20 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!WELCOME_INTRO_ENABLED) return;
+    if (cadInternalPreview.enabled) {
+      setWelcomeIntroVisible(false);
+      setWelcomeIntroLoaded(true);
+      return;
+    }
     setWelcomeIntroVisible(true);
     setWelcomeIntroLoaded(true);
-  }, []);
+  }, [cadInternalPreview.enabled]);
+
+  useEffect(() => {
+    if (!cadInternalPreview.enabled) return;
+    setStarted(true);
+    setEntryMode('import');
+  }, [cadInternalPreview.enabled]);
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -1740,6 +1753,7 @@ export default function HomeScreen() {
           <PhaseOne
             key={context.id}
             initialMode={entryMode}
+            cadInternalPreview={cadInternalPreview}
             onComplete={handlePhaseOneComplete}
             isLoading={isLoading}
             setIsLoading={setIsLoading}

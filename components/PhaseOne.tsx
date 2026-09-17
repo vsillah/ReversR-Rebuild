@@ -30,6 +30,7 @@ import CadImportPanel from './CadImportPanel';
 import { INPUT_MODES, InputMode } from '../utils/inputModes';
 import AlertModal from './AlertModal';
 import LoadingOverlay, { LoadingStep } from './LoadingOverlay';
+import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
 const SCAN_STEPS: LoadingStep[] = [
   { id: 'capture', label: 'Capturing input...' },
@@ -47,6 +48,7 @@ interface Props {
   initialImage?: string | null;
   mockAnalysis?: AnalysisResult | null;
   inventoryRefreshKey?: number;
+  cadInternalPreview?: CadInternalTesterPreview;
 }
 
 type PhaseOneAlert = {
@@ -66,6 +68,7 @@ export default function PhaseOne({
   initialImage,
   mockAnalysis,
   inventoryRefreshKey = 0,
+  cadInternalPreview,
 }: Props) {
   const { colors: Colors } = useAppTheme();
   const { refreshAccount } = useCommercialization();
@@ -352,7 +355,7 @@ export default function PhaseOne({
         </View>
 
         <View style={styles.contentArea}>
-          {inputMode === 'import' && <CadImportPanel />}
+          {inputMode === 'import' && <CadImportPanel internalPreview={cadInternalPreview} />}
           {inputMode === 'type' && (
             <View style={styles.typeContent}>
               <Text style={styles.contentLabel}>Describe the machine</Text>

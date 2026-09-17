@@ -2,15 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
+import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
-export default function CadImportPanel() {
+export default function CadImportPanel({ internalPreview }: { internalPreview?: CadInternalTesterPreview }) {
   const { colors } = useAppTheme();
   const picker = useRef<HTMLInputElement | null>(null);
   const [selected, setSelected] = useState<{ format: string; bytes: number } | null>(null);
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState('Status has not been checked.');
   const [checking, setChecking] = useState(false);
+  const [showQualifiedResult, setShowQualifiedResult] = useState(false);
   const controller = useRef<AbortController | null>(null);
   const supported = Platform.OS === 'web' && typeof document !== 'undefined' && typeof File !== 'undefined';
   useEffect(() => () => controller.current?.abort(), []);
@@ -37,11 +39,28 @@ export default function CadImportPanel() {
   };
   const text = { color: colors.text, lineHeight: 22 };
   const button = { padding: 14, borderRadius: 10, borderWidth: 1, borderColor: colors.border };
+  const fixture = internalPreview?.enabled ? internalPreview.fixture : null;
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
       <Text style={[text, { fontWeight: '700', fontSize: 18 }]}>Import CAD</Text>
-      <Text style={text}>Choose an .igs or .iges file to check its format and size locally. File contents stay on your device.</Text>
-      {supported ? (
+      <Text style={text}>{fixture
+        ? 'Review the fixed public-cube development result. No file is selected, uploaded, or converted in this preview.'
+        : 'Choose an .igs or .iges file to check its format and size locally. File contents stay on your device.'}</Text>
+      {fixture ? (
+        <View testID="cad-internal-test-fixture" style={{ gap: 10, padding: 14, backgroundColor: colors.elevated, borderRadius: 10 }}>
+          <Text style={[text, { fontWeight: '700' }]}>Internal test fixture</Text>
+          <Text style={text}>{fixture.fixtureName} · {fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
+          <TouchableOpacity
+            testID="cad-review-qualified-result"
+            accessibilityRole="button"
+            accessibilityLabel="Review qualified public cube result"
+            style={button}
+            onPress={() => setShowQualifiedResult(true)}
+          >
+            <Text style={text}>Review qualified result</Text>
+          </TouchableOpacity>
+        </View>
+      ) : supported ? (
         <>
           <input ref={picker} type="file" accept=".igs,.iges" aria-label="Choose IGES file" data-testid="cad-file-input" style={{ display: 'none' }} onChange={event => {
             const file = event.currentTarget.files?.[0];
@@ -70,6 +89,15 @@ export default function CadImportPanel() {
         <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
         <TouchableOpacity disabled accessibilityRole="button" accessibilityLabel="Upload unavailable: operator access required" accessibilityState={{ disabled: true }} style={button}><Text style={{ color: colors.mutedText }}>Upload unavailable</Text></TouchableOpacity>
       </View>
+      {fixture && showQualifiedResult && (
+        <View testID="cad-qualified-result" style={{ gap: 8, padding: 14, borderWidth: 1, borderColor: colors.border, borderRadius: 10 }}>
+          <Text style={[text, { fontWeight: '700' }]}>Development qualification result</Text>
+          <Text style={text}>Admission passed</Text>
+          <Text style={text}>{fixture.meshes} mesh · {fixture.vertices} vertices · {fixture.triangles} triangles</Text>
+          <Text style={text}>Source confidence: {fixture.sourceConfidence}</Text>
+          <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Recorded evidence only. Rendering, dimensions, STL export, and manufacturing suitability remain unqualified.</Text>
+        </View>
+      )}
       <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
       <TouchableOpacity testID="cad-check-status" disabled={checking} accessibilityRole="button" accessibilityLabel="Check CAD service status" accessibilityState={{ disabled: checking }} style={button} onPress={checkStatus}><Text style={text}>{checking ? 'Checking status…' : 'Check service status'}</Text></TouchableOpacity>
       <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>
