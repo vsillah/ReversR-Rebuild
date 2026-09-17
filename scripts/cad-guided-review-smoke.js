@@ -25,6 +25,31 @@ fs.mkdirSync(out, { recursive: true });
    await page.goto(url);
    const skip = page.getByText('Skip', { exact: true }); if (await skip.isVisible()) await skip.click();
    await page.waitForFunction(() => document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view === 'isometric');
+   const wordmark = page.getByTestId('reversr-workflow-wordmark');
+   assert.equal(await wordmark.innerText(), 'REVERSR');
+   const textFit = async locator => locator.evaluate(el => {
+    const range = document.createRange(); range.selectNodeContents(el);
+    const text = range.getBoundingClientRect(), box = el.getBoundingClientRect();
+    return { fits: text.width <= box.width + 1 && text.height <= parseFloat(getComputedStyle(el).fontSize) * 1.5, unclipped: el.scrollWidth <= el.clientWidth + 1 };
+   });
+   assert.deepEqual(await textFit(wordmark), { fits: true, unclipped: true }, 'wordmark must fit on one line');
+   for (const label of ['Input', 'Inventory', 'Design', 'Build']) {
+    const phase = page.getByTestId('reversr-tour-phase-nav').getByText(label, { exact: true });
+    assert.deepEqual(await textFit(phase), { fits: true, unclipped: true }, `${label} must be fully visible`);
+   }
+   const header = page.getByTestId('reversr-workflow-header');
+   assert.equal(await header.evaluate(el => el.scrollWidth > el.clientWidth), false);
+   const brandBox = await wordmark.boundingBox();
+   for (const control of await header.getByRole('button').all()) {
+    const box = await control.boundingBox();
+    assert(box.x >= 0 && box.x + box.width <= width, 'header control stays in viewport');
+    assert(box.y >= brandBox.y + brandBox.height || box.x >= brandBox.x + brandBox.width, 'header controls must not overlap the wordmark');
+   }
+   await page.getByTestId('reversr-appearance-toggle').click();
+   await page.getByTestId('reversr-appearance-toggle').click();
+   await page.getByTestId('reversr-actions-menu-button').click();
+   assert(await page.getByTestId('reversr-actions-menu').isVisible());
+   await page.getByTestId('reversr-actions-menu-button').click();
    const review = page.getByTestId('cad-guided-review');
    const screenshot = async name => {
     await page.waitForTimeout(500);

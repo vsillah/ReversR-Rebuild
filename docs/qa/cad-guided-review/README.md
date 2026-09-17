@@ -54,6 +54,8 @@ git diff --check
   downloads and links, every checklist state, clipboard success/failure, JSON
   download equality, reload restore, complete/reset, storage denial, keyboard
   activation, nested overflow, 44px buttons and bottom-navigation clearance.
+  Follow-up assertions verify single-line wordmark/phase text without clipping,
+  non-overlapping header controls, and working appearance/menu actions at all widths.
 - Viewer regression: 1440×1000, 390×1000, 320×1000 and 855×904. All six views,
   reset, drag/wheel, Chromium touch rotation/pinch, active view, compact wheel
   fitting, floor/grid, Escape/focus return and persistent-navigation clearance.
@@ -68,8 +70,11 @@ git diff --check
 Visual review corrected a desktop layout that incorrectly assumed wide content:
 ReversR's existing shell remains a narrow column. The viewer now uses that full
 column at every viewport. At 320px, step names and three fixed-choice targets stay
-on one row. Existing narrow-shell branding/phase-label wrapping remains outside
-this slice. New controls can scroll fully above the persistent bottom navigation.
+on one row. Captain follow-up corrected the inherited narrow-shell branding and phase labels:
+the workflow header now wraps controls onto a second row instead of shrinking the
+wordmark, and reduced stepper-card side padding keeps Inventory fully visible at
+320px. No shared stepper or CAD component changes were needed. New controls can
+scroll fully above the persistent bottom navigation.
 
 The dependency symlink initially generated the wrong Expo bundle. Validation uses
 an isolated copy of the existing dependencies in this worktree; the final export
@@ -77,7 +82,7 @@ contains the guided-review component. No dependency or lockfile changes.
 
 ## Evidence and Human QA
 
-`walkthrough.mp4` is 33.48 seconds, 600×1000, 25 fps, 837 frames. It combines the
+`walkthrough.mp4` is 33.84 seconds, 600×1000, 25 fps, 846 frames. It combines the
 actual desktop content-column crop and a padded mobile recording. No model frames
 are substituted. Decoded final-video frames were inspected for legibility. The
 recording script includes the exact FFmpeg command for reproducibility.
@@ -96,8 +101,17 @@ Human QA: open the local route, compare the supplied references using the wheel,
 record Pass/Issue/Not tested, inspect/download the receipt, reload to confirm the
 choices remain, then reset. Review the MP4 in the task and the 320px screenshots.
 Remaining risks: subjective source/reference fidelity and contrast; physical
-mobile gestures; Safari clipboard/download behavior; inherited shell wrapping at
-320px. No hosted preview or live workflow/customer-data smoke was performed.
+mobile gestures; Safari clipboard/download behavior. No hosted preview or live workflow/customer-data smoke was performed.
 
 Next gate: Integration Captain review, then Human QA and separately authorized
 integration/deployment. This lane stops at a draft PR. Expenses: USD 0.
+
+## Captain responsive follow-up
+
+Production code is limited to `app/index.tsx`: header flex wrapping, non-shrinking
+brand text, right-aligned controls, smaller stepper-card side padding, and stable
+test IDs. `scripts/cad-guided-review-smoke.js` adds text-fit/header regression checks.
+All listed validation commands were rerun; all screenshots and the MP4 were
+regenerated. The 320px and 390px shell was visually inspected, along with desktop,
+tablet and final decoded-video frames. Guided-review behavior and CAD boundaries
+are unchanged. PR #304 remains draft and this task stays open for Captain/Human QA.
