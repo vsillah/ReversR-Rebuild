@@ -31,7 +31,9 @@ needed. This fix is generic product UI, independent of fixture query parameters.
   the entire model bounding sphere.
 - The grid is view-aligned: fixed views reorient the plane to the camera; manual
   model rotation leaves the view plane stable. It shares camera zoom/projection.
-  The visible label **Unscaled grid** explicitly avoids dimensional-scale claims.
+  Grid spacing is based on the normalized display radius, not source units or
+  measured dimensions. The viewport has no persistent grid label or grid toggle;
+  this QA documentation carries the non-dimensional explanation.
 - Fixed-view mappings, perspective projection, compact wheel and camera clearance,
   model fitting, direct drag, wheel/pinch zoom, reset and no auto-rotation remain.
 
@@ -50,7 +52,8 @@ git diff --check
 ```
 
 13 focused tests cover exact fixture hashes, host denial, fixed materials/white
-camera-relative lighting, grid lifecycle and absence of the rejected workflow.
+camera-relative lighting, normalized non-metrology grid spacing/lifecycle, absence
+of persistent grid text, and absence of the rejected workflow.
 The browser smoke covers 1440×1000, 768×1000, 390×1000, 320×1000 and 855×904:
 
 - All seven views, selected-view state, keyboard wheel/Escape, 44px wheel targets,
@@ -76,7 +79,7 @@ conversion, Sandbox, private CAD, live account or production mutation was used.
 
 ## Human QA evidence and limits
 
-`walkthrough.mp4`: 25.84 seconds, 600×1000, 25 fps, 646 frames. Actual exported
+`walkthrough.mp4`: 25.80 seconds, 600×1000, 25 fps, 645 frames. Actual exported
 route, desktop content-column crop then padded mobile, covering all fixed views,
 manual rotation, wheel/pinch and reset. No model imagery is substituted. The
 recording script includes the FFmpeg command; decoded final frames were inspected.

@@ -532,7 +532,6 @@ export default function CadFixtureViewer({
         data-testid="cad-fixture-canvas-host"
       >
         <div ref={containerRef} role="img" aria-label={`Interactive three-dimensional visualization of ${label}`} style={{ width: '100%', height: '100%' }} />
-        {state === 'ready' ? <span data-testid="cad-view-grid-label" style={{ position: 'absolute', left: 10, bottom: 12, maxWidth: 'calc(100% - 125px)', font: '11px system-ui, sans-serif', color: '#405564', pointerEvents: 'none' }} aria-label="View-aligned grid; not a dimensional scale">Unscaled grid</span> : null}
         <div ref={controlsRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 3 }} role="group" aria-label="Model view controls"
           onKeyDown={event => { if (event.key === 'Escape' && expanded) { setExpanded(false); document.querySelector<HTMLButtonElement>(`[aria-controls="${puckId}"]`)?.focus(); } }}>
           <button type="button" style={{ ...controlStyle, opacity: expanded ? 0 : 0.78, pointerEvents: expanded ? 'none' : 'auto' }}

@@ -21,7 +21,10 @@ test('grid stays behind the full rotating model and disposes its resources', () 
   assert.match(viewer, /grid\.quaternion\.copy\(camera\.quaternion\)/);
   assert.match(viewer, /grid\.geometry\.dispose\(\)/);
   assert.match(viewer, /gridMaterials\.forEach\(material => material\.dispose\(\)\)/);
-  assert.match(viewer, /View-aligned grid; not a dimensional scale/);
+  assert.match(viewer, /new THREE\.GridHelper\(radius \* 18, 72,/);
+  assert.doesNotMatch(viewer, /cad-view-grid-label|Unscaled grid|expectedDimensions|fixture\.units/);
+  const qa = fs.readFileSync('docs/qa/cad-neutral-grid/README.md', 'utf8');
+  assert.match(qa, /not\s+an object-attached or certified measuring workplane/);
 });
 
 test('fixture harness remains the original panel; rejected workflow is absent', () => {
