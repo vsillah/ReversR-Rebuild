@@ -1599,11 +1599,11 @@ export default function HomeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? safeAreaInsets.top + 12 : 0}
     >
-      <View style={styles.header}>
+      <View style={styles.header} testID="reversr-workflow-header">
         <View style={styles.logoContainer}>
           <ReversRLogoMark colors={Colors} size={40} />
           <View style={styles.brandTextWrap}>
-            <Text style={styles.title}>
+            <Text style={styles.title} testID="reversr-workflow-wordmark">
               REVERS<Text style={styles.titleAccent}>R</Text>
             </Text>
             <Text style={styles.subtitle} numberOfLines={1}>Machine Reconstruction</Text>
@@ -1990,6 +1990,7 @@ const createStyles = (Colors: AppColors) => {
   },
   header: {
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
     gap: Spacing.sm,
@@ -2007,11 +2008,11 @@ const createStyles = (Colors: AppColors) => {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.sm,
-    flexShrink: 1,
+    flexShrink: 0,
     minWidth: 0,
   },
   brandTextWrap: {
-    flexShrink: 1,
+    flexShrink: 0,
     minWidth: 0,
   },
   title: {
@@ -2032,6 +2033,7 @@ const createStyles = (Colors: AppColors) => {
   },
   headerControls: {
     flexDirection: 'row',
+    marginLeft: 'auto',
     alignItems: 'center',
     justifyContent: 'flex-end',
     gap: Spacing.sm,
@@ -2165,7 +2167,7 @@ const createStyles = (Colors: AppColors) => {
     borderWidth: 1,
     borderColor: Colors.border,
     backgroundColor: Colors.panel,
-    paddingHorizontal: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
     paddingVertical: Spacing.lg,
     ...shadows.card,
   },
