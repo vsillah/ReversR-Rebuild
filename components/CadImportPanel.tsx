@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
-import CadFixtureViewer from './CadFixtureViewer';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
-export default function CadImportPanel({ internalPreview }: { internalPreview?: CadInternalTesterPreview }) {
+export default function CadImportPanel({ internalPreview, onReviewQualifiedResult }: { internalPreview?: CadInternalTesterPreview; onReviewQualifiedResult?: () => void }) {
   const { colors } = useAppTheme();
   const picker = useRef<HTMLInputElement | null>(null);
   const [selected, setSelected] = useState<{ format: string; bytes: number } | null>(null);
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState('Status has not been checked.');
   const [checking, setChecking] = useState(false);
-  const [showQualifiedResult, setShowQualifiedResult] = useState(false);
   const controller = useRef<AbortController | null>(null);
   const supported = Platform.OS === 'web' && typeof document !== 'undefined' && typeof File !== 'undefined';
   useEffect(() => () => controller.current?.abort(), []);
@@ -43,21 +41,6 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
   const button = { padding: 14, borderRadius: 10, borderWidth: 1, borderColor: colors.border };
   const fixture = internalPreview?.enabled ? internalPreview.fixture : null;
   const isDispenserReview = fixture?.previewGeometry.kind === 'stl';
-  const openAsset = (url: string) => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  };
-  const downloadSource = () => {
-    if (!fixture || Platform.OS !== 'web' || typeof document === 'undefined') return;
-    const link = document.createElement('a');
-    link.href = fixture.sourceAssetUrl;
-    link.download = fixture.sourceFileName;
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  };
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
       <Text style={[text, { fontWeight: '700', fontSize: 18 }]}>Import CAD</Text>
@@ -75,7 +58,7 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
             accessibilityRole="button"
             accessibilityLabel={`Review qualified ${fixture.fixtureName} result`}
             style={button}
-            onPress={() => setShowQualifiedResult(true)}
+            onPress={onReviewQualifiedResult}
           >
             <Text style={text}>Review qualified result</Text>
           </TouchableOpacity>
@@ -109,67 +92,6 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
         <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
         <TouchableOpacity disabled accessibilityRole="button" accessibilityLabel="Upload unavailable: operator access required" accessibilityState={{ disabled: true }} style={button}><Text style={{ color: colors.mutedText }}>Upload unavailable</Text></TouchableOpacity>
       </View>
-      {fixture && showQualifiedResult && (
-        <View testID="cad-qualified-result" style={{ gap: 10, paddingTop: 16, paddingBottom: 96, borderTopWidth: 1, borderColor: colors.border }}>
-          <Text style={[text, { fontWeight: '700' }]}>Development qualification result</Text>
-          <Text style={text}>Admission passed</Text>
-          <Text style={text}>{isDispenserReview
-            ? `${fixture.meshes} connected components · ${fixture.triangles.toLocaleString()} triangles`
-            : `${fixture.meshes} mesh · ${fixture.vertices} vertices · ${fixture.triangles} triangles`}</Text>
-          <Text style={text}>Source confidence: {fixture.sourceConfidence}</Text>
-          <Text style={text}>
-            Imported extents (X × Y × Z): {fixture.expectedDimensions.map(value => value.toFixed(2)).join(' × ')} {fixture.units}
-          </Text>
-          <TouchableOpacity
-            testID="cad-open-source-iges"
-            accessibilityRole="link"
-            accessibilityLabel={`Download original ${fixture.sourceFileName}`}
-            style={button}
-            onPress={downloadSource}
-          >
-            <Text style={text}>Download original IGES</Text>
-          </TouchableOpacity>
-          <View style={{ gap: 4 }}>
-            <Text style={[text, { fontWeight: '700' }]}>{fixture.fixtureName}</Text>
-            <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Source-derived display mesh · Drag or select a fixed view</Text>
-          </View>
-          <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} />
-          {isDispenserReview ? (
-            <View testID="cad-reference-comparison" style={{ gap: 10, paddingTop: 8 }}>
-              <Text style={[text, { fontWeight: '700' }]}>Supplied reference views</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-                {fixture.referenceImages.map(reference => (
-                  <TouchableOpacity
-                    key={reference.url}
-                    accessibilityRole="link"
-                    accessibilityLabel={`Open ${reference.label} reference image`}
-                    style={{ width: '48%', minWidth: 140, gap: 6 }}
-                    onPress={() => openAsset(reference.url)}
-                  >
-                    <Image
-                      source={{ uri: reference.url }}
-                      accessibilityLabel={`${reference.label} supplied reference`}
-                      resizeMode="contain"
-                      style={{ width: '100%', aspectRatio: 4 / 3, backgroundColor: '#ffffff', borderRadius: 6 }}
-                    />
-                    <Text style={{ color: colors.mutedText, lineHeight: 20 }}>{reference.label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          ) : null}
-          <View style={{ gap: 4, paddingTop: 4 }}>
-            {fixture.warnings.map(warning => (
-              <Text key={warning} style={{ color: colors.mutedText, lineHeight: 20 }}>• {warning}</Text>
-            ))}
-          </View>
-          <Text style={{ color: colors.mutedText, lineHeight: 20 }}>
-            {isDispenserReview
-              ? 'The interactive model is the calibrated display mesh derived from the authorized IGES source. Reference images remain independent visual checks.'
-              : 'This interactive visual represents the reviewed synthetic public-cube fixture. It is not a render of a selected or uploaded file.'}
-          </Text>
-        </View>
-      )}
       <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
       <TouchableOpacity testID="cad-check-status" disabled={checking} accessibilityRole="button" accessibilityLabel="Check CAD service status" accessibilityState={{ disabled: checking }} style={button} onPress={checkStatus}><Text style={text}>{checking ? 'Checking status…' : 'Check service status'}</Text></TouchableOpacity>
       <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>

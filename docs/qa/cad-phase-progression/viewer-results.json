@@ -1,0 +1,245 @@
+{
+  "evidence": [
+    {
+      "width": 1440,
+      "pixels": [
+        {
+          "view": "collapsed",
+          "median": 157,
+          "modelPixels": 20536,
+          "gridPixels": 33732
+        },
+        {
+          "view": "front",
+          "median": 177,
+          "modelPixels": 15954,
+          "gridPixels": 30498
+        },
+        {
+          "view": "back",
+          "median": 177,
+          "modelPixels": 15956,
+          "gridPixels": 30485
+        },
+        {
+          "view": "left",
+          "median": 176,
+          "modelPixels": 25787,
+          "gridPixels": 29374
+        },
+        {
+          "view": "right",
+          "median": 176,
+          "modelPixels": 25736,
+          "gridPixels": 29475
+        },
+        {
+          "view": "top",
+          "median": 169,
+          "modelPixels": 24460,
+          "gridPixels": 29153
+        },
+        {
+          "view": "bottom",
+          "median": 176,
+          "modelPixels": 28202,
+          "gridPixels": 29063
+        },
+        {
+          "view": "custom",
+          "median": 156,
+          "modelPixels": 23866,
+          "gridPixels": 29433
+        },
+        {
+          "view": "reset",
+          "median": 157,
+          "modelPixels": 20536,
+          "gridPixels": 33732
+        }
+      ],
+      "externalBlocked": 1
+    },
+    {
+      "width": 768,
+      "pixels": [
+        {
+          "view": "collapsed",
+          "median": 157,
+          "modelPixels": 13195,
+          "gridPixels": 32587
+        },
+        {
+          "view": "front",
+          "median": 177,
+          "modelPixels": 10201,
+          "gridPixels": 31662
+        },
+        {
+          "view": "back",
+          "median": 177,
+          "modelPixels": 10204,
+          "gridPixels": 31702
+        },
+        {
+          "view": "left",
+          "median": 176,
+          "modelPixels": 16534,
+          "gridPixels": 30936
+        },
+        {
+          "view": "right",
+          "median": 176,
+          "modelPixels": 16616,
+          "gridPixels": 30940
+        },
+        {
+          "view": "top",
+          "median": 168,
+          "modelPixels": 15709,
+          "gridPixels": 30391
+        },
+        {
+          "view": "bottom",
+          "median": 176,
+          "modelPixels": 18099,
+          "gridPixels": 30088
+        },
+        {
+          "view": "custom",
+          "median": 156,
+          "modelPixels": 15314,
+          "gridPixels": 29188
+        },
+        {
+          "view": "reset",
+          "median": 157,
+          "modelPixels": 13195,
+          "gridPixels": 32587
+        }
+      ],
+      "externalBlocked": 1
+    },
+    {
+      "width": 390,
+      "pixels": [
+        {
+          "view": "collapsed",
+          "median": 157,
+          "modelPixels": 9506,
+          "gridPixels": 19801
+        },
+        {
+          "view": "front",
+          "median": 177,
+          "modelPixels": 3824,
+          "gridPixels": 24404
+        },
+        {
+          "view": "back",
+          "median": 177,
+          "modelPixels": 3835,
+          "gridPixels": 24399
+        },
+        {
+          "view": "left",
+          "median": 176,
+          "modelPixels": 6192,
+          "gridPixels": 23824
+        },
+        {
+          "view": "right",
+          "median": 176,
+          "modelPixels": 6180,
+          "gridPixels": 23839
+        },
+        {
+          "view": "top",
+          "median": 164,
+          "modelPixels": 5860,
+          "gridPixels": 23723
+        },
+        {
+          "view": "bottom",
+          "median": 176,
+          "modelPixels": 6839,
+          "gridPixels": 23561
+        },
+        {
+          "view": "custom",
+          "median": 157,
+          "modelPixels": 30534,
+          "gridPixels": 9155
+        },
+        {
+          "view": "reset",
+          "median": 157,
+          "modelPixels": 9506,
+          "gridPixels": 19801
+        }
+      ],
+      "externalBlocked": 1
+    },
+    {
+      "width": 320,
+      "pixels": [
+        {
+          "view": "collapsed",
+          "median": 157,
+          "modelPixels": 7933,
+          "gridPixels": 17249
+        },
+        {
+          "view": "front",
+          "median": 177,
+          "modelPixels": 3087,
+          "gridPixels": 19655
+        },
+        {
+          "view": "back",
+          "median": 177,
+          "modelPixels": 3121,
+          "gridPixels": 19651
+        },
+        {
+          "view": "left",
+          "median": 176,
+          "modelPixels": 5126,
+          "gridPixels": 19102
+        },
+        {
+          "view": "right",
+          "median": 176,
+          "modelPixels": 5115,
+          "gridPixels": 19099
+        },
+        {
+          "view": "top",
+          "median": 165,
+          "modelPixels": 4792,
+          "gridPixels": 18947
+        },
+        {
+          "view": "bottom",
+          "median": 176,
+          "modelPixels": 5573,
+          "gridPixels": 18794
+        },
+        {
+          "view": "custom",
+          "median": 157,
+          "modelPixels": 25413,
+          "gridPixels": 7325
+        },
+        {
+          "view": "reset",
+          "median": 157,
+          "modelPixels": 7933,
+          "gridPixels": 17249
+        }
+      ],
+      "externalBlocked": 1
+    }
+  ],
+  "productionHostnameSimulatedLocally": "blocked; no fixture requests"
+}
