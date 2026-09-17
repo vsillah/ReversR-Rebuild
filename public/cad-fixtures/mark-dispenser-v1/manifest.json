@@ -1,0 +1,56 @@
+{
+  "fixtureId": "mark-dispenser-v1",
+  "purpose": "Public reviewer fixture for visual comparison and interaction QA",
+  "authorization": {
+    "scope": "Anyone-with-the-link Vercel preview",
+    "confirmedAt": "2026-09-17",
+    "source": "Repository owner confirmation of source-provider authorization"
+  },
+  "source": {
+    "fileName": "Dispenser.IGS",
+    "bytes": 701346,
+    "sha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+    "units": "millimeter"
+  },
+  "derivedDisplayMesh": {
+    "fileName": "dispenser-derived.stl",
+    "bytes": 131784,
+    "sha256": "9b5bfa4b86d6976ae87e6f023b3a243d4b04966b2337b224203bb630e7b8096e",
+    "sourceSha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+    "triangleCount": 2634,
+    "connectedComponentCount": 4,
+    "watertight": false
+  },
+  "boundingBoxMillimeters": {
+    "min": [0, -4.3942, -1.78728],
+    "max": [55.7403, 65.023513, 113.038281],
+    "size": [55.7403, 69.417713, 114.825561]
+  },
+  "references": [
+    {
+      "label": "Front",
+      "fileName": "dispenser-front.jpg",
+      "sha256": "710a65f06a5be9e842482e631110a38c3978c4d6a8a20ea3e07b699185782586"
+    },
+    {
+      "label": "Left",
+      "fileName": "dispenser-left.jpg",
+      "sha256": "b985c51e00090c439d04ff5e5b0b7dd83916d5053b020d7fa3fb102ebd6024fe"
+    },
+    {
+      "label": "Top",
+      "fileName": "dispenser-top.jpg",
+      "sha256": "8e591836750d426c4c917236e1b0328ee90c907f7e9fcb798c03de53efd4ca09"
+    },
+    {
+      "label": "Drawing",
+      "fileName": "dispenser-drawing.jpg",
+      "sha256": "b933e7ca60131898d8755b033d48a6114c6b7f020f34b41b04ad3bfbe06ac833"
+    }
+  ],
+  "limitations": [
+    "The derived display mesh is not fully watertight.",
+    "Reference images are visual comparison aids and do not modify source geometry.",
+    "This fixture is not dimensional inspection or manufacturing certification."
+  ]
+}
