@@ -1,12 +1,60 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 
 type ThreeModule = typeof import('three');
 type ViewName = 'isometric' | 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom';
-type ViewerAction = ViewName | 'zoomIn' | 'zoomOut';
+type FixedViewName = Exclude<ViewName, 'isometric'>;
+type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'compactOpen' | 'compactClosed';
 
-const fixedViews: ViewName[] = ['isometric', 'front', 'back', 'left', 'right', 'top', 'bottom'];
+const fixedViews: FixedViewName[] = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+
+const puckPositions: Record<FixedViewName, React.CSSProperties> = {
+  top: { left: 62, top: 4 },
+  back: { left: 112, top: 33 },
+  right: { left: 112, top: 91 },
+  bottom: { left: 62, top: 120 },
+  left: { left: 12, top: 91 },
+  front: { left: 12, top: 33 },
+};
+
+const compactPuckPositions: Record<FixedViewName, React.CSSProperties> = {
+  top: { left: 44, top: 3 },
+  back: { left: 80, top: 24 },
+  right: { left: 80, top: 65 },
+  bottom: { left: 44, top: 85 },
+  left: { left: 9, top: 65 },
+  front: { left: 9, top: 24 },
+};
+
+const viewSymbols: Record<'isometric' | 'custom', string> = {
+  isometric: '◇',
+  custom: '✣',
+};
+
+const viewRotations: Record<FixedViewName, number> = {
+  top: -90,
+  back: -30,
+  right: 30,
+  bottom: 90,
+  left: 150,
+  front: 210,
+};
+
+function DirectionGlyph({ view, active = false, compact = false }: { view: FixedViewName; active?: boolean; compact?: boolean }) {
+  return (
+    <span aria-hidden="true" style={{
+      display: 'block',
+      width: compact ? 16 : 23,
+      height: compact ? 19 : 27,
+      margin: 'auto',
+      background: active ? '#7fe0c0' : '#d8e3df',
+      clipPath: 'polygon(0 0, 100% 50%, 0 100%, 29% 50%)',
+      transform: `rotate(${viewRotations[view]}deg)`,
+      filter: active ? 'drop-shadow(0 0 5px rgba(127, 224, 192, 0.55))' : 'none',
+    }} />
+  );
+}
 
 const frameStyle: React.CSSProperties = {
   position: 'relative',
@@ -15,53 +63,71 @@ const frameStyle: React.CSSProperties = {
   minHeight: 300,
   maxHeight: 440,
   overflow: 'hidden',
-  background: '#0b0f10',
+  background: '#65717b',
   borderRadius: 8,
   touchAction: 'none',
 };
 
-const toolbarStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'flex-start',
-  gap: 6,
-  paddingTop: 8,
-};
-
 const viewToolbarStyle: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(4, minmax(58px, 1fr))',
-  flex: '1 1 320px',
-  gap: 6,
+  position: 'relative',
+  boxSizing: 'border-box',
+  width: 168,
+  height: 168,
+  borderRadius: '50%',
+  background: 'rgba(25, 36, 34, 0.97)',
+  border: '1px solid rgba(174, 195, 189, 0.72)',
+  boxShadow: '0 14px 30px rgba(9, 16, 18, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
 };
 
-const zoomToolbarStyle: React.CSSProperties = {
-  display: 'flex',
-  flex: '0 0 auto',
-  gap: 6,
+const puckControlStyle: React.CSSProperties = {
+  appearance: 'none',
+  position: 'absolute',
+  width: 44,
+  height: 44,
+  padding: 0,
+  border: 0,
+  borderRadius: '50%',
+  color: '#d8e3df',
+  background: 'transparent',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: 21,
+  lineHeight: 1,
+  cursor: 'pointer',
+  outlineOffset: 1,
 };
 
 const controlStyle: React.CSSProperties = {
   appearance: 'none',
-  minWidth: 58,
-  minHeight: 34,
-  padding: '7px 10px',
+  minWidth: 44,
+  minHeight: 44,
+  padding: 0,
   border: '1px solid #475a57',
-  borderRadius: 6,
+  borderRadius: '50%',
   color: '#e8fffa',
-  background: '#17211f',
+  background: 'rgba(23, 33, 31, 0.9)',
   fontFamily: 'system-ui, sans-serif',
-  fontSize: 13,
+  fontSize: 18,
+  lineHeight: 1,
   cursor: 'pointer',
 };
 
 const zoomControlStyle: React.CSSProperties = {
   ...controlStyle,
-  minWidth: 38,
-  width: 38,
+  minWidth: 44,
+  width: 44,
+  fontSize: 18,
+};
+
+const visuallyHiddenStyle: React.CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
   padding: 0,
-  fontSize: 20,
-  lineHeight: 1,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: 0,
 };
 
 const fallbackStyle: React.CSSProperties = {
@@ -75,7 +141,7 @@ const fallbackStyle: React.CSSProperties = {
   fontFamily: 'system-ui, sans-serif',
   fontSize: 14,
   textAlign: 'center',
-  background: '#0b0f10',
+  background: '#65717b',
 };
 
 export default function CadFixtureViewer({
@@ -85,9 +151,48 @@ export default function CadFixtureViewer({
   geometry: CadInternalTesterFixture['previewGeometry'];
   label: string;
 }) {
+  const puckId = useId();
+  const [expanded, setExpanded] = useState(false);
+  const [compactControls, setCompactControls] = useState(false);
+  const [currentView, setCurrentView] = useState<ViewName | 'custom'>('isometric');
+  const fixedView = currentView !== 'isometric' && currentView !== 'custom';
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const puckRef = useRef<HTMLDivElement | null>(null);
+  const controlsRef = useRef<HTMLDivElement | null>(null);
   const viewerActions = useRef<Partial<Record<ViewerAction, () => void>>>({});
   const [state, setState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
+
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const host = containerRef.current;
+    if (!host) return;
+    const update = () => setCompactControls(host.clientWidth < 360);
+    update();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update);
+    observer?.observe(host);
+    window.addEventListener('resize', update);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  useEffect(() => {
+    viewerActions.current[compactControls && expanded ? 'compactOpen' : 'compactClosed']?.();
+  }, [compactControls, expanded, state]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const dismiss = window.setTimeout(() => setExpanded(false), 6000);
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !controlsRef.current?.contains(event.target)) setExpanded(false);
+    };
+    document.addEventListener('pointerdown', closeOutside);
+    return () => {
+      window.clearTimeout(dismiss);
+      document.removeEventListener('pointerdown', closeOutside);
+    };
+  }, [expanded, currentView]);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -115,7 +220,7 @@ export default function CadFixtureViewer({
         });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.setSize(initialWidth, initialHeight);
-        renderer.setClearColor(0x0b0f10, 1);
+        renderer.setClearColor(0x65717b, 1);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -193,11 +298,7 @@ export default function CadFixtureViewer({
         rim.position.set(-4, 2, -3);
         scene.add(rim);
 
-        const floorMaterial = new THREE.MeshStandardMaterial({
-          color: 0x111819,
-          roughness: 0.94,
-          metalness: 0,
-        });
+        const floorMaterial = new THREE.ShadowMaterial({ color: 0x202c36, opacity: 0.18 });
         const floorSize = radius * 8;
         const floorY = -radius * 1.3;
         const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize);
@@ -207,24 +308,48 @@ export default function CadFixtureViewer({
         floor.receiveShadow = true;
         scene.add(floor);
 
-        const grid = new THREE.GridHelper(floorSize, 18, 0x43756e, 0x253331);
-        grid.position.y = floorY + 0.002;
-        scene.add(grid);
-
         const distanceForViewport = () => {
           const verticalFov = THREE.MathUtils.degToRad(camera.fov);
           const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
           return (radius / Math.sin(Math.min(verticalFov, horizontalFov) / 2)) * 1.55;
         };
-        const setZoom = (nextZoom: number) => {
-          camera.zoom = THREE.MathUtils.clamp(nextZoom, 0.65, 2.4);
-          renderer.domElement.dataset.zoom = camera.zoom.toFixed(3);
+        let userZoom = 1;
+        let compactPuckOpen = false;
+        const applyZoom = () => {
+          camera.zoom = userZoom * (compactPuckOpen ? 0.72 : 1);
+          if (compactPuckOpen) {
+            const viewportWidth = host.clientWidth || initialWidth;
+            const viewportHeight = host.clientHeight || initialHeight;
+            camera.setViewOffset(
+              viewportWidth,
+              viewportHeight,
+              Math.round(viewportWidth * 0.1),
+              Math.round(viewportHeight * -0.1),
+              viewportWidth,
+              viewportHeight,
+            );
+          } else {
+            camera.clearViewOffset();
+          }
+          renderer.domElement.dataset.zoom = userZoom.toFixed(3);
+          renderer.domElement.dataset.controlFit = compactPuckOpen ? 'compact-clearance' : 'default';
           camera.updateProjectionMatrix();
         };
+        const setZoom = (nextZoom: number) => {
+          userZoom = THREE.MathUtils.clamp(nextZoom, 0.65, 2.4);
+          applyZoom();
+        };
+        const updateView = (name: ViewName | 'custom') => {
+          setCurrentView(name);
+          renderer.domElement.dataset.view = name;
+          floor.visible = name === 'isometric' || name === 'custom';
+          renderer.domElement.dataset.floor = String(floor.visible);
+        };
         const setView = (name: ViewName) => {
+          updateView(name);
           rig.rotation.set(0, 0, 0);
-          camera.zoom = 1;
-          renderer.domElement.dataset.zoom = camera.zoom.toFixed(3);
+          userZoom = 1;
+          applyZoom();
           renderer.domElement.dataset.view = name;
           const distance = distanceForViewport();
           camera.up.set(0, 1, 0);
@@ -269,8 +394,16 @@ export default function CadFixtureViewer({
           right: () => setView('right'),
           top: () => setView('top'),
           bottom: () => setView('bottom'),
-          zoomIn: () => setZoom(camera.zoom * 1.2),
-          zoomOut: () => setZoom(camera.zoom / 1.2),
+          zoomIn: () => setZoom(userZoom * 1.2),
+          zoomOut: () => setZoom(userZoom / 1.2),
+          compactOpen: () => {
+            compactPuckOpen = true;
+            applyZoom();
+          },
+          compactClosed: () => {
+            compactPuckOpen = false;
+            applyZoom();
+          },
         };
         setView('isometric');
 
@@ -301,7 +434,7 @@ export default function CadFixtureViewer({
           if (pointers.size >= 2) {
             const [first, second] = Array.from(pointers.values());
             const nextDistance = Math.hypot(second.x - first.x, second.y - first.y);
-            if (pinchDistance && nextDistance > 0) setZoom(camera.zoom * (nextDistance / pinchDistance));
+            if (pinchDistance && nextDistance > 0) setZoom(userZoom * (nextDistance / pinchDistance));
             pinchDistance = nextDistance;
             return;
           }
@@ -310,6 +443,7 @@ export default function CadFixtureViewer({
           const deltaY = event.clientY - lastY;
           lastX = event.clientX;
           lastY = event.clientY;
+          if (deltaX || deltaY) updateView('custom');
           rig.rotation.y += deltaX * 0.009;
           rig.rotation.x = Math.max(-1.2, Math.min(1.2, rig.rotation.x + deltaY * 0.007));
         };
@@ -331,7 +465,7 @@ export default function CadFixtureViewer({
         };
         const onWheel = (event: WheelEvent) => {
           event.preventDefault();
-          setZoom(camera.zoom * Math.exp(-event.deltaY * 0.001));
+          setZoom(userZoom * Math.exp(-event.deltaY * 0.001));
         };
         const resize = () => {
           const nextWidth = host.clientWidth || initialWidth;
@@ -393,51 +527,55 @@ export default function CadFixtureViewer({
     <div>
       <div
         style={frameStyle}
-        role="img"
-        aria-label={`Interactive three-dimensional visualization of ${label}`}
+        role="group"
+        aria-label={`${label} model viewer`}
         data-testid="cad-fixture-canvas-host"
       >
-        <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+        <div ref={containerRef} role="img" aria-label={`Interactive three-dimensional visualization of ${label}`} style={{ width: '100%', height: '100%' }} />
+        {fixedView && state === 'ready' ? (
+          <div aria-hidden="true" data-testid="cad-fixed-view-cue" style={{ position: 'absolute', left: 12, bottom: 12, width: 48, height: 48, pointerEvents: 'none', opacity: 0.5, backgroundImage: 'linear-gradient(#c3cdd5 1px, transparent 1px), linear-gradient(90deg, #c3cdd5 1px, transparent 1px)', backgroundSize: '12px 12px', borderRight: '1px solid #c3cdd5', borderBottom: '1px solid #c3cdd5' }} />
+        ) : null}
+        <div ref={controlsRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 3 }} role="group" aria-label="Model view controls"
+          onKeyDown={event => { if (event.key === 'Escape' && expanded) { setExpanded(false); document.querySelector<HTMLButtonElement>(`[aria-controls="${puckId}"]`)?.focus(); } }}>
+          <button type="button" style={{ ...controlStyle, opacity: expanded ? 0 : 0.78, pointerEvents: expanded ? 'none' : 'auto' }}
+            disabled={state !== 'ready'} aria-expanded={expanded} aria-controls={puckId}
+            aria-label={expanded ? 'Collapse orientation controls' : 'Expand orientation controls'}
+            title={`${currentView[0].toUpperCase() + currentView.slice(1)} view`}
+            onClick={() => setExpanded(value => !value)}>
+            {currentView === 'isometric' || currentView === 'custom'
+              ? <span aria-hidden="true">{viewSymbols[currentView]}</span>
+              : <DirectionGlyph view={currentView} active compact />}
+          </button>
+          <span role="status" style={visuallyHiddenStyle}>{currentView[0].toUpperCase() + currentView.slice(1)}</span>
+          <div ref={puckRef} id={puckId} hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
+            <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...viewToolbarStyle, width: compactControls ? 132 : 168, height: compactControls ? 132 : 168 }} role="group" aria-label="Orientation puck">
+              {fixedViews.map(view => (
+                <button key={view} type="button" disabled={state !== 'ready'}
+                  style={{ ...puckControlStyle, ...(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
+                  title={`${view[0].toUpperCase() + view.slice(1)} view`}
+                  aria-label={`Show ${view} view`} aria-pressed={currentView === view}
+                  onClick={() => viewerActions.current[view]?.()}>
+                  <DirectionGlyph view={view} active={currentView === view} compact={compactControls} />
+                </button>
+              ))}
+              <button type="button" disabled={state !== 'ready'}
+                style={{ ...controlStyle, position: 'absolute', left: compactControls ? 42 : 56, top: compactControls ? 42 : 56, width: compactControls ? 48 : 56, height: compactControls ? 48 : 56, minWidth: compactControls ? 48 : 56, minHeight: compactControls ? 48 : 56, background: '#31413e', border: '1px solid rgba(174, 195, 189, 0.6)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.06)' }}
+                title="Reset to fitted isometric view" aria-label="Reset to fitted isometric view"
+                onClick={() => viewerActions.current.isometric?.()}><span aria-hidden="true">↺</span></button>
+            </div>
+          </div>
+        </div>
+        <div style={{ position: 'absolute', right: 12, bottom: 12, zIndex: 2, display: 'flex', gap: 6 }} role="group" aria-label="Model zoom">
+          <button type="button" style={zoomControlStyle} disabled={state !== 'ready'} title="Zoom out" aria-label="Zoom out"
+            onClick={() => viewerActions.current.zoomOut?.()}>-</button>
+          <button type="button" style={zoomControlStyle} disabled={state !== 'ready'} title="Zoom in" aria-label="Zoom in"
+            onClick={() => viewerActions.current.zoomIn?.()}>+</button>
+        </div>
         {state !== 'ready' ? (
           <div style={fallbackStyle} data-testid={`cad-fixture-${state}`}>
             {state === 'loading' ? 'Preparing 3D visualization...' : '3D visualization is unavailable in this browser.'}
           </div>
         ) : null}
-      </div>
-      <div style={toolbarStyle} role="group" aria-label="Model view and zoom">
-        <div style={viewToolbarStyle} role="group" aria-label="Fixed model views">
-          {fixedViews.map(view => (
-            <button
-              key={view}
-              type="button"
-              style={controlStyle}
-              title={view === 'isometric' ? 'Reset to isometric view' : `Show ${view} view`}
-              onClick={() => viewerActions.current[view]?.()}
-            >
-              {view === 'isometric' ? 'Reset' : view[0].toUpperCase() + view.slice(1)}
-            </button>
-          ))}
-        </div>
-        <div style={zoomToolbarStyle} role="group" aria-label="Model zoom">
-          <button
-            type="button"
-            style={zoomControlStyle}
-            title="Zoom out"
-            aria-label="Zoom out"
-            onClick={() => viewerActions.current.zoomOut?.()}
-          >
-            -
-          </button>
-          <button
-            type="button"
-            style={zoomControlStyle}
-            title="Zoom in"
-            aria-label="Zoom in"
-            onClick={() => viewerActions.current.zoomIn?.()}
-          >
-            +
-          </button>
-        </div>
       </div>
     </div>
   );
