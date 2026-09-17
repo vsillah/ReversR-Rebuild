@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-conversion-sandbox-run-closeout",
+  "status": "PUBLIC_SYNTHETIC_CONVERSION_QUALIFIED",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "9a19da6707b4c62a5ba4dcae473b6d0733a73ef8",
+  "branch": "codex/cad-upload-conversion-sandbox-run-closeout",
+  "observedAtUtc": "2026-09-17T02:14:14Z",
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "vercelProjectName": "reversr",
+    "executionSurface": "local-development-runner-to-vercel-sandbox",
+    "productionUrl": "https://reversr.vercel.app"
+  },
+  "sourceBindings": {
+    "authCorrectionPacket": "offline/cad-convex/uploadConversionSandboxAuthCorrection.json",
+    "authCorrectionPacketSha256": "2b2b43c4cee4e8370b82aeade0311a57f5adf3651104099dadd258730e929bc5",
+    "authCorrectionPr": 296,
+    "authCorrectionCommit": "5a7047c5f47680f43575ce9eee50d12ff6fac85f",
+    "authCorrectionMergeCommit": "9a19da6707b4c62a5ba4dcae473b6d0733a73ef8",
+    "runner": "scripts/run-cad-upload-conversion-sandbox-qualification.js",
+    "runnerSha256": "584b64648fc90930bd5b7fefe7801acba524f20c6c3523423af9367440adb578",
+    "route": "server/cadUserUploadRouter.js",
+    "routeSha256": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb",
+    "routeGateLiteral": "const BODY_ADMISSION_AUTHORIZED = false;"
+  },
+  "run": {
+    "runRef": "rrb-ref:cad-upload-conversion-sandbox-qualification-0212z",
+    "window": {
+      "startUtc": "2026-09-17T02:12:00Z",
+      "endUtc": "2026-09-17T02:27:00Z"
+    },
+    "completedAtUtc": "2026-09-17T02:13:18.974Z",
+    "decision": "UPLOAD_CONVERSION_SANDBOX_QUALIFICATION_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "fixture": {
+    "id": "public-cube",
+    "format": "iges",
+    "bytes": 11562,
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "privateCad": false
+  },
+  "conversionResult": {
+    "status": "ready",
+    "mode": "sandbox-stock-occt-mesh-beta",
+    "meshCount": 1,
+    "vertexCount": 24,
+    "triangleCount": 12,
+    "sourceConfidence": "unqualified",
+    "commandExitCode": 0
+  },
+  "sandboxEvidence": {
+    "authorizationPreflight": "authorized",
+    "sessionRefSha256": "bbedda3d8223910ae457762f74487f8cb5c662ad8f5726ff150d662c00ce2fea",
+    "status": "stopped",
+    "persistent": false,
+    "vcpus": 1,
+    "memoryMb": 2048,
+    "guestMemoryBytes": 2398654464,
+    "timeoutMs": 60000,
+    "networkPolicy": "deny-all",
+    "cleanup": "stopped",
+    "cpuSecondsObserved": 2.157,
+    "snapshotCreated": false,
+    "remoteReconciliation": "STOPPED_SESSION_OBSERVED"
+  },
+  "sanitizedEvidence": {
+    "evidencePath": ".local/cad-convex/upload-conversion-sandbox-qualification-0212z/sanitized-evidence.json",
+    "receiptPath": ".local/cad-convex/upload-conversion-sandbox-qualification-0212z/sanitized-run-receipt.json",
+    "evidenceSha256": "732797a9e0dd8f6799b728dba9123f13ec75da72a1da881b5f3c7edf5eb102a2",
+    "receiptSha256": "d248ad6da41b60f0c5967150b6eb300c3dbaf147093d8be1e3ed447a578d579a",
+    "gitIgnored": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false,
+    "recordsRawMeshPayload": false
+  },
+  "operationCounts": {
+    "authorizationReadChecks": 1,
+    "publicSyntheticUploadsRead": 1,
+    "sandboxDispatches": 1,
+    "conversionCommands": 1,
+    "conversionResultsRead": 1,
+    "sandboxStopsConfirmed": 1,
+    "storeMutations": 0
+  },
+  "costEvidence": {
+    "planningCapUsd": 50,
+    "estimatedRunCostUpperBoundUsd": 0.01,
+    "invoiceAmountKnown": false,
+    "newPaidCommitment": false,
+    "withinPlanningCap": true,
+    "fastFollowRequired": "end-to-end per-CAD-run cost attribution across Vercel, Convex, Sandbox and compute"
+  },
+  "productionFailClosedSmoke": {
+    "mergeCommit": "9a19da6707b4c62a5ba4dcae473b6d0733a73ef8",
+    "qa": "9a19da6",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "authorityPreserved": {
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorized": false,
+    "providerResourceChangeAuthorized": false,
+    "envChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "externalMessageAuthorized": false
+  },
+  "whatThisProves": [
+    "the fixed public IGES cube traversed the reviewed upload-to-conversion runner once",
+    "the linked-project SDK authorization preflight succeeded before dispatch",
+    "one bounded deny-all Sandbox produced a bounded triangle mesh and exited zero",
+    "the exact remote Sandbox session was observed stopped with no snapshot",
+    "sanitized local evidence contains no raw credential, upload body, private CAD or raw mesh payload",
+    "the checked-in production upload route remained disabled"
+  ],
+  "whatThisDoesNotProve": [
+    "arbitrary or private CAD source fidelity",
+    "render or STL output",
+    "dimensional or manufacturing certification",
+    "real-user session readiness",
+    "production or user-facing CAD upload activation"
+  ],
+  "nextSafeAction": {
+    "type": "integrated-development-upload-to-conversion-readiness-review",
+    "scope": "decide whether the existing synthetic auth/session and upload evidence can be bound to this successful conversion result without another provider run",
+    "stopBefore": "private CAD, real users, production upload activation, production conversion, retry or second Sandbox run"
+  }
+}
