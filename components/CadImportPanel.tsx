@@ -4,7 +4,6 @@ import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 import CadFixtureViewer from './CadFixtureViewer';
-import CadGuidedReview from './CadGuidedReview';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
 export default function CadImportPanel({ internalPreview }: { internalPreview?: CadInternalTesterPreview }) {
@@ -59,9 +58,6 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
     link.click();
     link.remove();
   };
-  if (Platform.OS === 'web' && internalPreview?.enabled && internalPreview.code === 'CAD_TEST_PREVIEW_MARK_DISPENSER') {
-    return <CadGuidedReview />;
-  }
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
       <Text style={[text, { fontWeight: '700', fontSize: 18 }]}>Import CAD</Text>

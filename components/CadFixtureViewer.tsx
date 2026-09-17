@@ -63,7 +63,7 @@ const frameStyle: React.CSSProperties = {
   minHeight: 300,
   maxHeight: 440,
   overflow: 'hidden',
-  background: '#65717b',
+  background: '#dce6ef',
   borderRadius: 8,
   touchAction: 'none',
 };
@@ -137,11 +137,11 @@ const fallbackStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   padding: 24,
-  color: '#d7e0dc',
+  color: '#344450',
   fontFamily: 'system-ui, sans-serif',
   fontSize: 14,
   textAlign: 'center',
-  background: '#65717b',
+  background: '#dce6ef',
 };
 
 export default function CadFixtureViewer({
@@ -155,7 +155,6 @@ export default function CadFixtureViewer({
   const [expanded, setExpanded] = useState(false);
   const [compactControls, setCompactControls] = useState(false);
   const [currentView, setCurrentView] = useState<ViewName | 'custom'>('isometric');
-  const fixedView = currentView !== 'isometric' && currentView !== 'custom';
   const containerRef = useRef<HTMLDivElement | null>(null);
   const puckRef = useRef<HTMLDivElement | null>(null);
   const controlsRef = useRef<HTMLDivElement | null>(null);
@@ -220,10 +219,8 @@ export default function CadFixtureViewer({
         });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.setSize(initialWidth, initialHeight);
-        renderer.setClearColor(0x65717b, 1);
+        renderer.setClearColor(0xdce6ef, 1);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.domElement.setAttribute('data-testid', 'cad-fixture-canvas');
         renderer.domElement.style.display = 'block';
         renderer.domElement.style.width = '100%';
@@ -269,44 +266,45 @@ export default function CadFixtureViewer({
         modelGeometry.computeBoundingSphere();
         const radius = Math.max(modelGeometry.boundingSphere?.radius ?? 1, 0.5);
 
-        const modelMaterial = new THREE.MeshStandardMaterial({
-          color: 0xc4c9cc,
-          roughness: 0.42,
-          metalness: 0.12,
+        // One matte neutral material for every view. White camera-relative lights
+        // describe form without the former green/blue world-light color casts.
+        const modelMaterial = new THREE.MeshLambertMaterial({
+          color: 0xaaaaaa,
           side: THREE.DoubleSide,
         });
         const model = new THREE.Mesh(modelGeometry, modelMaterial);
-        model.castShadow = true;
-        model.receiveShadow = true;
         rig.add(model);
 
         const edgeMaterial = new THREE.LineBasicMaterial({
-          color: 0xe8fffa,
+          color: 0x454545,
           transparent: true,
-          opacity: 0.34,
+          opacity: 0.36,
         });
         const edgeGeometry = new THREE.EdgesGeometry(modelGeometry, 24);
         const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
         rig.add(edges);
 
-        scene.add(new THREE.HemisphereLight(0xe8fff8, 0x172322, 1.75));
-        const key = new THREE.DirectionalLight(0xffffff, 3.1);
-        key.position.set(4, 6, 5);
-        key.castShadow = true;
-        scene.add(key);
-        const rim = new THREE.DirectionalLight(0x74a9ff, 1.35);
-        rim.position.set(-4, 2, -3);
-        scene.add(rim);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+        scene.add(camera);
+        const lightTarget = new THREE.Object3D();
+        lightTarget.position.set(0, 0, -1);
+        camera.add(lightTarget);
+        const key = new THREE.DirectionalLight(0xffffff, 2);
+        key.position.set(-3, 4, 5);
+        key.target = lightTarget;
+        camera.add(key);
+        const fill = new THREE.DirectionalLight(0xffffff, 0.7);
+        fill.position.set(4, -2, 3);
+        fill.target = lightTarget;
+        camera.add(fill);
 
-        const floorMaterial = new THREE.ShadowMaterial({ color: 0x202c36, opacity: 0.18 });
-        const floorSize = radius * 8;
-        const floorY = -radius * 1.3;
-        const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize);
-        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = -Math.PI / 2;
-        floor.position.y = floorY;
-        floor.receiveShadow = true;
-        scene.add(floor);
+        // A real scene grid on the view plane, behind the entire rotating model.
+        // It shares camera projection/zoom, stays readable edge-on to any source
+        // axis, and never implies a calibrated physical dimension.
+        const grid = new THREE.GridHelper(radius * 18, 72, 0x9cabb8, 0xc2cfdb);
+        scene.add(grid);
+        renderer.domElement.dataset.material = 'matte-neutral-aaaaaa';
+        renderer.domElement.dataset.grid = 'view-plane';
 
         const distanceForViewport = () => {
           const verticalFov = THREE.MathUtils.degToRad(camera.fov);
@@ -342,8 +340,6 @@ export default function CadFixtureViewer({
         const updateView = (name: ViewName | 'custom') => {
           setCurrentView(name);
           renderer.domElement.dataset.view = name;
-          floor.visible = name === 'isometric' || name === 'custom';
-          renderer.domElement.dataset.floor = String(floor.visible);
         };
         const setView = (name: ViewName) => {
           updateView(name);
@@ -384,6 +380,9 @@ export default function CadFixtureViewer({
           camera.near = Math.max(distance / 100, 0.01);
           camera.far = distance * 20;
           camera.lookAt(0, 0, 0);
+          grid.position.copy(camera.position).normalize().multiplyScalar(-radius * 1.4);
+          grid.quaternion.copy(camera.quaternion);
+          grid.rotateX(Math.PI / 2);
           camera.updateProjectionMatrix();
         };
         viewerActions.current = {
@@ -505,8 +504,9 @@ export default function CadFixtureViewer({
           modelMaterial.dispose();
           edgeGeometry.dispose();
           edgeMaterial.dispose();
-          floorGeometry.dispose();
-          floorMaterial.dispose();
+          grid.geometry.dispose();
+          const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];
+          gridMaterials.forEach(material => material.dispose());
           renderer.dispose();
           if (host.contains(renderer.domElement)) host.removeChild(renderer.domElement);
         };
@@ -532,9 +532,7 @@ export default function CadFixtureViewer({
         data-testid="cad-fixture-canvas-host"
       >
         <div ref={containerRef} role="img" aria-label={`Interactive three-dimensional visualization of ${label}`} style={{ width: '100%', height: '100%' }} />
-        {fixedView && state === 'ready' ? (
-          <div aria-hidden="true" data-testid="cad-fixed-view-cue" style={{ position: 'absolute', left: 12, bottom: 12, width: 48, height: 48, pointerEvents: 'none', opacity: 0.5, backgroundImage: 'linear-gradient(#c3cdd5 1px, transparent 1px), linear-gradient(90deg, #c3cdd5 1px, transparent 1px)', backgroundSize: '12px 12px', borderRight: '1px solid #c3cdd5', borderBottom: '1px solid #c3cdd5' }} />
-        ) : null}
+        {state === 'ready' ? <span data-testid="cad-view-grid-label" style={{ position: 'absolute', left: 10, bottom: 12, maxWidth: 'calc(100% - 125px)', font: '11px system-ui, sans-serif', color: '#405564', pointerEvents: 'none' }} aria-label="View-aligned grid; not a dimensional scale">Unscaled grid</span> : null}
         <div ref={controlsRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 3 }} role="group" aria-label="Model view controls"
           onKeyDown={event => { if (event.key === 'Escape' && expanded) { setExpanded(false); document.querySelector<HTMLButtonElement>(`[aria-controls="${puckId}"]`)?.focus(); } }}>
           <button type="button" style={{ ...controlStyle, opacity: expanded ? 0 : 0.78, pointerEvents: expanded ? 'none' : 'auto' }}
