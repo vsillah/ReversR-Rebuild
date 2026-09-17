@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
-import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
+import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
 export default function CadImportPanel({ internalPreview }: { internalPreview?: CadInternalTesterPreview }) {
@@ -23,7 +23,8 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
     setChecking(true);
     const timer = setTimeout(() => request.abort(), 8000);
     try {
-      const response = await fetch(`${getApiBase()}/api/cad/capabilities`, { signal: request.signal, credentials: 'omit', cache: 'no-store' });
+      const capabilityRequest = getCadCapabilitiesRequest(Boolean(fixture), getApiBase());
+      const response = await fetch(capabilityRequest.url, { signal: request.signal, credentials: capabilityRequest.credentials, cache: 'no-store' });
       if (!response.ok) throw new Error('unavailable');
       const data = await response.json();
       setStatus(data?.enabled === true
