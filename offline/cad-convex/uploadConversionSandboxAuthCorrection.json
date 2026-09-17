@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-conversion-sandbox-auth-correction",
+  "status": "SANDBOX_AUTH_PATH_CORRECTED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "186acb47920b45832d116b60c3f6d40df533217f",
+  "branch": "codex/cad-upload-conversion-sandbox-auth-correction",
+  "observedAtUtc": "2026-09-17T02:00:55Z",
+  "expensesUsd": 0,
+  "target": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "vercelTeamId": "team_e1YXCCGoccmBLfbBfXGhwbd4",
+    "vercelProjectId": "prj_Geremoki2OhowX1579EolsuPWXPy",
+    "vercelProjectName": "reversr",
+    "executionSurface": "local-development-runner-to-vercel-sandbox"
+  },
+  "stoppedRun": {
+    "runRef": "rrb-ref:cad-upload-conversion-sandbox-qualification-0148z",
+    "window": {
+      "startUtc": "2026-09-17T01:48:00Z",
+      "endUtc": "2026-09-17T02:08:00Z"
+    },
+    "decision": "UPLOAD_CONVERSION_SANDBOX_QUALIFICATION_STOPPED",
+    "code": "RUNTIME_UNAVAILABLE",
+    "runCompleted": false,
+    "unknownOutcome": true,
+    "automaticRetry": false,
+    "secondRun": false,
+    "evidenceSha256": "757e99107654db5cc355131b7fe94e46048cc464db6239e1518e0360c2e49ad3",
+    "receiptSha256": "7a466d0af3d96bb1d40b78ed075d4ce735aee9d7a0b05f5b0962b49fd3cfeaac",
+    "lastRecordedStage": "assets_loaded",
+    "sandboxCreatedStageObserved": false,
+    "retryAuthorized": false
+  },
+  "readOnlyReconciliation": {
+    "vercelDashboardInspected": true,
+    "vercelSandboxCliListSucceeded": true,
+    "sdkInferredCredentialListSucceeded": true,
+    "newSandboxSessionObserved": false,
+    "allListedSessionsStopped": true,
+    "storeMutationObserved": false,
+    "providerMutationObserved": false,
+    "conclusion": "NO_SANDBOX_CREATION_OBSERVED"
+  },
+  "sourceBindings": {
+    "readinessPacket": "offline/cad-convex/uploadConversionSandboxReadiness.json",
+    "readinessPacketSha256": "ba4ba9905e104ecf603776844bfdb6c5cfb06fa8887cc300ca7ba3f5df396d47",
+    "runner": "scripts/run-cad-upload-conversion-sandbox-qualification.js",
+    "runnerSha256": "584b64648fc90930bd5b7fefe7801acba524f20c6c3523423af9367440adb578",
+    "executor": "server/cadSandboxExecutor.js",
+    "executorSha256": "445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7",
+    "config": "server/cadSandboxConfig.js",
+    "configSha256": "927da7487422d92b5e2e9506cb811321966d8321fcae19c1ac890afacb6d7426",
+    "route": "server/cadUserUploadRouter.js",
+    "routeSha256": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb",
+    "routeGateLiteral": "const BODY_ADMISSION_AUTHORIZED = false;"
+  },
+  "correction": {
+    "rawCliTokenReadByRunner": false,
+    "rawCliTokenForwardedToSdk": false,
+    "sdkCredentialMode": "linked-project-inferred-and-refreshable",
+    "linkedProjectMetadataRequired": true,
+    "authorizationPreflightReadOnly": true,
+    "authorizationPreflightTimeoutMs": 10000,
+    "authorizationPreflightBeforeDispatch": true,
+    "preDispatchAuthorizationFailureCode": "SANDBOX_AUTHORIZATION_FAILED",
+    "preDispatchAuthorizationFailureUnknownOutcome": false,
+    "preDispatchAuthorizationFailureCleanupBlocked": false,
+    "providerErrorDetailsRecorded": false
+  },
+  "futureFreshRunRequirements": {
+    "sourceFixMerged": true,
+    "productionFailClosedSmokeRequired": true,
+    "freshRunRefRequired": true,
+    "freshEvidenceRootRequired": true,
+    "freshUtcWindowRequired": true,
+    "publicCubeOnly": true,
+    "maxAttempts": 1,
+    "automaticRetry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "allInPlanningCapUsd": 50,
+    "productionUploadActivationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "storeMutationsAllowed": false
+  },
+  "authorityPreservedByThisPacket": {
+    "liveRunAuthorizedNow": false,
+    "stoppedRunRetryAuthorized": false,
+    "secondRunAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "productionStoreMutationAuthorized": false,
+    "developmentStoreMutationAuthorized": false,
+    "envProviderAuthResourceChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "secretReadAuthorizedByPacket": false,
+    "externalMessageAuthorized": false
+  },
+  "nextSafeAction": {
+    "type": "publish-source-only-auth-correction",
+    "scope": "review, merge, deploy, fail-closed smoke and clean up this correction before preparing a fresh one-shot public-cube qualification window",
+    "stopBefore": "retrying the stopped run, fresh Sandbox dispatch, production upload activation, private CAD, real users or store mutation"
+  }
+}
