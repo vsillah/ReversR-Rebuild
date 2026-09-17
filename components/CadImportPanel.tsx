@@ -3,6 +3,7 @@ import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
+import CadPublicCubeViewer from './CadPublicCubeViewer';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
 export default function CadImportPanel({ internalPreview }: { internalPreview?: CadInternalTesterPreview }) {
@@ -91,12 +92,17 @@ export default function CadImportPanel({ internalPreview }: { internalPreview?: 
         <TouchableOpacity disabled accessibilityRole="button" accessibilityLabel="Upload unavailable: operator access required" accessibilityState={{ disabled: true }} style={button}><Text style={{ color: colors.mutedText }}>Upload unavailable</Text></TouchableOpacity>
       </View>
       {fixture && showQualifiedResult && (
-        <View testID="cad-qualified-result" style={{ gap: 8, padding: 14, borderWidth: 1, borderColor: colors.border, borderRadius: 10 }}>
+        <View testID="cad-qualified-result" style={{ gap: 10, paddingTop: 16, borderTopWidth: 1, borderColor: colors.border }}>
           <Text style={[text, { fontWeight: '700' }]}>Development qualification result</Text>
           <Text style={text}>Admission passed</Text>
           <Text style={text}>{fixture.meshes} mesh · {fixture.vertices} vertices · {fixture.triangles} triangles</Text>
           <Text style={text}>Source confidence: {fixture.sourceConfidence}</Text>
-          <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Recorded evidence only. Rendering, dimensions, STL export, and manufacturing suitability remain unqualified.</Text>
+          <View style={{ gap: 4 }}>
+            <Text style={[text, { fontWeight: '700' }]}>Public cube visualization</Text>
+            <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Normalized fixture geometry · Drag to inspect</Text>
+          </View>
+          <CadPublicCubeViewer geometry={fixture.previewGeometry} />
+          <Text style={{ color: colors.mutedText, lineHeight: 20 }}>This interactive visual represents the reviewed synthetic public-cube fixture. It is not a render of a selected or uploaded file. Dimensions, source fidelity, STL export, and manufacturing suitability remain unqualified.</Text>
         </View>
       )}
       <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>

@@ -7,6 +7,10 @@ export type CadInternalTesterFixture = {
   vertices: number;
   triangles: number;
   sourceConfidence: string;
+  previewGeometry: {
+    kind: 'box';
+    normalizedScale: readonly [number, number, number];
+  };
 };
 
 export type CadInternalTesterPreview =
