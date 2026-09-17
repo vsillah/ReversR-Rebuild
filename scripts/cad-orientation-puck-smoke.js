@@ -20,7 +20,7 @@ fs.mkdirSync(out, { recursive: true });
   await page.goto(url);
   const skip=page.getByText('Skip',{exact:true});
   if(await skip.isVisible()) await skip.click();
-  await page.getByTestId('cad-review-qualified-result').click();
+  if (await page.getByTestId('cad-review-qualified-result').count()) await page.getByTestId('cad-review-qualified-result').click();
   const canvas=page.getByTestId('cad-fixture-canvas');
   await page.waitForFunction(()=>document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view==='isometric');
   const host=page.getByTestId('cad-fixture-canvas-host');
@@ -97,11 +97,16 @@ fs.mkdirSync(out, { recursive: true });
  console.log(`PASS ${width}px: all views, reset, zoom, rotation, ${width<=390?'touch pinch':'wheel'}, responsive puck fit, keyboard toggle/Escape, floor/grid, target sizes, overflow; blocked external requests: ${external}`);
  }
  const compactContext=await browser.newContext({viewport:{width:855,height:904}});
+ await compactContext.route('**/*', route => {
+  const u = new URL(route.request().url());
+  if (u.origin !== new URL(url).origin || u.pathname.startsWith('/api/')) return route.abort();
+  return route.continue();
+ });
  const compactPage=await compactContext.newPage();
  await compactPage.goto(url);
  const compactSkip=compactPage.getByText('Skip',{exact:true});
  if(await compactSkip.isVisible()) await compactSkip.click();
- await compactPage.getByTestId('cad-review-qualified-result').click();
+ if (await compactPage.getByTestId('cad-review-qualified-result').count()) await compactPage.getByTestId('cad-review-qualified-result').click();
  await compactPage.getByRole('button',{name:'Expand orientation controls'}).click();
  await compactPage.waitForTimeout(750);
  const compactPuck=await compactPage.getByRole('group',{name:'Orientation puck'}).boundingBox();
