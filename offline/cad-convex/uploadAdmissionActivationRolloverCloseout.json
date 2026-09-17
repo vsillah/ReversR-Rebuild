@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-upload-admission-activation-rollover-closeout",
+  "status": "UPLOAD_ACTIVATION_ROLLOVER_COMPLETED_SOURCE_CLOSEOUT",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-upload-activation-rollover-closeout",
+  "baseMainCommit": "48edc745d500bd2ffe418ca3aebbc9bd77a465f8",
+  "observedAtUtc": "2026-09-16T22:33:00Z",
+  "expensesUsd": 0,
+  "runRef": "rrb-ref:cad-upload-activation-window-rollover-2230z",
+  "executionSurface": "local-mounted-development-harness",
+  "targetContext": {
+    "developmentProject": "reversr-cad-auth-dev",
+    "developmentDeployment": "majestic-alligator-31",
+    "remoteDeploymentMutationObserved": false
+  },
+  "acceptedWindow": {
+    "startUtc": "2026-09-16T22:30:00Z",
+    "expiresUtc": "2026-09-16T23:00:00Z",
+    "maxRunSeconds": 900
+  },
+  "sourceBindings": {
+    "rolloverSource": "offline/cad-convex/uploadAdmissionActivationWindowRollover.json",
+    "rolloverPr": 292,
+    "rolloverCommit": "77d9a71a8e07c180493ebb13e7d6eda5c1c8e7d8",
+    "rolloverMergeCommit": "11f45049f1ce138c887482d5d68d25d9642e7284",
+    "runnerRebindSource": "offline/cad-convex/uploadAdmissionActivationRunnerRebind.json",
+    "runnerRebindPr": 293,
+    "runnerRebindCommit": "9bbbeca2d8011dee1d62f4c94779013e2a6cf774",
+    "runnerRebindMergeCommit": "48edc745d500bd2ffe418ca3aebbc9bd77a465f8",
+    "runnerCli": "scripts/run-cad-upload-activation-exact-window.js",
+    "routeSource": "server/cadUserUploadRouter.js",
+    "routeGateLiteral": "const BODY_ADMISSION_AUTHORIZED = false;"
+  },
+  "sanitizedRunEvidence": {
+    "evidenceSha256": "29be0ace835239dcaa46ebdb71b247a850b360e072a7043f446b0a418c7e4a8f",
+    "receiptSha256": "298f25e13ca43aee29432954853bd4cc13924b2c39c3767a70552575f313e847",
+    "evidencePath": ".local/cad-convex/upload-activation-window-rollover-2230z/sanitized-evidence.json",
+    "receiptPath": ".local/cad-convex/upload-activation-window-rollover-2230z/sanitized-run-receipt.json",
+    "gitIgnored": true,
+    "directoryMode": "700",
+    "fileMode": "600",
+    "privatePatternLeakObserved": false,
+    "recordsContentBase64": false,
+    "recordsRawCredential": false,
+    "recordsPrivateCad": false
+  },
+  "runResult": {
+    "decision": "UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "bodyAdmissionValidated": true,
+    "completedAtUtc": "2026-09-16T22:31:41.938Z",
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "fixture": {
+    "id": "public-cube",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "privateCad": false
+  },
+  "operationCounts": {
+    "mountedRouteDisabledChecks": 2,
+    "mountedDevelopmentBodyValidationChecks": 1,
+    "uploadBodiesRead": 1,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "storeMutations": 0
+  },
+  "runFlags": {
+    "productionUploadActivationAuthorized": false,
+    "cadUploadActivationAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "automaticRetry": false,
+    "secondRun": false
+  },
+  "productionFailClosedSmoke": {
+    "source": "PR #293 post-merge smoke",
+    "mergeCommit": "48edc745d500bd2ffe418ca3aebbc9bd77a465f8",
+    "qa": "48edc74",
+    "shell": "200 ReversR Rebuild",
+    "capabilities": 200,
+    "userImport": "401 USER_SESSION_REQUIRED",
+    "import": "401 UNAUTHORIZED",
+    "sourceRecord": 404
+  },
+  "authorityPreserved": {
+    "cadUploadActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "providerResourceChangeAuthorized": false,
+    "envChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "externalMessageAuthorized": false
+  },
+  "whatThisProves": [
+    "one public synthetic IGES body was read and validated through the reviewed development harness inside the accepted window",
+    "the checked-in user upload route stayed disabled before and after the run",
+    "the run completed once with a known USER_UPLOADS_DISABLED terminal code and no unknown outcome",
+    "sanitized local evidence records no raw credential, contentBase64 or private CAD",
+    "no conversion, Sandbox or store mutation occurred"
+  ],
+  "whatThisDoesNotProve": [
+    "production or user-facing CAD upload activation",
+    "production body admission",
+    "CAD conversion or Sandbox dispatch readiness",
+    "private CAD handling",
+    "real-user readiness",
+    "provider, resource, environment or billing authority"
+  ],
+  "remainingGatesBeforeConversionQualification": [
+    "source-only development conversion and Sandbox readiness decision using this accepted upload-path evidence",
+    "reviewed public-fixture-only conversion runner with explicit resource and cost bounds",
+    "exact UTC window, disabled upload pre/post checks and sanitized evidence destination",
+    "one bounded development-only synthetic conversion attempt",
+    "post-run reconciliation, rollback and source-only closeout"
+  ],
+  "nextSafeAction": {
+    "type": "source-only-development-conversion-sandbox-readiness-decision",
+    "scope": "accept this development upload-path closeout and decide the next public-fixture-only conversion and Sandbox qualification packet",
+    "stopBefore": "live conversion, Sandbox dispatch, production upload activation, private CAD, real users, provider/resource/env changes, retry or second run"
+  }
+}

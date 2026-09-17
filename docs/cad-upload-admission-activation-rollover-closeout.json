@@ -1,0 +1,19 @@
+{
+  "summary": "source-only closeout for the successful 22:30Z development upload-path qualification",
+  "source": "offline/cad-convex/uploadAdmissionActivationRolloverCloseout.json",
+  "branch": "codex/cad-upload-activation-rollover-closeout",
+  "baseMainCommit": "48edc745d500bd2ffe418ca3aebbc9bd77a465f8",
+  "runRef": "rrb-ref:cad-upload-activation-window-rollover-2230z",
+  "decision": "UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED",
+  "runCompleted": true,
+  "unknownOutcome": false,
+  "terminalCode": "USER_UPLOADS_DISABLED",
+  "bodyAdmissionValidated": true,
+  "evidenceSha256": "29be0ace835239dcaa46ebdb71b247a850b360e072a7043f446b0a418c7e4a8f",
+  "receiptSha256": "298f25e13ca43aee29432954853bd4cc13924b2c39c3767a70552575f313e847",
+  "productionUploadActivationAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadAuthorized": false,
+  "nextSafeAction": "source-only development conversion and Sandbox readiness decision"
+}
