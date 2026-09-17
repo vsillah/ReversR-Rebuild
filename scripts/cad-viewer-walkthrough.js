@@ -16,7 +16,7 @@ fs.mkdirSync(out,{recursive:true});fs.mkdirSync(qa,{recursive:true});
    return route.continue();
   });
   const page=await context.newPage();await page.goto(url);
-  await page.getByTestId('cad-review-qualified-result').click();
+  await page.getByTestId('cad-phase-3').waitFor();
   const canvas=page.getByTestId('cad-fixture-canvas');
   await page.waitForFunction(()=>document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view==='isometric');
   const host=page.getByTestId('cad-fixture-canvas-host');

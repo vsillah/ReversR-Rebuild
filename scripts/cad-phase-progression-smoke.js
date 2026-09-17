@@ -1,0 +1,82 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const { chromium } = require('playwright');
+const url = process.env.CAD_PHASE_URL || 'http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1';
+const out = process.env.CAD_PHASE_EVIDENCE || '/private/tmp/cad-phase-qa';
+fs.mkdirSync(out, {recursive:true});
+(async () => {
+ const browser = await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ const results=[];
+ try {
+ for (const width of [1440,768,390,320]) {
+  const context = await browser.newContext({viewport:{width,height:1000},recordVideo:{dir:out,size:{width,height:1000}}});
+  const blocked=[]; let writes=0;
+  await context.route('**/*', route => {
+   const request=route.request(), u=new URL(request.url());
+   if(!['GET','HEAD'].includes(request.method())) {writes++;return route.abort();}
+   if(u.origin!==new URL(url).origin) {blocked.push(u.pathname);return route.abort();}
+   if(u.pathname.startsWith('/api/')) return route.fulfill({status:503,json:{error:'Local source-only QA'}});
+   return route.continue();
+  });
+  const page=await context.newPage();
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto(url);
+  const design=page.getByTestId('cad-phase-3'); await design.waitFor();
+  await page.waitForFunction(()=>document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view==='isometric');
+  const nav=page.getByTestId('reversr-tour-phase-nav');
+  const phase=(label)=>nav.getByRole('button',{name:new RegExp(`^${label} phase,`)});
+  for(const [label,state] of [['Input','complete'],['Inventory','complete'],['Design','active'],['Build','locked']]) assert.match(await phase(label).getAttribute('aria-label'),new RegExp(state));
+  await page.screenshot({path:`${out}/${width}-design.png`});
+  await phase('Input').click(); await page.getByTestId('cad-phase-1').waitFor();
+  assert.equal(await page.getByTestId('cad-qualified-result').count(),0);
+  assert(await page.getByRole('button',{name:'Upload unavailable: operator access required'}).isDisabled());
+  await page.getByTestId('cad-check-status').click();
+  await page.getByText('Could not check service status. Check your connection and try again.',{exact:true}).waitFor();
+  await page.getByTestId('cad-check-status').click();
+  await page.getByText('Could not check service status. Check your connection and try again.',{exact:true}).waitFor();
+  await page.screenshot({path:`${out}/${width}-input.png`});
+  await page.getByRole('button',{name:'View generated inventory',exact:true}).click();
+  await page.getByText('Auto-generated inventory',{exact:true}).waitFor();
+  await page.screenshot({path:`${out}/${width}-inventory.png`});
+  await page.getByRole('button',{name:'Review source in Input',exact:true}).click();
+  await page.getByTestId('cad-review-qualified-result').click();
+  await design.waitFor();assert.match(page.url(),/cadPhase=design/);
+  await phase('Inventory').click();
+  await page.getByRole('button',{name:'Review in Design',exact:true}).click();
+  await phase('Build').click();await page.getByTestId('cad-build-locked').waitFor();
+  assert(await page.getByRole('button',{name:'Prepare outputs unavailable: manufacturing review required'}).isDisabled());
+  await page.screenshot({path:`${out}/${width}-build.png`});
+  await page.getByRole('button',{name:'Review inventory prerequisites',exact:true}).click();
+  await phase('Build').click();
+  await page.getByRole('button',{name:'Return to Design review',exact:true}).click();
+  await page.goBack();await page.getByTestId('cad-build-locked').waitFor();
+  await page.goForward();await design.waitFor();
+  await page.reload();await design.waitFor();
+  await page.getByRole('button',{name:'View Build prerequisites',exact:true}).click();
+  await page.reload();await page.getByTestId('cad-build-locked').waitFor();
+  await phase('Design').click();await design.waitFor();
+  const download=page.waitForEvent('download');
+  await page.getByRole('link',{name:'Download original Dispenser.IGS',exact:true}).click();
+  assert.equal((await download).suggestedFilename(),'Dispenser.IGS');
+  for(const label of ['Front','Left','Top','Drawing']) {
+   const popup=context.waitForEvent('page');
+   await page.getByRole('link',{name:`Open ${label} reference image`,exact:true}).click();
+   const opened=await popup; await opened.waitForLoadState();
+   assert.match(opened.url(),/cad-fixtures\/mark-dispenser-v1\/dispenser-/);await opened.close();
+  }
+  await phase('Design').click();await design.waitFor();
+  await page.waitForTimeout(400);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  assert.equal(writes,0);assert.deepEqual(errors,[]);
+  results.push({width,states:['complete','complete','active','locked'],allPhaseActions:true,historyAndReload:true,disabledBuildAndUpload:true,downloadAndFourReferences:true,writes,externalRequestsBlocked:blocked.length});
+  const video=page.video();await context.close();await video.saveAs(`${out}/${width}-walkthrough.webm`);
+  console.log(`PASS ${width}px: phase navigation, locked/recovery, history/reload, source/reference actions, no writes or overflow`);
+ }
+ const context=await browser.newContext();
+ await context.route('**/*',route=>new URL(route.request().url()).origin===new URL(url).origin?route.continue():route.abort());
+ const page=await context.newPage();await page.goto(url.replace('mark-dispenser-v1','public-cube-v1')+'&cadPhase=invalid');
+ await page.getByTestId('cad-phase-3').waitFor();assert(await page.getByText('Public cube',{exact:true}).isVisible());
+ await context.close();
+ fs.writeFileSync(`${out}/results.json`,JSON.stringify({results,syntheticCubeAndInvalidPhase:true},null,2));
+ }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

@@ -582,12 +582,16 @@ export function HorizontalStepper({
   steps,
   subLabels,
   currentStep,
+  phaseStates,
+  selectedStep,
   onStepPress,
   testID,
 }: {
   steps: string[];
   subLabels?: string[];
   currentStep: number; // 1-based
+  phaseStates?: import("../utils/workflowPhases").PhaseState[];
+  selectedStep?: number;
   onStepPress?: (step: number) => void;
   testID?: string;
 }) {
@@ -606,7 +610,7 @@ export function HorizontalStepper({
             position: 'absolute',
             left: connectorInset,
             right: connectorInset,
-            top: 16,
+            top: phaseStates ? 22 : 16,
             flexDirection: 'row',
             gap: 0,
           }}
@@ -626,10 +630,11 @@ export function HorizontalStepper({
       ) : null}
       {steps.map((label, idx) => {
         const step = idx + 1;
-        const isComplete = currentStep > step;
-        const isCurrent = currentStep === step;
-        const isActive = isComplete || isCurrent;
-        const canPress = Boolean(onStepPress) && currentStep > step;
+        const state = phaseStates?.[idx] ?? (currentStep > step ? "complete" : currentStep === step ? "active" : "locked");
+        const isComplete = state === "complete";
+        const isCurrent = (selectedStep ?? currentStep) === step;
+        const isActive = isComplete || isCurrent || state === "active";
+        const canPress = Boolean(onStepPress) && (Boolean(phaseStates) || currentStep > step);
         const marker = (
           <View
             style={{
@@ -645,9 +650,11 @@ export function HorizontalStepper({
           >
             {isComplete ? (
               <Ionicons name="checkmark" size={18} color={colors.background} />
+            ) : state === "locked" && phaseStates ? (
+              <Ionicons name="lock-closed-outline" size={16} color={colors.dimText} />
             ) : (
               <Text style={{ color: isCurrent ? colors.accent : colors.dimText, fontFamily: Fonts.bold, fontSize: 14 }}>
-                {step}
+                {state === "skipped" ? "–" : step}
               </Text>
             )}
           </View>
@@ -670,7 +677,9 @@ export function HorizontalStepper({
                   onPress={() => onStepPress?.(step)}
                   activeOpacity={0.7}
                   accessibilityRole="button"
-                  accessibilityLabel={`Reopen ${label} phase`}
+                  accessibilityLabel={phaseStates ? `${label} phase, ${state}${state === "locked" ? ", view prerequisites" : ""}` : `Reopen ${label} phase`}
+                  accessibilityState={{ selected: isCurrent }}
+                  style={phaseStates ? { minHeight: 44, minWidth: 44, alignItems: "center", justifyContent: "center" } : undefined}
                   hitSlop={8}
                 >
                   {marker}
@@ -689,6 +698,7 @@ export function HorizontalStepper({
               >
                 {label}
               </Text>
+              {phaseStates && <Text style={{ fontSize: 10, color: colors.mutedText }}>{state[0].toUpperCase() + state.slice(1)}</Text>}
               {isCurrent ? (
                 <View style={{ marginTop: 3, width: 26, height: 3, borderRadius: 2, backgroundColor: colors.accent }} />
               ) : null}
@@ -697,9 +707,9 @@ export function HorizontalStepper({
         );
       })}
     </View>
-    {subLabels?.[currentStep - 1] ? (
+    {subLabels?.[(selectedStep ?? currentStep) - 1] ? (
       <Text style={{ color: colors.mutedText, fontSize: 12, lineHeight: 18, textAlign: 'center', marginTop: 4 }}>
-        {subLabels[currentStep - 1]}
+        {subLabels[(selectedStep ?? currentStep) - 1]}
       </Text>
     ) : null}
     </View>

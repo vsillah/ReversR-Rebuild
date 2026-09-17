@@ -24,6 +24,8 @@ import ReversRLogoMark from "../components/ReversRLogoMark";
 import AlertModal from "../components/AlertModal";
 import WelcomeScreen from "../components/WelcomeScreen";
 import WelcomeIntroScreen from "../components/WelcomeIntroScreen";
+import CadWorkflow from "../components/CadWorkflow";
+import { getCadReviewPhase, getWorkflowPhaseStates } from "../utils/workflowPhases";
 import PhaseOne from "../components/PhaseOne";
 import PhaseTwo from "../components/PhaseTwo";
 import PhaseThree from "../components/PhaseThree";
@@ -99,9 +101,9 @@ const PHASE_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
 const PHASE_STEP_LABELS = ['Input', 'Inventory', 'Design', 'Build'];
 const PHASE_STEP_HINTS = [
   'Import, scan, describe, or try a sample',
-  'Match the scan to a record',
-  'Specs, references, and 3D handoff',
-  'BOM, assembly, and pricing',
+  'Components, units, and metadata',
+  '3D review, references, dimensions, and issues',
+  'Outputs, BOM, and manufacturing preparation',
 ];
 const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   1: 'search',
@@ -521,6 +523,23 @@ export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
   const cadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
+  const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
+  const navigateCadPhase = (phase: number) => {
+    if (phase < 1 || phase > 4 || phase === cadPhase) return;
+    setCadPhase(phase);
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('cadPhase', PHASE_STEP_LABELS[phase - 1].toLowerCase());
+      window.history.pushState(window.history.state, '', url);
+    }
+  };
+  useEffect(() => {
+    if (!cadInternalPreview.enabled || Platform.OS !== 'web') return;
+    const onPop = () => setCadPhase(getCadReviewPhase(window.location.search));
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [cadInternalPreview.enabled]);
+
   const [started, setStarted] = useState(false);
   const [welcomeIntroLoaded, setWelcomeIntroLoaded] = useState(!WELCOME_INTRO_ENABLED);
   const [welcomeIntroVisible, setWelcomeIntroVisible] = useState(false);
@@ -1726,8 +1745,10 @@ export default function HomeScreen() {
             <HorizontalStepper
               steps={PHASE_STEP_LABELS}
               subLabels={PHASE_STEP_HINTS}
-              currentStep={context.phase}
-              onStepPress={(step) => setPhaseActionModal(step)}
+              currentStep={cadInternalPreview.enabled ? 3 : context.phase}
+              phaseStates={cadInternalPreview.enabled ? getWorkflowPhaseStates({ qualifiedCad: true }) : undefined}
+              selectedStep={cadInternalPreview.enabled ? cadPhase : undefined}
+              onStepPress={cadInternalPreview.enabled ? navigateCadPhase : (step) => setPhaseActionModal(step)}
               testID="reversr-tour-phase-nav"
             />
           </View>
@@ -1735,7 +1756,7 @@ export default function HomeScreen() {
       )}
 
       <ScrollView
-        key={`workflow-surface:${context.id}:${context.phase}`}
+        key={`workflow-surface:${context.id}:${cadInternalPreview.enabled ? cadPhase : context.phase}`}
         ref={workflowScrollRef}
         style={styles.content}
         contentContainerStyle={[
@@ -1749,7 +1770,8 @@ export default function HomeScreen() {
         onContentSizeChange={flushWorkflowScrollReset}
         {...workflowFocusVisibilityProps}
       >
-        {context.phase === 1 && (
+        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} />}
+        {!cadInternalPreview.enabled && context.phase === 1 && (
           <PhaseOne
             key={context.id}
             initialMode={entryMode}
@@ -1764,7 +1786,7 @@ export default function HomeScreen() {
             inventoryRefreshKey={inventorySampleRefreshKey}
           />
         )}
-        {context.phase === 2 && context.analysis && (
+        {!cadInternalPreview.enabled && context.phase === 2 && context.analysis && (
           <PhaseTwo
             analysis={context.analysis}
             scanInput={context.input}
@@ -1780,7 +1802,7 @@ export default function HomeScreen() {
             mockInnovation={mockJourneyActive ? (context.innovation || MOCK_TOUR_INNOVATION) : null}
           />
         )}
-        {context.phase === 3 && context.innovation && (
+        {!cadInternalPreview.enabled && context.phase === 3 && context.innovation && (
           <PhaseThree
             innovation={context.innovation}
             existingSpec={context.spec}
@@ -1796,7 +1818,7 @@ export default function HomeScreen() {
             onTryAnotherPattern={handleTryAnotherPattern}
           />
         )}
-        {context.phase === 4 && context.innovation && (
+        {!cadInternalPreview.enabled && context.phase === 4 && context.innovation && (
           context.spec ? (
             <PhaseFour
               innovation={context.innovation}
