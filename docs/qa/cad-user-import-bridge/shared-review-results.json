@@ -1,0 +1,122 @@
+[
+  {
+    "width": 1440,
+    "disclosures": 4,
+    "keyboardExpansion": true,
+    "collapsedContentUnmounted": true,
+    "visibleBlockers": true,
+    "downloadAndAllReferences": true,
+    "allChangedActions": true,
+    "writes": 0,
+    "blocked": [
+      {
+        "path": "/api/me",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      }
+    ]
+  },
+  {
+    "width": 768,
+    "disclosures": 4,
+    "keyboardExpansion": true,
+    "collapsedContentUnmounted": true,
+    "visibleBlockers": true,
+    "downloadAndAllReferences": true,
+    "allChangedActions": true,
+    "writes": 0,
+    "blocked": [
+      {
+        "path": "/api/me",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "disclosures": 4,
+    "keyboardExpansion": true,
+    "collapsedContentUnmounted": true,
+    "visibleBlockers": true,
+    "downloadAndAllReferences": true,
+    "allChangedActions": true,
+    "writes": 0,
+    "blocked": [
+      {
+        "path": "/api/me",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "disclosures": 4,
+    "keyboardExpansion": true,
+    "collapsedContentUnmounted": true,
+    "visibleBlockers": true,
+    "downloadAndAllReferences": true,
+    "allChangedActions": true,
+    "writes": 0,
+    "blocked": [
+      {
+        "path": "/api/me",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      },
+      {
+        "path": "/api/cad/capabilities",
+        "method": "GET"
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "ordinaryInputModes": true,
+    "sharedImportSelectionAndClear": true,
+    "uploadDisabled": true
+  },
+  {
+    "width": 768,
+    "ordinaryInputModes": true,
+    "sharedImportSelectionAndClear": true,
+    "uploadDisabled": true
+  },
+  {
+    "width": 390,
+    "ordinaryInputModes": true,
+    "sharedImportSelectionAndClear": true,
+    "uploadDisabled": true
+  },
+  {
+    "width": 320,
+    "ordinaryInputModes": true,
+    "sharedImportSelectionAndClear": true,
+    "uploadDisabled": true
+  }
+]

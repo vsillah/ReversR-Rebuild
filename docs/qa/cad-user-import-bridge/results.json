@@ -1,0 +1,46 @@
+[
+  {
+    "width": 1440,
+    "uploadPosts": 0,
+    "fileBodyReads": 0,
+    "errors": [],
+    "selectionReplaceClear": true,
+    "invalidAndEmptyRecovery": true,
+    "keyboardDisclosure": true,
+    "statusRetryWithFixture": true,
+    "noOverflow": true
+  },
+  {
+    "width": 768,
+    "uploadPosts": 0,
+    "fileBodyReads": 0,
+    "errors": [],
+    "selectionReplaceClear": true,
+    "invalidAndEmptyRecovery": true,
+    "keyboardDisclosure": true,
+    "statusRetryWithFixture": true,
+    "noOverflow": true
+  },
+  {
+    "width": 390,
+    "uploadPosts": 0,
+    "fileBodyReads": 0,
+    "errors": [],
+    "selectionReplaceClear": true,
+    "invalidAndEmptyRecovery": true,
+    "keyboardDisclosure": true,
+    "statusRetryWithFixture": true,
+    "noOverflow": true
+  },
+  {
+    "width": 320,
+    "uploadPosts": 0,
+    "fileBodyReads": 0,
+    "errors": [],
+    "selectionReplaceClear": true,
+    "invalidAndEmptyRecovery": true,
+    "keyboardDisclosure": true,
+    "statusRetryWithFixture": true,
+    "noOverflow": true
+  }
+]
