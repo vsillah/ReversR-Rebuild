@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-integrated-upload-conversion-readiness",
+  "status": "CAD_INTEGRATED_UPLOAD_CONVERSION_READINESS_REVIEWED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "b6fd4f4cea351d5f74c857555e3e587e9c9165c9",
+  "branch": "codex/cad-integrated-upload-conversion-readiness",
+  "observedAtUtc": "2026-09-18T11:20:20Z",
+  "scopeConclusion": {
+    "componentEvidenceChainBound": true,
+    "developmentUploadToConversionComponentReadiness": true,
+    "additionalProviderRunRequired": false,
+    "readyForRealUsers": false,
+    "readyForPrivateCad": false,
+    "readyForProductionUploadActivation": false,
+    "readyForProductionConversion": false,
+    "reason": "The current source-bound chain already covers synthetic Auth/session, upload-session, browser-session, mounted development body admission, public synthetic conversion and Sandbox cleanup. Another provider run is not warranted unless a new concrete execution edge is identified."
+  },
+  "evidenceChain": {
+    "authSession": {
+      "source": "docs/cad-dev-auth-session-run-closeout.json",
+      "sourceSha256": "d1caa42df6916beee3466e20809598645b17a70c87bf4a25dd6ba64e73f23b3d",
+      "status": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "decision": "DEVELOPMENT_AUTH_SESSION_QUALIFICATION_EXECUTED",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "productionTouched": false,
+      "cadUploadAllowed": false,
+      "conversionAllowed": false
+    },
+    "uploadSession": {
+      "source": "docs/cad-dev-upload-session-successful-closeout.json",
+      "sourceSha256": "d31a35c92287d122d1eaa1aeacacbb6d2714866467f6b63006f1f7ea44ce3bdb",
+      "status": "DEVELOPMENT_UPLOAD_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "decision": "DEVELOPMENT_UPLOAD_SESSION_QUALIFICATION_EXECUTED",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "cadUploadsDisabled": true,
+      "bodyAdmissionAuthorized": false,
+      "conversionAllowed": false,
+      "retainedUploadSession": true
+    },
+    "browserSession": {
+      "source": "docs/cad-browser-session-local-run-closeout.json",
+      "sourceSha256": "5885f28c358167cb73c6f1f6c854ea77607b42050ae98e564c45d7b31b65aad4",
+      "status": "DEVELOPMENT_BROWSER_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+      "decision": "DEVELOPMENT_BROWSER_SESSION_QUALIFICATION_EXECUTED",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "browserCookiesObserved": true,
+      "disabledUploadRequests": 1,
+      "bodyReads": 0,
+      "cadUploadsDisabled": true,
+      "privateCadUsed": false,
+      "realUsersUsed": false
+    },
+    "mountedUploadAdmission": {
+      "source": "offline/cad-convex/uploadAdmissionActivationRolloverCloseout.json",
+      "sourceSha256": "1ad47ef23a3432748c48b1e32574b5e26871cf8fc322789af81bb970645d8abc",
+      "status": "UPLOAD_ACTIVATION_ROLLOVER_COMPLETED_SOURCE_CLOSEOUT",
+      "decision": "UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "terminalCode": "USER_UPLOADS_DISABLED",
+      "bodyAdmissionValidated": true,
+      "conversionDispatches": 0,
+      "sandboxDispatches": 0,
+      "storeMutations": 0
+    },
+    "publicSyntheticConversion": {
+      "source": "offline/cad-convex/uploadConversionSandboxRunCloseout.json",
+      "sourceSha256": "90eb08461039e5cc3112f50f5114c649415142ac29c9285312134f76dfa57f01",
+      "status": "PUBLIC_SYNTHETIC_CONVERSION_QUALIFIED",
+      "decision": "UPLOAD_CONVERSION_SANDBOX_QUALIFICATION_EXECUTED",
+      "runCompleted": true,
+      "unknownOutcome": false,
+      "fixtureId": "public-cube",
+      "meshCount": 1,
+      "vertexCount": 24,
+      "triangleCount": 12,
+      "sandboxStatus": "stopped",
+      "sandboxCleanup": "stopped",
+      "sourceConfidence": "unqualified"
+    },
+    "priorDevelopmentReadinessCloseout": {
+      "source": "offline/cad-convex/developmentReadinessAutopilotCloseout.json",
+      "sourceSha256": "6c35ac054dbf1e6c62783f57ed6d1eaf2d32c9b1973373fd25a75f33c1aaa1e4",
+      "status": "DEVELOPMENT_READINESS_AUTOPILOT_COMPLETED",
+      "approvedAutopilotScopeCompleted": true,
+      "additionalProviderRunRequired": false,
+      "readyForRealUsers": false,
+      "readyForProductionUploadActivation": false
+    }
+  },
+  "routeControls": {
+    "route": "server/cadUserUploadRouter.js",
+    "routeSha256": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb",
+    "routeGateLiteral": "const BODY_ADMISSION_AUTHORIZED = false;",
+    "productionRouteDisabled": true,
+    "mountedDevelopmentBodyAdmissionObserved": true,
+    "productionBodyAdmissionAuthorized": false,
+    "productionUploadActivationAuthorized": false
+  },
+  "fixtureContinuity": {
+    "primaryPublicFixtureId": "public-cube",
+    "sha256": "5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3",
+    "bytes": 11562,
+    "privateCad": false,
+    "uploadAdmissionAndConversionFixtureMatched": true,
+    "markDispenserPreviewIsSeparateHumanQaArtifact": true
+  },
+  "developmentReadiness": {
+    "syntheticAuthSessionQualified": true,
+    "syntheticUploadSessionQualified": true,
+    "localBrowserSessionQualified": true,
+    "mountedDevelopmentBodyAdmissionQualified": true,
+    "publicFixtureConversionQualified": true,
+    "sandboxResourceBoundsQualified": true,
+    "sandboxCleanupQualified": true,
+    "sanitizedEvidenceCustodyQualified": true,
+    "failClosedProductionSmokeQualified": true,
+    "componentEvidenceChainComplete": true,
+    "singleMountedEndToEndRealSessionRunCompleted": false
+  },
+  "knownLimitations": [
+    "the chain is component-bound rather than one mounted real-user HTTP session",
+    "conversion source confidence remains unqualified and does not establish arbitrary-model fidelity",
+    "render, STL, dimensional and manufacturing claims remain outside this readiness review",
+    "private CAD, real users, production upload activation and production conversion remain blocked",
+    "final invoice attribution per CAD run remains a fast-follow cost model task"
+  ],
+  "costPosition": {
+    "planningCapUsd": 50,
+    "conversionRunEstimatedUpperBoundUsd": 0.01,
+    "newPaidCommitment": false,
+    "withinPlanningCap": true,
+    "fastFollow": "attribute end-to-end per-run cost across Convex, Vercel, Sandbox, compute, network and storage before setting a fee"
+  },
+  "authorityPreserved": {
+    "realUserEnrollmentAuthorized": false,
+    "markTesterActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "productionConversionAuthorized": false,
+    "privateCadAuthorized": false,
+    "providerResourceChangeAuthorized": false,
+    "envChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "additionalLiveRunAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "externalMessageAuthorized": false
+  },
+  "nextGate": {
+    "type": "human-product-decision",
+    "summary": "Decide whether to authorize a bounded internal-tester or public-preview path using public materials only.",
+    "requiresHumanQa": true,
+    "stillRequiresSeparateApproval": [
+      "Mark or any real-user enrollment",
+      "mounted user-facing upload activation",
+      "private CAD input",
+      "production upload activation",
+      "production conversion or Sandbox dispatch",
+      "external message delivery"
+    ]
+  }
+}
