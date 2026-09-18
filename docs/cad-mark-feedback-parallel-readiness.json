@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-mark-feedback-parallel-readiness",
+  "status": "mark_feedback_pending_parallel_work_allowed",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "baseCommit": "003a370b5286c4f1f40f7102a4b4014e1148fc64",
+  "handoff": {
+    "recipientRef": "rrb-ref:approved-mark-recipient",
+    "sent": true,
+    "sentEvidenceRef": "rrb-ref:captain-gmail-sent-message",
+    "sentMessageIdRef": "rrb-ref:gmail-1a0b5a66cc16d714",
+    "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=build&qa=003a370",
+    "publicMaterial": "Dispenser.IGS and matching reference images",
+    "walkthroughAttached": true
+  },
+  "markApprovalRequiredFor": [
+    "rendered dispenser geometry credibility",
+    "reference orientation and fixed-view mapping",
+    "external stakeholder usefulness",
+    "source interpretation corrections",
+    "claims that the CAD preview is externally validated"
+  ],
+  "markApprovalNotRequiredFor": [
+    "source-only documentation and manifest updates",
+    "public preview hardening that preserves current disabled gates",
+    "upload/session UX clarity while upload admission remains disabled",
+    "cost/run attribution planning",
+    "implementation readiness information architecture",
+    "production fail-closed route smokes"
+  ],
+  "parallelWorkAllowed": [
+    {
+      "id": "preview-hardening",
+      "description": "Keep the public-material preview usable and clear while Mark reviews it.",
+      "limits": ["public materials only", "no private CAD", "no product accuracy claims"]
+    },
+    {
+      "id": "upload-session-ux",
+      "description": "Improve disabled upload/session language and recovery paths without activating uploads.",
+      "limits": ["BODY_ADMISSION_AUTHORIZED remains false", "no body reads", "no production upload activation"]
+    },
+    {
+      "id": "cost-attribution-planning",
+      "description": "Prepare per-CAD-run cost breakdown planning across Convex, Vercel, Sandbox, storage, compute and contingency.",
+      "limits": ["planning only", "no billing changes", "no new paid commitments"]
+    },
+    {
+      "id": "implementation-readiness",
+      "description": "Prepare the next Build-phase surface while keeping manufacturing output locked.",
+      "limits": ["no manufacturing package", "no STL/export certification", "no conversion dispatch"]
+    }
+  ],
+  "hardStops": [
+    "unknown outcome",
+    "failing production smoke",
+    "private CAD",
+    "real-user enrollment",
+    "production upload activation",
+    "production conversion",
+    "Sandbox dispatch",
+    "provider/auth/resource/env changes outside the approved development target",
+    "usage or billing changes",
+    "new paid commitments at or above the approved cap",
+    "external messages beyond the already approved Mark handoff",
+    "claims that Mark approved geometry before his response is received"
+  ],
+  "nextRecommendedGate": "source-only cost-attribution and implementation-readiness planning",
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanupMergedBranchAndWorktree": true,
+    "externalMessages": false,
+    "privateCad": false,
+    "uploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false
+  }
+}
