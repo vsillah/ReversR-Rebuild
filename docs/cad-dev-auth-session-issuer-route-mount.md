@@ -38,7 +38,7 @@ still keeps `BODY_ADMISSION_AUTHORIZED = false`.
 ## Validation
 
 ```sh
-NODE_PATH=/Users/vambahsillah/Documents/ReversR-Workspace/ReversR-Rebuild/node_modules node --test scripts/cad-dev-auth-session-issuer-bridge.test.js scripts/cad-upload-session.test.js scripts/cad-upload-session-store.test.js scripts/cad-upload-session-browser.test.js scripts/cad-user-upload-route.test.js scripts/cad-user-import-bridge.test.js
+NODE_PATH=./node_modules node --test scripts/cad-dev-auth-session-issuer-bridge.test.js scripts/cad-upload-session.test.js scripts/cad-upload-session-store.test.js scripts/cad-upload-session-browser.test.js scripts/cad-user-upload-route.test.js scripts/cad-user-import-bridge.test.js
 node --check server/cadDevAuthSessionIssuerRouter.js
 node --check server/cadDevAuthSessionIssuerBridge.js
 node --check scripts/cad-dev-auth-session-issuer-bridge.test.js
