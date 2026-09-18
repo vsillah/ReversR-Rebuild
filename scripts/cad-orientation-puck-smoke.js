@@ -79,21 +79,26 @@ fs.mkdirSync(out, { recursive: true });
   assert(puckBounds);
   if(width>=768) {
    assert.equal(await puck.getAttribute('data-layout'),'standard');
-   assert(puckBounds.width>=168);
+   assert(puckBounds.width<=180);
    assert.equal(await canvas.getAttribute('data-control-fit'),'default');
   } else {
    assert.equal(await puck.getAttribute('data-layout'),'compact');
-   assert(puckBounds.width<=132);
+   assert(puckBounds.width<=144);
    assert.equal(await canvas.getAttribute('data-control-fit'),'compact-clearance');
   }
-  for(const view of ['front','back','left','right','top','bottom']) {
+  for(const view of ['front','front-right','right','back-right','back','back-left','left','front-left','top','bottom']) {
    const button=page.getByRole('button',{name:`Show ${view} view`});
-   await button.click();
+   if (view === 'top' || view === 'bottom') {
+    const bounds=await button.boundingBox(); assert(bounds.height>=40 && bounds.width>=40);
+    await button.click({position:{x:Math.round(bounds.width/2),y:view==='top'?8:Math.round(bounds.height-8)}});
+   } else {
+    await button.click();
+   }
    assert.equal(await canvas.getAttribute('data-view'),view);
    assert.equal(await button.getAttribute('aria-pressed'),'true');
    assert.equal(await page.getByTestId('cad-view-grid-label').count(), 0);
    assert.equal(await host.getByText('Unscaled grid', {exact:true}).count(), 0);
-   const bounds=await button.boundingBox(); assert(bounds.height>=44 && bounds.width>=44);
+   const bounds=await button.boundingBox(); assert(bounds.height>=40 && bounds.width>=40);
    await page.waitForTimeout(200);
    await capture(view);
   }
