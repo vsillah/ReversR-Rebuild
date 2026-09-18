@@ -329,6 +329,10 @@ const files = [
   'scripts/cad-dev-browser-session-runner-binding.test.js',
   'docs/cad-dev-browser-session-https-target-binding.md',
   'docs/cad-dev-browser-session-https-target-binding.json',
+  'docs/cad-dev-browser-session-local-runner.md',
+  'docs/cad-dev-browser-session-local-runner.json',
+  'scripts/cad-dev-browser-session-local-runner.js',
+  'scripts/cad-dev-browser-session-local-runner.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
