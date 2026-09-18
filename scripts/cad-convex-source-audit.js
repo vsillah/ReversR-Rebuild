@@ -280,6 +280,10 @@ const files = [
   'scripts/cad-dev-browser-session-runner-binding.test.js',
   'docs/cad-dev-browser-session-https-target-binding.md',
   'docs/cad-dev-browser-session-https-target-binding.json',
+  'docs/cad-dev-browser-session-local-runner.md',
+  'docs/cad-dev-browser-session-local-runner.json',
+  'scripts/cad-dev-browser-session-local-runner.js',
+  'scripts/cad-dev-browser-session-local-runner.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
@@ -539,7 +543,24 @@ assert.equal(browserSessionHttpsTargetBinding.validator.startsServer, false);
 assert.equal(browserSessionHttpsTargetBinding.validator.opensBrowser, false);
 assert.equal(browserSessionHttpsTargetBinding.validator.sendsNetworkRequest, false);
 for (const value of Object.values(browserSessionHttpsTargetBinding.authority)) assert.equal(value, false);
+const browserSessionLocalRunner = JSON.parse(read('docs/cad-dev-browser-session-local-runner.json'));
+assert.equal(browserSessionLocalRunner.status, 'SOURCE_READY_LOCAL_BROWSER_RUNNER_REVIEWED_NO_RUN');
+assert.equal(browserSessionLocalRunner.runner.requiresLocalLoopbackHttpsBinding, true);
+assert.equal(browserSessionLocalRunner.runner.executableAuthorityNow, false);
+assert.equal(browserSessionLocalRunner.runner.acceptsExecuteFlagNow, false);
+assert.equal(browserSessionLocalRunner.runner.startsServer, false);
+assert.equal(browserSessionLocalRunner.runner.opensBrowser, false);
+assert.equal(browserSessionLocalRunner.runner.sendsNetworkRequest, false);
+assert.equal(browserSessionLocalRunner.runner.generatesTlsMaterial, false);
+assert.equal(browserSessionLocalRunner.runner.readsSecrets, false);
+assert.equal(browserSessionLocalRunner.runner.writesSecrets, false);
+assert.equal(browserSessionLocalRunner.planGuards.requestBodyBytes, 0);
+assert.equal(browserSessionLocalRunner.planGuards.bodyReads, 0);
+assert.equal(browserSessionLocalRunner.planGuards.retry, false);
+assert.equal(browserSessionLocalRunner.planGuards.secondRun, false);
+for (const value of Object.values(browserSessionLocalRunner.authority)) assert.equal(value, false);
 assert.ok(!/fetch\s*\(|https?\.request|child_process|process\.env/.test(read('scripts/cad-dev-browser-session-runner-binding.js')));
+assert.ok(!/fetch\s*\(|https?\.request|child_process|process\.env|playwright|puppeteer/.test(read('scripts/cad-dev-browser-session-local-runner.js')));
 assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false/);
 assert.match(read('server/cadUserUploadRouter.js'), /USER_UPLOADS_DISABLED/);
 for (const value of Object.values(devUploadSessionPlan.authorityPreserved)) assert.equal(value, false);
