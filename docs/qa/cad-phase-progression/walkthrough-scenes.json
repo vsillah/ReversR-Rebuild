@@ -1,0 +1,281 @@
+{
+  "url": "http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1",
+  "scenes": [
+    {
+      "width": 1440,
+      "name": "design-active",
+      "sourceSeconds": 2.113,
+      "duration": 6,
+      "mp4Seconds": 2.113
+    },
+    {
+      "width": 1440,
+      "name": "input-acquisition",
+      "sourceSeconds": 8.784,
+      "duration": 6,
+      "mp4Seconds": 8.784
+    },
+    {
+      "width": 1440,
+      "name": "input-source",
+      "sourceSeconds": 15.354,
+      "duration": 6,
+      "mp4Seconds": 15.354
+    },
+    {
+      "width": 1440,
+      "name": "inventory-source",
+      "sourceSeconds": 21.937,
+      "duration": 10,
+      "mp4Seconds": 21.937
+    },
+    {
+      "width": 1440,
+      "name": "viewer",
+      "sourceSeconds": 32.546,
+      "duration": 6,
+      "mp4Seconds": 32.546
+    },
+    {
+      "width": 1440,
+      "name": "viewer-front",
+      "sourceSeconds": 39.262,
+      "duration": 4,
+      "mp4Seconds": 39.262
+    },
+    {
+      "width": 1440,
+      "name": "viewer-top",
+      "sourceSeconds": 44.078,
+      "duration": 4,
+      "mp4Seconds": 44.078
+    },
+    {
+      "width": 1440,
+      "name": "source-download",
+      "sourceSeconds": 48.756,
+      "duration": 8,
+      "mp4Seconds": 48.756
+    },
+    {
+      "width": 1440,
+      "name": "reference-front",
+      "sourceSeconds": 57.43,
+      "duration": 6,
+      "mp4Seconds": 57.43
+    },
+    {
+      "width": 1440,
+      "name": "reference-left",
+      "sourceSeconds": 64.015,
+      "duration": 6,
+      "mp4Seconds": 64.015
+    },
+    {
+      "width": 1440,
+      "name": "reference-top",
+      "sourceSeconds": 70.602,
+      "duration": 6,
+      "mp4Seconds": 70.602
+    },
+    {
+      "width": 1440,
+      "name": "reference-drawing",
+      "sourceSeconds": 77.181,
+      "duration": 6,
+      "mp4Seconds": 77.181
+    },
+    {
+      "width": 1440,
+      "name": "return-to-app",
+      "sourceSeconds": 92.743,
+      "duration": 4,
+      "mp4Seconds": 91.75399999999999
+    },
+    {
+      "width": 1440,
+      "name": "geometry-warnings",
+      "sourceSeconds": 97.328,
+      "duration": 9,
+      "mp4Seconds": 96.339
+    },
+    {
+      "width": 1440,
+      "name": "build-prerequisites",
+      "sourceSeconds": 106.931,
+      "duration": 10,
+      "mp4Seconds": 105.942
+    },
+    {
+      "width": 1440,
+      "name": "build-recovery",
+      "sourceSeconds": 117.493,
+      "duration": 6,
+      "mp4Seconds": 116.50399999999999
+    },
+    {
+      "width": 1440,
+      "name": "inventory-recovery",
+      "sourceSeconds": 124.086,
+      "duration": 5,
+      "mp4Seconds": 123.097
+    },
+    {
+      "width": 1440,
+      "name": "design-recovered",
+      "sourceSeconds": 129.798,
+      "duration": 5,
+      "mp4Seconds": 128.809
+    },
+    {
+      "width": 1440,
+      "name": "opened-drawing",
+      "mp4Seconds": 85.29,
+      "duration": 7.96,
+      "blocked": [
+        {
+          "path": "/api/me",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "name": "design-active",
+      "sourceSeconds": 0.746,
+      "duration": 6,
+      "mp4Seconds": 135.42600000000002
+    },
+    {
+      "width": 390,
+      "name": "input-acquisition",
+      "sourceSeconds": 7.345,
+      "duration": 6,
+      "mp4Seconds": 142.025
+    },
+    {
+      "width": 390,
+      "name": "input-source",
+      "sourceSeconds": 13.877,
+      "duration": 6,
+      "mp4Seconds": 148.55700000000002
+    },
+    {
+      "width": 390,
+      "name": "inventory-source",
+      "sourceSeconds": 20.434,
+      "duration": 10,
+      "mp4Seconds": 155.114
+    },
+    {
+      "width": 390,
+      "name": "viewer",
+      "sourceSeconds": 31.005,
+      "duration": 6,
+      "mp4Seconds": 165.685
+    },
+    {
+      "width": 390,
+      "name": "viewer-front",
+      "sourceSeconds": 37.578,
+      "duration": 4,
+      "mp4Seconds": 172.258
+    },
+    {
+      "width": 390,
+      "name": "viewer-top",
+      "sourceSeconds": 42.128,
+      "duration": 4,
+      "mp4Seconds": 176.808
+    },
+    {
+      "width": 390,
+      "name": "source-download",
+      "sourceSeconds": 46.673,
+      "duration": 8,
+      "mp4Seconds": 181.353
+    },
+    {
+      "width": 390,
+      "name": "reference-front",
+      "sourceSeconds": 55.225,
+      "duration": 6,
+      "mp4Seconds": 189.905
+    },
+    {
+      "width": 390,
+      "name": "reference-left",
+      "sourceSeconds": 61.759,
+      "duration": 6,
+      "mp4Seconds": 196.43900000000002
+    },
+    {
+      "width": 390,
+      "name": "reference-top",
+      "sourceSeconds": 68.294,
+      "duration": 6,
+      "mp4Seconds": 202.974
+    },
+    {
+      "width": 390,
+      "name": "reference-drawing",
+      "sourceSeconds": 74.825,
+      "duration": 6,
+      "mp4Seconds": 209.505
+    },
+    {
+      "width": 390,
+      "name": "return-to-app",
+      "sourceSeconds": 89.634,
+      "duration": 4,
+      "mp4Seconds": 224.02700000000002
+    },
+    {
+      "width": 390,
+      "name": "geometry-warnings",
+      "sourceSeconds": 94.169,
+      "duration": 9,
+      "mp4Seconds": 228.56199999999998
+    },
+    {
+      "width": 390,
+      "name": "build-prerequisites",
+      "sourceSeconds": 103.727,
+      "duration": 10,
+      "mp4Seconds": 238.12
+    },
+    {
+      "width": 390,
+      "name": "build-recovery",
+      "sourceSeconds": 114.265,
+      "duration": 6,
+      "mp4Seconds": 248.658
+    },
+    {
+      "width": 390,
+      "name": "inventory-recovery",
+      "sourceSeconds": 120.815,
+      "duration": 5,
+      "mp4Seconds": 255.208
+    },
+    {
+      "width": 390,
+      "name": "design-recovered",
+      "sourceSeconds": 126.487,
+      "duration": 5,
+      "mp4Seconds": 260.88000000000005
+    },
+    {
+      "width": 390,
+      "name": "opened-drawing",
+      "mp4Seconds": 217.562,
+      "duration": 7.96,
+      "blocked": [
+        {
+          "path": "/api/me",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}
