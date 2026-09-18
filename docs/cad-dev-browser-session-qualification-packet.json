@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-browser-session-qualification-packet",
+  "status": "SOURCE_READY_RUN_BLOCKED_PENDING_BINDING_AND_APPROVAL",
+  "sourceOnly": true,
+  "branch": "codex/cad-dev-browser-session-qualification-packet",
+  "baseMainCommit": "aeb437e29fef0eb87b6ff7db3292a247b295bde6",
+  "dependsOnPr": 314,
+  "sourceSha256": {
+    "docs/cad-dev-browser-session-harness.md": "c8bf0a1f5973f803ab02f11129533bdeab3b7994a6d25552c284f675bede31d5",
+    "scripts/cad-dev-browser-session-harness.js": "dc9b49002fe4c0173be19e76c4d6dbcb1e24dd7c7d4fddb58a21c79a304f51f1",
+    "server/cadDevAuthSessionIssuerBridge.js": "07da8c77ea8d21bb260434daa4e457a06801ad9b15e6623c61af533192db2eb3",
+    "server/cadDevAuthSessionIssuerRouter.js": "91301728c778cab3f259694943607f172e97b74dbd34941fc761ec947c465202",
+    "server/cadUserUploadRouter.js": "70c1c8382b1a570b6c39c602707070a04f0c208dbe43e30bdbbd5a62c91d41bb"
+  },
+  "target": {
+    "reviewStatus": "PENDING",
+    "kind": "isolated-development",
+    "transport": "same-origin-https",
+    "exactOrigin": null,
+    "exactBrowserRoute": null,
+    "sourceCommit": null,
+    "owner": null,
+    "productionSmokeReceiptSha256": null
+  },
+  "auth": {
+    "reviewStatus": "PENDING",
+    "kind": "synthetic-server-owned-header-resolver",
+    "acceptanceReceiptSha256": null,
+    "adapterSourceSha256": null,
+    "store": "isolated-ephemeral-test-only",
+    "lifetimeMs": 60000,
+    "fixtureEntitlement": true,
+    "realProviderAllowed": false
+  },
+  "binding": {
+    "runId": null,
+    "startUtc": null,
+    "endUtc": null,
+    "maxWindowMinutes": 15,
+    "packetSha256": null,
+    "rollbackReceiptSha256": null,
+    "custodian": null,
+    "costEvidenceSha256": null,
+    "maxCostUsd": 0
+  },
+  "limits": {
+    "maxRuns": 1,
+    "maxIssuerRequests": 1,
+    "maxDisabledUploadRequests": 1,
+    "requestBodyBytes": 0,
+    "bodyReads": 0,
+    "retry": false,
+    "secondRun": false,
+    "redirects": false
+  },
+  "expected": {
+    "issuerStatus": 200,
+    "sessionCode": "SESSION_READY",
+    "canSubmit": false,
+    "cookieIssued": true,
+    "cookieStoredByBrowser": true,
+    "cookieReturnedByBrowser": true,
+    "cookieSecure": true,
+    "cookieHttpOnly": true,
+    "cookieSameSite": "Strict",
+    "cookiePath": "/",
+    "cookieDomainAbsent": true,
+    "uploadStatus": 503,
+    "uploadCode": "USER_UPLOADS_DISABLED",
+    "cacheControl": "no-store",
+    "bodyReads": 0,
+    "BODY_ADMISSION_AUTHORIZED": false
+  },
+  "authority": {
+    "liveRunAuthorized": false,
+    "production": false,
+    "uploadActivation": false,
+    "bodyAdmission": false,
+    "conversion": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerMutation": false,
+    "resourceMutation": false,
+    "environmentMutation": false,
+    "secretReads": false,
+    "secretWrites": false,
+    "persistentStoreMutation": false,
+    "usageBillingChanges": false,
+    "emailSmsSlack": false,
+    "retryPriorRun": false,
+    "cleanupBranchesWorktrees": false
+  },
+  "stopOutcomes": [
+    "STOPPED_PRECHECK",
+    "STOPPED_KNOWN_FAILURE",
+    "OUTCOME_UNKNOWN",
+    "QUALIFIED_DISABLED_SESSION_ONLY"
+  ],
+  "expensesUsd": 0
+}
