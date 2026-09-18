@@ -170,20 +170,20 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
             <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
               <Ionicons name="cube-outline" size={22} color={colors.primary} accessible={false} />
               <View style={{ flex: 1, gap: Spacing.xs }}>
-                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal reviewer preview</Text>
-                <Text style={text}>Open Mark's approved public Dispenser sample inside this app. This does not upload files or unlock live CAD admission.</Text>
+                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal IGS preview</Text>
+                <Text style={text}>Open the internal renderer to choose a public or authorized internal .igs/.iges file in the installed app. Production upload admission stays locked.</Text>
               </View>
             </View>
             <CadAction
               testID="cad-open-native-internal-preview"
-              accessibilityLabel="Review public Dispenser preview in app"
+              accessibilityLabel="Open internal IGS upload-render preview"
               primary
               icon="arrow-forward-circle-outline"
-              label="Review public Dispenser preview"
+              label="Open internal IGS preview"
               onPress={onOpenInternalPreview}
             />
           </View>
-          <Text style={text}>Live upload remains locked below until a separate approved production upload path exists.</Text>
+          <Text style={text}>This is test-only preview handling for internal reviewers. It does not activate production upload, conversion, or Sandbox dispatch.</Text>
         </View>
       ) : supported ? (
         <>
@@ -197,7 +197,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
-      {!fixture && <>
+      {!fixture && !onOpenInternalPreview && <>
         <View testID="cad-operator-gate" style={{ gap: Spacing.sm, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
           <CadNotice icon="lock-closed-outline">Live upload locked</CadNotice>
           <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
