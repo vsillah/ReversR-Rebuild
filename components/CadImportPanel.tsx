@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
 import { useAppTheme } from '../hooks/useAppTheme';
-import { CAD_USER_IMPORT_ENABLED, mapCadImportError, prepareCadFileMetadata, type CadUploadSessionAdapter } from '../utils/cadUserImportBridge';
+import { mapCadImportError, prepareCadFileMetadata, type CadUploadSessionAdapter } from '../utils/cadUserImportBridge';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
@@ -77,7 +77,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
       <Text style={text}>{fixture
         ? 'Source acquisition and conversion are complete for this public fixture. No new upload or conversion runs here.'
-        : 'Choose a public or synthetic .igs or .iges file to prepare its format and size locally. File contents stay on your device.'}</Text>
+        : 'Choose a public or synthetic .igs or .iges file for a local compatibility check. File contents stay on your device.'}</Text>
       {fixture ? (
         <View testID="cad-internal-test-fixture" style={{ gap: Spacing.sm }}>
           <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
@@ -100,9 +100,9 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
             setSelected(prepared.metadata);
             setMessage(prepared.message);
           }} />
-          <TouchableOpacity testID="cad-choose-file" accessibilityRole="button" accessibilityLabel="Choose IGES file" style={button} onPress={() => {
+          <CadAction testID="cad-choose-file" accessibilityLabel="Choose IGES file from this device" primary icon="document-attach-outline" label={selected ? 'Choose another IGES file' : 'Choose IGES file'} onPress={() => {
             try { picker.current?.click(); } catch { setMessage('This browser could not open the file picker. Try a supported desktop browser.'); }
-          }}><Text style={text}>{selected ? 'Choose another file' : 'Choose IGES file'}</Text></TouchableOpacity>
+          }} />
         </>
       ) : <Text testID="cad-picker-unavailable" style={text}>File selection is unavailable on this surface. Open ReversR in a web browser with file-picker support to select an IGES file. Native selection is pending.</Text>}
       {selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
@@ -110,11 +110,11 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
-      <View testID="cad-operator-gate" style={{ gap: Spacing.sm }}>
-        <CadNotice icon="lock-closed-outline">Admission disabled · Upload is not enabled</CadNotice>
+      <View testID="cad-operator-gate" style={{ gap: Spacing.sm, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
+        <CadNotice icon="lock-closed-outline">Live upload locked</CadNotice>
         {!fixture && <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
-          ? 'Development session connected · Upload remains disabled'
-          : 'No upload session connected'}</Text>}
+          ? 'Development session connected. Upload admission remains disabled.'
+          : 'No upload session connected. Upload admission remains disabled.'}</Text>}
         {!fixture && uploadSessionAdapter && !sessionReady && <CadAction
           testID="cad-connect-session"
           accessibilityLabel="Connect development upload session"
@@ -124,7 +124,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
           onPress={connectSession}
         />}
         {!!sessionMessage && <Text testID="cad-session-message" accessibilityLiveRegion="polite" style={text}>{sessionMessage}</Text>}
-        <CadAction label="Upload unavailable" accessibilityLabel="Upload unavailable: operator access required" icon="lock-closed-outline" disabled={!CAD_USER_IMPORT_ENABLED} />
+        <Text testID="cad-upload-locked-status" style={text}>This local check does not upload files. Live upload stays unavailable until an approved session and admission route are both enabled.</Text>
       </View>
       <CadDetails title="Import access & service status" testID="cad-import-details">
         <Text testID="cad-development-session-unavailable" style={text}>{mapCadImportError({ schemaVersion: 1, status: 'error', code: 'USER_AUTH_UNAVAILABLE' }).message} No browser sign-in route is available yet. Clear or replace your selection to continue locally.</Text>

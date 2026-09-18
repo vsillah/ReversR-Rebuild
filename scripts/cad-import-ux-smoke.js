@@ -53,17 +53,20 @@ fs.mkdirSync(evidence, { recursive: true });
         await file.setInputFiles({ name: 'synthetic.txt', mimeType: 'text/plain', buffer: Buffer.from('fixture') });
         await page.getByText('Unsupported format.', { exact: false }).waitFor();
         await file.setInputFiles({ name: 'synthetic.igs', mimeType: 'application/octet-stream', buffer: Buffer.alloc(0) });
-        await page.getByText('This file is empty.', { exact: false }).waitFor();
+        await page.getByText('This file is empty or has an invalid size. Choose another IGES file.', { exact: true }).waitFor();
         await page.getByTestId('cad-choose-file').click();
         // In automation supply metadata through the file input; never parse a CAD source.
         await file.setInputFiles({ name: 'synthetic.IGES', mimeType: 'application/octet-stream', buffer: Buffer.from('synthetic metadata fixture') });
         await page.getByTestId('cad-selected-metadata').waitFor();
         assert(!(await page.locator('body').innerText()).includes('synthetic.IGES'));
-        assert.equal(await page.getByLabel('Upload unavailable: operator access required').getAttribute('aria-disabled'), 'true');
+        await page.getByTestId('cad-upload-locked-status').waitFor();
+        assert.equal(await page.getByLabel('Upload unavailable: operator access required').count(), 0);
+        await page.getByTestId('cad-import-details').click();
+        await page.getByTestId('cad-check-status').waitFor();
         for (const state of ['enabled', 'disabled', 'error']) {
           capability = state;
           await page.getByTestId('cad-check-status').click();
-          await page.getByText(state === 'enabled' ? 'The protected conversion service is available.' : state === 'disabled' ? 'The conversion service is unavailable.' : 'Could not check service status.', { exact: false }).waitFor();
+          await page.getByText(state === 'enabled' ? 'The protected conversion service is available.' : state === 'disabled' ? 'The conversion service is unavailable.' : 'Import status unavailable.', { exact: false }).waitFor();
         }
         await page.getByTestId('cad-operator-gate').scrollIntoViewIfNeeded();
         await page.screenshot({ path: `${evidence}/import-${width}.png`, fullPage: true });
