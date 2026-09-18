@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-browser-session-https-target-binding",
+  "status": "SOURCE_READY_LOCAL_HTTPS_TARGET_BINDING_ALLOWED",
+  "sourceOnly": true,
+  "branch": "codex/cad-browser-session-https-target-binding",
+  "baseMainCommit": "2a9401644250497abe9b05fe2b2b75a1792d87ae",
+  "dependsOnPr": 316,
+  "targetDecision": {
+    "reviewedPreviewHttps": true,
+    "localLoopbackHttps": true,
+    "productionHttps": false,
+    "httpLoopback": false,
+    "unreviewedLocalhost": false
+  },
+  "localLoopbackHttpsRequirements": {
+    "targetKind": "local-loopback-https",
+    "host": "127.0.0.1 or localhost only",
+    "port": "1024-65535",
+    "localOnly": true,
+    "tls": {
+      "certificateSha256": "required",
+      "privateKeySha256": "required",
+      "privateKeyMode": "0600",
+      "generatedForRunOnly": true,
+      "trustStoreMutationAllowed": false
+    },
+    "browser": {
+      "engine": "chromium",
+      "ignoreHttpsErrors": true,
+      "freshContext": true,
+      "persistentProfile": false,
+      "extensionsAllowed": false,
+      "serviceWorkersAllowed": false
+    }
+  },
+  "validator": {
+    "script": "scripts/cad-dev-browser-session-runner-binding.js",
+    "test": "scripts/cad-dev-browser-session-runner-binding.test.js",
+    "liveRunAuthorized": false,
+    "startsServer": false,
+    "opensBrowser": false,
+    "sendsNetworkRequest": false
+  },
+  "authority": {
+    "liveRunAuthorized": false,
+    "production": false,
+    "uploadActivation": false,
+    "bodyAdmission": false,
+    "conversion": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerMutation": false,
+    "resourceMutation": false,
+    "environmentMutation": false,
+    "secretReads": false,
+    "secretWrites": false,
+    "persistentStoreMutation": false,
+    "usageBillingChanges": false,
+    "emailSmsSlack": false,
+    "retryPriorRun": false,
+    "cleanupBranchesWorktrees": false
+  },
+  "nextGate": "prepare one ignored local loopback HTTPS binding and a separate source-reviewed browser runner before any qualification run"
+}

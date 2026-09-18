@@ -278,6 +278,8 @@ const files = [
   'docs/cad-dev-browser-session-runner-binding.json',
   'scripts/cad-dev-browser-session-runner-binding.js',
   'scripts/cad-dev-browser-session-runner-binding.test.js',
+  'docs/cad-dev-browser-session-https-target-binding.md',
+  'docs/cad-dev-browser-session-https-target-binding.json',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
@@ -528,6 +530,15 @@ assert.equal(browserSessionRunnerBinding.runner.startsServer, false);
 assert.equal(browserSessionRunnerBinding.runner.opensBrowser, false);
 assert.equal(browserSessionRunnerBinding.runner.sendsNetworkRequest, false);
 for (const value of Object.values(browserSessionRunnerBinding.authority)) assert.equal(value, false);
+const browserSessionHttpsTargetBinding = JSON.parse(read('docs/cad-dev-browser-session-https-target-binding.json'));
+assert.equal(browserSessionHttpsTargetBinding.status, 'SOURCE_READY_LOCAL_HTTPS_TARGET_BINDING_ALLOWED');
+assert.equal(browserSessionHttpsTargetBinding.targetDecision.localLoopbackHttps, true);
+assert.equal(browserSessionHttpsTargetBinding.targetDecision.productionHttps, false);
+assert.equal(browserSessionHttpsTargetBinding.validator.liveRunAuthorized, false);
+assert.equal(browserSessionHttpsTargetBinding.validator.startsServer, false);
+assert.equal(browserSessionHttpsTargetBinding.validator.opensBrowser, false);
+assert.equal(browserSessionHttpsTargetBinding.validator.sendsNetworkRequest, false);
+for (const value of Object.values(browserSessionHttpsTargetBinding.authority)) assert.equal(value, false);
 assert.ok(!/fetch\s*\(|https?\.request|child_process|process\.env/.test(read('scripts/cad-dev-browser-session-runner-binding.js')));
 assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false/);
 assert.match(read('server/cadUserUploadRouter.js'), /USER_UPLOADS_DISABLED/);

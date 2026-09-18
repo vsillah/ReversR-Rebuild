@@ -30,16 +30,20 @@ directory mode `700` and file mode `600`. The binding must include:
 
 - the run ID and exact source commit;
 - SHA-256 digests for the PR #315 packet Markdown and JSON;
-- a non-production same-origin HTTPS origin and exact browser route;
+- a reviewed preview HTTPS or explicit `local-loopback-https` origin and exact
+  browser route;
 - a synthetic server-owned header resolver acceptance receipt;
 - rollback, custody, zero-cost, and production fail-closed smoke receipts;
 - limits of one issuer request, one disabled upload request, zero request-body
   bytes, zero body reads, no redirect, no retry, and no second run.
 
-The validator rejects the production domain, non-HTTPS targets, unresolved packet
-digests, malformed windows, nonzero cost, enabled body admission, upload
-activation, conversion, Sandbox, private CAD, real users, provider/resource/env
-mutation, usage/billing changes, external messages, and cleanup authority.
+The validator rejects the production domain, non-HTTPS targets, ordinary
+localhost, unresolved packet digests, malformed windows, nonzero cost, enabled
+body admission, upload activation, conversion, Sandbox, private CAD, real users,
+provider/resource/env mutation, usage/billing changes, external messages, and
+cleanup authority. Local loopback HTTPS is accepted only when the binding
+declares `local-loopback-https` and carries run-owned TLS, browser isolation,
+custody, rollback, cost, and disabled-gate evidence.
 
 ## Validation
 

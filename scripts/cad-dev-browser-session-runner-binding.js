@@ -60,7 +60,34 @@ function assertPrivateBindingFile(file) {
   if (fileMode(dir) !== 0o700) fail('BINDING_DIRECTORY_MODE_INVALID');
 }
 
-function validateOrigin(origin) {
+function validateLocalLoopbackTarget(target, parsed) {
+  if (target.kind !== 'local-loopback-https') fail('TARGET_LOOPBACK_KIND_INVALID');
+  if (target.localOnly !== true) fail('TARGET_LOOPBACK_LOCAL_ONLY_REQUIRED');
+  const port = Number.parseInt(parsed.port || '443', 10);
+  if (!Number.isSafeInteger(port) || port < 1024 || port > 65535) {
+    fail('TARGET_LOOPBACK_PORT_INVALID');
+  }
+  if (!target.tls || typeof target.tls !== 'object'
+    || !hex64(target.tls.certificateSha256)
+    || !hex64(target.tls.privateKeySha256)
+    || target.tls.privateKeyMode !== '0600'
+    || target.tls.generatedForRunOnly !== true
+    || target.tls.trustStoreMutationAllowed !== false) {
+    fail('TARGET_LOOPBACK_TLS_INVALID');
+  }
+  if (!target.browser || typeof target.browser !== 'object'
+    || target.browser.engine !== 'chromium'
+    || target.browser.ignoreHttpsErrors !== true
+    || target.browser.freshContext !== true
+    || target.browser.persistentProfile !== false
+    || target.browser.extensionsAllowed !== false
+    || target.browser.serviceWorkersAllowed !== false) {
+    fail('TARGET_LOOPBACK_BROWSER_INVALID');
+  }
+}
+
+function validateOrigin(target) {
+  const origin = target?.exactOrigin;
   let parsed;
   try {
     parsed = new URL(origin);
@@ -73,7 +100,9 @@ function validateOrigin(origin) {
   }
   if (parsed.hostname === 'reversr.vercel.app') fail('TARGET_ORIGIN_PRODUCTION_FORBIDDEN');
   if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
-    fail('TARGET_ORIGIN_LOOPBACK_NOT_HTTPS_REVIEWED');
+    validateLocalLoopbackTarget(target, parsed);
+  } else if (target.kind && target.kind !== 'reviewed-preview-https') {
+    fail('TARGET_KIND_INVALID');
   }
   return parsed.origin;
 }
@@ -127,7 +156,7 @@ function validateRunBinding(binding) {
     || fileDigest(packetJson) !== binding.packet.jsonSha256) fail('PACKET_DIGEST_DRIFT');
 
   if (!binding.target || typeof binding.target !== 'object') fail('TARGET_INVALID');
-  const origin = validateOrigin(binding.target.exactOrigin);
+  const origin = validateOrigin(binding.target);
   if (typeof binding.target.exactBrowserRoute !== 'string'
     || !binding.target.exactBrowserRoute.startsWith('/')) fail('TARGET_ROUTE_INVALID');
   if (binding.target.sourceCommit !== binding.sourceCommit) fail('TARGET_SOURCE_COMMIT_MISMATCH');
