@@ -31,6 +31,16 @@ export type CadInternalTesterFixture = {
     kind: 'stl';
     assetUrl: string;
     sha256: string;
+  } | {
+    kind: 'mesh';
+    sha256: string;
+    vertices: number;
+    triangles: number;
+    meshes: readonly {
+      name: string;
+      positions: readonly number[];
+      indices: readonly number[];
+    }[];
   };
   warnings: readonly string[];
 };
