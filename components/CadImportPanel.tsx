@@ -4,21 +4,45 @@ import { Ionicons } from '@expo/vector-icons';
 import { Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
 import { useAppTheme } from '../hooks/useAppTheme';
-import { CAD_USER_IMPORT_ENABLED, mapCadImportError, prepareCadFileMetadata } from '../utils/cadUserImportBridge';
+import { CAD_USER_IMPORT_ENABLED, mapCadImportError, prepareCadFileMetadata, type CadUploadSessionAdapter } from '../utils/cadUserImportBridge';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
 // Selection is metadata-only. Never retain a File, read bytes, or invoke upload.
-export default function CadImportPanel({ internalPreview, onReviewQualifiedResult }: { internalPreview?: CadInternalTesterPreview; onReviewQualifiedResult?: () => void }) {
+export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, uploadSessionAdapter }: {
+  internalPreview?: CadInternalTesterPreview;
+  onReviewQualifiedResult?: () => void;
+  uploadSessionAdapter?: CadUploadSessionAdapter;
+}) {
   const { colors } = useAppTheme();
   const picker = useRef<HTMLInputElement | null>(null);
   const [selected, setSelected] = useState<{ format: string; bytes: number } | null>(null);
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState('Status has not been checked.');
   const [checking, setChecking] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [sessionMessage, setSessionMessage] = useState('');
+  const [sessionReady, setSessionReady] = useState(false);
   const controller = useRef<AbortController | null>(null);
+  const sessionController = useRef<AbortController | null>(null);
   const supported = Platform.OS === 'web' && typeof document !== 'undefined' && typeof File !== 'undefined';
-  useEffect(() => () => controller.current?.abort(), []);
+  useEffect(() => () => { controller.current?.abort(); sessionController.current?.abort(); }, []);
+  const connectSession = async () => {
+    if (!uploadSessionAdapter || sessionController.current) return;
+    const request = new AbortController();
+    sessionController.current = request;
+    setConnecting(true);
+    setSessionMessage('');
+    const result = await uploadSessionAdapter.connect({ signal: request.signal });
+    if (!request.signal.aborted) {
+      setSessionReady(result.ok);
+      setSessionMessage(result.message);
+    }
+    if (sessionController.current === request) {
+      sessionController.current = null;
+      if (!request.signal.aborted) setConnecting(false);
+    }
+  };
   const checkStatus = async () => {
     if (controller.current) return;
     const request = new AbortController();
@@ -88,7 +112,18 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
       <View testID="cad-operator-gate" style={{ gap: Spacing.sm }}>
         <CadNotice icon="lock-closed-outline">Admission disabled · Upload is not enabled</CadNotice>
-        {!fixture && <Text testID="cad-session-state" style={text}>No upload session connected</Text>}
+        {!fixture && <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
+          ? 'Development session connected · Upload remains disabled'
+          : 'No upload session connected'}</Text>}
+        {!fixture && uploadSessionAdapter && !sessionReady && <CadAction
+          testID="cad-connect-session"
+          accessibilityLabel="Connect development upload session"
+          icon="key-outline"
+          label={connecting ? 'Connecting session…' : 'Connect development session'}
+          disabled={connecting}
+          onPress={connectSession}
+        />}
+        {!!sessionMessage && <Text testID="cad-session-message" accessibilityLiveRegion="polite" style={text}>{sessionMessage}</Text>}
         <CadAction label="Upload unavailable" accessibilityLabel="Upload unavailable: operator access required" icon="lock-closed-outline" disabled={!CAD_USER_IMPORT_ENABLED} />
       </View>
       <CadDetails title="Import access & service status" testID="cad-import-details">
