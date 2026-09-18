@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "mode": "source-only-cad-dev-browser-session-local-runner",
-  "status": "SOURCE_READY_LOCAL_BROWSER_RUNNER_REVIEWED_NO_RUN",
+  "status": "SOURCE_READY_LOCAL_BROWSER_EXECUTOR_REVIEWED_NO_RUN",
   "sourceOnly": true,
   "branch": "codex/cad-browser-session-local-runner",
   "baseMainCommit": "d05b73805fa92e995fe4fe835a0f6b9835484e42",
@@ -15,13 +15,14 @@
     "script": "scripts/cad-dev-browser-session-local-runner.js",
     "test": "scripts/cad-dev-browser-session-local-runner.test.js",
     "input": ".local/cad-convex/browser-session-qualification-runs/<runId>/run-binding.json",
-    "output": "sanitized runner plan on stdout",
+    "output": "sanitized runner plan or sanitized local evidence/receipt only after future exact one-run approval",
     "requiresLocalLoopbackHttpsBinding": true,
+    "executableImplemented": true,
     "executableAuthorityNow": false,
     "acceptsExecuteFlagNow": false,
-    "startsServer": false,
-    "opensBrowser": false,
-    "sendsNetworkRequest": false,
+    "startsServerOnlyAfterExactFutureApproval": true,
+    "opensBrowserOnlyAfterExactFutureApproval": true,
+    "sendsNetworkRequestOnlyToRunOwnedLoopbackAfterExactFutureApproval": true,
     "generatesTlsMaterial": false,
     "readsSecrets": false,
     "writesSecrets": false
@@ -60,5 +61,5 @@
     "retryPriorRun": false,
     "cleanupBranchesWorktrees": false
   },
-  "nextGate": "assemble and accept one ignored private local-loopback HTTPS run binding, then seek separate explicit one-run authority before execution"
+  "nextGate": "assemble and accept one ignored private local-loopback HTTPS run binding for this merged source, then seek separate explicit one-run authority before execution"
 }
