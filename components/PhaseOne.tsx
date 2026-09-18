@@ -49,6 +49,7 @@ interface Props {
   mockAnalysis?: AnalysisResult | null;
   inventoryRefreshKey?: number;
   cadInternalPreview?: CadInternalTesterPreview;
+  onOpenCadInternalPreview?: () => void;
 }
 
 type PhaseOneAlert = {
@@ -69,6 +70,7 @@ export default function PhaseOne({
   mockAnalysis,
   inventoryRefreshKey = 0,
   cadInternalPreview,
+  onOpenCadInternalPreview,
 }: Props) {
   const { colors: Colors } = useAppTheme();
   const { refreshAccount } = useCommercialization();
@@ -355,7 +357,12 @@ export default function PhaseOne({
         </View>
 
         <View style={styles.contentArea}>
-          {inputMode === 'import' && <CadImportPanel internalPreview={cadInternalPreview} />}
+          {inputMode === 'import' && (
+            <CadImportPanel
+              internalPreview={cadInternalPreview}
+              onOpenInternalPreview={onOpenCadInternalPreview}
+            />
+          )}
           {inputMode === 'type' && (
             <View style={styles.typeContent}>
               <Text style={styles.contentLabel}>Describe the machine</Text>
