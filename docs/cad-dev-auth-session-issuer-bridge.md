@@ -4,7 +4,9 @@ Source-only composition based on main `383ff41c958085dc76f04a6c27746b9861e20b0a`
 (includes the PR #309 browser/session contract harness).
 
 `server/cadDevAuthSessionIssuerBridge.js` composes the existing bounded session
-service and verifier. No shipped server/API route or UI imports it. The factory
+service and verifier. PR #312 introduced it as source-only; the follow-on route
+mount wraps it at `POST /api/cad/dev-upload-session` while still passing no
+default provider/store/login adapters from `server/index.js`. The factory
 requires explicit `enabled: true`, `environment: 'development'`, an exact HTTPS
 origin, and server-owned store, login resolution, and authorization refresh
 adapters. Missing configuration and production process contexts fail closed.
@@ -56,10 +58,11 @@ compatibility, not live readiness.
 
 ## Next gate
 
-Captain review and explicit push/draft-PR authorization precede publication.
-Live development login/store binding and route mounting require a separate
-reviewed scope. Cookie transport assumes HTTPS; this change does not configure
-local TLS or make the existing browser's synthetic fixture into real sign-in.
+The route-mount follow-on is documented in
+[cad-dev-auth-session-issuer-route-mount.md](cad-dev-auth-session-issuer-route-mount.md).
+Cookie transport assumes HTTPS; the default production route remains
+auth-unavailable, and the existing browser synthetic fixture is still not real
+sign-in.
 
 Reproduction (with repository dependencies available):
 

@@ -1,8 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
+const { once } = require('node:events');
 const fs = require('node:fs');
+const express = require('express');
 const { createCadDevAuthSessionIssuerBridge: createBridge } = require('../server/cadDevAuthSessionIssuerBridge');
+const { createCadDevAuthSessionIssuerRouter } = require('../server/cadDevAuthSessionIssuerRouter');
+const { createCadUserUploadRouter } = require('../server/cadUserUploadRouter');
 const { createInMemoryUploadSessionStoreForTests } = require('../server/uploadSessionStore');
 const { createCadUploadSessionAdapter } = require('../utils/cadUserImportBridge');
 const origin = 'https://synthetic.example.invalid';
@@ -31,6 +35,34 @@ function fixture(overrides = {}) {
 function cookieRequest(result, extra = {}) {
   return request({ origin, cookie: result.headers['Set-Cookie'].split(';')[0],
     'x-upload-csrf': result.body.session.csrfToken, ...extra });
+}
+async function routeHarness(t, { issuerBridge, uploadOptions } = {}) {
+  let bodyReads = 0;
+  const app = express();
+  app.use((req, res, next) => {
+    const on = req.on;
+    req.on = function (event, ...args) {
+      if (event === 'data' || event === 'readable') { bodyReads++; throw Error('SENTINEL_BODY'); }
+      return on.call(this, event, ...args);
+    };
+    Object.defineProperty(req, 'body', { get() { bodyReads++; throw Error('SENTINEL_BODY'); } });
+    next();
+  });
+  app.use('/api/cad', createCadDevAuthSessionIssuerRouter({ issuerBridge }));
+  if (uploadOptions) app.use('/api/cad', createCadUserUploadRouter(uploadOptions));
+  app.use((req, res) => { bodyReads++; res.sendStatus(500); });
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => { server.closeAllConnections(); server.close(); assert.equal(bodyReads, 0); });
+  return async ({ route = 'dev-upload-session', method = 'POST', headers = {}, body = '{SENTINEL_BODY' } = {}) => {
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/api/cad/${route}`, {
+      method, headers, ...(['POST', 'PUT', 'PATCH'].includes(method) ? { body } : {}),
+    });
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    const text = await response.text();
+    assert.doesNotMatch(text, /SENTINEL|us1\.|synthetic-user|synthetic-shop|synthetic-login|sessionId/);
+    return { status: response.status, headers: response.headers, payload: text ? JSON.parse(text) : null };
+  };
 }
 test('synthetic issuer roundtrip matches canonical browser contract with no body access', async () => {
   const f = fixture(); let response;
@@ -131,13 +163,50 @@ test('issued cookie reaches the actual upload router but no admission/body/conve
     assert.equal(payload.code, expected);
   }
 });
-test('issuer remains unmounted and cannot import an executor or network client', () => {
-  for (const file of ['server/index.js', ...fs.readdirSync('api').filter(f => f.endsWith('.js')).map(f => `api/${f}`)]) {
-    assert.doesNotMatch(fs.readFileSync(file, 'utf8'), /cadDevAuthSessionIssuerBridge/);
+test('mounted issuer route stays closed without explicit development adapters and reads no body', async t => {
+  const requestRoute = await routeHarness(t);
+  const unavailable = await requestRoute({ headers: { origin, authorization: 'Bearer synthetic-login' } });
+  assert.equal(unavailable.status, 503);
+  assert.equal(unavailable.payload.code, 'USER_AUTH_UNAVAILABLE');
+  assert.equal(unavailable.headers.get('set-cookie'), null);
+  const method = await requestRoute({ method: 'GET' });
+  assert.equal(method.status, 503);
+  assert.equal(method.payload.code, 'USER_AUTH_UNAVAILABLE');
+});
+test('configured development route issues a browser session while upload admission remains closed', async t => {
+  const f = fixture({ now: Date.now }); f.change({ expiresAt: Date.now() + 60000 });
+  const requestRoute = await routeHarness(t, { issuerBridge: f.bridge,
+    uploadOptions: { sessionService: f.bridge, allowedOrigins: [origin] } });
+  const method = await requestRoute({ method: 'GET' });
+  assert.equal(method.status, 405);
+  assert.equal(method.headers.get('allow'), 'POST');
+  assert.equal(method.payload.code, 'METHOD_NOT_ALLOWED');
+  const issued = await requestRoute({ headers: { origin, authorization: 'Bearer synthetic-login' } });
+  assert.equal(issued.status, 200);
+  assert.match(issued.headers.get('set-cookie'), /^__Host-reversr-upload-session=us1\.[\w-]{43}; Path=\/; Secure; HttpOnly; SameSite=Strict; Max-Age=\d+$/);
+  assert.equal(issued.payload.status, 'success');
+  assert.equal(issued.payload.session.transport, 'cookie');
+  assert.equal(typeof issued.payload.session.csrfToken, 'string');
+  const adapter = createCadUploadSessionAdapter({ issue: async () => issued.payload, now: Date.now });
+  assert.equal((await adapter.connect()).code, 'SESSION_READY');
+  const upload = await requestRoute({ route: 'user-import',
+    headers: { origin, cookie: issued.headers.get('set-cookie').split(';')[0],
+      'x-upload-csrf': issued.payload.session.csrfToken, 'content-type': 'application/json' } });
+  assert.equal(upload.status, 503);
+  assert.equal(upload.payload.code, 'USER_UPLOADS_DISABLED');
+});
+test('issuer mount remains isolated from executors, API routes and body admission activation', () => {
+  assert.match(fs.readFileSync('server/index.js', 'utf8'), /createCadDevAuthSessionIssuerRouter/);
+  for (const file of fs.readdirSync('api').filter(f => f.endsWith('.js')).map(f => `api/${f}`)) {
+    assert.doesNotMatch(fs.readFileSync(file, 'utf8'), /cadDevAuthSessionIssuerBridge|cadDevAuthSessionIssuerRouter/);
   }
   const source = fs.readFileSync('server/cadDevAuthSessionIssuerBridge.js', 'utf8');
   assert.deepEqual([...source.matchAll(/require\('([^']+)'\)/g)].map(m => m[1]), ['./uploadSessionStore', './uploadSession']);
   assert.doesNotMatch(source, /\bfetch\s*\(|https?\.request|child_process|\.convert\(/);
+  const router = fs.readFileSync('server/cadDevAuthSessionIssuerRouter.js', 'utf8');
+  assert.doesNotMatch(router, /validateRequestBody|cadSandbox|convert\(|express\.json|express\.raw/);
+  const uploadRoute = fs.readFileSync('server/cadUserUploadRouter.js', 'utf8');
+  assert.match(uploadRoute, /const BODY_ADMISSION_AUTHORIZED = false;/);
 });
 test('stalled authorization is cancelled and returns a sanitized unavailable response', async () => {
   let signal;
