@@ -58,7 +58,7 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
-import { getCadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
+import { getCadInternalTesterPreview, MARK_DISPENSER_RESULT, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -522,8 +522,19 @@ export default function HomeScreen() {
   const { account, profile } = useCommercialization();
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
-  const cadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
+  const routeCadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
+  const [nativeCadPreviewEnabled, setNativeCadPreviewEnabled] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
+  const cadInternalPreview = useMemo<CadInternalTesterPreview>(() => {
+    if (routeCadInternalPreview.enabled || !nativeCadPreviewEnabled) {
+      return routeCadInternalPreview;
+    }
+    return {
+      enabled: true,
+      code: 'CAD_TEST_PREVIEW_MARK_DISPENSER',
+      fixture: MARK_DISPENSER_RESULT,
+    };
+  }, [nativeCadPreviewEnabled, routeCadInternalPreview]);
   const navigateCadPhase = (phase: number) => {
     if (phase < 1 || phase > 4 || phase === cadPhase) return;
     setCadPhase(phase);
@@ -533,6 +544,10 @@ export default function HomeScreen() {
       window.history.pushState(window.history.state, '', url);
     }
   };
+  const openNativeCadInternalPreview = useCallback(() => {
+    setCadPhase(1);
+    setNativeCadPreviewEnabled(true);
+  }, []);
   useEffect(() => {
     if (!cadInternalPreview.enabled || Platform.OS !== 'web') return;
     const onPop = () => setCadPhase(getCadReviewPhase(window.location.search));
@@ -1776,6 +1791,7 @@ export default function HomeScreen() {
             key={context.id}
             initialMode={entryMode}
             cadInternalPreview={cadInternalPreview}
+            onOpenCadInternalPreview={Platform.OS === 'web' ? undefined : openNativeCadInternalPreview}
             onComplete={handlePhaseOneComplete}
             isLoading={isLoading}
             setIsLoading={setIsLoading}

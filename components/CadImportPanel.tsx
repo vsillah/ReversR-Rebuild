@@ -9,10 +9,11 @@ import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterFixture, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 import { prepareLocalIgesPreview, supportsLocalIgesPreview } from '../utils/cadLocalIgesPreview';
 
-export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, uploadSessionAdapter }: {
+export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, onOpenInternalPreview, uploadSessionAdapter }: {
   internalPreview?: CadInternalTesterPreview;
   onReviewQualifiedResult?: () => void;
   onLocalPreviewResult?: (fixture: CadInternalTesterFixture) => void;
+  onOpenInternalPreview?: () => void;
   uploadSessionAdapter?: CadUploadSessionAdapter;
 }) {
   const { colors } = useAppTheme();
@@ -162,6 +163,27 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
           </View>
           <Text testID="cad-public-fixture-guidance" style={text}>Use the next screens to review generated inventory, inspect the 3D orientation controls, and compare against the reference views.</Text>
           <CadAction testID="cad-review-qualified-result" accessibilityLabel={`Review qualified ${fixture.fixtureName} result`} label="Review public sample" onPress={onReviewQualifiedResult} />
+        </View>
+      ) : onOpenInternalPreview ? (
+        <View testID="cad-native-internal-preview-entry" style={{ gap: Spacing.md }}>
+          <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 14, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.elevated }}>
+            <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
+              <Ionicons name="cube-outline" size={22} color={colors.primary} accessible={false} />
+              <View style={{ flex: 1, gap: Spacing.xs }}>
+                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal reviewer preview</Text>
+                <Text style={text}>Open Mark's approved public Dispenser sample inside this app. This does not upload files or unlock live CAD admission.</Text>
+              </View>
+            </View>
+            <CadAction
+              testID="cad-open-native-internal-preview"
+              accessibilityLabel="Review public Dispenser preview in app"
+              primary
+              icon="arrow-forward-circle-outline"
+              label="Review public Dispenser preview"
+              onPress={onOpenInternalPreview}
+            />
+          </View>
+          <Text style={text}>Live upload remains locked below until a separate approved production upload path exists.</Text>
         </View>
       ) : supported ? (
         <>
