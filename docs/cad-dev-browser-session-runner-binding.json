@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-dev-browser-session-runner-binding",
+  "status": "SOURCE_READY_RUN_BLOCKED_PENDING_ACCEPTED_BINDING",
+  "sourceOnly": true,
+  "branch": "codex/cad-browser-session-runner-binding",
+  "baseMainCommit": "a7ed32a15b5082dca7bad0b24d2500e5e7151923",
+  "dependsOnPr": 315,
+  "packet": {
+    "markdown": "docs/cad-dev-browser-session-qualification-packet.md",
+    "json": "docs/cad-dev-browser-session-qualification-packet.json",
+    "markdownSha256": "64248643c3f05c521e3c2a407170282cf63e61a2fd518841c422f7c8cc8aef4a",
+    "jsonSha256": "f540591d39fcc628dd4cbec4bcfc7b66526eb70ad1791b3bc68c791d7e208c85"
+  },
+  "runner": {
+    "script": "scripts/cad-dev-browser-session-runner-binding.js",
+    "test": "scripts/cad-dev-browser-session-runner-binding.test.js",
+    "defaultBindingRef": ".local/cad-convex/browser-session-qualification-runs/<runId>/run-binding.json",
+    "executableAuthorityNow": false,
+    "supportsInspectOnly": true,
+    "startsServer": false,
+    "opensBrowser": false,
+    "sendsNetworkRequest": false
+  },
+  "bindingRequirements": {
+    "mode": "cad-dev-browser-session-qualification-run-binding",
+    "sourceCommit": "40-hex current source commit",
+    "target": "non-production same-origin HTTPS origin and route",
+    "auth": "accepted synthetic server-owned header resolver",
+    "custody": "local ignored mode-locked evidence directory and custodian",
+    "rollback": "local teardown plan and receipt digest",
+    "cost": "USD 0 evidence with no external service use",
+    "productionSmoke": "prior fail-closed production smoke receipt only"
+  },
+  "limits": {
+    "maxWindowMinutes": 15,
+    "maxIssuerRequests": 1,
+    "maxDisabledUploadRequests": 1,
+    "requestBodyBytes": 0,
+    "bodyReads": 0,
+    "retry": false,
+    "secondRun": false,
+    "redirects": false
+  },
+  "authority": {
+    "liveRunAuthorized": false,
+    "production": false,
+    "uploadActivation": false,
+    "bodyAdmission": false,
+    "conversion": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerMutation": false,
+    "resourceMutation": false,
+    "environmentMutation": false,
+    "secretReads": false,
+    "secretWrites": false,
+    "persistentStoreMutation": false,
+    "usageBillingChanges": false,
+    "emailSmsSlack": false,
+    "retryPriorRun": false,
+    "cleanupBranchesWorktrees": false
+  },
+  "nextGate": "populate and independently accept one ignored local binding before any browser/session qualification run"
+}

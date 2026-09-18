@@ -274,6 +274,10 @@ const files = [
   'docs/cad-dev-browser-session-qualification-packet.md',
   'docs/cad-dev-browser-session-qualification-packet.json',
   'scripts/cad-dev-browser-session-qualification-packet.test.js',
+  'docs/cad-dev-browser-session-runner-binding.md',
+  'docs/cad-dev-browser-session-runner-binding.json',
+  'scripts/cad-dev-browser-session-runner-binding.js',
+  'scripts/cad-dev-browser-session-runner-binding.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
@@ -517,6 +521,14 @@ assert.equal(devUploadSessionPlan.status, 'SOURCE_ONLY_UPLOAD_SESSION_QUALIFICAT
 assert.equal(devUploadSessionPlan.dependsOn.authSessionCloseout.status, devAuthSessionCloseout.status);
 assert.equal(devUploadSessionPlan.dependsOn.disabledRouteContract.bodyAdmissionAuthorized, false);
 assert.equal(devUploadSessionPlan.nextExecutableSlice.liveRunAuthorizedByThisPacket, false);
+const browserSessionRunnerBinding = JSON.parse(read('docs/cad-dev-browser-session-runner-binding.json'));
+assert.equal(browserSessionRunnerBinding.status, 'SOURCE_READY_RUN_BLOCKED_PENDING_ACCEPTED_BINDING');
+assert.equal(browserSessionRunnerBinding.runner.executableAuthorityNow, false);
+assert.equal(browserSessionRunnerBinding.runner.startsServer, false);
+assert.equal(browserSessionRunnerBinding.runner.opensBrowser, false);
+assert.equal(browserSessionRunnerBinding.runner.sendsNetworkRequest, false);
+for (const value of Object.values(browserSessionRunnerBinding.authority)) assert.equal(value, false);
+assert.ok(!/fetch\s*\(|https?\.request|child_process|process\.env/.test(read('scripts/cad-dev-browser-session-runner-binding.js')));
 assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false/);
 assert.match(read('server/cadUserUploadRouter.js'), /USER_UPLOADS_DISABLED/);
 for (const value of Object.values(devUploadSessionPlan.authorityPreserved)) assert.equal(value, false);

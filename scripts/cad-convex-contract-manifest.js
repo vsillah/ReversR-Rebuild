@@ -323,6 +323,10 @@ const files = [
   'docs/cad-dev-browser-session-qualification-packet.md',
   'docs/cad-dev-browser-session-qualification-packet.json',
   'scripts/cad-dev-browser-session-qualification-packet.test.js',
+  'docs/cad-dev-browser-session-runner-binding.md',
+  'docs/cad-dev-browser-session-runner-binding.json',
+  'scripts/cad-dev-browser-session-runner-binding.js',
+  'scripts/cad-dev-browser-session-runner-binding.test.js',
 
   'docs/cad-live-upload-activation-readiness.md',
   'offline/cad-convex/userUploadActivationReadiness.json',
