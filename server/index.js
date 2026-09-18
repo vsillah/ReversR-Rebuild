@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { createCadDevAuthSessionIssuerRouter } = require('./cadDevAuthSessionIssuerRouter');
 const { createCadUserUploadRouter } = require('./cadUserUploadRouter');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
@@ -29,6 +30,9 @@ const configuredCorsOrigins = parseListEnv(process.env.API_CORS_ORIGINS);
 const corsAllowsAllOrigins = configuredCorsOrigins.length === 0 || configuredCorsOrigins.includes('*');
 const apiRequestBodyLimit = process.env.API_REQUEST_BODY_LIMIT || '50mb';
 
+// CAD auth/session issuance is mounted but closed without explicit development adapters.
+// It must run before general body parsers and never opens upload admission.
+app.use('/api/cad', createCadDevAuthSessionIssuerRouter());
 // Handle user upload errors and preflight before general CORS and all body parsers.
 app.use('/api/cad', createCadUserUploadRouter({ corsOrigins: configuredCorsOrigins }));
 
