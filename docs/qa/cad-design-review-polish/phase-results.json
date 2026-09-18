@@ -1,0 +1,65 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "states": [
+        "complete",
+        "complete",
+        "active",
+        "locked"
+      ],
+      "allPhaseActions": true,
+      "historyAndReload": true,
+      "disabledBuildAndUpload": true,
+      "downloadAndFourReferences": true,
+      "writes": 0,
+      "externalRequestsBlocked": 5
+    },
+    {
+      "width": 768,
+      "states": [
+        "complete",
+        "complete",
+        "active",
+        "locked"
+      ],
+      "allPhaseActions": true,
+      "historyAndReload": true,
+      "disabledBuildAndUpload": true,
+      "downloadAndFourReferences": true,
+      "writes": 0,
+      "externalRequestsBlocked": 5
+    },
+    {
+      "width": 390,
+      "states": [
+        "complete",
+        "complete",
+        "active",
+        "locked"
+      ],
+      "allPhaseActions": true,
+      "historyAndReload": true,
+      "disabledBuildAndUpload": true,
+      "downloadAndFourReferences": true,
+      "writes": 0,
+      "externalRequestsBlocked": 5
+    },
+    {
+      "width": 320,
+      "states": [
+        "complete",
+        "complete",
+        "active",
+        "locked"
+      ],
+      "allPhaseActions": true,
+      "historyAndReload": true,
+      "disabledBuildAndUpload": true,
+      "downloadAndFourReferences": true,
+      "writes": 0,
+      "externalRequestsBlocked": 5
+    }
+  ],
+  "syntheticCubeAndInvalidPhase": true
+}

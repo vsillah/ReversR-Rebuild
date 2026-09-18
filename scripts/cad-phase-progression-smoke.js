@@ -30,6 +30,8 @@ fs.mkdirSync(out, {recursive:true});
   await phase('Input').click(); await page.getByTestId('cad-phase-1').waitFor();
   assert.equal(await page.getByTestId('cad-qualified-result').count(),0);
   assert(await page.getByRole('button',{name:'Upload unavailable: operator access required'}).isDisabled());
+  await page.getByTestId('cad-import-details').click();
+  assert.equal(await page.getByTestId('cad-import-details').getAttribute('aria-expanded'), 'true');
   await page.getByTestId('cad-check-status').click();
   await page.getByText('Could not check service status. Check your connection and try again.',{exact:true}).waitFor();
   await page.getByTestId('cad-check-status').click();

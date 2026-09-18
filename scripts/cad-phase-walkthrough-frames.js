@@ -2,8 +2,8 @@
 const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
-const qa = 'docs/qa/cad-phase-progression';
-const out = '/private/tmp/cad-phase-source-frames';
+const qa = process.env.CAD_PHASE_QA || 'docs/qa/cad-phase-progression';
+const out = process.env.CAD_PHASE_FRAMES || '/private/tmp/cad-phase-source-frames';
 fs.mkdirSync(out, { recursive: true });
 const video = `${qa}/walkthrough.mp4`;
 const probe = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', video], { encoding: 'utf8' });

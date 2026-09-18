@@ -1,0 +1,323 @@
+{
+  "url": "http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1",
+  "scenes": [
+    {
+      "width": 1440,
+      "name": "design-active",
+      "sourceSeconds": 2.064,
+      "duration": 6,
+      "mp4Seconds": 2.064
+    },
+    {
+      "width": 1440,
+      "name": "input-acquisition",
+      "sourceSeconds": 8.754,
+      "duration": 6,
+      "mp4Seconds": 8.754
+    },
+    {
+      "width": 1440,
+      "name": "input-source",
+      "sourceSeconds": 15.319,
+      "duration": 6,
+      "mp4Seconds": 15.319
+    },
+    {
+      "width": 1440,
+      "name": "import-details",
+      "sourceSeconds": 21.907,
+      "duration": 6,
+      "mp4Seconds": 21.907
+    },
+    {
+      "width": 1440,
+      "name": "inventory-source",
+      "sourceSeconds": 28.512,
+      "duration": 10,
+      "mp4Seconds": 28.512
+    },
+    {
+      "width": 1440,
+      "name": "inventory-details",
+      "sourceSeconds": 39.106,
+      "duration": 8,
+      "mp4Seconds": 39.106
+    },
+    {
+      "width": 1440,
+      "name": "viewer",
+      "sourceSeconds": 47.811,
+      "duration": 6,
+      "mp4Seconds": 47.811
+    },
+    {
+      "width": 1440,
+      "name": "viewer-front",
+      "sourceSeconds": 54.504,
+      "duration": 4,
+      "mp4Seconds": 54.504
+    },
+    {
+      "width": 1440,
+      "name": "viewer-top",
+      "sourceSeconds": 59.215,
+      "duration": 4,
+      "mp4Seconds": 59.215
+    },
+    {
+      "width": 1440,
+      "name": "source-download",
+      "sourceSeconds": 63.871,
+      "duration": 8,
+      "mp4Seconds": 63.871
+    },
+    {
+      "width": 1440,
+      "name": "reference-front",
+      "sourceSeconds": 72.515,
+      "duration": 6,
+      "mp4Seconds": 72.515
+    },
+    {
+      "width": 1440,
+      "name": "reference-left",
+      "sourceSeconds": 79.101,
+      "duration": 6,
+      "mp4Seconds": 79.101
+    },
+    {
+      "width": 1440,
+      "name": "reference-top",
+      "sourceSeconds": 85.687,
+      "duration": 6,
+      "mp4Seconds": 85.687
+    },
+    {
+      "width": 1440,
+      "name": "reference-drawing",
+      "sourceSeconds": 92.265,
+      "duration": 6,
+      "mp4Seconds": 92.265
+    },
+    {
+      "width": 1440,
+      "name": "return-to-app",
+      "sourceSeconds": 107.786,
+      "duration": 4,
+      "mp4Seconds": 106.839
+    },
+    {
+      "width": 1440,
+      "name": "geometry-warnings",
+      "sourceSeconds": 112.432,
+      "duration": 9,
+      "mp4Seconds": 111.485
+    },
+    {
+      "width": 1440,
+      "name": "build-prerequisites",
+      "sourceSeconds": 122.044,
+      "duration": 10,
+      "mp4Seconds": 121.097
+    },
+    {
+      "width": 1440,
+      "name": "build-details",
+      "sourceSeconds": 132.632,
+      "duration": 7,
+      "mp4Seconds": 131.685
+    },
+    {
+      "width": 1440,
+      "name": "build-recovery",
+      "sourceSeconds": 140.207,
+      "duration": 6,
+      "mp4Seconds": 139.26
+    },
+    {
+      "width": 1440,
+      "name": "inventory-recovery",
+      "sourceSeconds": 146.79,
+      "duration": 5,
+      "mp4Seconds": 145.843
+    },
+    {
+      "width": 1440,
+      "name": "design-recovered",
+      "sourceSeconds": 152.478,
+      "duration": 5,
+      "mp4Seconds": 151.531
+    },
+    {
+      "width": 1440,
+      "name": "opened-drawing",
+      "mp4Seconds": 100.376,
+      "duration": 7.96,
+      "blocked": [
+        {
+          "path": "/api/me",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "name": "design-active",
+      "sourceSeconds": 0.745,
+      "duration": 6,
+      "mp4Seconds": 158.105
+    },
+    {
+      "width": 390,
+      "name": "input-acquisition",
+      "sourceSeconds": 7.349,
+      "duration": 6,
+      "mp4Seconds": 164.70899999999997
+    },
+    {
+      "width": 390,
+      "name": "input-source",
+      "sourceSeconds": 13.887,
+      "duration": 6,
+      "mp4Seconds": 171.24699999999999
+    },
+    {
+      "width": 390,
+      "name": "import-details",
+      "sourceSeconds": 20.429,
+      "duration": 6,
+      "mp4Seconds": 177.789
+    },
+    {
+      "width": 390,
+      "name": "inventory-source",
+      "sourceSeconds": 26.992,
+      "duration": 10,
+      "mp4Seconds": 184.35199999999998
+    },
+    {
+      "width": 390,
+      "name": "inventory-details",
+      "sourceSeconds": 37.545,
+      "duration": 8,
+      "mp4Seconds": 194.90499999999997
+    },
+    {
+      "width": 390,
+      "name": "viewer",
+      "sourceSeconds": 46.117,
+      "duration": 6,
+      "mp4Seconds": 203.47699999999998
+    },
+    {
+      "width": 390,
+      "name": "viewer-front",
+      "sourceSeconds": 52.682,
+      "duration": 4,
+      "mp4Seconds": 210.04199999999997
+    },
+    {
+      "width": 390,
+      "name": "viewer-top",
+      "sourceSeconds": 57.242,
+      "duration": 4,
+      "mp4Seconds": 214.60199999999998
+    },
+    {
+      "width": 390,
+      "name": "source-download",
+      "sourceSeconds": 61.802,
+      "duration": 8,
+      "mp4Seconds": 219.16199999999998
+    },
+    {
+      "width": 390,
+      "name": "reference-front",
+      "sourceSeconds": 70.362,
+      "duration": 6,
+      "mp4Seconds": 227.72199999999998
+    },
+    {
+      "width": 390,
+      "name": "reference-left",
+      "sourceSeconds": 76.897,
+      "duration": 6,
+      "mp4Seconds": 234.257
+    },
+    {
+      "width": 390,
+      "name": "reference-top",
+      "sourceSeconds": 83.432,
+      "duration": 6,
+      "mp4Seconds": 240.79199999999997
+    },
+    {
+      "width": 390,
+      "name": "reference-drawing",
+      "sourceSeconds": 89.964,
+      "duration": 6,
+      "mp4Seconds": 247.32399999999998
+    },
+    {
+      "width": 390,
+      "name": "return-to-app",
+      "sourceSeconds": 104.744,
+      "duration": 4,
+      "mp4Seconds": 261.837
+    },
+    {
+      "width": 390,
+      "name": "geometry-warnings",
+      "sourceSeconds": 109.294,
+      "duration": 9,
+      "mp4Seconds": 266.387
+    },
+    {
+      "width": 390,
+      "name": "build-prerequisites",
+      "sourceSeconds": 118.866,
+      "duration": 10,
+      "mp4Seconds": 275.959
+    },
+    {
+      "width": 390,
+      "name": "build-details",
+      "sourceSeconds": 129.419,
+      "duration": 7,
+      "mp4Seconds": 286.512
+    },
+    {
+      "width": 390,
+      "name": "build-recovery",
+      "sourceSeconds": 136.964,
+      "duration": 6,
+      "mp4Seconds": 294.05699999999996
+    },
+    {
+      "width": 390,
+      "name": "inventory-recovery",
+      "sourceSeconds": 143.509,
+      "duration": 5,
+      "mp4Seconds": 300.602
+    },
+    {
+      "width": 390,
+      "name": "design-recovered",
+      "sourceSeconds": 149.289,
+      "duration": 5,
+      "mp4Seconds": 306.382
+    },
+    {
+      "width": 390,
+      "name": "opened-drawing",
+      "mp4Seconds": 255.373,
+      "duration": 7.96,
+      "blocked": [
+        {
+          "path": "/api/me",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}
