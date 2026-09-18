@@ -107,24 +107,46 @@ function writePrivateBinding(value = binding()) {
   const file = path.join(dir, 'run-binding.json');
   const bytes = JSON.stringify(value, null, 2) + '\n';
   fs.writeFileSync(file, bytes, { mode: 0o600 });
-  return { dir, file, bytes };
+  const bindingSha256 = sha256(bytes);
+  const receipt = {
+    schemaVersion: 1,
+    mode: 'cad-browser-session-local-binding-acceptance-receipt',
+    status: 'ACCEPTED_LOCAL_LOOPBACK_BINDING_SOURCE_ONLY',
+    bindingSha256,
+    liveRunAuthorized: false,
+    uploadActivation: false,
+    bodyAdmission: false,
+    conversion: false,
+    sandboxDispatch: false,
+    privateCad: false,
+    realUsers: false,
+    retry: false,
+    secondRun: false,
+  };
+  const receiptFile = path.join(dir, 'local-binding-acceptance-receipt.json');
+  const receiptBytes = JSON.stringify(receipt, null, 2) + '\n';
+  fs.writeFileSync(receiptFile, receiptBytes, { mode: 0o600 });
+  return { dir, file, bytes, bindingSha256, receiptSha256: sha256(receiptBytes) };
 }
 
-test('packet remains source-only and blocks execution authority', () => {
-  assert.equal(packet.status, 'SOURCE_READY_LOCAL_BROWSER_RUNNER_REVIEWED_NO_RUN');
+test('packet remains source-only and blocks run authority until exact future approval', () => {
+  assert.equal(packet.status, 'SOURCE_READY_LOCAL_BROWSER_EXECUTOR_REVIEWED_NO_RUN');
   assert.equal(packet.runner.executableAuthorityNow, false);
-  assert.equal(packet.runner.startsServer, false);
-  assert.equal(packet.runner.opensBrowser, false);
-  assert.equal(packet.runner.sendsNetworkRequest, false);
+  assert.equal(packet.runner.executableImplemented, true);
+  assert.equal(packet.runner.startsServerOnlyAfterExactFutureApproval, true);
+  assert.equal(packet.runner.opensBrowserOnlyAfterExactFutureApproval, true);
+  assert.equal(packet.runner.sendsNetworkRequestOnlyToRunOwnedLoopbackAfterExactFutureApproval, true);
   assert.equal(packet.runner.acceptsExecuteFlagNow, false);
   for (const value of Object.values(packet.authority)) assert.equal(value, false);
-  assert.match(docs, /does not start the server/);
+  assert.match(docs, /No browser qualification run is/);
   assert.match(docs, /Execution remains blocked/);
 });
 
-test('runner source stays inert and source safe', () => {
-  assert.doesNotMatch(source, /fetch\s*\(|https?\.request|require\(['"]express['"]\)|playwright|puppeteer|process\.env/);
-  assert.doesNotMatch(source, /Bearer |Cookie|Set-Cookie|X-Upload-CSRF|BEGIN PRIVATE KEY|sk_live_|github_pat_|ghp_/);
+test('runner source is bounded to local execution and avoids durable secret literals', () => {
+  assert.match(source, /--execute-approved-once/);
+  assert.match(source, /require\('node:https'\)/);
+  assert.match(source, /require\('playwright'\)/);
+  assert.doesNotMatch(source, /Bearer synthetic|Cookie:|Set-Cookie:|X-Upload-CSRF:|BEGIN PRIVATE KEY|sk_live_|github_pat_|ghp_/);
   assert.doesNotMatch(source, /\/Users\//);
 });
 
@@ -132,10 +154,10 @@ test('local runner plan accepts only a private local-loopback HTTPS binding', ()
   const fixture = writePrivateBinding();
   const plan = localRunner.buildLocalRunnerPlan(fixture.file, { generatedAtUtc: '2026-09-18T00:00:00Z' });
   assert.equal(plan.status, 'SOURCE_READY_LOCAL_BROWSER_RUNNER_REVIEWED');
-  assert.equal(plan.bindingSha256, sha256(fixture.bytes));
+  assert.equal(plan.bindingSha256, fixture.bindingSha256);
   assert.equal(plan.target.origin, 'https://127.0.0.1:4443');
   assert.equal(plan.target.port, 4443);
-  assert.equal(plan.guards.executeFlagAcceptedNow, false);
+  assert.equal(plan.guards.liveRunAuthorizedNow, false);
   assert.equal(plan.guards.maxIssuerRequests, 1);
   assert.equal(plan.guards.maxDisabledUploadRequests, 1);
   assert.equal(plan.guards.requestBodyBytes, 0);
@@ -158,7 +180,91 @@ test('local runner rejects reviewed preview bindings for this gate', () => {
   fs.rmSync(fixture.dir, { recursive: true, force: true });
 });
 
-test('cli prints sanitized plan and refuses execution flags', () => {
+test('execution requires exact binding and acceptance receipt digests', async () => {
+  const fixture = writePrivateBinding();
+  await assert.rejects(() => localRunner.executeLocalBrowserQualification(fixture.file, {
+    acceptedBindingSha256: '0'.repeat(64),
+    acceptedReceiptSha256: fixture.receiptSha256,
+    now: () => Date.now(),
+  }), /ACCEPTED_BINDING_SHA_MISMATCH/);
+  await assert.rejects(() => localRunner.executeLocalBrowserQualification(fixture.file, {
+    acceptedBindingSha256: fixture.bindingSha256,
+    acceptedReceiptSha256: '0'.repeat(64),
+    now: () => Date.now(),
+  }), /ACCEPTANCE_RECEIPT_SHA_MISMATCH/);
+  fs.rmSync(fixture.dir, { recursive: true, force: true });
+});
+
+test('execution uses fake adapters to prove success evidence without launching browser', async () => {
+  const fixture = writePrivateBinding();
+  let closed = false;
+  const evidence = await localRunner.executeLocalBrowserQualification(fixture.file, {
+    acceptedBindingSha256: fixture.bindingSha256,
+    acceptedReceiptSha256: fixture.receiptSha256,
+    now: () => Date.now(),
+    serverStarter: async () => ({
+      authHeader: 'Bearer redacted-test-token',
+      bodyReads: 0,
+      resolveCalls: 1,
+      close: async () => { closed = true; },
+    }),
+    browserRunner: async ({ target, authHeader }) => {
+      assert.equal(target.origin, 'https://127.0.0.1:4443');
+      assert.equal(authHeader, 'Bearer redacted-test-token');
+      return {
+        issuerStatus: 200,
+        issuerCode: 'SESSION_READY',
+        uploadStatus: 503,
+        uploadCode: 'USER_UPLOADS_DISABLED',
+        browserCookiesObserved: true,
+      };
+    },
+  });
+  assert.equal(closed, true);
+  assert.equal(evidence.status, 'DEVELOPMENT_BROWSER_SESSION_QUALIFICATION_EXECUTED');
+  assert.equal(evidence.runCompleted, true);
+  assert.equal(evidence.unknownOutcome, false);
+  assert.equal(evidence.cadUploadsDisabled, true);
+  assert.equal(evidence.bodyAdmissionAuthorized, false);
+  assert.equal(evidence.conversionAllowed, false);
+  assert.equal(evidence.sandboxDispatchAllowed, false);
+  assert.equal(evidence.privateCadUsed, false);
+  assert.equal(evidence.retry, false);
+  assert.equal(evidence.secondRun, false);
+  assert.equal(evidence.operationCounts.issuerRequests, 1);
+  assert.equal(evidence.operationCounts.disabledUploadRequests, 1);
+  assert.equal(evidence.operationCounts.bodyReads, 0);
+  assert.equal(evidence.rawAuthorizationRecorded, false);
+  assert.equal(evidence.rawCookieRecorded, false);
+  assert.equal(evidence.rawCsrfRecorded, false);
+  fs.rmSync(fixture.dir, { recursive: true, force: true });
+});
+
+test('execution fails closed on unexpected disabled upload result and still closes server', async () => {
+  const fixture = writePrivateBinding();
+  let closed = false;
+  await assert.rejects(() => localRunner.executeLocalBrowserQualification(fixture.file, {
+    acceptedBindingSha256: fixture.bindingSha256,
+    acceptedReceiptSha256: fixture.receiptSha256,
+    now: () => Date.now(),
+    serverStarter: async () => ({
+      authHeader: 'Bearer redacted-test-token',
+      bodyReads: 0,
+      resolveCalls: 1,
+      close: async () => { closed = true; },
+    }),
+    browserRunner: async () => ({
+      issuerStatus: 200,
+      issuerCode: 'SESSION_READY',
+      uploadStatus: 200,
+      uploadCode: 'UNEXPECTED_OPEN',
+    }),
+  }), /DISABLED_UPLOAD_CHECK_FAILED/);
+  assert.equal(closed, true);
+  fs.rmSync(fixture.dir, { recursive: true, force: true });
+});
+
+test('cli prints sanitized plan and rejects malformed execute arguments before browser work', () => {
   const fixture = writePrivateBinding();
   const planRun = spawnSync(process.execPath, ['scripts/cad-dev-browser-session-local-runner.js', '--plan', fixture.file],
     { encoding: 'utf8' });
@@ -166,12 +272,12 @@ test('cli prints sanitized plan and refuses execution flags', () => {
   const plan = JSON.parse(planRun.stdout);
   assert.equal(plan.status, 'SOURCE_READY_LOCAL_BROWSER_RUNNER_REVIEWED');
   assert.equal(plan.target.origin, 'https://127.0.0.1:4443');
-  assert.equal(plan.liveRunAuthorized, undefined);
   assert.doesNotMatch(planRun.stdout, /BEGIN PRIVATE KEY|Bearer |Cookie|us1\./);
 
-  const executeRun = spawnSync(process.execPath, ['scripts/cad-dev-browser-session-local-runner.js', '--execute-approved-once', fixture.file],
-    { encoding: 'utf8' });
+  const executeRun = spawnSync(process.execPath, ['scripts/cad-dev-browser-session-local-runner.js',
+    '--execute-approved-once', fixture.file, '--binding-sha256', fixture.bindingSha256],
+  { encoding: 'utf8' });
   assert.notEqual(executeRun.status, 0);
-  assert.match(executeRun.stderr, /LOCAL_BROWSER_EXECUTION_NOT_AUTHORIZED_IN_SOURCE_PACKET/);
+  assert.match(executeRun.stderr, /ACCEPTANCE_RECEIPT_SHA_INVALID/);
   fs.rmSync(fixture.dir, { recursive: true, force: true });
 });
