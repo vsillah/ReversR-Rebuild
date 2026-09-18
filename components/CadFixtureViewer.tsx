@@ -83,12 +83,12 @@ function DirectionGlyph({ view, active = false, compact = false }: { view: Orbit
 }
 
 function ElevationGlyph({ view, active = false, compact = false }: { view: ElevationViewName; active?: boolean; compact?: boolean }) {
-  const width = compact ? 30 : 36;
-  const height = compact ? 16 : 20;
+  const width = compact ? 34 : 42;
+  const height = compact ? 12 : 15;
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 36 20"
+      viewBox="0 0 42 15"
       width={width}
       height={height}
       style={{
@@ -96,12 +96,12 @@ function ElevationGlyph({ view, active = false, compact = false }: { view: Eleva
         margin: 'auto',
         overflow: 'visible',
         transform: view === 'bottom' ? 'rotate(180deg)' : 'none',
-        filter: active ? 'drop-shadow(0 0 5px rgba(127, 224, 192, 0.55))' : 'none',
+        filter: active ? 'drop-shadow(0 0 5px rgba(127, 224, 192, 0.55))' : 'drop-shadow(0 1px 1px rgba(2, 12, 11, 0.18)) drop-shadow(0 0 5px rgba(238, 248, 244, 0.38))',
       }}
     >
       <path
-        d="M18 1.5C22.2 7.8 28.1 13.2 35 17.3C28.6 15.9 23 14.9 18 14.9C13 14.9 7.4 15.9 1 17.3C7.9 13.2 13.8 7.8 18 1.5Z"
-        fill={active ? '#7fe0c0' : '#d8e3df'}
+        d="M21 1.4C26.5 6.9 33.3 10.7 40.5 12.7C32.7 11.6 26.2 10.9 21 10.9C15.8 10.9 9.3 11.6 1.5 12.7C8.7 10.7 15.5 6.9 21 1.4Z"
+        fill={active ? '#7fe0c0' : '#edf7f3'}
       />
     </svg>
   );
@@ -681,7 +681,7 @@ export default function CadFixtureViewer({
                   title={`${viewLabels[view]} view`}
                   aria-label={`Show ${view} view`} aria-pressed={currentView === view}
                   onClick={() => viewerActions.current[view]?.()}>
-                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: compactControls ? 5 : 7 } : { bottom: compactControls ? 5 : 7 }), transform: 'translateX(-50%)', opacity: currentView === view ? 1 : 0.72 }}>
+                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: compactControls ? 6 : 8 } : { bottom: compactControls ? 6 : 8 }), transform: 'translateX(-50%)', opacity: 1 }}>
                     <ElevationGlyph view={view} active={currentView === view} compact={compactControls} />
                   </span>
                 </button>
