@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
 import { useAppTheme } from '../hooks/useAppTheme';
+import { CAD_USER_IMPORT_ENABLED, mapCadImportError, prepareCadFileMetadata } from '../utils/cadUserImportBridge';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
@@ -27,8 +28,11 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     try {
       const capabilityRequest = getCadCapabilitiesRequest(Boolean(fixture), getApiBase());
       const response = await fetch(capabilityRequest.url, { signal: request.signal, credentials: capabilityRequest.credentials, cache: 'no-store' });
-      if (!response.ok) throw new Error('unavailable');
       const data = await response.json();
+      if (!response.ok) {
+        setStatus(mapCadImportError(data).message);
+        return;
+      }
       setStatus(data?.enabled === true
         ? 'The protected conversion service is available. User uploads still require an approved access route.'
         : 'The conversion service is unavailable. You can check again later.');
@@ -49,7 +53,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
       <Text style={text}>{fixture
         ? 'Source acquisition and conversion are complete for this public fixture. No new upload or conversion runs here.'
-        : 'Choose an .igs or .iges file to check its format and size locally. File contents stay on your device.'}</Text>
+        : 'Choose a public or synthetic .igs or .iges file to prepare its format and size locally. File contents stay on your device.'}</Text>
       {fixture ? (
         <View testID="cad-internal-test-fixture" style={{ gap: Spacing.sm }}>
           <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
@@ -68,13 +72,9 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
             const file = event.currentTarget.files?.[0];
             event.currentTarget.value = '';
             if (!file) return;
-            const format = file.name.split('.').pop()?.toLowerCase();
-            if (format !== 'igs' && format !== 'iges') {
-              setSelected(null); setMessage('Unsupported format. Choose an .igs or .iges file.'); return;
-            }
-            if (file.size === 0) { setSelected(null); setMessage('This file is empty. Choose another IGES file.'); return; }
-            setSelected({ format: format.toUpperCase(), bytes: file.size });
-            setMessage('File selected locally. Nothing has been uploaded or converted.');
+            const prepared = prepareCadFileMetadata(file);
+            setSelected(prepared.metadata);
+            setMessage(prepared.message);
           }} />
           <TouchableOpacity testID="cad-choose-file" accessibilityRole="button" accessibilityLabel="Choose IGES file" style={button} onPress={() => {
             try { picker.current?.click(); } catch { setMessage('This browser could not open the file picker. Try a supported desktop browser.'); }
@@ -82,15 +82,17 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         </>
       ) : <Text testID="cad-picker-unavailable" style={text}>File selection is unavailable on this surface. Open ReversR in a web browser with file-picker support to select an IGES file. Native selection is pending.</Text>}
       {selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
-        <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Selected locally</Text>
+        <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Prepared locally</Text>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
       <View testID="cad-operator-gate" style={{ gap: Spacing.sm }}>
-        <CadNotice icon="lock-closed-outline">Upload is not enabled</CadNotice>
-        <CadAction label="Upload unavailable" accessibilityLabel="Upload unavailable: operator access required" icon="lock-closed-outline" disabled />
+        <CadNotice icon="lock-closed-outline">Admission disabled · Upload is not enabled</CadNotice>
+        {!fixture && <Text testID="cad-session-state" style={text}>No upload session connected</Text>}
+        <CadAction label="Upload unavailable" accessibilityLabel="Upload unavailable: operator access required" icon="lock-closed-outline" disabled={!CAD_USER_IMPORT_ENABLED} />
       </View>
       <CadDetails title="Import access & service status" testID="cad-import-details">
+        <Text testID="cad-development-session-unavailable" style={text}>{mapCadImportError({ schemaVersion: 1, status: 'error', code: 'USER_AUTH_UNAVAILABLE' }).message} No browser sign-in route is available yet. Clear or replace your selection to continue locally.</Text>
         <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
         <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
         <CadAction testID="cad-check-status" disabled={checking} accessibilityLabel="Check CAD service status" icon="refresh-outline" label={checking ? 'Checking status…' : 'Check service status'} onPress={checkStatus} />
