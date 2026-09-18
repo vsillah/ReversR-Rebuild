@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-browser-session-local-run-closeout",
+  "status": "DEVELOPMENT_BROWSER_SESSION_QUALIFICATION_COMPLETED_SOURCE_CLOSEOUT",
+  "sourceOnly": true,
+  "production": false,
+  "branch": "codex/cad-browser-session-local-run-closeout",
+  "mergedMainCommit": "45ed2802c221a29a38a0eb496631a8ca1278a62e",
+  "sourcePr": 319,
+  "executorRebindCommit": "a48d5d3bd0caac6760fb865dc440870be3795d10",
+  "runId": "cad-browser-session-local-executor-1100z",
+  "window": {
+    "startUtc": "2026-09-18T11:00:00Z",
+    "endUtc": "2026-09-18T11:05:00Z",
+    "maxRunSeconds": 300
+  },
+  "acceptedBinding": {
+    "bindingSha256": "e81b3ae65857f23184ed1e29c84d91d18991373478dc9a4ad25bab1af9b43c55",
+    "acceptanceReceiptSha256": "ac5fd76db667463fd462ca7556063d4b9bbab914fdb4c946e623a9e2653a6c4c",
+    "planSha256": "a470f27167f2662d6db45daa2f85f681a74722e6d589351111c2266a90064f7b",
+    "inspectionSha256": "4a8a40a509e94aa8be3e8614c145168c5a4932eaf63d8bd5c2bcb6a3815b20f9",
+    "targetOrigin": "https://127.0.0.1:4443",
+    "targetRoute": "/cad/browser-session-qualification",
+    "sourceCommit": "45ed2802c221a29a38a0eb496631a8ca1278a62e",
+    "tlsMaterialCommitted": false,
+    "trustStoreMutationAllowed": false
+  },
+  "sanitizedRunEvidence": {
+    "localIgnoredEvidenceRef": ".local/cad-convex/browser-session-qualification-runs/cad-browser-session-local-executor-1100z/browser-session-sanitized-evidence.json",
+    "localIgnoredReceiptRef": ".local/cad-convex/browser-session-qualification-runs/cad-browser-session-local-executor-1100z/browser-session-sanitized-receipt.json",
+    "evidenceSha256": "bc1df3f9e7f602c1ed4e827594ea4e448b234549ff0d5de703bc3b799d0e31df",
+    "receiptSha256": "394be079dd41f16f3b8948d7841aa1c8cc9e8dad285e0b4503d0a45706a34092",
+    "directoryMode": "0700",
+    "fileMode": "0600",
+    "gitIgnored": true,
+    "privatePatternLeakObserved": false
+  },
+  "runResult": {
+    "decision": "DEVELOPMENT_BROWSER_SESSION_QUALIFICATION_EXECUTED",
+    "runCompleted": true,
+    "unknownOutcome": false,
+    "evidenceWritten": true,
+    "automaticRetry": false,
+    "secondRun": false,
+    "cadUploadsDisabled": true,
+    "bodyAdmissionAuthorized": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadUsed": false,
+    "realUsersUsed": false,
+    "productionTouched": false,
+    "browserCookiesObserved": true,
+    "completedAtUtc": "2026-09-18T11:00:56Z"
+  },
+  "operationCounts": {
+    "issuerRequests": 1,
+    "disabledUploadRequests": 1,
+    "resolveAuthorizationCalls": 1,
+    "bodyReads": 0
+  },
+  "hostExecutionNote": {
+    "sandboxListenAttemptFailedBeforeRun": true,
+    "sandboxListenError": "listen EPERM: operation not permitted 127.0.0.1:4443",
+    "evidenceWrittenBeforeEscalatedInvocation": false,
+    "sameBindingAndReceiptUsedAfterEscalation": true,
+    "executorCompletedInsideAcceptedWindow": true
+  },
+  "authorityPreserved": {
+    "providerMutationAuthorized": false,
+    "resourceMutationAuthorized": false,
+    "envMutationAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "uploadActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserEnrollmentAuthorized": false,
+    "productionMutationAuthorized": false,
+    "deploymentAuthorized": false,
+    "mergeAuthorized": false,
+    "pushAuthorized": false,
+    "cleanupAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "remainingGatesBeforeCadUploadActivation": [
+    "review and merge this source-only browser/session run closeout",
+    "production fail-closed smoke after merge",
+    "cleanup of the source-only branch/worktree after smoke",
+    "separate provider/resource/auth readiness review for any non-local session path",
+    "separate CAD upload activation approval",
+    "separate CAD conversion/Sandbox dispatch approval",
+    "separate private-CAD handling approval before any private CAD input"
+  ],
+  "futureApprovalPhrases": {
+    "publication": "I approve pushing only commit [full reviewed SHA] from codex/cad-browser-session-local-run-closeout to public repository vsillah/ReversR-Rebuild and opening a draft PR against main for the source-only CAD browser/session local qualification closeout packet. No merge, deployment, live tests, production/development env or provider/auth/resource changes, secrets outside reviewed ignored restricted evidence artifacts, usage/billing changes, enrollment, email/SMS/Slack, store mutation, CAD upload activation, CAD conversion, private CAD, Sandbox dispatch, retry, second run, or branch/worktree cleanup.",
+    "merge": "I approve marking PR #[number] ready for review and merging it into main. Allow the normal Vercel production deployment from main. Preserve current production and development environment settings; do not configure provider/auth/resource settings, do not generate or store secrets, do not change usage or billing settings, do not enable CAD uploads, do not dispatch CAD conversion, do not run live tests, do not use private CAD, do not dispatch Sandbox work, do not retry the completed run, do not start a second run, do not send email/SMS/Slack, and do not cleanup the branch/worktree until production verification completes."
+  }
+}
