@@ -4,7 +4,6 @@ const { chromium } = require('playwright');
 const url = process.env.CAD_PHASE_URL || 'http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1';
 const out = process.env.CAD_PHASE_EVIDENCE || '/private/tmp/cad-phase-qa';
 fs.mkdirSync(out, {recursive:true});
-const importUnavailableMessage = /Import status unavailable|Could not check service status/;
 (async () => {
  const browser = await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const results=[];
@@ -30,14 +29,13 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
   await page.screenshot({path:`${out}/${width}-design.png`});
   await phase('Input').click(); await page.getByTestId('cad-phase-1').waitFor();
   assert.equal(await page.getByTestId('cad-qualified-result').count(),0);
-  await page.getByTestId('cad-upload-locked-status').waitFor();
+  await page.getByTestId('cad-public-fixture-ready').waitFor();
+  await page.getByTestId('cad-public-fixture-guidance').waitFor();
+  assert.equal(await page.getByTestId('cad-file-input').count(),0);
+  assert.equal(await page.getByTestId('cad-choose-file').count(),0);
+  assert.equal(await page.getByTestId('cad-operator-gate').count(),0);
+  assert.equal(await page.getByTestId('cad-import-details').count(),0);
   assert.equal(await page.getByRole('button',{name:'Upload unavailable: operator access required'}).count(),0);
-  await page.getByTestId('cad-import-details').click();
-  assert.equal(await page.getByTestId('cad-import-details').getAttribute('aria-expanded'), 'true');
-  await page.getByTestId('cad-check-status').click();
-  await page.getByText(importUnavailableMessage).waitFor();
-  await page.getByTestId('cad-check-status').click();
-  await page.getByText(importUnavailableMessage).waitFor();
   await page.screenshot({path:`${out}/${width}-input.png`});
   await page.getByRole('button',{name:'View generated inventory',exact:true}).click();
   await page.getByText('Auto-generated inventory',{exact:true}).waitFor();

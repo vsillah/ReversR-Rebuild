@@ -33,11 +33,25 @@ test('enables the authorized Mark dispenser review only on local or non-producti
   }
 });
 
+test('defaults non-production Vercel preview roots to the authorized Mark dispenser review', () => {
+  for (const search of ['', '?qa=google-site-link']) {
+    const result = inspectCadInternalTesterPreview({
+      hostname: 'reversr-git-cad-test-vsillahs-projects.vercel.app',
+      search,
+    });
+    assert.equal(result.enabled, true);
+    assert.equal(result.code, 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT');
+    assert.deepEqual(result.fixture, MARK_DISPENSER_RESULT);
+  }
+});
+
 test('blocks production, unrelated hosts, and unrequested preview mode', () => {
   for (const input of [
     { hostname: 'reversr.vercel.app', search: '?cadPreview=public-cube-v1' },
     { hostname: 'reversr.vercel.app', search: '?cadPreview=mark-dispenser-v1' },
+    { hostname: 'reversr.vercel.app', search: '' },
     { hostname: 'example.com', search: '?cadPreview=public-cube-v1' },
+    { hostname: 'example.com', search: '' },
     { hostname: 'reversr.vercel.app.example.com', search: '?cadPreview=public-cube-v1' },
     { hostname: 'localhost', search: '?cadPreview=other' },
     { hostname: 'localhost', search: '' },

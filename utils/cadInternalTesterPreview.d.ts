@@ -38,10 +38,10 @@ export type CadInternalTesterFixture = {
 export type CadInternalTesterPreview =
   | { enabled: false; code: string }
   | {
-    enabled: true;
-    code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER';
-    fixture: CadInternalTesterFixture;
-  };
+      enabled: true;
+      code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER' | 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT';
+      fixture: CadInternalTesterFixture;
+    };
 
 export const PREVIEW_QUERY_KEY: 'cadPreview';
 export const PREVIEW_QUERY_VALUE: 'public-cube-v1';
@@ -49,6 +49,7 @@ export const DISPENSER_PREVIEW_QUERY_VALUE: 'mark-dispenser-v1';
 export const PUBLIC_CUBE_RESULT: Readonly<CadInternalTesterFixture>;
 export const MARK_DISPENSER_RESULT: Readonly<CadInternalTesterFixture>;
 export function isAllowedPreviewHostname(hostname: unknown): boolean;
+export function isNonProductionVercelPreview(hostname: unknown): boolean;
 export function inspectCadInternalTesterPreview(locationLike?: {
   hostname?: unknown;
   search?: unknown;

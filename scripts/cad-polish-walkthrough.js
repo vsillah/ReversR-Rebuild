@@ -95,9 +95,7 @@ async function addSideText(scenes, duration) {
       await phase('Input');
       await hold('input-acquisition', page.getByTestId('cad-phase-1'));
       await hold('input-source', page.getByText('Dispenser.IGS', { exact: true }));
-      await page.getByTestId('cad-import-details').click();
-      await hold('import-details', page.getByTestId('cad-import-details-content'), 6);
-      await page.getByTestId('cad-import-details').click();
+      await hold('input-fixture-ready', page.getByTestId('cad-public-fixture-ready'), 6);
       await phase('Inventory');
       await hold('inventory-source', page.getByTestId('cad-phase-2'), 10);
       await page.getByTestId('cad-inventory-details').click();

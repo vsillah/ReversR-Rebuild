@@ -1760,7 +1760,7 @@ export default function HomeScreen() {
         ref={workflowScrollRef}
         style={styles.content}
         contentContainerStyle={[
-          { paddingBottom: contentBottomPadding },
+          { flexGrow: 1, paddingBottom: contentBottomPadding },
           tourActive && styles.contentWithTour,
         ]}
         showsVerticalScrollIndicator={false}
@@ -2195,6 +2195,7 @@ const createStyles = (Colors: AppColors) => {
   },
   content: {
     flex: 1,
+    minHeight: 0,
     paddingHorizontal: Spacing.lg,
   },
   contentWithTour: {

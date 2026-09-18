@@ -76,10 +76,10 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     <View testID="cad-import-panel" style={{ gap: 14 }}>
       {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
       <Text style={text}>{fixture
-        ? 'Source acquisition and conversion are complete for this public fixture. No new upload or conversion runs here.'
+        ? 'The public review file is already loaded. No IGES upload is needed for this preview.'
         : 'Choose a public or synthetic .igs or .iges file for a local compatibility check. File contents stay on your device.'}</Text>
       {fixture ? (
-        <View testID="cad-internal-test-fixture" style={{ gap: Spacing.sm }}>
+        <View testID="cad-public-fixture-ready" style={{ gap: Spacing.md }}>
           <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
             <Ionicons name="document-text-outline" size={24} color={colors.primary} accessible={false} />
             <View style={{ flex: 1, gap: Spacing.xs }}>
@@ -87,7 +87,18 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
               <Text style={text}>{fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
             </View>
           </View>
-          <Text style={text}>{isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture'} · Authorized source</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+            {[
+              isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture',
+              'Authorized source',
+              'No upload required',
+            ].map(label => (
+              <View key={label} style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 999, paddingHorizontal: Spacing.sm, paddingVertical: 6, backgroundColor: colors.elevated }}>
+                <Text style={[Typography.caption, { color: colors.mutedText }]}>{label}</Text>
+              </View>
+            ))}
+          </View>
+          <Text testID="cad-public-fixture-guidance" style={text}>Use the next screens to review generated inventory, inspect the 3D orientation controls, and compare against the reference views.</Text>
           <CadAction testID="cad-review-qualified-result" accessibilityLabel={`Review qualified ${fixture.fixtureName} result`} label="Review qualified result" onPress={onReviewQualifiedResult} />
         </View>
       ) : supported ? (
@@ -110,29 +121,31 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
-      <View testID="cad-operator-gate" style={{ gap: Spacing.sm, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
-        <CadNotice icon="lock-closed-outline">Live upload locked</CadNotice>
-        {!fixture && <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
-          ? 'Development session connected. Upload admission remains disabled.'
-          : 'No upload session connected. Upload admission remains disabled.'}</Text>}
-        {!fixture && uploadSessionAdapter && !sessionReady && <CadAction
-          testID="cad-connect-session"
-          accessibilityLabel="Connect development upload session"
-          icon="key-outline"
-          label={connecting ? 'Connecting session…' : 'Connect development session'}
-          disabled={connecting}
-          onPress={connectSession}
-        />}
-        {!!sessionMessage && <Text testID="cad-session-message" accessibilityLiveRegion="polite" style={text}>{sessionMessage}</Text>}
-        <Text testID="cad-upload-locked-status" style={text}>This local check does not upload files. Live upload stays unavailable until an approved session and admission route are both enabled.</Text>
-      </View>
-      <CadDetails title="Import access & service status" testID="cad-import-details">
-        <Text testID="cad-development-session-unavailable" style={text}>{mapCadImportError({ schemaVersion: 1, status: 'error', code: 'USER_AUTH_UNAVAILABLE' }).message} No browser sign-in route is available yet. Clear or replace your selection to continue locally.</Text>
-        <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
-        <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
-        <CadAction testID="cad-check-status" disabled={checking} accessibilityLabel="Check CAD service status" icon="refresh-outline" label={checking ? 'Checking status…' : 'Check service status'} onPress={checkStatus} />
-        <Text style={text}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>
-      </CadDetails>
+      {!fixture && <>
+        <View testID="cad-operator-gate" style={{ gap: Spacing.sm, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
+          <CadNotice icon="lock-closed-outline">Live upload locked</CadNotice>
+          <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
+            ? 'Development session connected. Upload admission remains disabled.'
+            : 'No upload session connected. Upload admission remains disabled.'}</Text>
+          {uploadSessionAdapter && !sessionReady && <CadAction
+            testID="cad-connect-session"
+            accessibilityLabel="Connect development upload session"
+            icon="key-outline"
+            label={connecting ? 'Connecting session…' : 'Connect development session'}
+            disabled={connecting}
+            onPress={connectSession}
+          />}
+          {!!sessionMessage && <Text testID="cad-session-message" accessibilityLiveRegion="polite" style={text}>{sessionMessage}</Text>}
+          <Text testID="cad-upload-locked-status" style={text}>This local check does not upload files. Live upload stays unavailable until an approved session and admission route are both enabled.</Text>
+        </View>
+        <CadDetails title="Import access & service status" testID="cad-import-details">
+          <Text testID="cad-development-session-unavailable" style={text}>{mapCadImportError({ schemaVersion: 1, status: 'error', code: 'USER_AUTH_UNAVAILABLE' }).message} No browser sign-in route is available yet. Clear or replace your selection to continue locally.</Text>
+          <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
+          <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
+          <CadAction testID="cad-check-status" disabled={checking} accessibilityLabel="Check CAD service status" icon="refresh-outline" label={checking ? 'Checking status…' : 'Check service status'} onPress={checkStatus} />
+          <Text style={text}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>
+        </CadDetails>
+      </>}
     </View>
   );
 }
