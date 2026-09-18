@@ -1,0 +1,31 @@
+// Temporary local QA route. This .fixture file is never an app route or production import.
+import React, { useEffect, useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import CadImportPanel from '../components/CadImportPanel';
+import { CadAction } from '../components/CadReviewUI';
+import { createSyntheticSessionHandshake } from '../scripts/fixtures/cad-session-handshake';
+import type { CadUploadSessionAdapter } from '../utils/cadUserImportBridge';
+export default function SessionQA() {
+  const [calls, setCalls] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const harness = useMemo(() => createSyntheticSessionHandshake({
+    scenario: new URLSearchParams(location.search).get('mode') || 'success', timeoutMs: 1000,
+  }), []);
+  useEffect(() => {
+    Object.defineProperty(window, '__cadSessionQaCalls', { configurable: true, get: () => harness.calls });
+    return () => { Reflect.deleteProperty(window, '__cadSessionQaCalls'); };
+  }, [harness]);
+  const adapter = useMemo<CadUploadSessionAdapter>(() => ({ connect: async options => {
+    setBusy(true);
+    try { return await harness.adapter.connect(options); }
+    finally { setCalls(harness.calls); setBusy(false); }
+  } }), [harness]);
+  return <ScrollView contentContainerStyle={{ padding: 24 }}>
+    <View style={{ gap: 12, marginBottom: 20 }}>
+      <Text>Synthetic session QA · No live issuer</Text>
+      <Text testID="qa-issuer-calls">Issuer calls: {calls}</Text>
+      <CadAction label="Cancel synthetic handshake" disabled={!busy} onPress={() => harness.cancel()} />
+    </View>
+    <CadImportPanel uploadSessionAdapter={adapter} />
+  </ScrollView>;
+}
