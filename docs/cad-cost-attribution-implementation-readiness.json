@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-cost-attribution-implementation-readiness",
+  "status": "source_only_cost_model_and_readiness_ready",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "baseCommit": "eebacefd7b915c74727ece8bf0fedd7dcbaf719c",
+  "upstream": {
+    "markFeedbackPacket": "docs/cad-mark-feedback-parallel-readiness.json",
+    "markFeedbackPending": true,
+    "markFeedbackStillBlocks": [
+      "claims that the Dispenser preview is externally validated",
+      "claims that rendered geometry is source-correct",
+      "private CAD or real-user readiness claims"
+    ],
+    "markFeedbackDoesNotBlock": [
+      "source-only cost attribution planning",
+      "implementation-readiness information architecture",
+      "disabled-gate UX polish",
+      "production fail-closed route smokes"
+    ]
+  },
+  "costPolicy": {
+    "approvedDevelopmentCeilingUsd": 50,
+    "feePerRunDecisionReady": false,
+    "currentPricingClaims": false,
+    "pricingEvidenceRequired": true,
+    "pricingEvidenceMustBeRefreshedBefore": [
+      "quoting a per-run fee",
+      "raising or lowering the internal tester cap",
+      "charging a customer",
+      "turning on production upload or conversion paths"
+    ],
+    "providerAliasesToVerify": [
+      {
+        "label": "Bracell",
+        "status": "unverified user-named cost bucket",
+        "rule": "confirm provider identity and pricing source before including it in any fee calculation"
+      }
+    ]
+  },
+  "costModel": {
+    "unit": "one CAD run",
+    "costBuckets": [
+      {
+        "id": "convex-auth-session-store",
+        "provider": "Convex",
+        "meters": [
+          "auth/session function calls",
+          "mutations",
+          "query reads",
+          "document writes",
+          "retained-state storage",
+          "logs"
+        ],
+        "evidenceNeeded": [
+          "current Convex plan terms",
+          "deployment-level usage limits",
+          "operation count from sanitized run evidence",
+          "retention duration"
+        ]
+      },
+      {
+        "id": "web-preview-and-api",
+        "provider": "Vercel",
+        "meters": [
+          "serverless or edge invocations",
+          "build minutes",
+          "bandwidth",
+          "preview/production deployment retention",
+          "observability logs"
+        ],
+        "evidenceNeeded": [
+          "current Vercel plan terms",
+          "deployment routing used by the run",
+          "function invocation counts",
+          "bandwidth estimate for preview assets"
+        ]
+      },
+      {
+        "id": "upload-admission",
+        "provider": "ReversR runtime",
+        "meters": [
+          "request validation",
+          "body-read bytes after explicit admission",
+          "temporary file storage",
+          "hashing and inspection CPU"
+        ],
+        "evidenceNeeded": [
+          "BODY_ADMISSION_AUTHORIZED state",
+          "maximum accepted file size",
+          "body-read count",
+          "temporary retention window"
+        ]
+      },
+      {
+        "id": "conversion-sandbox",
+        "provider": "Sandbox or conversion compute",
+        "meters": [
+          "sandbox startup",
+          "CPU time",
+          "memory",
+          "storage",
+          "egress",
+          "cleanup/stop calls"
+        ],
+        "evidenceNeeded": [
+          "current Sandbox or compute price sheet",
+          "per-run resource bounds",
+          "timeout and kill-switch settings",
+          "output artifact size",
+          "cleanup receipt"
+        ]
+      },
+      {
+        "id": "derived-preview-render",
+        "provider": "browser/client rendering",
+        "meters": [
+          "public asset hosting",
+          "mesh or derived preview size",
+          "client-side rendering overhead",
+          "reference image delivery"
+        ],
+        "evidenceNeeded": [
+          "asset byte sizes",
+          "cache policy",
+          "number of reference images",
+          "whether the viewer fetches generated artifacts"
+        ]
+      },
+      {
+        "id": "backup-retention-and-reconciliation",
+        "provider": "ReversR evidence custody",
+        "meters": [
+          "sanitized evidence files",
+          "retained no-delete state",
+          "rollback receipts",
+          "query-only reconciliation",
+          "operator review time"
+        ],
+        "evidenceNeeded": [
+          "retention policy",
+          "no-delete custody requirements",
+          "rollback owner and backup custodian",
+          "reconciliation limitation notes"
+        ]
+      },
+      {
+        "id": "commercial-buffer",
+        "provider": "pricing policy",
+        "meters": [
+          "taxes",
+          "fees",
+          "currency conversion",
+          "provider minimums",
+          "contingency",
+          "support burden"
+        ],
+        "evidenceNeeded": [
+          "billing currency",
+          "tax/fee handling",
+          "contingency percentage",
+          "support assumptions"
+        ]
+      }
+    ],
+    "minimumWorkbookFields": [
+      "run id",
+      "source material class",
+      "file size",
+      "operation counts",
+      "Convex usage",
+      "Vercel usage",
+      "Sandbox or compute usage",
+      "storage and retention",
+      "egress",
+      "tax/fee/FX allowance",
+      "contingency",
+      "all-in estimated cost",
+      "approved cap",
+      "margin or fee recommendation"
+    ]
+  },
+  "implementationReadiness": {
+    "canProceedSourceOnly": true,
+    "recommendedNextSurfaces": [
+      "per-run cost workbook fed by sanitized run evidence",
+      "Build-phase implementation readiness panel",
+      "operator-facing remaining-gates checklist",
+      "test-only versus product-state copy guardrails"
+    ],
+    "mustKeepDisabled": [
+      "BODY_ADMISSION_AUTHORIZED = false until a separate activation gate",
+      "production CAD upload activation",
+      "production conversion",
+      "Sandbox dispatch for user files",
+      "private CAD ingestion",
+      "real-user enrollment"
+    ],
+    "humanQaGate": {
+      "requiredBeforeExternalValidationClaims": true,
+      "markResponseStillPending": true
+    }
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanupMergedBranchAndWorktree": true,
+    "liveRun": false,
+    "uploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false,
+    "newPaidCommitments": false,
+    "externalMessages": false
+  },
+  "hardStops": [
+    "unknown outcome",
+    "failing production smoke",
+    "pricing source uncertainty used as a fee claim",
+    "cost cap uncertainty above the approved development ceiling",
+    "private CAD",
+    "real-user enrollment",
+    "production upload activation",
+    "production conversion",
+    "Sandbox dispatch for user files",
+    "provider/auth/resource/env changes outside approved development target",
+    "usage or billing changes",
+    "new paid commitments",
+    "external messages",
+    "claims that Mark approved geometry before his response is received"
+  ],
+  "nextRecommendedGate": "source-only per-run cost workbook and Build-phase readiness surface"
+}
