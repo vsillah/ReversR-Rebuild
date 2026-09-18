@@ -48,8 +48,12 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
   await phase('Inventory').click();
   await page.getByRole('button',{name:'Review in Design',exact:true}).click();
   await phase('Build').click();await page.getByTestId('cad-build-locked').waitFor();
+  await page.getByTestId('cad-run-economics').getByText('Run economics',{exact:true}).waitFor();
+  await page.getByTestId('cad-run-economics').getByText('USD 50',{exact:true}).waitFor();
+  await page.getByTestId('cad-run-economics').getByText('Evidence pending',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Actual product behavior to validate',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Test-only content in this preview',{exact:true}).waitFor();
+  await page.getByTestId('cad-implementation-slide').getByText('Cost evidence still needed',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Not part of this product QA',{exact:true}).waitFor();
   await page.getByText('Prepare implementation package · Locked',{exact:true}).waitFor();
   assert(await page.getByRole('button',{name:'Prepare outputs unavailable: manufacturing review required'}).isDisabled());

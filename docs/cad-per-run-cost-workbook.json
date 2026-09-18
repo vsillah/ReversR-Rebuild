@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-per-run-cost-workbook",
+  "status": "source_only_workbook_ready",
+  "baseCommit": "e2cfa4e4c173ab9d8c175fc2403b6e28eb3696a8",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "unit": "one CAD run",
+  "approvedDevelopmentCeilingUsd": 50,
+  "currentPricingClaims": false,
+  "pricingEvidenceRequired": true,
+  "feePerRunReady": false,
+  "customerFeeReady": false,
+  "workbookRows": [
+    {
+      "id": "convex-auth-session-store",
+      "provider": "Convex",
+      "status": "pricing-evidence-required",
+      "meters": ["auth/session calls", "mutations", "query reads", "document writes", "retained storage"],
+      "requiredEvidence": ["current plan terms", "deployment usage limits", "run operation counts", "retention duration"],
+      "estimateUsd": null
+    },
+    {
+      "id": "vercel-web-api",
+      "provider": "Vercel",
+      "status": "pricing-evidence-required",
+      "meters": ["function invocations", "build minutes", "bandwidth", "logs"],
+      "requiredEvidence": ["current plan terms", "route usage", "function counts", "asset bandwidth"],
+      "estimateUsd": null
+    },
+    {
+      "id": "upload-admission",
+      "provider": "ReversR runtime",
+      "status": "locked-until-separate-activation",
+      "meters": ["request validation", "body-read bytes", "temporary storage", "hashing CPU"],
+      "requiredEvidence": ["BODY_ADMISSION_AUTHORIZED state", "maximum accepted file size", "body-read count", "temporary retention"],
+      "estimateUsd": null
+    },
+    {
+      "id": "conversion-sandbox-compute",
+      "provider": "Sandbox or conversion compute",
+      "status": "locked-until-separate-conversion-approval",
+      "meters": ["Sandbox startup", "CPU time", "memory", "storage", "egress", "cleanup calls"],
+      "requiredEvidence": ["current price sheet", "per-run resource bounds", "timeout and stop settings", "output artifact size"],
+      "estimateUsd": null
+    },
+    {
+      "id": "preview-render-retention",
+      "provider": "Preview and evidence custody",
+      "status": "pricing-evidence-required",
+      "meters": ["derived preview size", "reference images", "cache policy", "sanitized evidence files"],
+      "requiredEvidence": ["asset byte sizes", "cache policy", "retention window", "rollback receipts"],
+      "estimateUsd": null
+    },
+    {
+      "id": "commercial-buffer",
+      "provider": "Pricing policy",
+      "status": "business-policy-required",
+      "meters": ["taxes", "fees", "FX", "contingency", "support burden"],
+      "requiredEvidence": ["billing currency", "tax/fee handling", "contingency percentage", "support assumptions"],
+      "estimateUsd": null
+    }
+  ],
+  "readinessSurface": {
+    "phase": "Build",
+    "headline": "Build stays locked while cost and manufacturing evidence are incomplete.",
+    "productReady": ["Public-material preview controls", "Source/reference comparison flow", "Fail-closed route status"],
+    "costEvidenceNeeded": [
+      "Current Convex and Vercel plan terms",
+      "Sandbox or conversion compute pricing",
+      "Per-run operation, storage and egress counts",
+      "Tax, fee, FX, contingency and support policy"
+    ],
+    "blockedOutputs": [
+      "Production CAD upload activation",
+      "CAD conversion or Sandbox dispatch for user files",
+      "Customer fee quote or manufacturing package"
+    ]
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "buildPhaseReadinessCopy": true,
+    "currentPricingClaim": false,
+    "customerFeeQuote": false,
+    "liveRun": false,
+    "uploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false,
+    "externalMessages": false
+  }
+}

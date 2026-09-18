@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
+import { CAD_BUILD_READINESS, CAD_COST_WORKBOOK } from '../utils/cadCostWorkbook';
 import CadImportPanel from './CadImportPanel';
 import CadDesignReview from './CadDesignReview';
 import { CadAction, CadDetails, CadNotice, CadSourceFacts, CadProvenance, cadReviewStyles as styles } from './CadReviewUI';
@@ -15,7 +16,7 @@ type Props = {
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
-const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Public preview ready · Outputs locked'];
+const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Costs scoped · Outputs locked'];
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
@@ -23,6 +24,11 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
   const { colors } = useAppTheme();
   const fixture = preview.fixture;
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
+  const toneStyles = {
+    success: { color: colors.success, backgroundColor: colors.successSoft },
+    warning: { color: colors.warning, backgroundColor: colors.warningSoft },
+    muted: { color: colors.mutedText, backgroundColor: colors.elevated },
+  };
   return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: Spacing.lg, gap: Spacing.md }}>
     <View style={styles.header}>
       <View style={[styles.headerIcon, { backgroundColor: colors.primarySoft }]}><Ionicons name={icons[phase - 1]} size={24} color={colors.primary} accessible={false} /></View>
@@ -54,7 +60,7 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
       </>}
       {phase === 4 && <>
         <View testID="cad-build-locked" style={{ gap: Spacing.md }}>
-          <CadNotice icon="lock-closed-outline">Implementation package locked until manufacturing review is complete</CadNotice>
+          <CadNotice icon="lock-closed-outline">{CAD_BUILD_READINESS.headline}</CadNotice>
           <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
               {[
@@ -69,13 +75,28 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
                 <Text style={[Typography.label, { color: colors.text }]}>{item.value}</Text>
               </View>)}
             </View>
+            <View testID="cad-run-economics" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.panel }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+                <Ionicons name="calculator-outline" size={18} color={colors.primary} accessible={false} />
+                <Text style={[Typography.heading, { color: colors.text, flex: 1 }]}>Run economics</Text>
+              </View>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+                {CAD_BUILD_READINESS.summaryCards.map(card => {
+                  const tone = toneStyles[card.tone];
+                  return <View key={card.label} style={{ flexGrow: 1, flexBasis: 145, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.xs, backgroundColor: colors.surface }}>
+                    <Text style={[Typography.caption, { color: colors.mutedText }]}>{card.label}</Text>
+                    <Text style={[Typography.label, { color: tone.color }]}>{card.value}</Text>
+                  </View>;
+                })}
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, padding: Spacing.sm, borderRadius: Radii.sm, backgroundColor: colors.elevated }}>
+                <Ionicons name="information-circle-outline" size={16} color={colors.mutedText} accessible={false} />
+                <Text style={[...text, { flex: 1 }]}>The USD {CAD_COST_WORKBOOK.approvedDevelopmentCeilingUsd} ceiling is an internal development cap, not a customer price or per-run fee.</Text>
+              </View>
+            </View>
             <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.panel }}>
               <Text style={[Typography.heading, { color: colors.text }]}>Actual product behavior to validate</Text>
-              {[
-                'Rotate, zoom, reset, and select fixed model views.',
-                'Compare the model against source-backed reference views.',
-                'Confirm Build stays locked until manufacturing review is complete.',
-              ].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+              {CAD_BUILD_READINESS.productReady.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
                 <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
                 <Text style={[...text, { flex: 1, color: colors.text }]}>{label}</Text>
               </View>)}
@@ -92,8 +113,16 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
               </View>)}
             </View>
             <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
+              <Text style={[Typography.heading, { color: colors.text }]}>Cost evidence still needed</Text>
+              {CAD_BUILD_READINESS.costEvidenceNeeded.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+                <Ionicons name="time-outline" size={16} color={colors.warning} accessible={false} />
+                <Text style={[...text, { flex: 1 }]}>{label}</Text>
+              </View>)}
+              <Text style={[Typography.caption, { color: colors.mutedText }]}>Workbook rows: {CAD_COST_WORKBOOK.buckets.map(bucket => bucket.label).join(' · ')}</Text>
+            </View>
+            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
               <Text style={[Typography.heading, { color: colors.text }]}>Not part of this product QA</Text>
-              {['Production CAD upload activation', 'CAD conversion or manufacturing export generation', 'Private CAD, account enrollment, or real customer data'].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+              {CAD_BUILD_READINESS.blockedOutputs.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
                 <Ionicons name="ellipse-outline" size={16} color={colors.mutedText} accessible={false} />
                 <Text style={[...text, { flex: 1 }]}>{label}</Text>
               </View>)}
