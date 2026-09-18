@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Spacing, Typography } from '../constants/theme';
+import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 import CadImportPanel from './CadImportPanel';
@@ -14,8 +14,10 @@ type Props = {
   onPhase: (phase: number) => void;
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
-const titles = ['CAD source', 'Source inventory', 'Design review', 'Build prerequisites'];
-const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Locked · Manufacturing review required'];
+const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
+const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Public preview ready · Outputs locked'];
+
+const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
 export default function CadWorkflow({ preview, phase, onPhase }: Props) {
   const { colors } = useAppTheme();
@@ -48,21 +50,60 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
       </>}
       {phase === 3 && <>
         <CadDesignReview fixture={fixture} />
-        <CadAction label="View Build prerequisites" icon="lock-closed-outline" onPress={() => onPhase(4)} />
+        <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />
       </>}
       {phase === 4 && <>
         <View testID="cad-build-locked" style={{ gap: Spacing.md }}>
-          <CadNotice icon="lock-closed-outline">Manufacturing preparation is locked</CadNotice>
-          <Text style={text}>Review these prerequisites before BOM or manufacturing exports can be prepared.</Text>
-          {['Reviewed dimensions and features', 'Resolved geometry issues', 'Verified parts list'].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-            <Ionicons name="ellipse-outline" size={16} color={colors.mutedText} accessible={false} />
-            <Text style={[Typography.label, { color: colors.text, flex: 1 }]}>{label}</Text>
-          </View>)}
-          <Text style={text}>This fixture provides visual review only. Build approval and output generation are unavailable in this preview.</Text>
-          <CadAction label="Prepare outputs · Locked" accessibilityLabel="Prepare outputs unavailable: manufacturing review required" icon="lock-closed-outline" disabled />
+          <CadNotice icon="lock-closed-outline">Implementation package locked until manufacturing review is complete</CadNotice>
+          <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+              {[
+                { icon: 'cube-outline' as const, label: 'Actual product UI', value: 'Controls + workflow', color: colors.success, background: colors.successSoft },
+                { icon: 'images-outline' as const, label: 'Test-only content', value: 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
+                { icon: 'lock-closed-outline' as const, label: 'Locked product output', value: 'No build package yet', color: colors.warning, background: colors.warningSoft },
+              ].map(item => <View key={item.label} style={{ flexGrow: 1, flexBasis: 150, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.elevated }}>
+                <View style={{ width: 34, height: 34, borderRadius: Radii.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: item.background }}>
+                  <Ionicons name={item.icon} size={18} color={item.color} accessible={false} />
+                </View>
+                <Text style={[Typography.caption, { color: colors.mutedText }]}>{item.label}</Text>
+                <Text style={[Typography.label, { color: colors.text }]}>{item.value}</Text>
+              </View>)}
+            </View>
+            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.panel }}>
+              <Text style={[Typography.heading, { color: colors.text }]}>Actual product behavior to validate</Text>
+              {[
+                'Rotate, zoom, reset, and select fixed model views.',
+                'Compare the model against source-backed reference views.',
+                'Confirm Build stays locked until manufacturing review is complete.',
+              ].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+                <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
+                <Text style={[...text, { flex: 1, color: colors.text }]}>{label}</Text>
+              </View>)}
+            </View>
+            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
+              <Text style={[Typography.heading, { color: colors.text }]}>Test-only content in this preview</Text>
+              {[
+                `${fixture.sourceFileName} and the matching reference images are public review materials preloaded for this QA pass.`,
+                `Shown dimensions come from this public test file: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
+                'This shareable preview link is not the final customer upload workflow.',
+              ].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+                <Ionicons name="flask-outline" size={16} color={colors.primary} accessible={false} />
+                <Text style={[...text, { flex: 1 }]}>{label}</Text>
+              </View>)}
+            </View>
+            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
+              <Text style={[Typography.heading, { color: colors.text }]}>Not part of this product QA</Text>
+              {['Production CAD upload activation', 'CAD conversion or manufacturing export generation', 'Private CAD, account enrollment, or real customer data'].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+                <Ionicons name="ellipse-outline" size={16} color={colors.mutedText} accessible={false} />
+                <Text style={[...text, { flex: 1 }]}>{label}</Text>
+              </View>)}
+            </View>
+          </View>
+          <CadAction label="Prepare implementation package · Locked" accessibilityLabel="Prepare outputs unavailable: manufacturing review required" icon="lock-closed-outline" disabled />
         </View>
         <CadDetails title="Geometry warnings & review limits" testID="cad-build-details">
           {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
+          <Text style={text}>The implementation package remains locked because this public fixture review is visual QA only.</Text>
         </CadDetails>
         <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
