@@ -1,44 +1,123 @@
-// Public fixture only; no provider requests, private inputs, or live conversion.
-const fs=require('node:fs');
-const {spawnSync}=require('node:child_process');
-const {chromium}=require('playwright');
-const out='/private/tmp/cad-phase-walkthrough';
-const qa='docs/qa/cad-phase-progression';
-const url=process.env.CAD_PHASE_URL||'http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1';
-fs.mkdirSync(out,{recursive:true});fs.mkdirSync(qa,{recursive:true});
-(async()=>{
- const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
- try{for(const width of [1440,390]){
-  const context=await browser.newContext({viewport:{width,height:1000},recordVideo:{dir:out,size:{width,height:1000}}});
-  await context.route('**/*',route=>{
-   const u=new URL(route.request().url());
-   if(u.origin!==new URL(url).origin||u.pathname.startsWith('/api/')||route.request().method()!=='GET')return route.abort();
-   return route.continue();
-  });
-  const page=await context.newPage();await page.goto(url);
-  await page.getByTestId('cad-phase-3').waitFor();
-  await page.waitForFunction(()=>document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view==='isometric');
-  const nav=page.getByTestId('reversr-tour-phase-nav');
-  const phase=name=>nav.getByRole('button',{name:new RegExp(`^${name} phase,`)}).click();
-  await page.waitForTimeout(2200);
-  await phase('Input');await page.waitForTimeout(2200);
-  await phase('Inventory');await page.waitForTimeout(2500);
-  await page.getByRole('button',{name:'Review in Design',exact:true}).click();await page.waitForTimeout(1800);
-  const host=page.getByTestId('cad-fixture-canvas-host');
-  await host.evaluate(el=>el.scrollIntoView({block:'center'}));
-  await host.evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement){if(p.scrollHeight>p.clientHeight&&['auto','scroll'].includes(getComputedStyle(p).overflowY)){p.scrollTop+=100;break;}}});
-  await page.waitForTimeout(1500);
-  await page.getByRole('button',{name:'Expand orientation controls'}).click();
-  await page.getByRole('button',{name:'Show front view'}).click();await page.waitForTimeout(1800);
-  await page.getByRole('button',{name:'Show top view'}).click();await page.waitForTimeout(1800);
-  await page.getByRole('button',{name:'Reset to fitted isometric view'}).click();await page.waitForTimeout(1500);
-  await page.screenshot({path:`${qa}/${width}-viewer.png`});
-  await page.getByTestId('cad-reference-comparison').evaluate(el=>el.scrollIntoView({block:'start'}));await page.waitForTimeout(2200);
-  await phase('Build');await page.waitForTimeout(2800);
-  await page.getByRole('button',{name:'Return to Design review',exact:true}).click();await page.waitForTimeout(1800);
-  const video=page.video();await context.close();await video.saveAs(`${out}/${width}.webm`);
- }}finally{await browser.close();}
- const result=spawnSync('ffmpeg',['-y','-i',`${out}/1440.webm`,'-i',`${out}/390.webm`,'-filter_complex','[0:v]crop=600:1000:420:0,setsar=1,fps=25[v0];[1:v]pad=600:1000:105:0:color=0xf2f5fa,setsar=1,fps=25[v1];[v0][v1]concat=n=2:v=1:a=0[v]','-map','[v]','-c:v','libx264','-crf','23','-pix_fmt','yuv420p','-movflags','+faststart',`${qa}/walkthrough.mp4`],{stdio:'ignore'});
- if(result.status!==0)throw new Error('FFmpeg failed');
- console.log('Recorded desktop then mobile phase progression and viewer review');
-})().catch(error=>{console.error(error);process.exitCode=1;});
+// Public fixture only. Capture actual browser video, including the reference popup.
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
+const { chromium } = require('playwright');
+const out = '/private/tmp/cad-phase-source-walkthrough';
+const qa = 'docs/qa/cad-phase-progression';
+const url = process.env.CAD_PHASE_URL || 'http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1';
+assert(['127.0.0.1', 'localhost'].includes(new URL(url).hostname));
+assert.equal(new URL(url).searchParams.get('cadPreview'), 'mark-dispenser-v1');
+fs.mkdirSync(out, { recursive: true });
+fs.mkdirSync(qa, { recursive: true });
+const run = args => {
+  const result = spawnSync('ffmpeg', ['-y', ...args], { encoding: 'utf8' });
+  if (result.status !== 0) throw new Error(result.stderr);
+};
+(async () => {
+  const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+  const scenes = [], clips = [];
+  let timeline = 0;
+  try {
+    for (const width of [1440, 390]) {
+      const context = await browser.newContext({ viewport: { width, height: 1000 }, serviceWorkers: 'block', recordVideo: { dir: out, size: { width, height: 1000 } } });
+      const blocked = [];
+      await context.route('**/*', route => {
+        const request = route.request(), u = new URL(request.url());
+        if (u.origin !== new URL(url).origin || u.pathname.startsWith('/api/') || request.method() !== 'GET') {
+          blocked.push({ path: u.pathname, method: request.method() });
+          return route.abort();
+        }
+        return route.continue();
+      });
+      const page = await context.newPage();
+      const started = Date.now();
+      const elapsed = () => (Date.now() - started) / 1000;
+      await page.goto(url);
+      await page.waitForFunction(() => document.querySelector('[data-testid="cad-fixture-canvas"]')?.dataset.view === 'isometric');
+      const nav = page.getByTestId('reversr-tour-phase-nav');
+      const phase = name => nav.getByRole('button', { name: new RegExp(`^${name} phase,`) }).click();
+      const hold = async (name, locator, seconds = 6) => {
+        if (locator) await locator.evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await page.waitForTimeout(500);
+        scenes.push({ width, name, sourceSeconds: elapsed(), duration: seconds });
+        await page.screenshot({ path: `${qa}/${width}-${name}.png` });
+        await page.waitForTimeout(seconds * 1000);
+      };
+      await hold('design-active', nav);
+      await phase('Input');
+      await hold('input-acquisition', page.getByTestId('cad-phase-1'));
+      await hold('input-source', page.getByText(/^Dispenser\.IGS · IGES ·/));
+      await phase('Inventory');
+      await hold('inventory-source', page.getByTestId('cad-phase-2'), 10);
+      await page.getByRole('button', { name: 'Review in Design', exact: true }).click();
+      await hold('viewer', page.getByTestId('cad-fixture-canvas-host'));
+      await page.getByRole('button', { name: 'Expand orientation controls' }).click();
+      await page.getByRole('button', { name: 'Show front view' }).click();
+      await hold('viewer-front', null, 4);
+      await page.getByRole('button', { name: 'Show top view' }).click();
+      await hold('viewer-top', null, 4);
+      await page.getByRole('button', { name: 'Reset to fitted isometric view' }).click();
+      const source = page.getByRole('link', { name: 'Download original Dispenser.IGS', exact: true });
+      await hold('source-download', source, 8);
+      const downloaded = page.waitForEvent('download');
+      await source.click();
+      assert.equal((await downloaded).suggestedFilename(), 'Dispenser.IGS');
+      for (const label of ['Front', 'Left', 'Top', 'Drawing']) {
+        await hold(`reference-${label.toLowerCase()}`, page.getByRole('link', { name: `Open ${label} reference image`, exact: true }), 6);
+      }
+      const popupEvent = context.waitForEvent('page');
+      await page.getByRole('link', { name: 'Open Drawing reference image', exact: true }).click();
+      const cutStart = elapsed();
+      const popup = await popupEvent;
+      await popup.waitForLoadState();
+      assert.match(popup.url(), /\/cad-fixtures\/mark-dispenser-v1\/dispenser-/);
+      await popup.waitForFunction(() => document.querySelector('img')?.complete);
+      await popup.screenshot({ path: `${qa}/${width}-opened-drawing.png` });
+      await popup.waitForTimeout(8000);
+      const popupVideo = popup.video();
+      await popup.close();
+      await popupVideo.saveAs(`${out}/${width}-popup.webm`);
+      const cutEnd = elapsed();
+      await hold('return-to-app', page.getByTestId('cad-reference-comparison'), 4);
+      await hold('geometry-warnings', page.getByText('The interactive model is the calibrated display mesh derived from the authorized IGES source. Reference images remain independent visual checks.', { exact: true }), 9);
+      await phase('Build');
+      await hold('build-prerequisites', page.getByTestId('cad-build-locked'), 10);
+      await hold('build-recovery', page.getByRole('button', { name: 'Return to Design review', exact: true }), 6);
+      await page.getByRole('button', { name: 'Review inventory prerequisites', exact: true }).click();
+      await hold('inventory-recovery', page.getByTestId('cad-phase-2'), 5);
+      await phase('Build');
+      await page.getByRole('button', { name: 'Return to Design review', exact: true }).click();
+      await hold('design-recovered', nav, 5);
+      const video = page.video();
+      await context.close();
+      await video.saveAs(`${out}/${width}.webm`);
+      // Keep the real 600px app lane readable; retain the full drawing sheet in popup footage.
+      const fit = width === 1440 ? 'crop=600:1000:420:0,pad=640:1000:20:0:color=0xf2f5fa,setsar=1,fps=25' : 'pad=640:1000:125:0:color=0xf2f5fa,setsar=1,fps=25';
+      const pieces = [
+        ['before', ['-i', `${out}/${width}.webm`, '-t', String(cutStart)]],
+        ['popup', ['-i', `${out}/${width}-popup.webm`]],
+        ['after', ['-ss', String(cutEnd), '-i', `${out}/${width}.webm`]],
+      ];
+      const probe = file => Number(spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { encoding: 'utf8' }).stdout.trim());
+      let popupDuration;
+      for (const [name, inputs] of pieces) {
+        const file = `${out}/${width}-${name}.mp4`;
+        const framing = name === 'popup' && width === 1440 ? 'crop=640:1000:280:0,setsar=1,fps=25' : fit;
+        run([...inputs, '-vf', framing, '-an', '-c:v', 'libx264', '-crf', '20', '-pix_fmt', 'yuv420p', file]);
+        clips.push(file);
+        const duration = probe(file);
+        if (name === 'popup') popupDuration = duration;
+      }
+      for (const scene of scenes.filter(s => s.width === width)) {
+        scene.mp4Seconds = timeline + scene.sourceSeconds + (scene.sourceSeconds >= cutEnd ? popupDuration - (cutEnd - cutStart) : 0);
+      }
+      scenes.push({ width, name: 'opened-drawing', mp4Seconds: timeline + cutStart + 2, duration: popupDuration, blocked });
+      timeline += pieces.reduce((sum, [name]) => sum + probe(`${out}/${width}-${name}.mp4`), 0);
+    }
+  } finally { await browser.close(); }
+  fs.writeFileSync(`${out}/concat.txt`, clips.map(file => `file '${file}'`).join('\n'));
+  run(['-f', 'concat', '-safe', '0', '-i', `${out}/concat.txt`, '-c', 'copy', '-movflags', '+faststart', `${qa}/walkthrough.mp4`]);
+  fs.writeFileSync(`${qa}/walkthrough-scenes.json`, JSON.stringify({ url, scenes }, null, 2));
+  console.log('Recorded complete source/reference review, including actual popup video, desktop then mobile.');
+})().catch(error => { console.error(error); process.exitCode = 1; });
