@@ -6,14 +6,19 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 
-test('native Import can open the internal Dispenser review without unlocking upload', () => {
+test('native Import opens the internal installed-app IGS renderer without unlocking production upload', () => {
   const appIndex = read('app/index.tsx');
   const phaseOne = read('components/PhaseOne.tsx');
   const importPanel = read('components/CadImportPanel.tsx');
+  const nativePreview = read('components/CadNativeInternalUploadPreview.tsx');
+  const targetConfig = read('utils/cadNativeInternalUploadPreview.js');
+  const easConfig = JSON.parse(read('eas.json'));
+  const packageJson = JSON.parse(read('package.json'));
 
-  assert.match(appIndex, /MARK_DISPENSER_RESULT/);
-  assert.match(appIndex, /nativeCadPreviewEnabled/);
-  assert.match(appIndex, /code:\s*'CAD_TEST_PREVIEW_MARK_DISPENSER'/);
+  assert.doesNotMatch(appIndex, /MARK_DISPENSER_RESULT/);
+  assert.doesNotMatch(appIndex, /nativeCadPreviewEnabled/);
+  assert.match(appIndex, /nativeCadUploadPreviewVisible/);
+  assert.match(appIndex, /<CadNativeInternalUploadPreview/);
   assert.match(appIndex, /onOpenCadInternalPreview=\{Platform\.OS === 'web' \? undefined : openNativeCadInternalPreview\}/);
 
   assert.match(phaseOne, /onOpenCadInternalPreview\?: \(\) => void;/);
@@ -21,8 +26,28 @@ test('native Import can open the internal Dispenser review without unlocking upl
 
   assert.match(importPanel, /cad-native-internal-preview-entry/);
   assert.match(importPanel, /cad-open-native-internal-preview/);
-  assert.match(importPanel, /Review public Dispenser preview/);
-  assert.match(importPanel, /This does not upload files or unlock live CAD admission\./);
+  assert.match(importPanel, /Open internal IGS preview/);
+  assert.match(importPanel, /Production upload admission stays locked\./);
+  assert.match(importPanel, /!onOpenInternalPreview/);
   assert.match(importPanel, /Live upload locked/);
-  assert.match(importPanel, /Live upload remains locked below/);
+
+  assert.match(nativePreview, /react-native-webview/);
+  assert.match(nativePreview, /cad-native-upload-render-webview/);
+  assert.match(nativePreview, /allowFileAccess/);
+  assert.match(nativePreview, /setSupportMultipleWindows=\{false\}/);
+  assert.match(nativePreview, /isAllowedCadNativeInternalUploadRenderUrl/);
+  assert.match(nativePreview, /Production upload remains locked/);
+
+  assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
+  assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);
+  assert.match(targetConfig, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL/);
+
+  const profile = easConfig.build['cad-internal-upload-preview'];
+  assert.equal(profile.distribution, 'internal');
+  assert.equal(profile.environment, 'preview');
+  assert.equal(profile.channel, 'cad-internal-upload-preview');
+  assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/.+\.vercel\.app\//);
+  assert.doesNotMatch(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/reversr\.vercel\.app/);
+  assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /cadPreview=mark-dispenser-v1/);
+  assert.equal(packageJson.dependencies['react-native-webview'], '13.16.1');
 });

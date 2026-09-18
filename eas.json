@@ -28,6 +28,17 @@
         "buildType": "apk"
       }
     },
+    "cad-internal-upload-preview": {
+      "environment": "preview",
+      "distribution": "internal",
+      "channel": "cad-internal-upload-preview",
+      "env": {
+        "EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL": "https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "production": {
       "environment": "production",
       "channel": "production",
