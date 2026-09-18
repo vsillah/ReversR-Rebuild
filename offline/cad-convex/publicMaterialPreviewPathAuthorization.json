@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "mode": "source-only-cad-public-material-preview-path-authorization",
+  "status": "PUBLIC_MATERIAL_PREVIEW_PATH_AUTHORIZED_SOURCE_ONLY",
+  "sourceOnly": true,
+  "production": false,
+  "baseMainCommit": "a572e9b221765091dda94a0d58631da9a66f1f78",
+  "branch": "codex/cad-public-material-preview-path",
+  "observedAtUtc": "2026-09-18T11:33:17Z",
+  "humanProductDecision": {
+    "authorized": true,
+    "decision": "Authorize a bounded internal-tester or public-preview path using public materials only.",
+    "pathType": "anyone-with-link non-production Vercel preview",
+    "publicMaterialsOnly": true,
+    "realUserEnrollmentAuthorized": false,
+    "externalDeliveryAuthorized": false
+  },
+  "scopeConclusion": {
+    "publicPreviewPathCanProceed": true,
+    "requiresNewProviderRun": false,
+    "requiresUploadActivation": false,
+    "requiresProductionConversion": false,
+    "requiresPrivateCad": false,
+    "requiresRealUserAccount": false,
+    "reason": "The approved path uses the existing non-production fixture preview, public Dispenser.IGS and matching public references. It does not require uploads, private CAD, provider mutations, production route activation or account enrollment."
+  },
+  "route": {
+    "query": "?cadPreview=mark-dispenser-v1",
+    "allowedHostPolicy": "localhost, 127.0.0.1, ::1, or non-production *.vercel.app only",
+    "blockedProductionHostname": "reversr.vercel.app",
+    "source": "utils/cadInternalTesterPreview.js",
+    "sourceSha256": "fd5161b9cf966042bf3bdc36c2e08025f22f34bccf40b2544c16f5ca96a1e050",
+    "test": "scripts/cad-internal-tester-preview.test.js",
+    "testSha256": "290825107c94110e7931d0b2445650d43c679cf7ba6532078d2ed078ca3609ee"
+  },
+  "publicFixture": {
+    "fixtureId": "mark-dispenser-v1",
+    "manifest": "public/cad-fixtures/mark-dispenser-v1/manifest.json",
+    "manifestSha256": "f93cce67bbbfb97c988ab4276207b4ee504edcc45866238dc0f4427121c9f1c2",
+    "redistributionScope": "Anyone-with-the-link Vercel preview",
+    "source": {
+      "path": "public/cad-fixtures/mark-dispenser-v1/Dispenser.IGS",
+      "bytes": 701346,
+      "sha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+      "units": "millimeter"
+    },
+    "derivedDisplayMesh": {
+      "path": "public/cad-fixtures/mark-dispenser-v1/dispenser-derived.stl",
+      "bytes": 131784,
+      "sha256": "9b5bfa4b86d6976ae87e6f023b3a243d4b04966b2337b224203bb630e7b8096e",
+      "sourceSha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+      "watertight": false
+    },
+    "references": [
+      {
+        "label": "Front",
+        "path": "public/cad-fixtures/mark-dispenser-v1/dispenser-front.jpg",
+        "sha256": "710a65f06a5be9e842482e631110a38c3978c4d6a8a20ea3e07b699185782586"
+      },
+      {
+        "label": "Left",
+        "path": "public/cad-fixtures/mark-dispenser-v1/dispenser-left.jpg",
+        "sha256": "b985c51e00090c439d04ff5e5b0b7dd83916d5053b020d7fa3fb102ebd6024fe"
+      },
+      {
+        "label": "Top",
+        "path": "public/cad-fixtures/mark-dispenser-v1/dispenser-top.jpg",
+        "sha256": "8e591836750d426c4c917236e1b0328ee90c907f7e9fcb798c03de53efd4ca09"
+      },
+      {
+        "label": "Drawing",
+        "path": "public/cad-fixtures/mark-dispenser-v1/dispenser-drawing.jpg",
+        "sha256": "b933e7ca60131898d8755b033d48a6114c6b7f020f34b41b04ad3bfbe06ac833"
+      }
+    ]
+  },
+  "boundReadiness": {
+    "integratedUploadConversionReadiness": {
+      "source": "docs/cad-integrated-upload-conversion-readiness.md",
+      "sourceSha256": "428b71c9f161f4f8089191c7e61447c605cf8d2669e78c80eda31ec081a2e6e3",
+      "componentEvidenceChainBound": true,
+      "readyForProductionUploadActivation": false,
+      "readyForProductionConversion": false
+    },
+    "internalTesterPreviewDecision": {
+      "source": "docs/cad-internal-tester-preview.md",
+      "sourceSha256": "10e016d4c521c507ba4debd9849ee02970b632f59dff82c8bce6190482f87d27"
+    },
+    "phaseProgressionQa": {
+      "source": "docs/qa/cad-phase-progression/README.md",
+      "sourceSha256": "38bc8b89451c5109a78fc666af25400d6eb3ef3f4b3d24c9328f6ce7bd0af6ef",
+      "walkthroughSha256": "dfd0e88d7678852d8fcbaaee050865e26f6c4f11b34fe8107b3aa21524e8f6be",
+      "videoVerificationSha256": "db060a2c8fd193bc7d615d0b220f01b86f20f4824d49943506338c76b3ab416e",
+      "phaseResultsSha256": "d4607a7758454f372748807973ccd57cb9eae6f08e9918cab7078987fb072b64",
+      "viewerResultsSha256": "8942c6cca4a87ac50b536a02dd29a54b20ca7c7f72292e209dc2115d3058c6c9"
+    },
+    "neutralGridQa": {
+      "source": "docs/qa/cad-neutral-grid/README.md",
+      "sourceSha256": "7190d3d82ccdc184a8dd680e991006b886ba150ab57d083c84217b55d8ad96e0",
+      "walkthroughSha256": "7293c0ebcbee9d05fc61a863e79e62a91e471f190ffda7378a47d6d0763e3992",
+      "resultsSha256": "58da1f5c9ac94e1ef4f9c5dc212ed38d857a04fca825ada54170bb0f45f9a0fd"
+    }
+  },
+  "limits": {
+    "sourceConfidence": "source-only warning",
+    "derivedMeshWatertight": false,
+    "dimensionalInspectionAuthorized": false,
+    "manufacturingCertificationAuthorized": false,
+    "arbitraryCadSupportClaimed": false,
+    "privateCadAuthorized": false
+  },
+  "authorityPreserved": {
+    "realUserEnrollmentAuthorized": false,
+    "externalMessageAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "productionBodyAdmissionAuthorized": false,
+    "productionConversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "providerResourceChangeAuthorized": false,
+    "envChangeAuthorized": false,
+    "usageBillingChangeAuthorized": false,
+    "liveRunAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false
+  },
+  "nextGate": {
+    "type": "non-production-preview-deployment-and-human-qa",
+    "summary": "Use the PR or non-production Vercel preview URL with ?cadPreview=mark-dispenser-v1, run visual QA, attach a privacy-safe walkthrough, and stop before sending the URL externally.",
+    "allowedByThisPacket": [
+      "source-only PR publication",
+      "normal PR preview deployment",
+      "preview visual QA using public materials",
+      "normal source-only merge/deploy/smoke/cleanup under autopilot"
+    ],
+    "stillRequiresSeparateApproval": [
+      "sending the preview URL to Mark or any external recipient",
+      "creating or enrolling a real account",
+      "using private CAD",
+      "activating production upload or conversion",
+      "dispatching a new Sandbox conversion"
+    ]
+  }
+}
