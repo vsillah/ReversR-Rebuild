@@ -42,7 +42,8 @@ fs.mkdirSync(out, { recursive: true });
         if (width === 390) await page.waitForTimeout(1800);
       };
       await page.getByTestId('cad-session-state').waitFor();
-      assert(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).isDisabled());
+      await page.getByTestId('cad-upload-locked-status').waitFor();
+      assert.equal(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).count(), 0);
       await capture('no-session');
       const select = async (name, buffer) => {
         const chooser = page.waitForEvent('filechooser');
