@@ -27,6 +27,7 @@ function binding(overrides = {}) {
       jsonSha256: runner.expectedPacket.jsonSha256,
     },
     target: {
+      kind: 'reviewed-preview-https',
       exactOrigin: 'https://cad-browser-session-preview.example.invalid',
       exactBrowserRoute: '/cad/browser-session-qualification',
       sourceCommit: 'a7ed32a15b5082dca7bad0b24d2500e5e7151923',
@@ -118,13 +119,64 @@ test('valid binding is accepted for review and exposes only sanitized metadata',
   fs.rmSync(dir, { recursive: true, force: true });
 });
 
-test('binding rejects production, loopback, unresolved packet and widened authority', () => {
+test('binding accepts explicitly reviewed local HTTPS loopback target evidence', () => {
+  const accepted = binding({
+    target: {
+      kind: 'local-loopback-https',
+      exactOrigin: 'https://127.0.0.1:4443',
+      localOnly: true,
+      tls: {
+        certificateSha256: '1'.repeat(64),
+        privateKeySha256: '2'.repeat(64),
+        privateKeyMode: '0600',
+        generatedForRunOnly: true,
+        trustStoreMutationAllowed: false,
+      },
+      browser: {
+        engine: 'chromium',
+        ignoreHttpsErrors: true,
+        freshContext: true,
+        persistentProfile: false,
+        extensionsAllowed: false,
+        serviceWorkersAllowed: false,
+      },
+    },
+  });
+  assert.equal(runner.validateRunBinding(accepted).origin, 'https://127.0.0.1:4443');
+});
+
+test('binding rejects production, unsafe loopback, unresolved packet and widened authority', () => {
   assert.throws(() => runner.validateRunBinding(binding({
     target: { exactOrigin: 'https://reversr.vercel.app' },
   })), /TARGET_ORIGIN_PRODUCTION_FORBIDDEN/);
   assert.throws(() => runner.validateRunBinding(binding({
     target: { exactOrigin: 'http://127.0.0.1:3000' },
   })), /TARGET_ORIGIN_NOT_HTTPS/);
+  assert.throws(() => runner.validateRunBinding(binding({
+    target: { exactOrigin: 'https://127.0.0.1:4443' },
+  })), /TARGET_LOOPBACK_KIND_INVALID/);
+  assert.throws(() => runner.validateRunBinding(binding({
+    target: {
+      kind: 'local-loopback-https',
+      exactOrigin: 'https://127.0.0.1:4443',
+      localOnly: true,
+      tls: {
+        certificateSha256: '1'.repeat(64),
+        privateKeySha256: '2'.repeat(64),
+        privateKeyMode: '0644',
+        generatedForRunOnly: true,
+        trustStoreMutationAllowed: false,
+      },
+      browser: {
+        engine: 'chromium',
+        ignoreHttpsErrors: true,
+        freshContext: true,
+        persistentProfile: false,
+        extensionsAllowed: false,
+        serviceWorkersAllowed: false,
+      },
+    },
+  })), /TARGET_LOOPBACK_TLS_INVALID/);
   assert.throws(() => runner.validateRunBinding(binding({
     packet: { markdownSha256: '0'.repeat(64) },
   })), /PACKET_EXPECTED_DIGEST_INVALID/);

@@ -25,7 +25,7 @@
   "bindingRequirements": {
     "mode": "cad-dev-browser-session-qualification-run-binding",
     "sourceCommit": "40-hex current source commit",
-    "target": "non-production same-origin HTTPS origin and route",
+    "target": "reviewed preview HTTPS or explicit local-loopback-https origin and route",
     "auth": "accepted synthetic server-owned header resolver",
     "custody": "local ignored mode-locked evidence directory and custodian",
     "rollback": "local teardown plan and receipt digest",
