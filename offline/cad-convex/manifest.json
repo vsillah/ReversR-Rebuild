@@ -1,5 +1,5 @@
 {
-  "version": 53,
+  "version": 54,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -357,6 +357,10 @@
     "offline/cad-convex/developmentReadinessAutopilotCloseout.json": "6c35ac054dbf1e6c62783f57ed6d1eaf2d32c9b1973373fd25a75f33c1aaa1e4",
     "docs/cad-development-readiness-autopilot-closeout.md": "311d63687b2a5e4f4ca27e6a622965545fe662c32076ac20f85705f454eb8708",
     "scripts/cad-development-readiness-autopilot-closeout.test.js": "a3a845babc29a03bc25c71eefb6f5d6c4c783e14456a34746370b019f486b6c8",
+    "offline/cad-convex/integratedUploadConversionReadiness.js": "a5017a5e85d50fb6bc4439d64afc5f7edf93ea4d578891b08dbb5e9682e2f6c6",
+    "offline/cad-convex/integratedUploadConversionReadiness.json": "a1d7e9a235a3ed6ff95ff6503cf7c30abc57d7def32c18113c525928e94454d6",
+    "docs/cad-integrated-upload-conversion-readiness.md": "428b71c9f161f4f8089191c7e61447c605cf8d2669e78c80eda31ec081a2e6e3",
+    "scripts/cad-integrated-upload-conversion-readiness.test.js": "d7462ed3d3f7cae55de5bb588b52636b7747a1984d242bdb9ff09004c6b43af5",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -575,6 +579,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "07a5274c50582d52a50ac44ff2f2f6401e763ef90ad594e08c3156a8f91945d8"
+    "scripts/cad-convex-contract-manifest.js": "36a6c84e15363d9e6bab2947635cd333b85ef73ae3c3ed2af882755174cfa89e"
   }
 }
