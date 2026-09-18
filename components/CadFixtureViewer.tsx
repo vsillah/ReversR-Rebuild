@@ -3,28 +3,52 @@ import { Platform } from 'react-native';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 
 type ThreeModule = typeof import('three');
-type ViewName = 'isometric' | 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom';
+type OrbitViewName = 'front' | 'front-right' | 'right' | 'back-right' | 'back' | 'back-left' | 'left' | 'front-left';
+type ElevationViewName = 'top' | 'bottom';
+type ViewName = 'isometric' | OrbitViewName | ElevationViewName;
 type FixedViewName = Exclude<ViewName, 'isometric'>;
 type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'compactOpen' | 'compactClosed';
 
-const fixedViews: FixedViewName[] = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+const orbitViews: OrbitViewName[] = ['front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'left', 'front-left'];
+const elevationViews: ElevationViewName[] = ['top', 'bottom'];
+const fixedViews: FixedViewName[] = [...orbitViews, ...elevationViews];
+const isOrbitView = (view: ViewName | 'custom'): view is OrbitViewName => orbitViews.includes(view as OrbitViewName);
 
-const puckPositions: Record<FixedViewName, React.CSSProperties> = {
-  top: { left: 62, top: 4 },
-  back: { left: 112, top: 33 },
-  right: { left: 112, top: 91 },
-  bottom: { left: 62, top: 120 },
-  left: { left: 12, top: 91 },
-  front: { left: 12, top: 33 },
+const viewLabels: Record<ViewName | 'custom', string> = {
+  isometric: 'Isometric',
+  front: 'Front',
+  'front-right': 'Front-right',
+  right: 'Right',
+  'back-right': 'Back-right',
+  back: 'Back',
+  'back-left': 'Back-left',
+  left: 'Left',
+  'front-left': 'Front-left',
+  top: 'Top',
+  bottom: 'Bottom',
+  custom: 'Custom',
 };
 
-const compactPuckPositions: Record<FixedViewName, React.CSSProperties> = {
-  top: { left: 44, top: 3 },
-  back: { left: 80, top: 24 },
-  right: { left: 80, top: 65 },
-  bottom: { left: 44, top: 85 },
-  left: { left: 9, top: 65 },
-  front: { left: 9, top: 24 },
+const puckPositions: Record<OrbitViewName, React.CSSProperties> = {
+  front: { left: 52, top: 2 },
+  'front-right': { left: 87, top: 17 },
+  right: { left: 102, top: 52 },
+  'back-right': { left: 87, top: 87 },
+  back: { left: 52, top: 102 },
+  'back-left': { left: 17, top: 87 },
+  left: { left: 2, top: 52 },
+  'front-left': { left: 17, top: 17 },
+};
+
+const compactPuckPositions: Record<OrbitViewName, React.CSSProperties> = {
+  front: { left: 38, top: 0 },
+  'front-right': { left: 65, top: 11 },
+  right: { left: 76, top: 38 },
+  'back-right': { left: 65, top: 65 },
+  back: { left: 38, top: 76 },
+  'back-left': { left: 11, top: 65 },
+  left: { left: 0, top: 38 },
+  'front-left': { left: 11, top: 11 },
 };
 
 const viewSymbols: Record<'isometric' | 'custom', string> = {
@@ -32,16 +56,18 @@ const viewSymbols: Record<'isometric' | 'custom', string> = {
   custom: '✣',
 };
 
-const viewRotations: Record<FixedViewName, number> = {
-  top: -90,
-  back: -30,
-  right: 30,
-  bottom: 90,
-  left: 150,
-  front: 210,
+const viewRotations: Record<OrbitViewName, number> = {
+  front: -90,
+  'front-right': -45,
+  right: 0,
+  'back-right': 45,
+  back: 90,
+  'back-left': 135,
+  left: 180,
+  'front-left': 225,
 };
 
-function DirectionGlyph({ view, active = false, compact = false }: { view: FixedViewName; active?: boolean; compact?: boolean }) {
+function DirectionGlyph({ view, active = false, compact = false }: { view: OrbitViewName; active?: boolean; compact?: boolean }) {
   return (
     <span aria-hidden="true" style={{
       display: 'block',
@@ -56,6 +82,37 @@ function DirectionGlyph({ view, active = false, compact = false }: { view: Fixed
   );
 }
 
+function ElevationGlyph({ view, active = false, compact = false }: { view: ElevationViewName; active?: boolean; compact?: boolean }) {
+  const width = compact ? 30 : 36;
+  const height = compact ? 16 : 20;
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 36 20"
+      width={width}
+      height={height}
+      style={{
+        display: 'block',
+        margin: 'auto',
+        overflow: 'visible',
+        transform: view === 'bottom' ? 'rotate(180deg)' : 'none',
+        filter: active ? 'drop-shadow(0 0 5px rgba(127, 224, 192, 0.55))' : 'none',
+      }}
+    >
+      <path
+        d="M18 1.5C22.2 7.8 28.1 13.2 35 17.3C28.6 15.9 23 14.9 18 14.9C13 14.9 7.4 15.9 1 17.3C7.9 13.2 13.8 7.8 18 1.5Z"
+        fill={active ? '#7fe0c0' : '#d8e3df'}
+      />
+    </svg>
+  );
+}
+
+function ViewCue({ view, compact = false }: { view: ViewName | 'custom'; compact?: boolean }) {
+  if (view === 'isometric' || view === 'custom') return <span aria-hidden="true">{viewSymbols[view]}</span>;
+  if (view === 'top' || view === 'bottom') return <ElevationGlyph view={view} active compact={compact} />;
+  return <DirectionGlyph view={view} active compact={compact} />;
+}
+
 const frameStyle: React.CSSProperties = {
   position: 'relative',
   width: '100%',
@@ -68,22 +125,52 @@ const frameStyle: React.CSSProperties = {
   touchAction: 'none',
 };
 
-const viewToolbarStyle: React.CSSProperties = {
+const elevationRingStyle: React.CSSProperties = {
   position: 'relative',
   boxSizing: 'border-box',
-  width: 168,
-  height: 168,
+  width: 176,
+  height: 176,
   borderRadius: '50%',
-  background: 'rgba(25, 36, 34, 0.97)',
-  border: '1px solid rgba(174, 195, 189, 0.72)',
-  boxShadow: '0 14px 30px rgba(9, 16, 18, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+  background: 'radial-gradient(circle at 50% 50%, rgba(18, 32, 29, 0.04) 0%, rgba(18, 32, 29, 0.04) 79%, rgba(57, 71, 68, 0.54) 80%, rgba(22, 32, 30, 0.6) 100%)',
+  border: '1px solid rgba(174, 195, 189, 0.42)',
+  boxShadow: '0 12px 24px rgba(9, 16, 18, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.07)',
+  backdropFilter: 'blur(3px)',
+  WebkitBackdropFilter: 'blur(3px)',
+  overflow: 'hidden',
+};
+
+const viewToolbarStyle: React.CSSProperties = {
+  position: 'absolute',
+  boxSizing: 'border-box',
+  width: 144,
+  height: 144,
+  borderRadius: '50%',
+  background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), rgba(18, 32, 29, 0.1) 58%, rgba(18, 32, 29, 0.04) 76%)',
+  border: '1px solid rgba(207, 224, 219, 0.3)',
+  boxShadow: '0 8px 18px rgba(9, 16, 18, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+  backdropFilter: 'blur(3px)',
+  WebkitBackdropFilter: 'blur(3px)',
+};
+
+const elevationControlStyle: React.CSSProperties = {
+  appearance: 'none',
+  position: 'absolute',
+  left: 0,
+  width: '100%',
+  height: '50%',
+  padding: 0,
+  border: 0,
+  color: '#d8e3df',
+  background: 'transparent',
+  cursor: 'pointer',
+  outlineOffset: -4,
 };
 
 const puckControlStyle: React.CSSProperties = {
   appearance: 'none',
   position: 'absolute',
-  width: 44,
-  height: 44,
+  width: 40,
+  height: 40,
   padding: 0,
   border: 0,
   borderRadius: '50%',
@@ -101,10 +188,13 @@ const controlStyle: React.CSSProperties = {
   minWidth: 44,
   minHeight: 44,
   padding: 0,
-  border: '1px solid #475a57',
+  border: '1px solid rgba(161, 183, 178, 0.46)',
   borderRadius: '50%',
   color: '#e8fffa',
-  background: 'rgba(23, 33, 31, 0.9)',
+  background: 'rgba(23, 33, 31, 0.58)',
+  backdropFilter: 'blur(3px)',
+  WebkitBackdropFilter: 'blur(3px)',
+  boxShadow: '0 8px 18px rgba(9, 16, 18, 0.16)',
   fontFamily: 'system-ui, sans-serif',
   fontSize: 18,
   lineHeight: 1,
@@ -350,20 +440,19 @@ export default function CadFixtureViewer({
           const distance = distanceForViewport();
           camera.up.set(0, 1, 0);
           // Map the original IGES axes through the -90deg X rotation applied above.
-          if (name === 'front') {
-            camera.position.set(0, distance, 0.001);
-            camera.up.set(0, 0, -1);
-          }
-          if (name === 'back') {
-            camera.position.set(0, -distance, 0.001);
-            camera.up.set(0, 0, -1);
-          }
-          if (name === 'left') {
-            camera.position.set(-distance, 0, 0);
-            camera.up.set(0, 0, -1);
-          }
-          if (name === 'right') {
-            camera.position.set(distance, 0, 0);
+          if (isOrbitView(name)) {
+            const diagonalDistance = distance / Math.SQRT2;
+            const horizontalViews: Record<OrbitViewName, [number, number, number]> = {
+              front: [0, distance, 0.001],
+              'front-right': [diagonalDistance, diagonalDistance, 0.001],
+              right: [distance, 0, 0],
+              'back-right': [diagonalDistance, -diagonalDistance, 0.001],
+              back: [0, -distance, 0.001],
+              'back-left': [-diagonalDistance, -diagonalDistance, 0.001],
+              left: [-distance, 0, 0],
+              'front-left': [-diagonalDistance, diagonalDistance, 0.001],
+            };
+            camera.position.set(...horizontalViews[name]);
             camera.up.set(0, 0, -1);
           }
           if (name === 'top') {
@@ -387,12 +476,6 @@ export default function CadFixtureViewer({
         };
         viewerActions.current = {
           isometric: () => setView('isometric'),
-          front: () => setView('front'),
-          back: () => setView('back'),
-          left: () => setView('left'),
-          right: () => setView('right'),
-          top: () => setView('top'),
-          bottom: () => setView('bottom'),
           zoomIn: () => setZoom(userZoom * 1.2),
           zoomOut: () => setZoom(userZoom / 1.2),
           compactOpen: () => {
@@ -404,6 +487,9 @@ export default function CadFixtureViewer({
             applyZoom();
           },
         };
+        fixedViews.forEach(view => {
+          viewerActions.current[view] = () => setView(view);
+        });
         setView('isometric');
 
         let pointerDown = false;
@@ -523,6 +609,17 @@ export default function CadFixtureViewer({
     };
   }, [geometry]);
 
+  const currentViewLabel = viewLabels[currentView];
+  const puckSize = compactControls ? 144 : 176;
+  const innerPuckSize = compactControls ? 116 : 144;
+  const innerPuckOffset = (puckSize - innerPuckSize) / 2;
+  const orbitButtonSize = 40;
+  const resetButtonSize = compactControls ? 42 : 48;
+  const resetButtonOffset = (innerPuckSize - resetButtonSize) / 2;
+  const elevationButtonBackground = (view: ElevationViewName) => currentView === view
+    ? 'radial-gradient(circle at 50% 50%, rgba(127, 224, 192, 0.18), rgba(127, 224, 192, 0.05) 60%, transparent 72%)'
+    : 'transparent';
+
   return (
     <div>
       <div
@@ -537,28 +634,55 @@ export default function CadFixtureViewer({
           <button type="button" style={{ ...controlStyle, opacity: expanded ? 0 : 0.78, pointerEvents: expanded ? 'none' : 'auto' }}
             disabled={state !== 'ready'} aria-expanded={expanded} aria-controls={puckId}
             aria-label={expanded ? 'Collapse orientation controls' : 'Expand orientation controls'}
-            title={`${currentView[0].toUpperCase() + currentView.slice(1)} view`}
+            title={`${currentViewLabel} view`}
             onClick={() => setExpanded(value => !value)}>
-            {currentView === 'isometric' || currentView === 'custom'
-              ? <span aria-hidden="true">{viewSymbols[currentView]}</span>
-              : <DirectionGlyph view={currentView} active compact />}
+            <ViewCue view={currentView} compact />
           </button>
-          <span role="status" style={visuallyHiddenStyle}>{currentView[0].toUpperCase() + currentView.slice(1)}</span>
+          <span role="status" style={visuallyHiddenStyle}>{currentViewLabel}</span>
           <div ref={puckRef} id={puckId} hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
-            <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...viewToolbarStyle, width: compactControls ? 132 : 168, height: compactControls ? 132 : 168 }} role="group" aria-label="Orientation puck">
-              {fixedViews.map(view => (
+            <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...elevationRingStyle, width: puckSize, height: puckSize }} role="group" aria-label="Orientation puck">
+              <span aria-hidden="true" style={{
+                position: 'absolute',
+                left: compactControls ? 8 : 10,
+                right: compactControls ? 8 : 10,
+                top: '50%',
+                height: 1,
+                background: 'linear-gradient(90deg, transparent, rgba(216, 227, 223, 0.32) 18%, rgba(216, 227, 223, 0.32) 82%, transparent)',
+                boxShadow: '0 1px 0 rgba(0, 0, 0, 0.24)',
+                transform: 'translateY(-0.5px)',
+                pointerEvents: 'none',
+              }} />
+              {elevationViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
-                  style={{ ...puckControlStyle, ...(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
-                  title={`${view[0].toUpperCase() + view.slice(1)} view`}
+                  style={{
+                    ...elevationControlStyle,
+                    top: view === 'top' ? 0 : '50%',
+                    borderRadius: view === 'top' ? `${puckSize / 2}px ${puckSize / 2}px 0 0` : `0 0 ${puckSize / 2}px ${puckSize / 2}px`,
+                    background: elevationButtonBackground(view),
+                  }}
+                  title={`${viewLabels[view]} view`}
+                  aria-label={`Show ${view} view`} aria-pressed={currentView === view}
+                  onClick={() => viewerActions.current[view]?.()}>
+                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: compactControls ? 5 : 7 } : { bottom: compactControls ? 5 : 7 }), transform: 'translateX(-50%)', opacity: currentView === view ? 1 : 0.72 }}>
+                    <ElevationGlyph view={view} active={currentView === view} compact={compactControls} />
+                  </span>
+                </button>
+              ))}
+              <div style={{ ...viewToolbarStyle, left: innerPuckOffset, top: innerPuckOffset, width: innerPuckSize, height: innerPuckSize }}>
+              {orbitViews.map(view => (
+                <button key={view} type="button" disabled={state !== 'ready'}
+                  style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, ...(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
+                  title={`${viewLabels[view]} view`}
                   aria-label={`Show ${view} view`} aria-pressed={currentView === view}
                   onClick={() => viewerActions.current[view]?.()}>
                   <DirectionGlyph view={view} active={currentView === view} compact={compactControls} />
                 </button>
               ))}
               <button type="button" disabled={state !== 'ready'}
-                style={{ ...controlStyle, position: 'absolute', left: compactControls ? 42 : 56, top: compactControls ? 42 : 56, width: compactControls ? 48 : 56, height: compactControls ? 48 : 56, minWidth: compactControls ? 48 : 56, minHeight: compactControls ? 48 : 56, background: '#31413e', border: '1px solid rgba(174, 195, 189, 0.6)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.06)' }}
+                style={{ ...controlStyle, position: 'absolute', left: resetButtonOffset, top: resetButtonOffset, width: resetButtonSize, height: resetButtonSize, minWidth: resetButtonSize, minHeight: resetButtonSize, background: 'rgba(49, 65, 62, 0.28)', border: '1px solid rgba(207, 224, 219, 0.32)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)' }}
                 title="Reset to fitted isometric view" aria-label="Reset to fitted isometric view"
                 onClick={() => viewerActions.current.isometric?.()}><span aria-hidden="true">↺</span></button>
+              </div>
             </div>
           </div>
         </div>
