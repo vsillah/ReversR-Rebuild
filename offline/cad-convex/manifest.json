@@ -1,5 +1,5 @@
 {
-  "version": 54,
+  "version": 55,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -361,6 +361,10 @@
     "offline/cad-convex/integratedUploadConversionReadiness.json": "a1d7e9a235a3ed6ff95ff6503cf7c30abc57d7def32c18113c525928e94454d6",
     "docs/cad-integrated-upload-conversion-readiness.md": "428b71c9f161f4f8089191c7e61447c605cf8d2669e78c80eda31ec081a2e6e3",
     "scripts/cad-integrated-upload-conversion-readiness.test.js": "d7462ed3d3f7cae55de5bb588b52636b7747a1984d242bdb9ff09004c6b43af5",
+    "offline/cad-convex/publicMaterialPreviewPathAuthorization.js": "3057e9fa0fa8a65b3dff15c78f1f7448e1d40f7df4cb9017be1efa7ae38b9d17",
+    "offline/cad-convex/publicMaterialPreviewPathAuthorization.json": "4c79c8f8707d272b4479e62bff11102bcf9f1fea56de0c2d3667f86c24647218",
+    "docs/cad-public-material-preview-path.md": "857da3b60d2ab923e71976df031094bd2680d1ea00c78306d329ea61a7f573ba",
+    "scripts/cad-public-material-preview-path.test.js": "0f60e0ebaa9f963904189ea97886bedb5fe3a3fcb04d0d04abfcf24b7520bd91",
     "docs/cad-user-upload-contract.md": "3f704096b54f1d129cb7924f82e8d662cd439d24da54b96f0de65ec669d0ba70",
     "docs/cad-dev-upload-session-qualification-plan.md": "131fbd133d5b524a39ce126cfcc4afdbd677d6c2d445bec874f80dea7797aeb1",
     "docs/cad-dev-upload-session-qualification-plan.json": "0a5c9cf4696cdebdce0073f54724d27324d2aa352fc0288c4b7d1ea0ac461ed1",
@@ -579,6 +583,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "36a6c84e15363d9e6bab2947635cd333b85ef73ae3c3ed2af882755174cfa89e"
+    "scripts/cad-convex-contract-manifest.js": "c5cedcf6afc1c204e131d2558bf767e54ab360e820bffe0b5b5c0f0fe65e1df5"
   }
 }
