@@ -1,0 +1,272 @@
+{
+  "video": "docs/qa/cad-phase-progression/walkthrough.mp4",
+  "sha256": "dfd0e88d7678852d8fcbaaee050865e26f6c4f11b34fe8107b3aa21524e8f6be",
+  "duration": 266.8,
+  "frameDirectory": "/private/tmp/cad-phase-source-frames",
+  "samples": [
+    {
+      "name": "1440-design-active",
+      "seconds": 3.113
+    },
+    {
+      "name": "1440-input-acquisition",
+      "seconds": 9.784
+    },
+    {
+      "name": "1440-input-source",
+      "seconds": 16.354
+    },
+    {
+      "name": "1440-inventory-source",
+      "seconds": 22.937
+    },
+    {
+      "name": "1440-viewer",
+      "seconds": 33.546
+    },
+    {
+      "name": "1440-viewer-front",
+      "seconds": 40.262
+    },
+    {
+      "name": "1440-viewer-top",
+      "seconds": 45.078
+    },
+    {
+      "name": "1440-source-download",
+      "seconds": 49.756
+    },
+    {
+      "name": "1440-reference-front",
+      "seconds": 58.43
+    },
+    {
+      "name": "1440-reference-left",
+      "seconds": 65.015
+    },
+    {
+      "name": "1440-reference-top",
+      "seconds": 71.602
+    },
+    {
+      "name": "1440-reference-drawing",
+      "seconds": 78.181
+    },
+    {
+      "name": "1440-return-to-app",
+      "seconds": 92.75399999999999
+    },
+    {
+      "name": "1440-geometry-warnings",
+      "seconds": 97.339
+    },
+    {
+      "name": "1440-build-prerequisites",
+      "seconds": 106.942
+    },
+    {
+      "name": "1440-build-recovery",
+      "seconds": 117.50399999999999
+    },
+    {
+      "name": "1440-inventory-recovery",
+      "seconds": 124.097
+    },
+    {
+      "name": "1440-design-recovered",
+      "seconds": 129.809
+    },
+    {
+      "name": "1440-opened-drawing",
+      "seconds": 86.29
+    },
+    {
+      "name": "390-design-active",
+      "seconds": 136.42600000000002
+    },
+    {
+      "name": "390-input-acquisition",
+      "seconds": 143.025
+    },
+    {
+      "name": "390-input-source",
+      "seconds": 149.55700000000002
+    },
+    {
+      "name": "390-inventory-source",
+      "seconds": 156.114
+    },
+    {
+      "name": "390-viewer",
+      "seconds": 166.685
+    },
+    {
+      "name": "390-viewer-front",
+      "seconds": 173.258
+    },
+    {
+      "name": "390-viewer-top",
+      "seconds": 177.808
+    },
+    {
+      "name": "390-source-download",
+      "seconds": 182.353
+    },
+    {
+      "name": "390-reference-front",
+      "seconds": 190.905
+    },
+    {
+      "name": "390-reference-left",
+      "seconds": 197.43900000000002
+    },
+    {
+      "name": "390-reference-top",
+      "seconds": 203.974
+    },
+    {
+      "name": "390-reference-drawing",
+      "seconds": 210.505
+    },
+    {
+      "name": "390-return-to-app",
+      "seconds": 225.02700000000002
+    },
+    {
+      "name": "390-geometry-warnings",
+      "seconds": 229.56199999999998
+    },
+    {
+      "name": "390-build-prerequisites",
+      "seconds": 239.12
+    },
+    {
+      "name": "390-build-recovery",
+      "seconds": 249.658
+    },
+    {
+      "name": "390-inventory-recovery",
+      "seconds": 256.20799999999997
+    },
+    {
+      "name": "390-design-recovered",
+      "seconds": 261.88000000000005
+    },
+    {
+      "name": "390-opened-drawing",
+      "seconds": 218.562
+    },
+    {
+      "name": "timeline-0",
+      "seconds": 0
+    },
+    {
+      "name": "timeline-10",
+      "seconds": 10
+    },
+    {
+      "name": "timeline-20",
+      "seconds": 20
+    },
+    {
+      "name": "timeline-30",
+      "seconds": 30
+    },
+    {
+      "name": "timeline-40",
+      "seconds": 40
+    },
+    {
+      "name": "timeline-50",
+      "seconds": 50
+    },
+    {
+      "name": "timeline-60",
+      "seconds": 60
+    },
+    {
+      "name": "timeline-70",
+      "seconds": 70
+    },
+    {
+      "name": "timeline-80",
+      "seconds": 80
+    },
+    {
+      "name": "timeline-90",
+      "seconds": 90
+    },
+    {
+      "name": "timeline-100",
+      "seconds": 100
+    },
+    {
+      "name": "timeline-110",
+      "seconds": 110
+    },
+    {
+      "name": "timeline-120",
+      "seconds": 120
+    },
+    {
+      "name": "timeline-130",
+      "seconds": 130
+    },
+    {
+      "name": "timeline-140",
+      "seconds": 140
+    },
+    {
+      "name": "timeline-150",
+      "seconds": 150
+    },
+    {
+      "name": "timeline-160",
+      "seconds": 160
+    },
+    {
+      "name": "timeline-170",
+      "seconds": 170
+    },
+    {
+      "name": "timeline-180",
+      "seconds": 180
+    },
+    {
+      "name": "timeline-190",
+      "seconds": 190
+    },
+    {
+      "name": "timeline-200",
+      "seconds": 200
+    },
+    {
+      "name": "timeline-210",
+      "seconds": 210
+    },
+    {
+      "name": "timeline-220",
+      "seconds": 220
+    },
+    {
+      "name": "timeline-230",
+      "seconds": 230
+    },
+    {
+      "name": "timeline-240",
+      "seconds": 240
+    },
+    {
+      "name": "timeline-250",
+      "seconds": 250
+    },
+    {
+      "name": "timeline-260",
+      "seconds": 260
+    },
+    {
+      "name": "timeline-end",
+      "seconds": 266.6
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Spacing, Typography } from '../constants/theme';
+import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
@@ -37,31 +40,27 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       setChecking(false);
     }
   };
-  const text = { color: colors.text, lineHeight: 22 };
+  const text = { ...Typography.caption, color: colors.mutedText, lineHeight: 20 };
   const button = { padding: 14, borderRadius: 10, borderWidth: 1, borderColor: colors.border };
   const fixture = internalPreview?.enabled ? internalPreview.fixture : null;
   const isDispenserReview = fixture?.previewGeometry.kind === 'stl';
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
-      <Text style={[text, { fontWeight: '700', fontSize: 18 }]}>Import CAD</Text>
+      {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
       <Text style={text}>{fixture
-        ? isDispenserReview
-          ? "Review Mark's familiar dispenser against the original IGES metadata and supplied reference views. This page performs no new upload or conversion."
-          : 'Review the fixed public-cube development result. No file is selected, uploaded, or converted in this preview.'
+        ? 'Source acquisition and conversion are complete for this public fixture. No new upload or conversion runs here.'
         : 'Choose an .igs or .iges file to check its format and size locally. File contents stay on your device.'}</Text>
       {fixture ? (
-        <View testID="cad-internal-test-fixture" style={{ gap: 10, padding: 14, backgroundColor: colors.elevated, borderRadius: 10 }}>
-          <Text style={[text, { fontWeight: '700' }]}>{isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture'}</Text>
-          <Text style={text}>{fixture.sourceFileName} · {fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
-          <TouchableOpacity
-            testID="cad-review-qualified-result"
-            accessibilityRole="button"
-            accessibilityLabel={`Review qualified ${fixture.fixtureName} result`}
-            style={button}
-            onPress={onReviewQualifiedResult}
-          >
-            <Text style={text}>Review qualified result</Text>
-          </TouchableOpacity>
+        <View testID="cad-internal-test-fixture" style={{ gap: Spacing.sm }}>
+          <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
+            <Ionicons name="document-text-outline" size={24} color={colors.primary} accessible={false} />
+            <View style={{ flex: 1, gap: Spacing.xs }}>
+              <Text style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.sourceFileName}</Text>
+              <Text style={text}>{fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
+            </View>
+          </View>
+          <Text style={text}>{isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture'} · Authorized source</Text>
+          <CadAction testID="cad-review-qualified-result" accessibilityLabel={`Review qualified ${fixture.fixtureName} result`} label="Review qualified result" onPress={onReviewQualifiedResult} />
         </View>
       ) : supported ? (
         <>
@@ -87,14 +86,16 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
-      <View testID="cad-operator-gate" style={{ gap: 10, padding: 14, backgroundColor: colors.elevated, borderRadius: 10 }}>
-        <Text style={[text, { fontWeight: '700' }]}>Upload is not enabled</Text>
-        <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
-        <TouchableOpacity disabled accessibilityRole="button" accessibilityLabel="Upload unavailable: operator access required" accessibilityState={{ disabled: true }} style={button}><Text style={{ color: colors.mutedText }}>Upload unavailable</Text></TouchableOpacity>
+      <View testID="cad-operator-gate" style={{ gap: Spacing.sm }}>
+        <CadNotice icon="lock-closed-outline">Upload is not enabled</CadNotice>
+        <CadAction label="Upload unavailable" accessibilityLabel="Upload unavailable: operator access required" icon="lock-closed-outline" disabled />
       </View>
-      <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
-      <TouchableOpacity testID="cad-check-status" disabled={checking} accessibilityRole="button" accessibilityLabel="Check CAD service status" accessibilityState={{ disabled: checking }} style={button} onPress={checkStatus}><Text style={text}>{checking ? 'Checking status…' : 'Check service status'}</Text></TouchableOpacity>
-      <Text style={{ color: colors.mutedText, lineHeight: 20 }}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>
+      <CadDetails title="Import access & service status" testID="cad-import-details">
+        <Text style={text}>CAD conversion is restricted to approved operator runs. Selecting a file does not authorize an upload. You can use Scan, Describe, or Sample while user import access is being prepared.</Text>
+        <Text accessibilityLiveRegion="polite" style={text}>{status}</Text>
+        <CadAction testID="cad-check-status" disabled={checking} accessibilityLabel="Check CAD service status" icon="refresh-outline" label={checking ? 'Checking status…' : 'Check service status'} onPress={checkStatus} />
+        <Text style={text}>Future mesh previews will need separate review. Import readiness does not certify dimensions, manufacturing suitability, model fidelity, rendering, or STL export.</Text>
+      </CadDetails>
     </View>
   );
 }
