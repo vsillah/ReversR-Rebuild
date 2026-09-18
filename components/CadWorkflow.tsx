@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
@@ -22,7 +22,8 @@ const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
 export default function CadWorkflow({ preview, phase, onPhase }: Props) {
   const { colors } = useAppTheme();
-  const fixture = preview.fixture;
+  const [fixture, setFixture] = useState(preview.fixture);
+  const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const toneStyles = {
     success: { color: colors.success, backgroundColor: colors.successSoft },
@@ -39,7 +40,17 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
     </View>
     <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       {phase === 1 && <>
-        <CadImportPanel internalPreview={preview} onReviewQualifiedResult={() => onPhase(3)} />
+        <CadImportPanel
+          internalPreview={preview}
+          onReviewQualifiedResult={() => {
+            setFixture(preview.fixture);
+            onPhase(3);
+          }}
+          onLocalPreviewResult={result => {
+            setFixture(result);
+            onPhase(3);
+          }}
+        />
         <CadAction label="View generated inventory" primary onPress={() => onPhase(2)} />
       </>}
       {phase === 2 && <>
@@ -65,7 +76,7 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
               {[
                 { icon: 'cube-outline' as const, label: 'Actual product UI', value: 'Controls + workflow', color: colors.success, background: colors.successSoft },
-                { icon: 'images-outline' as const, label: 'Test-only content', value: 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
+                { icon: 'images-outline' as const, label: 'Test-only content', value: isLocalPreview ? 'Local IGES render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
                 { icon: 'lock-closed-outline' as const, label: 'Locked product output', value: 'No build package yet', color: colors.warning, background: colors.warningSoft },
               ].map(item => <View key={item.label} style={{ flexGrow: 1, flexBasis: 150, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.elevated }}>
                 <View style={{ width: 34, height: 34, borderRadius: Radii.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: item.background }}>
@@ -103,11 +114,15 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
             </View>
             <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
               <Text style={[Typography.heading, { color: colors.text }]}>Test-only content in this preview</Text>
-              {[
+              {(isLocalPreview ? [
+                `${fixture.sourceFileName} was selected locally in the browser for this internal QA pass.`,
+                `Shown extents come from the selected IGES preview mesh: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
+                'This internal preview does not upload file contents or activate the customer upload workflow.',
+              ] : [
                 `${fixture.sourceFileName} and the matching reference images are public review materials preloaded for this QA pass.`,
                 `Shown dimensions come from this public test file: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
                 'This shareable preview link is not the final customer upload workflow.',
-              ].map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
+              ]).map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
                 <Ionicons name="flask-outline" size={16} color={colors.primary} accessible={false} />
                 <Text style={[...text, { flex: 1 }]}>{label}</Text>
               </View>)}
@@ -132,7 +147,7 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
         </View>
         <CadDetails title="Geometry warnings & review limits" testID="cad-build-details">
           {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
-          <Text style={text}>The implementation package remains locked because this public fixture review is visual QA only.</Text>
+          <Text style={text}>The implementation package remains locked because this {isLocalPreview ? 'local IGES render' : 'public fixture review'} is visual QA only.</Text>
         </CadDetails>
         <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />

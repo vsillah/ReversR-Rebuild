@@ -63,11 +63,12 @@ export function CadSourceFacts({ fixture }: { fixture: CadInternalTesterFixture 
 export function CadProvenance({ fixture }: { fixture: CadInternalTesterFixture }) {
   const { colors } = useAppTheme();
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
+  const sourceLabel = fixture.sourceAssetUrl ? 'Public, authorized review fixture' : 'Local internal preview file';
   return <>
     <Text style={text}>Source: {fixture.sourcePackage}</Text>
     <Text style={text}>Source confidence: {fixture.sourceConfidence}</Text>
     <Text style={text}>{fixture.meshes} {fixture.previewGeometry.kind === 'stl' ? 'connected components' : 'mesh'} · {fixture.vertices.toLocaleString()} vertices · {fixture.triangles.toLocaleString()} triangles</Text>
-    <Text style={text}>{fixture.bytes.toLocaleString()} bytes · Public, authorized review fixture</Text>
+    <Text style={text}>{fixture.bytes.toLocaleString()} bytes · {sourceLabel}</Text>
   </>;
 }
 

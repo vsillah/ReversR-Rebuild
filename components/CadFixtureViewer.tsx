@@ -330,6 +330,20 @@ export default function CadFixtureViewer({
           modelGeometry = await new STLLoader().loadAsync(geometry.assetUrl);
           modelGeometry.rotateX(-Math.PI / 2);
           modelGeometry.computeVertexNormals();
+        } else if (geometry.kind === 'mesh') {
+          let vertexOffset = 0;
+          const positions: number[] = [];
+          const indices: number[] = [];
+          for (const mesh of geometry.meshes) {
+            positions.push(...mesh.positions);
+            indices.push(...mesh.indices.map(index => index + vertexOffset));
+            vertexOffset += mesh.positions.length / 3;
+          }
+          modelGeometry = new THREE.BufferGeometry();
+          modelGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+          modelGeometry.setIndex(indices);
+          modelGeometry.rotateX(-Math.PI / 2);
+          modelGeometry.computeVertexNormals();
         } else {
           const [sx, sy, sz] = geometry.normalizedScale;
           modelGeometry = new THREE.BoxGeometry(sx, sy, sz);
@@ -370,9 +384,12 @@ export default function CadFixtureViewer({
           transparent: true,
           opacity: 0.36,
         });
-        const edgeGeometry = new THREE.EdgesGeometry(modelGeometry, 24);
-        const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-        rig.add(edges);
+        const showEdges = geometry.kind !== 'mesh' || geometry.triangles <= 50000;
+        const edgeGeometry = showEdges ? new THREE.EdgesGeometry(modelGeometry, 24) : null;
+        if (edgeGeometry) {
+          const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+          rig.add(edges);
+        }
 
         scene.add(new THREE.AmbientLight(0xffffff, 1.4));
         scene.add(camera);
@@ -395,6 +412,7 @@ export default function CadFixtureViewer({
         scene.add(grid);
         renderer.domElement.dataset.material = 'matte-neutral-aaaaaa';
         renderer.domElement.dataset.grid = 'view-plane';
+        renderer.domElement.dataset.geometryKind = geometry.kind;
 
         const distanceForViewport = () => {
           const verticalFov = THREE.MathUtils.degToRad(camera.fov);
@@ -588,7 +606,7 @@ export default function CadFixtureViewer({
           renderer.domElement.removeEventListener('wheel', onWheel);
           modelGeometry.dispose();
           modelMaterial.dispose();
-          edgeGeometry.dispose();
+          edgeGeometry?.dispose();
           edgeMaterial.dispose();
           grid.geometry.dispose();
           const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];

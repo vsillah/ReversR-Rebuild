@@ -1756,7 +1756,7 @@ export default function HomeScreen() {
       )}
 
       <ScrollView
-        key={`workflow-surface:${context.id}:${cadInternalPreview.enabled ? cadPhase : context.phase}`}
+        key={`workflow-surface:${context.id}:${cadInternalPreview.enabled ? 'cad-internal-preview' : context.phase}`}
         ref={workflowScrollRef}
         style={styles.content}
         contentContainerStyle={[

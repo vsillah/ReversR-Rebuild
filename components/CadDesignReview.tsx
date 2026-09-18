@@ -11,13 +11,15 @@ export default function CadDesignReview({ fixture }: { fixture: CadInternalTeste
   const { colors } = useAppTheme();
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
+  const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
+  const canDownloadSource = Boolean(fixture.sourceAssetUrl);
   const openAsset = (url: string) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
   const downloadSource = () => {
-    if (!fixture || Platform.OS !== 'web' || typeof document === 'undefined') return;
+    if (!fixture || !canDownloadSource || Platform.OS !== 'web' || typeof document === 'undefined') return;
     const link = document.createElement('a');
     link.href = fixture.sourceAssetUrl;
     link.download = fixture.sourceFileName;
@@ -32,12 +34,12 @@ export default function CadDesignReview({ fixture }: { fixture: CadInternalTeste
         <Text style={[Typography.heading, { color: colors.text }]}>{fixture.fixtureName}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
           <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
-          <Text style={[Typography.caption, { color: colors.success }]}>Admission passed · Public fixture</Text>
+          <Text style={[Typography.caption, { color: colors.success }]}>{isLocalPreview ? 'Local render ready · Internal preview' : 'Admission passed · Public fixture'}</Text>
         </View>
       </View>
       <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} />
       <CadSourceFacts fixture={fixture} />
-      <CadAction testID="cad-open-source-iges" role="link" accessibilityLabel={`Download original ${fixture.sourceFileName}`} label="Download original IGES" icon="download-outline" onPress={downloadSource} />
+      {canDownloadSource ? <CadAction testID="cad-open-source-iges" role="link" accessibilityLabel={`Download original ${fixture.sourceFileName}`} label="Download original IGES" icon="download-outline" onPress={downloadSource} /> : null}
       {isDispenserReview && <View testID="cad-reference-comparison" style={{ gap: Spacing.sm }}>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Supplied reference views</Text>
         <Text style={text}>Compare with the model. Open an image for a closer look.</Text>
@@ -58,7 +60,9 @@ export default function CadDesignReview({ fixture }: { fixture: CadInternalTeste
         <CadProvenance fixture={fixture} />
         <Text style={text}>{isDispenserReview
           ? 'The interactive model is the calibrated display mesh derived from the authorized IGES source. Reference images remain independent visual checks.'
-          : 'This interactive visual represents the reviewed synthetic public-cube fixture. It is not a render of a selected or uploaded file.'}</Text>
+          : isLocalPreview
+            ? 'The interactive model was generated locally in this browser from the selected IGES file. It is an internal preview only and does not activate production upload or conversion.'
+            : 'This interactive visual represents the reviewed synthetic public-cube fixture. It is not a render of a selected or uploaded file.'}</Text>
       </CadDetails>
     </View>
   );
