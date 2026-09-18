@@ -101,13 +101,19 @@ function isAllowedPreviewHostname(hostname) {
   return normalized.endsWith('.vercel.app') && normalized !== PRODUCTION_HOSTNAME;
 }
 
+function isNonProductionVercelPreview(hostname) {
+  const normalized = String(hostname || '').trim().toLowerCase();
+  return normalized.endsWith('.vercel.app') && normalized !== PRODUCTION_HOSTNAME;
+}
+
 function inspectCadInternalTesterPreview(locationLike) {
   if (!locationLike || !isAllowedPreviewHostname(locationLike.hostname)) {
     return Object.freeze({ enabled: false, code: 'CAD_TEST_PREVIEW_HOST_BLOCKED' });
   }
 
   const query = new URLSearchParams(String(locationLike.search || ''));
-  const requestedPreview = query.get(PREVIEW_QUERY_KEY);
+  const explicitPreview = query.get(PREVIEW_QUERY_KEY);
+  const requestedPreview = explicitPreview || (isNonProductionVercelPreview(locationLike.hostname) ? DISPENSER_PREVIEW_QUERY_VALUE : null);
   if (![PREVIEW_QUERY_VALUE, DISPENSER_PREVIEW_QUERY_VALUE].includes(requestedPreview)) {
     return Object.freeze({ enabled: false, code: 'CAD_TEST_PREVIEW_NOT_REQUESTED' });
   }
@@ -115,7 +121,7 @@ function inspectCadInternalTesterPreview(locationLike) {
   if (requestedPreview === DISPENSER_PREVIEW_QUERY_VALUE) {
     return Object.freeze({
       enabled: true,
-      code: 'CAD_TEST_PREVIEW_MARK_DISPENSER',
+      code: explicitPreview ? 'CAD_TEST_PREVIEW_MARK_DISPENSER' : 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT',
       fixture: MARK_DISPENSER_RESULT,
     });
   }
@@ -158,4 +164,5 @@ module.exports = {
   getCadInternalTesterPreview,
   getCadCapabilitiesRequest,
   isAllowedPreviewHostname,
+  isNonProductionVercelPreview,
 };
