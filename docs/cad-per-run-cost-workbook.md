@@ -1,12 +1,18 @@
 # CAD per-run cost workbook and Build readiness
 
 Status: source-only workbook and product-surface binding. Base:
-`e2cfa4e4c173ab9d8c175fc2403b6e28eb3696a8`. Expenses: USD 0.
+`ea82b675598c343e2c936f66efa44595d4e253a7`. Expenses: USD 0.
 
 This packet turns the cost discussion into a concrete workbook without creating
 a fee claim. The approved USD 50 figure remains an internal development ceiling.
 It is not a customer price, not a unit cost and not evidence that production
 uploads or conversion can be activated.
+
+The current internal review path is the installed Android IGS upload-render
+preview, not only the earlier browser fixture. Mark can choose an `.igs` or
+`.iges` file locally on the Android device, but that remains a local/internal
+preview path. It does not activate production upload sessions, backend
+conversion, Sandbox dispatch or private CAD handling.
 
 ## Workbook rows
 
@@ -20,6 +26,7 @@ rows:
 | Upload admission | ReversR runtime | Locked until `BODY_ADMISSION_AUTHORIZED = false` changes through a separate gate. |
 | Conversion compute | Sandbox or conversion compute | Locked until conversion and Sandbox dispatch are separately approved. |
 | Preview and retention | Preview assets and evidence custody | Needs asset byte sizes, cache policy, retention window and rollback receipts. |
+| Internal tester support | Internal tester support | Needs device, Android/WebView, file-picker, renderer compatibility and triage-time evidence. |
 | Commercial buffer | Pricing policy | Needs tax, fee, FX, contingency and support assumptions. |
 
 Every unresolved row keeps `estimateUsd` as `null`. The workbook should not
@@ -29,15 +36,17 @@ fill missing provider data with guesses.
 
 The Build phase can now explain three things in-product:
 
-- what is ready: public-material preview controls, source/reference comparison
-  and fail-closed route status
+- what is ready: installed-app internal IGES preview controls,
+  source/reference comparison and fail-closed route status
 - what cost evidence is missing: current provider terms, Sandbox/compute price,
-  operation counts, storage, egress and commercial buffer policy
+  operation counts, storage, egress, tester support burden and commercial buffer
+  policy
 - what remains blocked: production CAD upload activation, conversion/Sandbox
   dispatch, customer fee quote and manufacturing package
 
-This keeps Mark's QA focused on the public-material preview while giving the
-internal team a clean place to reason about implementation readiness.
+This keeps Mark's QA focused on local/internal preview behavior while giving the
+internal team a clean place to reason about implementation readiness and support
+cost.
 
 ## Boundaries
 

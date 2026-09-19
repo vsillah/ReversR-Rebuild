@@ -1,12 +1,13 @@
 # CAD cost attribution and implementation-readiness packet
 
 Status: source-only cost model and implementation-readiness packet. Base:
-`eebacefd7b915c74727ece8bf0fedd7dcbaf719c`, after PR #325. Expenses:
+`ea82b675598c343e2c936f66efa44595d4e253a7`. Expenses:
 USD 0.
 
 This packet converts the current roadmap concern into a reviewable cost model
 without pretending we know the current provider prices. It also keeps the Mark
-feedback boundary intact: while Mark reviews the public Dispenser preview, we
+feedback boundary intact: while Mark reviews the installed Android internal IGS
+upload-render preview, we
 can continue source-only planning, disabled-gate UX work and implementation
 readiness. We cannot claim external CAD validation until his response is
 received.
@@ -29,6 +30,7 @@ The fee-per-run model should be built around one CAD run and should include:
 - conversion/Sandbox startup, CPU, memory, storage, egress and cleanup
 - derived preview rendering and asset delivery
 - backup, retained-state custody, rollback and reconciliation evidence
+- internal tester device/file-picker/render compatibility support and follow-up
 - taxes, fees, currency conversion, provider minimums, contingency and support
   burden
 
@@ -48,6 +50,7 @@ The next cost artifact should be a source-only workbook or JSON ledger with:
 - Sandbox or compute usage
 - storage and retention duration
 - egress and cache assumptions
+- tester support triage and compatibility evidence
 - taxes, fees and FX allowance
 - contingency percentage
 - approved cap
@@ -86,7 +89,8 @@ The current source boundary stays closed:
 Mark's feedback remains necessary before we describe the Dispenser preview as
 externally validated, geometry-correct or source-approved. His feedback does
 not block source-only cost attribution, Build-phase information architecture,
-disabled-gate UX polish or fail-closed production route smokes.
+disabled-gate UX polish, feedback intake packet updates or fail-closed
+production route smokes.
 
 ## Next recommended gate
 

@@ -4,7 +4,7 @@
   "status": "source_only_cost_model_and_readiness_ready",
   "sourceOnly": true,
   "expensesUsd": 0,
-  "baseCommit": "eebacefd7b915c74727ece8bf0fedd7dcbaf719c",
+  "baseCommit": "ea82b675598c343e2c936f66efa44595d4e253a7",
   "upstream": {
     "markFeedbackPacket": "docs/cad-mark-feedback-parallel-readiness.json",
     "markFeedbackPending": true,
@@ -17,6 +17,7 @@
       "source-only cost attribution planning",
       "implementation-readiness information architecture",
       "disabled-gate UX polish",
+      "feedback intake and triage packet updates",
       "production fail-closed route smokes"
     ]
   },
@@ -162,6 +163,22 @@
           "contingency percentage",
           "support assumptions"
         ]
+      },
+      {
+        "id": "internal-tester-support",
+        "provider": "Internal tester support",
+        "meters": [
+          "device install support",
+          "file picker and permission troubleshooting",
+          "renderer compatibility triage",
+          "tester follow-up time"
+        ],
+        "evidenceNeeded": [
+          "tester device model and Android/WebView version",
+          "file extension and approximate size",
+          "feedback triage class",
+          "resolution time and support notes"
+        ]
       }
     ],
     "minimumWorkbookFields": [
@@ -174,6 +191,7 @@
       "Sandbox or compute usage",
       "storage and retention",
       "egress",
+      "tester support triage",
       "tax/fee/FX allowance",
       "contingency",
       "all-in estimated cost",
