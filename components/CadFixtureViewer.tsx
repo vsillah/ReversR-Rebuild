@@ -8,10 +8,16 @@ type ElevationViewName = 'top' | 'bottom';
 type ViewName = 'isometric' | OrbitViewName | ElevationViewName;
 type FixedViewName = Exclude<ViewName, 'isometric'>;
 type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'compactOpen' | 'compactClosed';
+type ViewerActions = Partial<Record<ViewerAction, () => void>> & {
+  zoomTo?: (zoom: number) => void;
+};
 
 const MIN_ZOOM = 0.65;
 const MAX_ZOOM = 2.4;
 const ZOOM_EPSILON = 0.001;
+const CONTROL_MIN_SCALE = 0.75;
+const CONTROL_MAX_SCALE = 0.88;
+const scaled = (value: number, scale = 1) => Math.round(value * scale * 100) / 100;
 const orbitViews: OrbitViewName[] = ['front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'left', 'front-left'];
 const elevationViews: ElevationViewName[] = ['top', 'bottom'];
 const fixedViews: FixedViewName[] = [...orbitViews, ...elevationViews];
@@ -70,12 +76,12 @@ const viewRotations: Record<OrbitViewName, number> = {
   'front-left': 225,
 };
 
-function DirectionGlyph({ view, active = false, compact = false }: { view: OrbitViewName; active?: boolean; compact?: boolean }) {
+function DirectionGlyph({ view, active = false, compact = false, scale = 1 }: { view: OrbitViewName; active?: boolean; compact?: boolean; scale?: number }) {
   return (
     <span aria-hidden="true" style={{
       display: 'block',
-      width: compact ? 16 : 23,
-      height: compact ? 19 : 27,
+      width: compact ? scaled(16, scale) : scaled(23, scale),
+      height: compact ? scaled(19, scale) : scaled(27, scale),
       margin: 'auto',
       background: active ? '#7fe0c0' : '#d8e3df',
       clipPath: 'polygon(0 0, 100% 50%, 0 100%, 29% 50%)',
@@ -85,9 +91,9 @@ function DirectionGlyph({ view, active = false, compact = false }: { view: Orbit
   );
 }
 
-function ElevationGlyph({ view, active = false, compact = false }: { view: ElevationViewName; active?: boolean; compact?: boolean }) {
-  const width = compact ? 34 : 42;
-  const height = compact ? 12 : 15;
+function ElevationGlyph({ view, active = false, compact = false, scale = 1 }: { view: ElevationViewName; active?: boolean; compact?: boolean; scale?: number }) {
+  const width = compact ? scaled(34, scale) : scaled(42, scale);
+  const height = compact ? scaled(12, scale) : scaled(15, scale);
   return (
     <svg
       aria-hidden="true"
@@ -211,15 +217,110 @@ const zoomControlStyle: React.CSSProperties = {
   fontSize: 18,
 };
 
-const zoomInnerStyle: React.CSSProperties = {
+const zoomRailPanelBaseStyle: React.CSSProperties = {
   position: 'absolute',
-  inset: 3,
+  zIndex: 2,
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
+  borderRadius: 999,
+  background: 'rgba(23, 33, 31, 0.24)',
+  border: '1px solid rgba(216, 227, 223, 0.12)',
+  backdropFilter: 'blur(4px)',
+  WebkitBackdropFilter: 'blur(4px)',
+  boxShadow: '0 10px 26px rgba(9, 16, 18, 0.12)',
+};
+
+const zoomRailPanelStyle: React.CSSProperties = {
+  ...zoomRailPanelBaseStyle,
+  right: 12,
+  bottom: 12,
+};
+
+const expandedZoomRailPanelStyle: React.CSSProperties = {
+  ...zoomRailPanelBaseStyle,
+  left: 12,
+  top: 12,
+  zIndex: 4,
+  pointerEvents: 'auto',
+};
+
+const zoomStepButtonBaseStyle: React.CSSProperties = {
+  ...zoomControlStyle,
+  position: 'relative',
+  border: '1px solid rgba(216, 227, 223, 0.18)',
+  background: 'rgba(23, 33, 31, 0.34)',
+  boxShadow: '0 4px 12px rgba(9, 16, 18, 0.12)',
+};
+
+const zoomRailWrapStyle: React.CSSProperties = {
+  position: 'relative',
+  display: 'flex',
   justifyContent: 'center',
+  touchAction: 'none',
+};
+
+const zoomRailTrackStyle: React.CSSProperties = {
+  position: 'absolute',
+  left: '50%',
+  borderRadius: 999,
+  transform: 'translateX(-50%)',
+  background: 'rgba(161, 183, 178, 0.24)',
+  overflow: 'hidden',
+  boxShadow: 'inset 0 1px 4px rgba(9, 16, 18, 0.22)',
+};
+
+const zoomRailInputStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  opacity: 0,
+  cursor: 'pointer',
+  zIndex: 3,
+};
+
+const zoomThumbStyle: React.CSSProperties = {
+  position: 'absolute',
+  left: '50%',
   borderRadius: '50%',
-  background: 'rgba(23, 33, 31, 0.62)',
-  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+  transform: 'translateX(-50%)',
+  background: '#e8fffa',
+  boxShadow: '0 0 0 2px rgba(127, 224, 192, 0.32), 0 4px 10px rgba(9, 16, 18, 0.18)',
+  pointerEvents: 'none',
+};
+
+const zoomFitButtonStyle: React.CSSProperties = {
+  position: 'absolute',
+  left: '50%',
+  padding: 0,
+  borderRadius: '50%',
+  transform: 'translate(-50%, 50%)',
+  border: '1px solid rgba(216, 227, 223, 0.24)',
+  color: '#e8fffa',
+  background: 'rgba(23, 33, 31, 0.34)',
+  boxShadow: '0 4px 12px rgba(9, 16, 18, 0.14)',
+  fontFamily: 'system-ui, sans-serif',
+  lineHeight: 1,
+  cursor: 'pointer',
+  zIndex: 4,
+};
+
+const zoomTickStyle: React.CSSProperties = {
+  position: 'absolute',
+  left: '50%',
+  height: 1,
+  transform: 'translateX(-50%)',
+  background: 'rgba(216, 227, 223, 0.28)',
+  pointerEvents: 'none',
+};
+
+const zoomButtonTextStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 };
 
 const visuallyHiddenStyle: React.CSSProperties = {
@@ -258,19 +359,24 @@ export default function CadFixtureViewer({
   const puckId = useId();
   const [expanded, setExpanded] = useState(false);
   const [compactControls, setCompactControls] = useState(false);
+  const [viewerWidth, setViewerWidth] = useState(0);
   const [currentView, setCurrentView] = useState<ViewName | 'custom'>('isometric');
   const [zoomLevel, setZoomLevel] = useState(1);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const puckRef = useRef<HTMLDivElement | null>(null);
   const controlsRef = useRef<HTMLDivElement | null>(null);
-  const viewerActions = useRef<Partial<Record<ViewerAction, () => void>>>({});
+  const zoomControlsRef = useRef<HTMLDivElement | null>(null);
+  const viewerActions = useRef<ViewerActions>({});
   const [state, setState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
 
   useEffect(() => {
     if (Platform.OS !== 'web') return;
     const host = containerRef.current;
     if (!host) return;
-    const update = () => setCompactControls(host.clientWidth < 360);
+    const update = () => {
+      setViewerWidth(host.clientWidth);
+      setCompactControls(host.clientWidth < 360);
+    };
     update();
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update);
     observer?.observe(host);
@@ -289,7 +395,13 @@ export default function CadFixtureViewer({
     if (!expanded) return;
     const dismiss = window.setTimeout(() => setExpanded(false), 6000);
     const closeOutside = (event: PointerEvent) => {
-      if (event.target instanceof Node && !controlsRef.current?.contains(event.target)) setExpanded(false);
+      if (
+        event.target instanceof Node
+        && !controlsRef.current?.contains(event.target)
+        && !zoomControlsRef.current?.contains(event.target)
+      ) {
+        setExpanded(false);
+      }
     };
     document.addEventListener('pointerdown', closeOutside);
     return () => {
@@ -516,6 +628,7 @@ export default function CadFixtureViewer({
           isometric: () => setView('isometric', { resetZoom: true }),
           zoomIn: () => setZoom(userZoom * 1.2),
           zoomOut: () => setZoom(userZoom / 1.2),
+          zoomTo: (zoom: number) => setZoom(zoom),
           compactOpen: () => {
             compactPuckOpen = true;
             applyZoom();
@@ -648,11 +761,17 @@ export default function CadFixtureViewer({
   }, [geometry]);
 
   const currentViewLabel = viewLabels[currentView];
-  const puckSize = compactControls ? 144 : 176;
-  const innerPuckSize = compactControls ? 116 : 144;
+  const controlScale = Math.max(CONTROL_MIN_SCALE, Math.min(CONTROL_MAX_SCALE, (viewerWidth || 520) / 620));
+  const scalePosition = (style: React.CSSProperties) => ({
+    ...style,
+    left: typeof style.left === 'number' ? scaled(style.left, controlScale) : style.left,
+    top: typeof style.top === 'number' ? scaled(style.top, controlScale) : style.top,
+  });
+  const puckSize = scaled(compactControls ? 144 : 176, controlScale);
+  const innerPuckSize = scaled(compactControls ? 116 : 144, controlScale);
   const innerPuckOffset = (puckSize - innerPuckSize) / 2;
-  const orbitButtonSize = 40;
-  const resetButtonSize = compactControls ? 42 : 48;
+  const orbitButtonSize = Math.max(24, scaled(34, controlScale));
+  const resetButtonSize = Math.max(32, scaled(compactControls ? 42 : 48, controlScale));
   const resetButtonOffset = (innerPuckSize - resetButtonSize) / 2;
   const elevationButtonBackground = (view: ElevationViewName) => currentView === view
     ? 'radial-gradient(circle at 50% 50%, rgba(127, 224, 192, 0.18), rgba(127, 224, 192, 0.05) 60%, transparent 72%)'
@@ -660,20 +779,68 @@ export default function CadFixtureViewer({
   const zoomProgress = Math.max(0, Math.min(1, (zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)));
   const zoomInProgress = zoomProgress;
   const zoomOutProgress = 1 - zoomProgress;
+  const fitZoomProgress = Math.max(0, Math.min(1, (1 - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)));
+  const zoomSliderValue = Math.round(zoomProgress * 100);
+  const zoomButtonSize = Math.max(32, scaled(38, controlScale));
+  const zoomRailWrapWidth = Math.max(32, scaled(38, controlScale));
+  const zoomRailWrapHeight = Math.max(72, scaled(96, controlScale));
+  const zoomRailInset = scaled(7, controlScale);
+  const zoomRailInnerHeight = zoomRailWrapHeight - zoomRailInset * 2;
+  const zoomThumbSize = scaled(16, controlScale);
+  const zoomThumbBottom = Math.round(zoomProgress * zoomRailInnerHeight) - zoomThumbSize / 2;
+  const zoomFitButtonSize = Math.max(22, scaled(28, controlScale));
+  const zoomFitBottom = Math.round(fitZoomProgress * zoomRailInnerHeight) + zoomRailInset;
   const canZoomOut = state === 'ready' && zoomLevel > MIN_ZOOM + ZOOM_EPSILON;
   const canZoomIn = state === 'ready' && zoomLevel < MAX_ZOOM - ZOOM_EPSILON;
-  const zoomButtonStyle = (enabled: boolean, progress: number): React.CSSProperties => {
-    const zoomArcDegrees = Math.round(progress * 360);
+  const zoomStepButtonStyle = (enabled: boolean): React.CSSProperties => {
     return {
-      ...zoomControlStyle,
-      position: 'relative',
-      border: 0,
+      ...zoomStepButtonBaseStyle,
+      minHeight: zoomButtonSize,
+      minWidth: zoomButtonSize,
+      width: zoomButtonSize,
+      height: zoomButtonSize,
+      fontSize: scaled(18, controlScale),
       color: enabled ? '#e8fffa' : 'rgba(232, 255, 250, 0.38)',
-      background: `conic-gradient(#7fe0c0 0deg, #7fe0c0 ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) 360deg)`,
-      boxShadow: enabled ? zoomControlStyle.boxShadow : '0 4px 10px rgba(9, 16, 18, 0.1)',
       cursor: enabled ? 'pointer' : 'not-allowed',
       opacity: enabled ? 0.82 : 0.5,
     };
+  };
+  const setZoomFromSlider = (value: number) => {
+    const progress = Math.max(0, Math.min(1, value / 100));
+    viewerActions.current.zoomTo?.(MIN_ZOOM + progress * (MAX_ZOOM - MIN_ZOOM));
+  };
+  const zoomRailPlacementStyle = {
+    ...(expanded ? expandedZoomRailPanelStyle : zoomRailPanelStyle),
+    gap: scaled(6, controlScale),
+    padding: scaled(6, controlScale),
+  };
+  const zoomRailStyle = {
+    ...zoomRailWrapStyle,
+    width: zoomRailWrapWidth,
+    height: zoomRailWrapHeight,
+  };
+  const zoomRailTrackScaledStyle = {
+    ...zoomRailTrackStyle,
+    top: zoomRailInset,
+    bottom: zoomRailInset,
+    width: scaled(6, controlScale),
+  };
+  const zoomThumbScaledStyle = {
+    ...zoomThumbStyle,
+    width: zoomThumbSize,
+    height: zoomThumbSize,
+  };
+  const zoomFitScaledStyle = {
+    ...zoomFitButtonStyle,
+    width: zoomFitButtonSize,
+    height: zoomFitButtonSize,
+    minWidth: zoomFitButtonSize,
+    minHeight: zoomFitButtonSize,
+    fontSize: scaled(14, controlScale),
+  };
+  const zoomTickScaledStyle = {
+    ...zoomTickStyle,
+    width: scaled(16, controlScale),
   };
 
   return (
@@ -719,19 +886,19 @@ export default function CadFixtureViewer({
                   title={`${viewLabels[view]} view`}
                   aria-label={`Show ${view} view`} aria-pressed={currentView === view}
                   onClick={() => viewerActions.current[view]?.()}>
-                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: compactControls ? 6 : 8 } : { bottom: compactControls ? 6 : 8 }), transform: 'translateX(-50%)', opacity: 1 }}>
-                    <ElevationGlyph view={view} active={currentView === view} compact={compactControls} />
+                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: scaled(compactControls ? 6 : 8, controlScale) } : { bottom: scaled(compactControls ? 6 : 8, controlScale) }), transform: 'translateX(-50%)', opacity: 1 }}>
+                    <ElevationGlyph view={view} active={currentView === view} compact={compactControls} scale={controlScale} />
                   </span>
                 </button>
               ))}
               <div style={{ ...viewToolbarStyle, left: innerPuckOffset, top: innerPuckOffset, width: innerPuckSize, height: innerPuckSize }}>
               {orbitViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
-                  style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, ...(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
+                  style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, fontSize: scaled(21, controlScale), ...scalePosition(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
                   title={`${viewLabels[view]} view`}
                   aria-label={`Show ${view} view`} aria-pressed={currentView === view}
                   onClick={() => viewerActions.current[view]?.()}>
-                  <DirectionGlyph view={view} active={currentView === view} compact={compactControls} />
+                  <DirectionGlyph view={view} active={currentView === view} compact={compactControls} scale={controlScale} />
                 </button>
               ))}
               <button type="button" disabled={state !== 'ready'}
@@ -742,12 +909,37 @@ export default function CadFixtureViewer({
             </div>
           </div>
         </div>
-        <div style={{ position: 'absolute', right: 12, bottom: 12, zIndex: 2, display: 'flex', gap: 6 }} role="group" aria-label="Model zoom">
+        <div ref={zoomControlsRef} style={zoomRailPlacementStyle} role="group" aria-label="Model zoom">
           <span aria-live="polite" aria-label="Zoom level" style={visuallyHiddenStyle}>{canZoomIn ? 'Zoom can increase.' : 'Maximum zoom reached.'} {canZoomOut ? 'Zoom can decrease.' : 'Minimum zoom reached.'}</span>
-          <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomButtonStyle(canZoomOut, zoomOutProgress)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
-            onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomInnerStyle}>-</span></button>
-          <button type="button" data-testid="cad-zoom-in" data-zoom-meter={zoomInProgress.toFixed(3)} style={zoomButtonStyle(canZoomIn, zoomInProgress)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
-            onClick={() => viewerActions.current.zoomIn?.()}><span style={zoomInnerStyle}>+</span></button>
+          <button type="button" data-testid="cad-zoom-in" data-zoom-meter={zoomInProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomIn)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
+            onClick={() => viewerActions.current.zoomIn?.()}><span style={zoomButtonTextStyle}>+</span></button>
+          <div style={zoomRailStyle} data-testid="cad-zoom-rail">
+            <span aria-hidden="true" style={zoomRailTrackScaledStyle}>
+              <span style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: `${zoomSliderValue}%`, background: 'linear-gradient(180deg, #7fe0c0, rgba(127, 224, 192, 0.78))' }} />
+            </span>
+            {[0, 25, 50, 75, 100].map(tick => (
+              <span key={tick} aria-hidden="true" style={{ ...zoomTickScaledStyle, bottom: zoomRailInset + (tick / 100) * zoomRailInnerHeight }} />
+            ))}
+            <span aria-hidden="true" style={{ ...zoomThumbScaledStyle, bottom: zoomRailInset + zoomThumbBottom }} />
+            <button type="button" data-testid="cad-zoom-fit" style={{ ...zoomFitScaledStyle, bottom: zoomFitBottom, opacity: state === 'ready' ? 0.86 : 0.5 }} disabled={state !== 'ready'}
+              title="Reset zoom to fitted view" aria-label="Reset zoom to fitted view"
+              onClick={() => viewerActions.current.zoomTo?.(1)}>⌾</button>
+            <input
+              type="range"
+              data-testid="cad-zoom-slider"
+              min={0}
+              max={100}
+              step={1}
+              value={zoomSliderValue}
+              disabled={state !== 'ready'}
+              aria-label="Zoom level"
+              aria-valuetext={canZoomIn || canZoomOut ? 'Model zoom adjusted' : 'Model zoom unavailable'}
+              style={zoomRailInputStyle}
+              onChange={event => setZoomFromSlider(Number(event.currentTarget.value))}
+            />
+          </div>
+          <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomOut)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
+            onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomButtonTextStyle}>-</span></button>
         </div>
         {state !== 'ready' ? (
           <div style={fallbackStyle} data-testid={`cad-fixture-${state}`}>
