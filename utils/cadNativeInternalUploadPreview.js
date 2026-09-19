@@ -18,8 +18,9 @@ function isAllowedCadNativeInternalUploadRenderUrl(value) {
 
   const hostname = parsed.hostname.toLowerCase();
   const isLocal = LOCAL_HOSTNAMES.has(hostname);
+  const isProduction = hostname === PRODUCTION_HOSTNAME;
   const isNonProductionPreview = hostname.endsWith('.vercel.app') && hostname !== PRODUCTION_HOSTNAME;
-  if (!isLocal && !isNonProductionPreview) return false;
+  if (!isLocal && !isProduction && !isNonProductionPreview) return false;
   if (parsed.searchParams.get('cadPreview') !== CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW) return false;
   return parsed.protocol === 'https:' || (isLocal && parsed.protocol === 'http:');
 }

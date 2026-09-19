@@ -7,7 +7,7 @@ const {
 } = require('../utils/cadNativeInternalUploadPreview');
 
 describe('native internal CAD upload-render target guard', () => {
-  it('allows only local development and non-production Vercel previews with the Mark dispenser preview route', () => {
+  it('allows only local development, production, and non-production Vercel previews with the Mark dispenser preview route', () => {
     assert.equal(
       isAllowedCadNativeInternalUploadRenderUrl('https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1'),
       true,
@@ -18,7 +18,7 @@ describe('native internal CAD upload-render target guard', () => {
     );
     assert.equal(
       isAllowedCadNativeInternalUploadRenderUrl('https://reversr.vercel.app/?cadPreview=mark-dispenser-v1'),
-      false,
+      true,
     );
     assert.equal(
       isAllowedCadNativeInternalUploadRenderUrl('https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/'),
@@ -26,7 +26,7 @@ describe('native internal CAD upload-render target guard', () => {
     );
   });
 
-  it('fails closed when the internal preview URL is missing or points at production', () => {
+  it('fails closed when the internal preview URL is missing or lacks the approved preview route', () => {
     assert.deepEqual(getCadNativeInternalUploadRenderConfig({}), {
       enabled: false,
       code: 'CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_MISSING',
@@ -34,7 +34,7 @@ describe('native internal CAD upload-render target guard', () => {
     });
     assert.equal(getCadNativeInternalUploadRenderConfig({
       EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL: 'https://reversr.vercel.app/?cadPreview=mark-dispenser-v1',
-    }).code, 'CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_INVALID');
+    }).enabled, true);
     assert.equal(getCadNativeInternalUploadRenderConfig({
       EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL: 'https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1',
     }).enabled, true);
@@ -43,7 +43,7 @@ describe('native internal CAD upload-render target guard', () => {
   it('reads the default Expo public URL through a statically-inlineable env access', () => {
     const previous = process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL;
     try {
-      process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL = 'https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1';
+      process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL = 'https://reversr.vercel.app/?cadPreview=mark-dispenser-v1';
       assert.equal(getCadNativeInternalUploadRenderConfig().enabled, true);
     } finally {
       if (previous === undefined) {
