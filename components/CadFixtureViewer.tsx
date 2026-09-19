@@ -658,19 +658,23 @@ export default function CadFixtureViewer({
     ? 'radial-gradient(circle at 50% 50%, rgba(127, 224, 192, 0.18), rgba(127, 224, 192, 0.05) 60%, transparent 72%)'
     : 'transparent';
   const zoomProgress = Math.max(0, Math.min(1, (zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)));
-  const zoomArcDegrees = Math.round(zoomProgress * 360);
+  const zoomInProgress = zoomProgress;
+  const zoomOutProgress = 1 - zoomProgress;
   const canZoomOut = state === 'ready' && zoomLevel > MIN_ZOOM + ZOOM_EPSILON;
   const canZoomIn = state === 'ready' && zoomLevel < MAX_ZOOM - ZOOM_EPSILON;
-  const zoomButtonStyle = (enabled: boolean): React.CSSProperties => ({
-    ...zoomControlStyle,
-    position: 'relative',
-    border: 0,
-    color: enabled ? '#e8fffa' : 'rgba(232, 255, 250, 0.38)',
-    background: `conic-gradient(#7fe0c0 0deg, #7fe0c0 ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) 360deg)`,
-    boxShadow: enabled ? zoomControlStyle.boxShadow : '0 4px 10px rgba(9, 16, 18, 0.1)',
-    cursor: enabled ? 'pointer' : 'not-allowed',
-    opacity: enabled ? 0.82 : 0.5,
-  });
+  const zoomButtonStyle = (enabled: boolean, progress: number): React.CSSProperties => {
+    const zoomArcDegrees = Math.round(progress * 360);
+    return {
+      ...zoomControlStyle,
+      position: 'relative',
+      border: 0,
+      color: enabled ? '#e8fffa' : 'rgba(232, 255, 250, 0.38)',
+      background: `conic-gradient(#7fe0c0 0deg, #7fe0c0 ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) 360deg)`,
+      boxShadow: enabled ? zoomControlStyle.boxShadow : '0 4px 10px rgba(9, 16, 18, 0.1)',
+      cursor: enabled ? 'pointer' : 'not-allowed',
+      opacity: enabled ? 0.82 : 0.5,
+    };
+  };
 
   return (
     <div>
@@ -740,9 +744,9 @@ export default function CadFixtureViewer({
         </div>
         <div style={{ position: 'absolute', right: 12, bottom: 12, zIndex: 2, display: 'flex', gap: 6 }} role="group" aria-label="Model zoom">
           <span aria-live="polite" aria-label="Zoom level" style={visuallyHiddenStyle}>{canZoomIn ? 'Zoom can increase.' : 'Maximum zoom reached.'} {canZoomOut ? 'Zoom can decrease.' : 'Minimum zoom reached.'}</span>
-          <button type="button" data-testid="cad-zoom-out" style={zoomButtonStyle(canZoomOut)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
+          <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomButtonStyle(canZoomOut, zoomOutProgress)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
             onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomInnerStyle}>-</span></button>
-          <button type="button" data-testid="cad-zoom-in" style={zoomButtonStyle(canZoomIn)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
+          <button type="button" data-testid="cad-zoom-in" data-zoom-meter={zoomInProgress.toFixed(3)} style={zoomButtonStyle(canZoomIn, zoomInProgress)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
             onClick={() => viewerActions.current.zoomIn?.()}><span style={zoomInnerStyle}>+</span></button>
         </div>
         {state !== 'ready' ? (

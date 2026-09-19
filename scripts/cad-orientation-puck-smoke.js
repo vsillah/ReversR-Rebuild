@@ -116,14 +116,23 @@ fs.mkdirSync(out, { recursive: true });
   assert.equal(await canvas.getAttribute('data-zoom-at-min'),'false');
   assert.equal(await canvas.getAttribute('data-zoom-at-max'),'false');
   const zoomInButton=page.getByTestId('cad-zoom-in');
+  const zoomOutButton=page.getByTestId('cad-zoom-out');
+  {
+    const zoomInMeter=Number(await zoomInButton.getAttribute('data-zoom-meter'));
+    const zoomOutMeter=Number(await zoomOutButton.getAttribute('data-zoom-meter'));
+    assert(Math.abs((zoomInMeter+zoomOutMeter)-1)<0.002,'zoom button meters are inverse');
+  }
   for(let i=0;i<8 && !(await zoomInButton.isDisabled());i++) await zoomInButton.click();
   assert.equal(await canvas.getAttribute('data-zoom-at-max'),'true');
   assert(await zoomInButton.isDisabled(),'zoom in button disables at maximum zoom');
-  const zoomOutButton=page.getByTestId('cad-zoom-out');
+  assert.equal(await zoomInButton.getAttribute('data-zoom-meter'),'1.000');
+  assert.equal(await zoomOutButton.getAttribute('data-zoom-meter'),'0.000');
   assert.equal(await zoomOutButton.isDisabled(),false);
   for(let i=0;i<12 && !(await zoomOutButton.isDisabled());i++) await zoomOutButton.click();
   assert.equal(await canvas.getAttribute('data-zoom-at-min'),'true');
   assert(await zoomOutButton.isDisabled(),'zoom out button disables at minimum zoom');
+  assert.equal(await zoomInButton.getAttribute('data-zoom-meter'),'0.000');
+  assert.equal(await zoomOutButton.getAttribute('data-zoom-meter'),'1.000');
   if(await toggle.getAttribute('aria-expanded')!=='true') await page.getByRole('button',{name:'Expand orientation controls'}).click();
   await reset.click();
   assert.equal(await canvas.getAttribute('data-zoom'),'1.000');
