@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import {
@@ -21,12 +22,26 @@ function loadNativeWebView() {
   }
 }
 
+function getNativePreviewUrl(value?: string) {
+  if (!value) return '';
+  try {
+    const parsed = new URL(value);
+    parsed.searchParams.set('nativePreviewCacheBust', String(Date.now()));
+    return parsed.toString();
+  } catch {
+    return value;
+  }
+}
+
 export default function CadNativeInternalUploadPreview({ visible, onClose }: {
   visible: boolean;
   onClose: () => void;
 }) {
   const { colors } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const config = useMemo(() => getCadNativeInternalUploadRenderConfig(), []);
+  const configUrl = config.enabled ? config.url : undefined;
+  const previewUrl = useMemo(() => getNativePreviewUrl(configUrl), [configUrl]);
   const WebView = useMemo(() => loadNativeWebView(), []);
   const [loadError, setLoadError] = useState('');
   const canRender = Platform.OS !== 'web' && WebView && config.enabled && !loadError;
@@ -43,7 +58,11 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
       onRequestClose={onClose}
     >
       <View testID="cad-native-upload-render-modal" style={[styles.shell, { backgroundColor: colors.background }]}>
-        <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <View style={[styles.header, {
+          borderBottomColor: colors.border,
+          minHeight: 72 + insets.top,
+          paddingTop: Math.max(insets.top + Spacing.sm, Spacing.lg),
+        }]}>
           <View style={styles.headerCopy}>
             <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal IGS preview</Text>
             <Text style={bodyText}>Choose an authorized .igs/.iges file.</Text>
@@ -71,10 +90,12 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
           {canRender ? (
             <WebView
               testID="cad-native-upload-render-webview"
-              source={{ uri: config.url }}
+              source={{ uri: previewUrl }}
               javaScriptEnabled
               domStorageEnabled
               allowFileAccess
+              cacheEnabled={false}
+              cacheMode="LOAD_NO_CACHE"
               setSupportMultipleWindows={false}
               allowsBackForwardNavigationGestures
               mixedContentMode="never"
