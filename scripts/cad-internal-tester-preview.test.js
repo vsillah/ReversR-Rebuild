@@ -10,8 +10,8 @@ const {
   inspectCadInternalTesterPreview,
 } = require('../utils/cadInternalTesterPreview');
 
-test('enables the fixed public cube only on local or non-production Vercel hosts', () => {
-  for (const hostname of ['localhost', '127.0.0.1', 'reversr-git-cad-test-vsillahs-projects.vercel.app']) {
+test('enables the fixed public cube only on local or ReversR Vercel hosts with an explicit preview query', () => {
+  for (const hostname of ['localhost', '127.0.0.1', 'reversr.vercel.app', 'reversr-git-cad-test-vsillahs-projects.vercel.app']) {
     const result = inspectCadInternalTesterPreview({
       hostname,
       search: '?cadPreview=public-cube-v1',
@@ -21,8 +21,8 @@ test('enables the fixed public cube only on local or non-production Vercel hosts
   }
 });
 
-test('enables the authorized Mark dispenser review only on local or non-production Vercel hosts', () => {
-  for (const hostname of ['localhost', '127.0.0.1', 'reversr-git-cad-test-vsillahs-projects.vercel.app']) {
+test('enables the authorized Mark dispenser review only on local or ReversR Vercel hosts with an explicit preview query', () => {
+  for (const hostname of ['localhost', '127.0.0.1', 'reversr.vercel.app', 'reversr-git-cad-test-vsillahs-projects.vercel.app']) {
     const result = inspectCadInternalTesterPreview({
       hostname,
       search: '?cadPreview=mark-dispenser-v1',
@@ -45,10 +45,8 @@ test('defaults non-production Vercel preview roots to the authorized Mark dispen
   }
 });
 
-test('blocks production, unrelated hosts, and unrequested preview mode', () => {
+test('blocks production root, unrelated hosts, and unrequested preview mode', () => {
   for (const input of [
-    { hostname: 'reversr.vercel.app', search: '?cadPreview=public-cube-v1' },
-    { hostname: 'reversr.vercel.app', search: '?cadPreview=mark-dispenser-v1' },
     { hostname: 'reversr.vercel.app', search: '' },
     { hostname: 'example.com', search: '?cadPreview=public-cube-v1' },
     { hostname: 'example.com', search: '' },
