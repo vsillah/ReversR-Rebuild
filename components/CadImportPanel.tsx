@@ -9,6 +9,8 @@ import { getApiBase } from '../utils/apiBase';
 import { getCadCapabilitiesRequest, type CadInternalTesterFixture, type CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 import { prepareLocalIgesPreview, supportsLocalIgesPreview } from '../utils/cadLocalIgesPreview';
 
+type FixtureSourceMode = 'local' | 'sample' | null;
+
 export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, onOpenInternalPreview, uploadSessionAdapter }: {
   internalPreview?: CadInternalTesterPreview;
   onReviewQualifiedResult?: () => void;
@@ -25,10 +27,13 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
   const [connecting, setConnecting] = useState(false);
   const [renderingLocal, setRenderingLocal] = useState(false);
   const [localPreview, setLocalPreview] = useState<CadInternalTesterFixture | null>(null);
+  const [fixtureSourceMode, setFixtureSourceMode] = useState<FixtureSourceMode>(null);
+  const [pendingLocalFileName, setPendingLocalFileName] = useState('');
   const [sessionMessage, setSessionMessage] = useState('');
   const [sessionReady, setSessionReady] = useState(false);
   const controller = useRef<AbortController | null>(null);
   const sessionController = useRef<AbortController | null>(null);
+  const pendingLocalFile = useRef<File | null>(null);
   const supported = Platform.OS === 'web' && typeof document !== 'undefined' && typeof File !== 'undefined';
   useEffect(() => () => { controller.current?.abort(); sessionController.current?.abort(); }, []);
   const connectSession = async () => {
@@ -77,28 +82,68 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
   const fixture = internalPreview?.enabled ? internalPreview.fixture : null;
   const isDispenserReview = fixture?.previewGeometry.kind === 'stl';
   const localPreviewEnabled = Boolean(fixture && onLocalPreviewResult && supportsLocalIgesPreview());
+  const clearLocalSelection = () => {
+    pendingLocalFile.current = null;
+    setPendingLocalFileName('');
+    setSelected(null);
+    setLocalPreview(null);
+  };
+  const chooseLocalFile = () => {
+    try {
+      picker.current?.click();
+    } catch {
+      setMessage('This browser could not open the file picker. Try a supported desktop browser.');
+    }
+  };
+  const renderPendingLocalFile = async () => {
+    const file = pendingLocalFile.current;
+    if (!file || !localPreviewEnabled || !onLocalPreviewResult) {
+      setMessage('Choose an IGES file before rendering a local preview.');
+      return;
+    }
+    setRenderingLocal(true);
+    setMessage(`Rendering ${file.name} locally. File contents are not uploaded.`);
+    try {
+      const result = await prepareLocalIgesPreview(file);
+      pendingLocalFile.current = null;
+      setPendingLocalFileName('');
+      setSelected({ format: result.format, bytes: result.bytes });
+      setLocalPreview(result);
+      setMessage(`${result.sourceFileName} rendered locally for internal preview. No production upload route was used.`);
+      onLocalPreviewResult(result);
+    } catch (error) {
+      setLocalPreview(null);
+      setMessage(error instanceof Error ? error.message : 'Could not render this IGES file locally.');
+    } finally {
+      setRenderingLocal(false);
+    }
+  };
   const handleFile = async (file: File) => {
     if (localPreviewEnabled && onLocalPreviewResult) {
-      setRenderingLocal(true);
-      setMessage(`Preparing ${file.name} locally. File contents are not uploaded.`);
-      try {
-        const result = await prepareLocalIgesPreview(file);
-        setSelected({ format: result.format, bytes: result.bytes });
-        setLocalPreview(result);
-        setMessage(`${result.sourceFileName} rendered locally for internal preview. No production upload route was used.`);
-        onLocalPreviewResult(result);
-      } catch (error) {
-        setLocalPreview(null);
-        setSelected(null);
-        setMessage(error instanceof Error ? error.message : 'Could not render this IGES file locally.');
-      } finally {
-        setRenderingLocal(false);
+      const prepared = prepareCadFileMetadata(file);
+      if (!prepared.metadata) {
+        clearLocalSelection();
+        setFixtureSourceMode('local');
+        setMessage(prepared.message);
+        return;
       }
+      pendingLocalFile.current = file;
+      setFixtureSourceMode('local');
+      setPendingLocalFileName(file.name);
+      setSelected(prepared.metadata);
+      setLocalPreview(null);
+      setMessage(`${file.name} selected. Render it locally when you are ready; no upload route has been used.`);
       return;
     }
     const prepared = prepareCadFileMetadata(file);
     setSelected(prepared.metadata);
     setMessage(prepared.message);
+  };
+  const selectSample = () => {
+    if (!fixture) return;
+    setFixtureSourceMode('sample');
+    clearLocalSelection();
+    setMessage(`${fixture.sourceFileName} selected as the public sample. Generate the sample preview when you are ready.`);
   };
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
@@ -110,59 +155,94 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       }} />}
       {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
       <Text style={text}>{fixture
-        ? 'Review the preloaded public sample or choose a local .igs/.iges file to render in this internal preview. File contents stay on this device.'
+        ? 'Choose one source for this internal preview. You can render a local .igs/.iges file from this device or use the public sample.'
         : 'Choose a public or synthetic .igs or .iges file for a local compatibility check. File contents stay on your device.'}</Text>
       {fixture ? (
         <View testID="cad-public-fixture-ready" style={{ gap: Spacing.md }}>
-          {supported && localPreviewEnabled ? (
-            <View testID="cad-local-iges-preview" style={{ gap: Spacing.sm }}>
-              <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
-                <Ionicons name="desktop-outline" size={20} color={colors.primary} accessible={false} />
+          <View testID="cad-source-choice-panel" style={{ gap: Spacing.sm }}>
+            <Text style={[Typography.bodyStrong, { color: colors.text }]}>Source</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+              {supported && localPreviewEnabled ? (
+                <View style={{ flexGrow: 1, flexBasis: 220 }}>
+                  <CadAction
+                    testID="cad-choose-local-iges"
+                    accessibilityLabel="Choose local IGES file from this device"
+                    primary={fixtureSourceMode === 'local' || !fixtureSourceMode}
+                    disabled={renderingLocal}
+                    icon="document-attach-outline"
+                    label={pendingLocalFileName || localPreview ? 'Choose different file' : 'Choose IGES file'}
+                    onPress={chooseLocalFile}
+                  />
+                </View>
+              ) : (
+                <Text testID="cad-local-preview-unavailable" style={text}>Local browser rendering is unavailable on this surface. Open this preview in the installed app or a supported desktop browser.</Text>
+              )}
+              <View style={{ flexGrow: 1, flexBasis: 220 }}>
+                <CadAction
+                  testID="cad-select-public-sample"
+                  accessibilityLabel={`Use public sample ${fixture.sourceFileName}`}
+                  primary={fixtureSourceMode === 'sample'}
+                  icon="cube-outline"
+                  label="Use public sample"
+                  onPress={selectSample}
+                />
+              </View>
+            </View>
+          </View>
+
+          {fixtureSourceMode === 'local' && selected && (
+            <View testID="cad-local-file-ready" style={{ gap: Spacing.sm, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
+              <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
+                <Ionicons name="document-text-outline" size={22} color={colors.primary} accessible={false} />
                 <View style={{ flex: 1, gap: Spacing.xs }}>
-                  <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal local render</Text>
-                  <Text style={text}>Choose Mark's IGES file from this device. ReversR reads it in the browser for preview; it does not use production upload admission.</Text>
+                  <Text style={[Typography.bodyStrong, { color: colors.text }]}>{pendingLocalFileName || localPreview?.sourceFileName || 'Local IGES file'}</Text>
+                  <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Local preview only</Text>
                 </View>
               </View>
-              <CadAction
-                testID="cad-choose-local-iges"
-                accessibilityLabel="Choose local IGES file to render"
-                primary
-                disabled={renderingLocal}
-                icon="document-attach-outline"
-                label={renderingLocal ? 'Rendering local IGES...' : localPreview ? 'Choose another IGES file' : 'Choose IGES file'}
-                onPress={() => {
-                  try { picker.current?.click(); } catch { setMessage('This browser could not open the file picker. Try a supported desktop browser.'); }
-                }}
-              />
-              {localPreview && <View testID="cad-local-preview-ready" style={{ gap: Spacing.xs }}>
-                <Text style={[Typography.bodyStrong, { color: colors.text }]}>{localPreview.sourceFileName}</Text>
-                <Text style={text}>{localPreview.meshes} mesh{localPreview.meshes === 1 ? '' : 'es'} · {localPreview.vertices.toLocaleString()} vertices · {localPreview.triangles.toLocaleString()} triangles</Text>
-                <CadAction testID="cad-review-local-preview" accessibilityLabel={`Review local render of ${localPreview.sourceFileName}`} label="Review local render" onPress={() => onLocalPreviewResult?.(localPreview)} />
-              </View>}
+              {!localPreview && (
+                <CadAction
+                  testID="cad-render-local-preview"
+                  accessibilityLabel="Render selected IGES file locally"
+                  primary
+                  disabled={renderingLocal}
+                  icon="play-circle-outline"
+                  label={renderingLocal ? 'Rendering local preview...' : 'Render selected IGES'}
+                  onPress={() => { void renderPendingLocalFile(); }}
+                />
+              )}
+              {localPreview && (
+                <View testID="cad-local-preview-ready" style={{ gap: Spacing.xs }}>
+                  <Text style={text}>{localPreview.meshes} mesh{localPreview.meshes === 1 ? '' : 'es'} · {localPreview.vertices.toLocaleString()} vertices · {localPreview.triangles.toLocaleString()} triangles</Text>
+                  <CadAction testID="cad-review-local-preview" accessibilityLabel={`Review local render of ${localPreview.sourceFileName}`} label="Review local render" onPress={() => onLocalPreviewResult?.(localPreview)} />
+                </View>
+              )}
             </View>
-          ) : (
-            <Text testID="cad-local-preview-unavailable" style={text}>Local browser rendering is unavailable on this surface. Use the preloaded public sample or open this preview in a supported desktop browser.</Text>
           )}
-          <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
-            <Ionicons name="document-text-outline" size={24} color={colors.primary} accessible={false} />
-            <View style={{ flex: 1, gap: Spacing.xs }}>
-              <Text style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.sourceFileName}</Text>
-              <Text style={text}>{fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
-            </View>
-          </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
-            {[
-              isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture',
-              'Authorized source',
-              'No upload required',
-            ].map(label => (
-              <View key={label} style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 999, paddingHorizontal: Spacing.sm, paddingVertical: 6, backgroundColor: colors.elevated }}>
-                <Text style={[Typography.caption, { color: colors.mutedText }]}>{label}</Text>
+
+          {fixtureSourceMode === 'sample' && (
+            <View testID="cad-sample-file-ready" style={{ gap: Spacing.md, borderTopWidth: 1, borderColor: colors.border, paddingTop: Spacing.md }}>
+              <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
+                <Ionicons name="document-text-outline" size={24} color={colors.primary} accessible={false} />
+                <View style={{ flex: 1, gap: Spacing.xs }}>
+                  <Text style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.sourceFileName}</Text>
+                  <Text style={text}>{fixture.format} · {fixture.bytes.toLocaleString()} bytes</Text>
+                </View>
               </View>
-            ))}
-          </View>
-          <Text testID="cad-public-fixture-guidance" style={text}>Use the next screens to review generated inventory, inspect the 3D orientation controls, and compare against the reference views.</Text>
-          <CadAction testID="cad-review-qualified-result" accessibilityLabel={`Review qualified ${fixture.fixtureName} result`} label="Review public sample" onPress={onReviewQualifiedResult} />
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+                {[
+                  isDispenserReview ? 'Public reviewer fixture' : 'Internal test fixture',
+                  'Authorized source',
+                  'No upload required',
+                ].map(label => (
+                  <View key={label} style={{ borderWidth: 1, borderColor: colors.border, borderRadius: 999, paddingHorizontal: Spacing.sm, paddingVertical: 6, backgroundColor: colors.elevated }}>
+                    <Text style={[Typography.caption, { color: colors.mutedText }]}>{label}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text testID="cad-public-fixture-guidance" style={text}>Generate the public sample preview when you want to inspect inventory, orientation controls, and reference views.</Text>
+              <CadAction testID="cad-review-qualified-result" accessibilityLabel={`Generate public sample preview for ${fixture.fixtureName}`} primary label="Generate sample preview" icon="play-circle-outline" onPress={onReviewQualifiedResult} />
+            </View>
+          )}
         </View>
       ) : onOpenInternalPreview ? (
         <View testID="cad-native-internal-preview-entry" style={{ gap: Spacing.md }}>
@@ -190,12 +270,10 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         </View>
       ) : supported ? (
         <>
-          <CadAction testID="cad-choose-file" accessibilityLabel="Choose IGES file from this device" primary icon="document-attach-outline" label={selected ? 'Choose another IGES file' : 'Choose IGES file'} onPress={() => {
-            try { picker.current?.click(); } catch { setMessage('This browser could not open the file picker. Try a supported desktop browser.'); }
-          }} />
+          <CadAction testID="cad-choose-file" accessibilityLabel="Choose IGES file from this device" primary icon="document-attach-outline" label={selected ? 'Choose another IGES file' : 'Choose IGES file'} onPress={chooseLocalFile} />
         </>
       ) : <Text testID="cad-picker-unavailable" style={text}>File selection is unavailable on this surface. Open ReversR in a web browser with file-picker support to select an IGES file. Native selection is pending.</Text>}
-      {selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
+      {!fixture && selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
         <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Prepared locally</Text>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}

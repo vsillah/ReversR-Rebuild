@@ -26,6 +26,9 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
   const [fixture, setFixture] = useState(preview.fixture);
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
+  const panelStyle = compact
+    ? { padding: 0, gap: Spacing.sm, borderWidth: 0, backgroundColor: 'transparent' }
+    : {};
   const toneStyles = {
     success: { color: colors.success, backgroundColor: colors.successSoft },
     warning: { color: colors.warning, backgroundColor: colors.warningSoft },
@@ -39,7 +42,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
         <Text style={[...text, phase === 3 && { color: colors.warning }]}>{subtitles[phase - 1]}</Text>
       </View>
     </View>}
-    <View style={[styles.panel, compact && { padding: Spacing.sm, gap: Spacing.sm }, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+    <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }, panelStyle]}>
       {phase === 1 && <>
         <CadImportPanel
           internalPreview={preview}
@@ -52,7 +55,6 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
             onPhase(3);
           }}
         />
-        <CadAction label="View generated inventory" primary onPress={() => onPhase(2)} />
       </>}
       {phase === 2 && <>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Auto-generated inventory</Text>
