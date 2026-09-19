@@ -102,7 +102,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
   };
   return (
     <View testID="cad-import-panel" style={{ gap: 14 }}>
-      {supported && <input ref={picker} type="file" accept=".igs,.iges" aria-label="Choose IGES file" data-testid="cad-file-input" style={{ display: 'none' }} onChange={event => {
+      {supported && <input ref={picker} type="file" accept=".igs,.iges,*/*" aria-label="Choose IGES file" data-testid="cad-file-input" style={{ display: 'none' }} onChange={event => {
         const file = event.currentTarget.files?.[0];
         event.currentTarget.value = '';
         if (!file) return;
