@@ -10,6 +10,34 @@ import { getCadCapabilitiesRequest, type CadInternalTesterFixture, type CadInter
 import { prepareLocalIgesPreview, supportsLocalIgesPreview } from '../utils/cadLocalIgesPreview';
 
 type FixtureSourceMode = 'local' | 'sample' | null;
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
+
+const INTERNAL_PREVIEW_DIAGNOSTICS: ReadonlyArray<{
+  icon: IconName;
+  label: string;
+  detail: string;
+}> = Object.freeze([
+  Object.freeze({
+    icon: 'phone-portrait-outline',
+    label: 'Device + app',
+    detail: 'device model, Android/WebView version, install source',
+  }),
+  Object.freeze({
+    icon: 'document-text-outline',
+    label: 'File',
+    detail: 'file name, extension, approximate size',
+  }),
+  Object.freeze({
+    icon: 'navigate-circle-outline',
+    label: 'Path',
+    detail: 'whether Open internal IGS preview or Live upload locked appeared',
+  }),
+  Object.freeze({
+    icon: 'cube-outline',
+    label: 'Render',
+    detail: 'picker, render action, preview, dimensions, grid and controls',
+  }),
+]);
 
 export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, onOpenInternalPreview, uploadSessionAdapter }: {
   internalPreview?: CadInternalTesterPreview;
@@ -266,6 +294,21 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
               label="Open internal IGS preview"
               onPress={onOpenInternalPreview}
             />
+            <CadDetails title="If this does not open" testID="cad-internal-preview-diagnostics">
+              <Text style={text}>Capture support details only. Do not send private CAD, credentials, raw paths, or production account data.</Text>
+              <View testID="cad-internal-preview-diagnostics-list" style={{ gap: Spacing.sm }}>
+                {INTERNAL_PREVIEW_DIAGNOSTICS.map(item => (
+                  <View key={item.label} style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
+                    <Ionicons name={item.icon} size={17} color={colors.mutedText} accessible={false} />
+                    <View style={{ flex: 1, gap: 2 }}>
+                      <Text style={[Typography.caption, { color: colors.text, fontWeight: '700' }]}>{item.label}</Text>
+                      <Text style={text}>{item.detail}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+              <Text style={text}>Classify the issue as install/update, file picker, local render, CAD interpretation, or commercial-readiness before changing any gate.</Text>
+            </CadDetails>
           </View>
         </View>
       ) : supported ? (

@@ -34,6 +34,10 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(importPanel, /cad-open-native-internal-preview/);
   assert.match(importPanel, /Open internal IGS preview/);
   assert.match(importPanel, /Preview mode · upload\/conversion locked/);
+  assert.match(importPanel, /cad-internal-preview-diagnostics/);
+  assert.match(importPanel, /If this does not open/);
+  assert.match(importPanel, /device model, Android\/WebView version, install source/);
+  assert.match(importPanel, /Do not send private CAD, credentials, raw paths, or production account data/);
   assert.match(importPanel, /!onOpenInternalPreview/);
   assert.match(importPanel, /Live upload locked/);
 
@@ -49,6 +53,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(nativePreview, /setSupportMultipleWindows=\{false\}/);
   assert.match(nativePreview, /isAllowedCadNativeInternalUploadRenderUrl/);
   assert.match(nativePreview, /Preview mode · upload and conversion locked/);
+  assert.match(nativePreview, /install link, app version and whether the renderer opened/);
 
   assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
   assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);
