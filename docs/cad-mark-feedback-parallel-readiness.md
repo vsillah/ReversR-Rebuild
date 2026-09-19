@@ -1,8 +1,8 @@
 # CAD Mark feedback parallel-readiness packet
 
 Status: source-only packet for continuing development while Mark reviews the
-public Dispenser IGES preview. Base:
-`003a370b5286c4f1f40f7102a4b4014e1148fc64`. Expenses: USD 0.
+public/internal Dispenser IGES preview path. Base:
+`e6be098d658f4e1b2d31dde8bb2526df66b6df00`. Expenses: USD 0.
 
 ## Handoff state
 
@@ -16,6 +16,24 @@ The Mark handoff has been sent to the approved Mark recipient reference with:
 
 The checked-in packet deliberately uses recipient and receipt references rather
 than storing the email address in source.
+
+The current review path is the installed Android internal IGS upload-render
+preview, reached through `Import` -> `Open internal IGS preview`. The correction
+handoff points Mark to the direct APK artifact reference
+`rrb-ref:final-correction-direct-apk-link`; the source packet does not store the
+recipient address. The expected in-app choices are `Choose IGES file` and
+`Use public sample`. The expected result is a local 3D preview with dimensions,
+grid, zoom controls and orientation controls.
+
+The installed app embeds the production-hosted public renderer route:
+
+`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render`
+
+The verified EAS update group for the corrected JS bundle is
+`81bf6888-3840-471e-b1c1-422e35d8fe0f`, and the Android preview build remains
+versionCode `52`. This records the current tester path only. It does not turn on
+production upload sessions, backend conversion, Sandbox processing, private CAD
+handling or commercial CAD output.
 
 ## What Mark gates
 
@@ -52,6 +70,41 @@ disabled gate:
    - Prepare the next Build-phase information architecture.
    - Keep manufacturing packages, STL/export certification and conversion
      dispatch locked.
+5. Feedback intake and triage
+   - Prepare the issue taxonomy and response boundaries for Mark's review.
+   - Do not send a new external message from source-only work.
+   - Do not ask Mark for private CAD in this review path.
+
+## Feedback intake model
+
+For any Mark response, capture the minimum useful facts before changing source:
+
+- device model and Android version if visible
+- app install source and whether the direct APK path was used
+- file name, extension and approximate file size
+- whether the Android file picker opened
+- whether the selected file appeared and the render button appeared
+- whether the preview rendered
+- what was visible on screen, with a screenshot or short clip when possible
+
+Classify the feedback before acting:
+
+| Class | Signals | Default handling |
+| --- | --- | --- |
+| Install/update | `Live upload locked`, `Internal preview unavailable`, missing internal preview entry | Confirm APK install path, relaunch/update state and installed-app bundle before changing source. |
+| File picker | No picker, picker cannot see IGES file, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
+| Local render | Render button fails, blank preview, missing dimensions/model | Treat as local renderer/file compatibility; do not infer backend upload or conversion failure. |
+| CAD interpretation | Geometry looks wrong, orientation confusing, dimensions unexpected | Route to source/fixture interpretation review and keep external validation claims blocked. |
+| Commercial readiness | Questions about production uploads, private CAD or manufacturing output | Answer from remaining gates; do not imply production activation or commercialization readiness. |
+
+Response rules:
+
+- do not ask Mark for private CAD in this review path
+- do not request production credentials or account enrollment
+- do not claim a backend upload, conversion or Sandbox failure from a local
+  preview symptom
+- preserve direct recipient details as local/email evidence references rather
+  than source text
 
 ## Hard stops
 
@@ -74,6 +127,7 @@ Stop before any of the following:
 ## Next recommended gate
 
 The next useful source-only gate is cost attribution and implementation
-readiness planning. That work should convert the remaining high-level blockers
-into a fee-per-run model and a Build-phase readiness surface without activating
-CAD upload, conversion, Sandbox, private CAD or real-user paths.
+readiness planning plus feedback-triage readiness. That work should convert the
+remaining high-level blockers into a fee-per-run model, a Build-phase readiness
+surface and a Mark-response handling path without activating CAD upload,
+conversion, Sandbox, private CAD or real-user paths.
