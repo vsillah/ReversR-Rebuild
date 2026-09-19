@@ -36,8 +36,12 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(importPanel, /Live upload locked/);
 
   assert.match(nativePreview, /react-native-webview/);
+  assert.match(nativePreview, /useSafeAreaInsets/);
+  assert.match(nativePreview, /nativePreviewCacheBust/);
   assert.match(nativePreview, /cad-native-upload-render-webview/);
   assert.match(nativePreview, /allowFileAccess/);
+  assert.match(nativePreview, /cacheEnabled=\{false\}/);
+  assert.match(nativePreview, /cacheMode="LOAD_NO_CACHE"/);
   assert.match(nativePreview, /setSupportMultipleWindows=\{false\}/);
   assert.match(nativePreview, /isAllowedCadNativeInternalUploadRenderUrl/);
   assert.match(nativePreview, /Preview mode · upload and conversion locked/);
