@@ -4,15 +4,26 @@
   "status": "mark_feedback_pending_parallel_work_allowed",
   "sourceOnly": true,
   "expensesUsd": 0,
-  "baseCommit": "003a370b5286c4f1f40f7102a4b4014e1148fc64",
+  "baseCommit": "e6be098d658f4e1b2d31dde8bb2526df66b6df00",
   "handoff": {
     "recipientRef": "rrb-ref:approved-mark-recipient",
     "sent": true,
     "sentEvidenceRef": "rrb-ref:captain-gmail-sent-message",
     "sentMessageIdRef": "rrb-ref:gmail-1a0b5a66cc16d714",
+    "correctionSentMessageIdRef": "rrb-ref:gmail-1a0b9f517d8ed94e",
     "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=build&qa=003a370",
     "publicMaterial": "Dispenser.IGS and matching reference images",
-    "walkthroughAttached": true
+    "walkthroughAttached": true,
+    "currentReviewPath": {
+      "surface": "installed Android internal IGS upload-render preview",
+      "installArtifactRef": "rrb-ref:final-correction-direct-apk-link",
+      "expectedEntry": "Import -> Open internal IGS preview",
+      "expectedChoices": ["Choose IGES file", "Use public sample"],
+      "expectedResult": "local 3D preview with dimensions, grid, zoom and orientation controls",
+      "easUpdateGroup": "81bf6888-3840-471e-b1c1-422e35d8fe0f",
+      "androidVersionCode": 52,
+      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render"
+    }
   },
   "markApprovalRequiredFor": [
     "rendered dispenser geometry credibility",
@@ -21,10 +32,59 @@
     "source interpretation corrections",
     "claims that the CAD preview is externally validated"
   ],
+  "feedbackIntake": {
+    "minimumFields": [
+      "device model",
+      "Android version if visible",
+      "app install source",
+      "file name",
+      "file extension",
+      "approximate file size",
+      "whether file picker opened",
+      "whether render button appeared",
+      "whether preview rendered",
+      "what was visible on screen",
+      "screenshot or short clip when possible"
+    ],
+    "triageClasses": [
+      {
+        "id": "install-or-update",
+        "signals": ["Live upload locked", "Internal preview unavailable", "missing Open internal IGS preview"],
+        "defaultAction": "confirm APK install path, relaunch/update state and installed-app bundle before changing source"
+      },
+      {
+        "id": "file-picker",
+        "signals": ["no picker", "picker cannot see IGES file", "permission denial"],
+        "defaultAction": "capture Android picker/device details and reproduce with public or synthetic file before changing backend gates"
+      },
+      {
+        "id": "local-render",
+        "signals": ["render button fails", "blank preview", "dimensions missing", "model missing"],
+        "defaultAction": "treat as local renderer/file compatibility issue; do not infer backend upload or conversion failure"
+      },
+      {
+        "id": "cad-interpretation",
+        "signals": ["geometry looks wrong", "orientation confusing", "dimensions unexpected"],
+        "defaultAction": "route to source/fixture interpretation review and keep external validation claims blocked"
+      },
+      {
+        "id": "commercial-readiness",
+        "signals": ["asks about production uploads", "asks about private CAD", "asks about manufacturing output"],
+        "defaultAction": "answer from remaining-gates list; do not imply production activation or commercialization readiness"
+      }
+    ],
+    "responseRules": [
+      "do not ask Mark for private CAD in this review path",
+      "do not request production credentials or account enrollment",
+      "do not claim a backend upload, conversion or Sandbox failure from a local preview symptom",
+      "preserve direct recipient details as local/email evidence references rather than source text"
+    ]
+  },
   "markApprovalNotRequiredFor": [
     "source-only documentation and manifest updates",
     "public preview hardening that preserves current disabled gates",
     "upload/session UX clarity while upload admission remains disabled",
+    "feedback intake and triage packet updates",
     "cost/run attribution planning",
     "implementation readiness information architecture",
     "production fail-closed route smokes"
@@ -49,6 +109,11 @@
       "id": "implementation-readiness",
       "description": "Prepare the next Build-phase surface while keeping manufacturing output locked.",
       "limits": ["no manufacturing package", "no STL/export certification", "no conversion dispatch"]
+    },
+    {
+      "id": "feedback-intake-triage",
+      "description": "Prepare Mark response handling, issue classification and follow-up boundaries without contacting Mark again.",
+      "limits": ["no external messages", "no private CAD requests", "no production activation claims"]
     }
   ],
   "hardStops": [

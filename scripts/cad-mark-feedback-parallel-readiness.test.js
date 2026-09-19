@@ -11,9 +11,15 @@ test('packet preserves Mark feedback as a narrow external-validation gate', () =
   assert.equal(packet.expensesUsd, 0);
   assert.equal(packet.handoff.sent, true);
   assert.equal(packet.handoff.walkthroughAttached, true);
+  assert.equal(packet.handoff.correctionSentMessageIdRef, 'rrb-ref:gmail-1a0b9f517d8ed94e');
   assert.match(packet.handoff.previewUrl, /^https:\/\/reversr\.vercel\.app\/\?cadPreview=mark-dispenser-v1/);
+  assert.equal(packet.handoff.currentReviewPath.surface, 'installed Android internal IGS upload-render preview');
+  assert.equal(packet.handoff.currentReviewPath.expectedEntry, 'Import -> Open internal IGS preview');
+  assert.deepEqual(packet.handoff.currentReviewPath.expectedChoices, ['Choose IGES file', 'Use public sample']);
+  assert.match(packet.handoff.currentReviewPath.productionRenderer, /qa=native-internal-upload-render/);
   assert(packet.markApprovalRequiredFor.includes('claims that the CAD preview is externally validated'));
   assert(packet.markApprovalNotRequiredFor.includes('source-only documentation and manifest updates'));
+  assert(packet.markApprovalNotRequiredFor.includes('feedback intake and triage packet updates'));
 });
 
 test('parallel work remains bounded and keeps dangerous authorities false', () => {
@@ -23,6 +29,7 @@ test('parallel work remains bounded and keeps dangerous authorities false', () =
     'upload-session-ux',
     'cost-attribution-planning',
     'implementation-readiness',
+    'feedback-intake-triage',
   ]);
   for (const key of [
     'externalMessages',
@@ -41,8 +48,25 @@ test('parallel work remains bounded and keeps dangerous authorities false', () =
 
 test('markdown distinguishes public-material review from validated CAD', () => {
   assert.match(markdown, /public-material\s+review build/);
+  assert.match(markdown, /installed Android internal IGS upload-render/);
   assert.match(markdown, /cannot be called validated CAD/);
   assert.match(markdown, /BODY_ADMISSION_AUTHORIZED = false/);
   assert.match(markdown, /fee-per-run model/);
   assert.doesNotMatch(markdown, /meadowsms@/);
+});
+
+test('feedback intake triages tester issues without opening production gates', () => {
+  const classes = packet.feedbackIntake.triageClasses.map(item => item.id);
+  assert.deepEqual(classes, [
+    'install-or-update',
+    'file-picker',
+    'local-render',
+    'cad-interpretation',
+    'commercial-readiness',
+  ]);
+  assert(packet.feedbackIntake.minimumFields.includes('device model'));
+  assert(packet.feedbackIntake.minimumFields.includes('file name'));
+  assert(packet.feedbackIntake.minimumFields.includes('screenshot or short clip when possible'));
+  assert(packet.feedbackIntake.responseRules.includes('do not ask Mark for private CAD in this review path'));
+  assert(packet.feedbackIntake.responseRules.includes('do not claim a backend upload, conversion or Sandbox failure from a local preview symptom'));
 });
