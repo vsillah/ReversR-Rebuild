@@ -63,7 +63,7 @@ fs.mkdirSync(out, {recursive:true});
   await page.getByTestId('cad-run-economics').getByText('USD 50',{exact:true}).waitFor();
   await page.getByTestId('cad-run-economics').getByText('Evidence pending',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Actual product behavior to validate',{exact:true}).waitFor();
-  await page.getByTestId('cad-implementation-slide').getByText('Test-only content in this preview',{exact:true}).waitFor();
+  await page.getByTestId('cad-implementation-slide').getByText('Fixture context',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Cost evidence still needed',{exact:true}).waitFor();
   await page.getByTestId('cad-implementation-slide').getByText('Not part of this product QA',{exact:true}).waitFor();
   await page.getByText('Prepare implementation package · Locked',{exact:true}).waitFor();

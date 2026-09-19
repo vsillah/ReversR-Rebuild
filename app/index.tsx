@@ -59,7 +59,7 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
-import { getCadInternalTesterPreview, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
+import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -524,6 +524,11 @@ export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
   const routeCadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
+  const nativeEmbeddedCadPreview = useMemo(() => (
+    Platform.OS === 'web'
+    && typeof window !== 'undefined'
+    && isCadNativeEmbeddedPreview(window.location)
+  ), []);
   const [nativeCadUploadPreviewVisible, setNativeCadUploadPreviewVisible] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
   const cadInternalPreview: CadInternalTesterPreview = routeCadInternalPreview;
@@ -1514,7 +1519,9 @@ export default function HomeScreen() {
   );
   const keyboardInset = useAndroidKeyboardInset(32);
   const keyboardOpen = workflowInputActive || keyboardInset > 0;
-  const contentBottomPadding = tabBarInset + Spacing.md + keyboardInset;
+  const contentBottomPadding = nativeEmbeddedCadPreview
+    ? Spacing.md + keyboardInset
+    : tabBarInset + Spacing.md + keyboardInset;
   const workflowFocusVisibilityProps = {
     onFocusCapture: (event: any) => ensureFocusedFieldVisible(workflowScrollRef, event),
   } as any;
@@ -1624,7 +1631,7 @@ export default function HomeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? safeAreaInsets.top + 12 : 0}
     >
-      <View style={styles.header} testID="reversr-workflow-header">
+      {!nativeEmbeddedCadPreview && <View style={styles.header} testID="reversr-workflow-header">
         <View style={styles.logoContainer}>
           <ReversRLogoMark colors={Colors} size={40} />
           <View style={styles.brandTextWrap}>
@@ -1723,9 +1730,9 @@ export default function HomeScreen() {
             )}
           </View>
         </View>
-      </View>
+      </View>}
 
-      {isGuestPlan && !keyboardOpen && (
+      {isGuestPlan && !keyboardOpen && !nativeEmbeddedCadPreview && (
         <View style={styles.guestCreditBar} testID="reversr-guest-credit-bar">
           <Text style={styles.guestCreditText} numberOfLines={2}>
             {guestCreditCopySegments.map((segment, index) => (
@@ -1745,7 +1752,7 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {!keyboardOpen && (
+      {!keyboardOpen && !nativeEmbeddedCadPreview && (
         <View style={styles.progressBar}>
           <View style={styles.phaseStepperCard}>
             <HorizontalStepper
@@ -1764,7 +1771,7 @@ export default function HomeScreen() {
       <ScrollView
         key={`workflow-surface:${context.id}:${cadInternalPreview.enabled ? 'cad-internal-preview' : context.phase}`}
         ref={workflowScrollRef}
-        style={styles.content}
+        style={[styles.content, nativeEmbeddedCadPreview && styles.embeddedPreviewContent]}
         contentContainerStyle={[
           { flexGrow: 1, paddingBottom: contentBottomPadding },
           tourActive && styles.contentWithTour,
@@ -1776,7 +1783,7 @@ export default function HomeScreen() {
         onContentSizeChange={flushWorkflowScrollReset}
         {...workflowFocusVisibilityProps}
       >
-        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} />}
+        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} compact={nativeEmbeddedCadPreview} />}
         {!cadInternalPreview.enabled && context.phase === 1 && (
           <PhaseOne
             key={context.id}
@@ -1991,7 +1998,7 @@ export default function HomeScreen() {
         onClose={() => setNativeCadUploadPreviewVisible(false)}
       />
       {renderTourGuide()}
-      {!keyboardOpen && (
+      {!keyboardOpen && !nativeEmbeddedCadPreview && (
         <BottomTabBar
           active={null}
           onHome={goHome}
@@ -2208,6 +2215,9 @@ const createStyles = (Colors: AppColors) => {
     flex: 1,
     minHeight: 0,
     paddingHorizontal: Spacing.lg,
+  },
+  embeddedPreviewContent: {
+    paddingHorizontal: Spacing.sm,
   },
   contentWithTour: {
     paddingBottom: 300,

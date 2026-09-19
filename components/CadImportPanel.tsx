@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Spacing, Typography } from '../constants/theme';
+import { Radii, Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { mapCadImportError, prepareCadFileMetadata, type CadUploadSessionAdapter } from '../utils/cadUserImportBridge';
@@ -171,8 +171,12 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
               <Ionicons name="cube-outline" size={22} color={colors.primary} accessible={false} />
               <View style={{ flex: 1, gap: Spacing.xs }}>
                 <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal IGS preview</Text>
-                <Text style={text}>Open the internal renderer to choose a public or authorized internal .igs/.iges file in the installed app. Production upload admission stays locked.</Text>
+                <Text style={text}>Open the internal renderer to choose an authorized .igs/.iges file in the installed app.</Text>
               </View>
+            </View>
+            <View style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.pill, paddingHorizontal: Spacing.sm, paddingVertical: 6, backgroundColor: colors.surface }}>
+              <Ionicons name="shield-checkmark-outline" size={14} color={colors.primary} accessible={false} />
+              <Text style={[Typography.caption, { color: colors.mutedText }]}>Preview mode · upload/conversion locked</Text>
             </View>
             <CadAction
               testID="cad-open-native-internal-preview"
@@ -183,7 +187,6 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
               onPress={onOpenInternalPreview}
             />
           </View>
-          <Text style={text}>This is test-only preview handling for internal reviewers. It does not activate production upload, conversion, or Sandbox dispatch.</Text>
         </View>
       ) : supported ? (
         <>

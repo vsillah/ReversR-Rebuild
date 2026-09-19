@@ -46,7 +46,7 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
         <View style={[styles.header, { borderBottomColor: colors.border }]}>
           <View style={styles.headerCopy}>
             <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal IGS preview</Text>
-            <Text style={bodyText}>Choose a public or authorized internal .igs/.iges file. Production upload remains locked.</Text>
+            <Text style={bodyText}>Choose an authorized .igs/.iges file.</Text>
           </View>
           <TouchableOpacity
             testID="cad-native-upload-render-close"
@@ -60,10 +60,10 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.boundaryCard, { borderColor: colors.border, backgroundColor: colors.elevated }]}>
-          <Ionicons name="shield-checkmark-outline" size={18} color={colors.primary} accessible={false} />
-          <Text style={[bodyText, styles.boundaryText]}>
-            Test-only installed-app preview. The selected file is handled by the internal renderer surface; this does not unlock production upload admission, conversion, or Sandbox dispatch.
+        <View style={[styles.boundaryPill, { borderColor: colors.border, backgroundColor: colors.elevated }]}>
+          <Ionicons name="shield-checkmark-outline" size={14} color={colors.primary} accessible={false} />
+          <Text numberOfLines={1} style={[Typography.caption, styles.boundaryText, { color: colors.mutedText }]}>
+            Preview mode · upload and conversion locked
           </Text>
         </View>
 
@@ -107,10 +107,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    minHeight: 88,
+    minHeight: 72,
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
     borderBottomWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -128,17 +128,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  boundaryCard: {
-    margin: Spacing.md,
-    padding: Spacing.md,
-    borderRadius: Radii.lg,
+  boundaryPill: {
+    marginHorizontal: Spacing.md,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 7,
+    borderRadius: Radii.pill,
     borderWidth: 1,
     flexDirection: 'row',
-    gap: Spacing.sm,
-    alignItems: 'flex-start',
+    gap: 6,
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    maxWidth: '88%',
   },
   boundaryText: {
-    flex: 1,
+    flexShrink: 1,
   },
   viewerFrame: {
     flex: 1,

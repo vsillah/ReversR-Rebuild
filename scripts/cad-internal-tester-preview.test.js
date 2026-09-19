@@ -7,6 +7,7 @@ const {
   MARK_DISPENSER_RESULT,
   PUBLIC_CUBE_RESULT,
   getCadCapabilitiesRequest,
+  isCadNativeEmbeddedPreview,
   inspectCadInternalTesterPreview,
 } = require('../utils/cadInternalTesterPreview');
 
@@ -56,6 +57,25 @@ test('blocks production root, unrelated hosts, and unrequested preview mode', ()
   ]) {
     assert.equal(inspectCadInternalTesterPreview(input).enabled, false);
   }
+});
+
+test('detects the installed-app embedded CAD renderer route only for the accepted Mark preview', () => {
+  assert.equal(isCadNativeEmbeddedPreview({
+    hostname: 'reversr.vercel.app',
+    search: '?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render',
+  }), true);
+  assert.equal(isCadNativeEmbeddedPreview({
+    hostname: 'reversr.vercel.app',
+    search: '?cadPreview=mark-dispenser-v1',
+  }), false);
+  assert.equal(isCadNativeEmbeddedPreview({
+    hostname: 'reversr.vercel.app',
+    search: '?cadPreview=public-cube-v1&qa=native-internal-upload-render',
+  }), false);
+  assert.equal(isCadNativeEmbeddedPreview({
+    hostname: 'example.com',
+    search: '?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render',
+  }), false);
 });
 
 test('keeps the replay bound to the accepted public fixture and qualified output', () => {

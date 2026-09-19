@@ -18,6 +18,10 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.doesNotMatch(appIndex, /MARK_DISPENSER_RESULT/);
   assert.doesNotMatch(appIndex, /nativeCadPreviewEnabled/);
   assert.match(appIndex, /nativeCadUploadPreviewVisible/);
+  assert.match(appIndex, /isCadNativeEmbeddedPreview/);
+  assert.match(appIndex, /nativeEmbeddedCadPreview/);
+  assert.match(appIndex, /styles\.embeddedPreviewContent/);
+  assert.match(appIndex, /compact=\{nativeEmbeddedCadPreview\}/);
   assert.match(appIndex, /<CadNativeInternalUploadPreview/);
   assert.match(appIndex, /onOpenCadInternalPreview=\{Platform\.OS === 'web' \? undefined : openNativeCadInternalPreview\}/);
 
@@ -27,7 +31,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(importPanel, /cad-native-internal-preview-entry/);
   assert.match(importPanel, /cad-open-native-internal-preview/);
   assert.match(importPanel, /Open internal IGS preview/);
-  assert.match(importPanel, /Production upload admission stays locked\./);
+  assert.match(importPanel, /Preview mode · upload\/conversion locked/);
   assert.match(importPanel, /!onOpenInternalPreview/);
   assert.match(importPanel, /Live upload locked/);
 
@@ -36,7 +40,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(nativePreview, /allowFileAccess/);
   assert.match(nativePreview, /setSupportMultipleWindows=\{false\}/);
   assert.match(nativePreview, /isAllowedCadNativeInternalUploadRenderUrl/);
-  assert.match(nativePreview, /Production upload remains locked/);
+  assert.match(nativePreview, /Preview mode · upload and conversion locked/);
 
   assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
   assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);

@@ -13,6 +13,7 @@ type Props = {
   preview: Extract<CadInternalTesterPreview, { enabled: true }>;
   phase: number;
   onPhase: (phase: number) => void;
+  compact?: boolean;
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
@@ -20,7 +21,7 @@ const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry 
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
-export default function CadWorkflow({ preview, phase, onPhase }: Props) {
+export default function CadWorkflow({ preview, phase, onPhase, compact = false }: Props) {
   const { colors } = useAppTheme();
   const [fixture, setFixture] = useState(preview.fixture);
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
@@ -30,15 +31,15 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
     warning: { color: colors.warning, backgroundColor: colors.warningSoft },
     muted: { color: colors.mutedText, backgroundColor: colors.elevated },
   };
-  return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: Spacing.lg, gap: Spacing.md }}>
-    <View style={styles.header}>
+  return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: compact ? Spacing.xs : Spacing.lg, gap: compact ? Spacing.sm : Spacing.md }}>
+    {!compact && <View style={styles.header}>
       <View style={[styles.headerIcon, { backgroundColor: colors.primarySoft }]}><Ionicons name={icons[phase - 1]} size={24} color={colors.primary} accessible={false} /></View>
       <View style={{ flex: 1, gap: Spacing.xs }}>
         <Text accessibilityRole="header" style={[Typography.title, { color: colors.text }]}>{titles[phase - 1]}</Text>
         <Text style={[...text, phase === 3 && { color: colors.warning }]}>{subtitles[phase - 1]}</Text>
       </View>
-    </View>
-    <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+    </View>}
+    <View style={[styles.panel, compact && { padding: Spacing.sm, gap: Spacing.sm }, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       {phase === 1 && <>
         <CadImportPanel
           internalPreview={preview}
@@ -76,7 +77,7 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
               {[
                 { icon: 'cube-outline' as const, label: 'Actual product UI', value: 'Controls + workflow', color: colors.success, background: colors.successSoft },
-                { icon: 'images-outline' as const, label: 'Test-only content', value: isLocalPreview ? 'Local IGES render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
+                { icon: 'images-outline' as const, label: 'Fixture context', value: isLocalPreview ? 'Local IGES render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
                 { icon: 'lock-closed-outline' as const, label: 'Locked product output', value: 'No build package yet', color: colors.warning, background: colors.warningSoft },
               ].map(item => <View key={item.label} style={{ flexGrow: 1, flexBasis: 150, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.elevated }}>
                 <View style={{ width: 34, height: 34, borderRadius: Radii.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: item.background }}>
@@ -113,15 +114,15 @@ export default function CadWorkflow({ preview, phase, onPhase }: Props) {
               </View>)}
             </View>
             <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
-              <Text style={[Typography.heading, { color: colors.text }]}>Test-only content in this preview</Text>
+              <Text style={[Typography.heading, { color: colors.text }]}>Fixture context</Text>
               {(isLocalPreview ? [
-                `${fixture.sourceFileName} was selected locally in the browser for this internal QA pass.`,
-                `Shown extents come from the selected IGES preview mesh: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
-                'This internal preview does not upload file contents or activate the customer upload workflow.',
+                `${fixture.sourceFileName} is rendered locally for this QA pass.`,
+                `Preview extents: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
+                'Upload and conversion remain locked.',
               ] : [
-                `${fixture.sourceFileName} and the matching reference images are public review materials preloaded for this QA pass.`,
-                `Shown dimensions come from this public test file: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
-                'This shareable preview link is not the final customer upload workflow.',
+                `${fixture.sourceFileName} and reference images are public review materials.`,
+                `Preview dimensions: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
+                'Review fixture only; customer upload remains gated.',
               ]).map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
                 <Ionicons name="flask-outline" size={16} color={colors.primary} accessible={false} />
                 <Text style={[...text, { flex: 1 }]}>{label}</Text>
