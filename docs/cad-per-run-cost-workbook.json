@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packet": "cad-per-run-cost-workbook",
   "status": "source_only_workbook_ready",
-  "baseCommit": "e2cfa4e4c173ab9d8c175fc2403b6e28eb3696a8",
+  "baseCommit": "ea82b675598c343e2c936f66efa44595d4e253a7",
   "sourceOnly": true,
   "expensesUsd": 0,
   "unit": "one CAD run",
@@ -53,6 +53,14 @@
       "estimateUsd": null
     },
     {
+      "id": "internal-tester-support",
+      "provider": "Internal tester support",
+      "status": "feedback-evidence-required",
+      "meters": ["device install support", "file-picker failures", "renderer compatibility triage", "tester follow-up time"],
+      "requiredEvidence": ["tester device model", "Android/WebView version", "file size and extension", "triage class and resolution time"],
+      "estimateUsd": null
+    },
+    {
       "id": "commercial-buffer",
       "provider": "Pricing policy",
       "status": "business-policy-required",
@@ -64,11 +72,12 @@
   "readinessSurface": {
     "phase": "Build",
     "headline": "Build stays locked while cost and manufacturing evidence are incomplete.",
-    "productReady": ["Public-material preview controls", "Source/reference comparison flow", "Fail-closed route status"],
+    "productReady": ["Installed-app internal IGES preview controls", "Source/reference comparison flow", "Fail-closed route status"],
     "costEvidenceNeeded": [
       "Current Convex and Vercel plan terms",
       "Sandbox or conversion compute pricing",
       "Per-run operation, storage and egress counts",
+      "Internal tester device and file-compatibility support",
       "Tax, fee, FX, contingency and support policy"
     ],
     "blockedOutputs": [

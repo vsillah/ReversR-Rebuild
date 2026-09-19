@@ -34,6 +34,7 @@ test('cost buckets cover the complete CAD run path', () => {
     'Sandbox or conversion compute',
     'browser/client rendering',
     'ReversR evidence custody',
+    'Internal tester support',
     'pricing policy',
   ]) {
     assert.ok(providers.has(provider), `${provider} provider bucket is required`);
@@ -47,6 +48,7 @@ test('cost buckets cover the complete CAD run path', () => {
     'body-read bytes after explicit admission',
     'CPU time',
     'egress',
+    'tester follow-up time',
     'taxes',
     'contingency',
   ]) {
@@ -86,6 +88,7 @@ test('Mark feedback boundary remains narrow and does not block source-only work'
       'source-only cost attribution planning',
       'implementation-readiness information architecture',
       'disabled-gate UX polish',
+      'feedback intake and triage packet updates',
       'production fail-closed route smokes',
     ],
   );

@@ -41,6 +41,12 @@ const CAD_COST_WORKBOOK = Object.freeze({
       meters: Object.freeze(['derived preview size', 'reference images', 'cache policy', 'sanitized evidence files']),
     }),
     Object.freeze({
+      id: 'internal-tester-support',
+      label: 'Tester support',
+      readiness: 'needs device, file-picker, renderer and triage evidence',
+      meters: Object.freeze(['device install support', 'file-picker failures', 'renderer compatibility triage', 'tester follow-up time']),
+    }),
+    Object.freeze({
       id: 'commercial-buffer',
       label: 'Commercial buffer',
       readiness: 'needs fee policy before customer pricing',
@@ -69,7 +75,7 @@ const CAD_BUILD_READINESS = Object.freeze({
     }),
   ]),
   productReady: Object.freeze([
-    'Public-material preview controls',
+    'Installed-app internal IGES preview controls',
     'Source/reference comparison flow',
     'Fail-closed route status',
   ]),
@@ -77,6 +83,7 @@ const CAD_BUILD_READINESS = Object.freeze({
     'Current Convex and Vercel plan terms',
     'Sandbox or conversion compute pricing',
     'Per-run operation, storage and egress counts',
+    'Internal tester device and file-compatibility support',
     'Tax, fee, FX, contingency and support policy',
   ]),
   blockedOutputs: Object.freeze([
