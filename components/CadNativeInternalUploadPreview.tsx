@@ -2,25 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import {
   getCadNativeInternalUploadRenderConfig,
   isAllowedCadNativeInternalUploadRenderUrl,
 } from '../utils/cadNativeInternalUploadPreview';
-
-type NativeWebViewModule = {
-  WebView: React.ComponentType<Record<string, unknown>>;
-};
-
-function loadNativeWebView() {
-  if (Platform.OS === 'web') return null;
-  try {
-    return (require('react-native-webview') as NativeWebViewModule).WebView;
-  } catch {
-    return null;
-  }
-}
 
 function getNativePreviewUrl(value?: string) {
   if (!value) return '';
@@ -42,12 +30,11 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
   const config = useMemo(() => getCadNativeInternalUploadRenderConfig(), []);
   const configUrl = config.enabled ? config.url : undefined;
   const previewUrl = useMemo(() => getNativePreviewUrl(configUrl), [configUrl]);
-  const WebView = useMemo(() => loadNativeWebView(), []);
   const [loadError, setLoadError] = useState('');
-  const canRender = Platform.OS !== 'web' && WebView && config.enabled && !loadError;
-  const unavailableMessage = loadError || (WebView
-    ? config.enabled ? 'The internal preview is configured but cannot be shown in this session.' : config.message
-    : 'This app build does not include the native preview renderer.');
+  const canRender = Platform.OS !== 'web' && config.enabled && !loadError;
+  const unavailableMessage = loadError || (config.enabled
+    ? 'The internal preview is configured but cannot be shown in this session.'
+    : config.message);
   const bodyText = { ...Typography.caption, color: colors.mutedText, lineHeight: 19 };
 
   return (
