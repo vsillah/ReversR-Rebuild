@@ -1,5 +1,6 @@
 const CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_ENV = 'EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL';
 const CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1';
+const CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PHASE = 'input';
 const PRODUCTION_HOSTNAME = 'reversr.vercel.app';
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 
@@ -22,6 +23,7 @@ function isAllowedCadNativeInternalUploadRenderUrl(value) {
   const isNonProductionPreview = hostname.endsWith('.vercel.app') && hostname !== PRODUCTION_HOSTNAME;
   if (!isLocal && !isProduction && !isNonProductionPreview) return false;
   if (parsed.searchParams.get('cadPreview') !== CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW) return false;
+  if (parsed.searchParams.get('cadPhase') !== CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PHASE) return false;
   return parsed.protocol === 'https:' || (isLocal && parsed.protocol === 'http:');
 }
 
@@ -58,6 +60,7 @@ function getCadNativeInternalUploadRenderConfig(env) {
 
 module.exports = {
   CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_ENV,
+  CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PHASE,
   CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW,
   getCadNativeInternalUploadRenderConfig,
   getDefaultCadNativeInternalUploadRenderUrl,
