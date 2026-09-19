@@ -56,10 +56,15 @@ export type CadInternalTesterPreview =
 export const PREVIEW_QUERY_KEY: 'cadPreview';
 export const PREVIEW_QUERY_VALUE: 'public-cube-v1';
 export const DISPENSER_PREVIEW_QUERY_VALUE: 'mark-dispenser-v1';
+export const NATIVE_EMBEDDED_PREVIEW_QA_VALUE: 'native-internal-upload-render';
 export const PUBLIC_CUBE_RESULT: Readonly<CadInternalTesterFixture>;
 export const MARK_DISPENSER_RESULT: Readonly<CadInternalTesterFixture>;
 export function isAllowedPreviewHostname(hostname: unknown): boolean;
 export function isNonProductionVercelPreview(hostname: unknown): boolean;
+export function isCadNativeEmbeddedPreview(locationLike?: {
+  hostname?: unknown;
+  search?: unknown;
+} | null): boolean;
 export function inspectCadInternalTesterPreview(locationLike?: {
   hostname?: unknown;
   search?: unknown;

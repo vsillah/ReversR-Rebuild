@@ -1,6 +1,7 @@
 const PREVIEW_QUERY_KEY = 'cadPreview';
 const PREVIEW_QUERY_VALUE = 'public-cube-v1';
 const DISPENSER_PREVIEW_QUERY_VALUE = 'mark-dispenser-v1';
+const NATIVE_EMBEDDED_PREVIEW_QA_VALUE = 'native-internal-upload-render';
 const PRODUCTION_HOSTNAME = 'reversr.vercel.app';
 
 const PUBLIC_CUBE_RESULT = Object.freeze({
@@ -140,6 +141,15 @@ function getCadInternalTesterPreview() {
   return inspectCadInternalTesterPreview(window.location);
 }
 
+function isCadNativeEmbeddedPreview(locationLike) {
+  if (!locationLike) return false;
+  const preview = inspectCadInternalTesterPreview(locationLike);
+  if (!preview.enabled) return false;
+  const query = new URLSearchParams(String(locationLike.search || ''));
+  return query.get(PREVIEW_QUERY_KEY) === DISPENSER_PREVIEW_QUERY_VALUE
+    && query.get('qa') === NATIVE_EMBEDDED_PREVIEW_QA_VALUE;
+}
+
 function getCadCapabilitiesRequest(previewEnabled, apiBase) {
   if (previewEnabled) {
     return Object.freeze({
@@ -158,8 +168,10 @@ module.exports = {
   PREVIEW_QUERY_KEY,
   PREVIEW_QUERY_VALUE,
   DISPENSER_PREVIEW_QUERY_VALUE,
+  NATIVE_EMBEDDED_PREVIEW_QA_VALUE,
   PUBLIC_CUBE_RESULT,
   MARK_DISPENSER_RESULT,
+  isCadNativeEmbeddedPreview,
   inspectCadInternalTesterPreview,
   getCadInternalTesterPreview,
   getCadCapabilitiesRequest,

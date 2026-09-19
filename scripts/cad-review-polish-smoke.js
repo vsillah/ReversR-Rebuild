@@ -59,7 +59,7 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
       await page.getByRole('button', { name: 'View implementation readiness', exact: true }).click();
       await page.getByTestId('cad-build-locked').waitFor();
       await page.getByTestId('cad-implementation-slide').getByText('Actual product behavior to validate', { exact: true }).waitFor();
-      await page.getByTestId('cad-implementation-slide').getByText('Test-only content in this preview', { exact: true }).waitFor();
+      await page.getByTestId('cad-implementation-slide').getByText('Fixture context', { exact: true }).waitFor();
       await page.getByTestId('cad-implementation-slide').getByText('Not part of this product QA', { exact: true }).waitFor();
       await page.getByText('Prepare implementation package · Locked', { exact: true }).waitFor();
       assert(await page.getByRole('button', { name: 'Prepare outputs unavailable: manufacturing review required' }).isDisabled());
