@@ -206,6 +206,27 @@ After a preview build starts or completes, sync EAS build URLs into the native Q
 npm run native:eas:sync-builds
 ```
 
+For the bounded CAD internal upload-render preview channel, the build profile
+contains the public renderer URL, but JS-only EAS updates must receive that URL
+again at update time. Use this command shape for updates to the existing Android
+internal preview channel:
+
+```bash
+CI=1 \
+EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render' \
+npx eas-cli@20.0.0 update \
+  --channel cad-internal-upload-preview \
+  --environment preview \
+  --platform android \
+  --message "CAD internal upload-render preview update" \
+  --non-interactive
+```
+
+Do not treat a successful Vercel deployment or a successful `eas update` command
+as installed-app QA. Relaunch the connected Android app, confirm it applies the
+new update, and verify the internal IGS preview shows the renderer instead of
+`Internal preview unavailable`.
+
 Run device QA before store submission:
 
 ```bash

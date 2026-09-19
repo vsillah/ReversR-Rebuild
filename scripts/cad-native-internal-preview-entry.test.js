@@ -12,6 +12,8 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   const importPanel = read('components/CadImportPanel.tsx');
   const nativePreview = read('components/CadNativeInternalUploadPreview.tsx');
   const targetConfig = read('utils/cadNativeInternalUploadPreview.js');
+  const internalPreviewDoc = read('docs/cad-internal-tester-preview.md');
+  const nativeReleaseRunbook = read('docs/native-release-runbook.md');
   const easConfig = JSON.parse(read('eas.json'));
   const packageJson = JSON.parse(read('package.json'));
 
@@ -60,4 +62,12 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/reversr\.vercel\.app\//);
   assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /cadPreview=mark-dispenser-v1/);
   assert.equal(packageJson.dependencies['react-native-webview'], '13.16.1');
+
+  for (const releaseDoc of [internalPreviewDoc, nativeReleaseRunbook]) {
+    assert.match(releaseDoc, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https:\/\/reversr\.vercel\.app\/\?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render'/);
+    assert.match(releaseDoc, /--channel cad-internal-upload-preview/);
+    assert.match(releaseDoc, /--environment preview/);
+    assert.match(releaseDoc, /--platform android/);
+    assert.match(releaseDoc, /Internal preview unavailable/);
+  }
 });
