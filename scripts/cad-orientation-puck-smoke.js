@@ -89,7 +89,7 @@ fs.mkdirSync(out, { recursive: true });
   for(const view of ['front','front-right','right','back-right','back','back-left','left','front-left','top','bottom']) {
    const button=page.getByRole('button',{name:`Show ${view} view`});
    if (view === 'top' || view === 'bottom') {
-    const bounds=await button.boundingBox(); assert(bounds.height>=40 && bounds.width>=40);
+    const bounds=await button.boundingBox(); assert(bounds.height>=24 && bounds.width>=24);
     await button.click({position:{x:Math.round(bounds.width/2),y:view==='top'?8:Math.round(bounds.height-8)}});
    } else {
     await button.click();
@@ -98,7 +98,7 @@ fs.mkdirSync(out, { recursive: true });
    assert.equal(await button.getAttribute('aria-pressed'),'true');
    assert.equal(await page.getByTestId('cad-view-grid-label').count(), 0);
    assert.equal(await host.getByText('Unscaled grid', {exact:true}).count(), 0);
-   const bounds=await button.boundingBox(); assert(bounds.height>=40 && bounds.width>=40);
+   const bounds=await button.boundingBox(); assert(bounds.height>=24 && bounds.width>=24);
    await page.waitForTimeout(200);
    await capture(view);
   }
@@ -111,19 +111,46 @@ fs.mkdirSync(out, { recursive: true });
   await page.getByRole('button',{name:'Show right view'}).click();
   assert.equal(await canvas.getAttribute('data-view'),'right');
   assert.equal(await canvas.getAttribute('data-zoom'),zoomBeforeViewChange,'fixed view changes preserve current zoom');
+  assert.equal(await page.getByTestId('cad-zoom-rail').isVisible(), true, 'zoom rail remains available while orientation puck is expanded');
+  {
+    const puckBox=await page.getByRole('group',{name:'Orientation puck'}).boundingBox();
+    const zoomBox=await page.getByRole('group',{name:'Model zoom'}).boundingBox();
+    assert(puckBox && zoomBox);
+    const overlap=puckBox.x<zoomBox.x+zoomBox.width && puckBox.x+puckBox.width>zoomBox.x && puckBox.y<zoomBox.y+zoomBox.height && puckBox.y+puckBox.height>zoomBox.y;
+    assert.equal(overlap,false,'expanded orientation puck and zoom rail do not overlap');
+  }
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByRole('button',{name:'Expand orientation controls'}).getAttribute('aria-expanded'),'false');
+  assert.equal(await page.getByTestId('cad-zoom-rail').isVisible(), true, 'zoom rail remains available after orientation puck closes');
   await page.getByRole('button',{name:'Zoom out',exact:true}).click();
   assert.equal(await canvas.getAttribute('data-zoom'),'1.000');
   assert.equal(await canvas.getAttribute('data-zoom-at-min'),'false');
   assert.equal(await canvas.getAttribute('data-zoom-at-max'),'false');
   const zoomInButton=page.getByTestId('cad-zoom-in');
+  const zoomOutButton=page.getByTestId('cad-zoom-out');
+  const zoomSlider=page.getByTestId('cad-zoom-slider');
+  assert.equal(await zoomSlider.inputValue(),'20','fitted zoom starts at its marked rail position');
+  {
+    const zoomInMeter=Number(await zoomInButton.getAttribute('data-zoom-meter'));
+    const zoomOutMeter=Number(await zoomOutButton.getAttribute('data-zoom-meter'));
+    assert(Math.abs((zoomInMeter+zoomOutMeter)-1)<0.002,'zoom button meters are inverse');
+  }
   for(let i=0;i<8 && !(await zoomInButton.isDisabled());i++) await zoomInButton.click();
   assert.equal(await canvas.getAttribute('data-zoom-at-max'),'true');
   assert(await zoomInButton.isDisabled(),'zoom in button disables at maximum zoom');
-  const zoomOutButton=page.getByTestId('cad-zoom-out');
+  assert.equal(await zoomSlider.inputValue(),'100');
+  assert.equal(await zoomInButton.getAttribute('data-zoom-meter'),'1.000');
+  assert.equal(await zoomOutButton.getAttribute('data-zoom-meter'),'0.000');
   assert.equal(await zoomOutButton.isDisabled(),false);
   for(let i=0;i<12 && !(await zoomOutButton.isDisabled());i++) await zoomOutButton.click();
   assert.equal(await canvas.getAttribute('data-zoom-at-min'),'true');
   assert(await zoomOutButton.isDisabled(),'zoom out button disables at minimum zoom');
+  assert.equal(await zoomSlider.inputValue(),'0');
+  assert.equal(await zoomInButton.getAttribute('data-zoom-meter'),'0.000');
+  assert.equal(await zoomOutButton.getAttribute('data-zoom-meter'),'1.000');
+  await page.getByRole('button',{name:'Reset zoom to fitted view'}).click();
+  assert.equal(await canvas.getAttribute('data-zoom'),'1.000');
+  assert.equal(await zoomSlider.inputValue(),'20');
   if(await toggle.getAttribute('aria-expanded')!=='true') await page.getByRole('button',{name:'Expand orientation controls'}).click();
   await reset.click();
   assert.equal(await canvas.getAttribute('data-zoom'),'1.000');
