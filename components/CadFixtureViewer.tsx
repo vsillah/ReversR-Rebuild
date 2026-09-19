@@ -9,6 +9,9 @@ type ViewName = 'isometric' | OrbitViewName | ElevationViewName;
 type FixedViewName = Exclude<ViewName, 'isometric'>;
 type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'compactOpen' | 'compactClosed';
 
+const MIN_ZOOM = 0.65;
+const MAX_ZOOM = 2.4;
+const ZOOM_EPSILON = 0.001;
 const orbitViews: OrbitViewName[] = ['front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'left', 'front-left'];
 const elevationViews: ElevationViewName[] = ['top', 'bottom'];
 const fixedViews: FixedViewName[] = [...orbitViews, ...elevationViews];
@@ -208,6 +211,17 @@ const zoomControlStyle: React.CSSProperties = {
   fontSize: 18,
 };
 
+const zoomInnerStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 3,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '50%',
+  background: 'rgba(23, 33, 31, 0.62)',
+  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+};
+
 const visuallyHiddenStyle: React.CSSProperties = {
   position: 'absolute',
   width: 1,
@@ -245,6 +259,7 @@ export default function CadFixtureViewer({
   const [expanded, setExpanded] = useState(false);
   const [compactControls, setCompactControls] = useState(false);
   const [currentView, setCurrentView] = useState<ViewName | 'custom'>('isometric');
+  const [zoomLevel, setZoomLevel] = useState(1);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const puckRef = useRef<HTMLDivElement | null>(null);
   const controlsRef = useRef<HTMLDivElement | null>(null);
@@ -421,6 +436,11 @@ export default function CadFixtureViewer({
         };
         let userZoom = 1;
         let compactPuckOpen = false;
+        const publishZoom = () => {
+          setZoomLevel(userZoom);
+          renderer.domElement.dataset.zoomAtMin = userZoom <= MIN_ZOOM + ZOOM_EPSILON ? 'true' : 'false';
+          renderer.domElement.dataset.zoomAtMax = userZoom >= MAX_ZOOM - ZOOM_EPSILON ? 'true' : 'false';
+        };
         const applyZoom = () => {
           camera.zoom = userZoom * (compactPuckOpen ? 0.72 : 1);
           if (compactPuckOpen) {
@@ -439,21 +459,21 @@ export default function CadFixtureViewer({
           }
           renderer.domElement.dataset.zoom = userZoom.toFixed(3);
           renderer.domElement.dataset.controlFit = compactPuckOpen ? 'compact-clearance' : 'default';
+          publishZoom();
           camera.updateProjectionMatrix();
         };
         const setZoom = (nextZoom: number) => {
-          userZoom = THREE.MathUtils.clamp(nextZoom, 0.65, 2.4);
+          userZoom = THREE.MathUtils.clamp(nextZoom, MIN_ZOOM, MAX_ZOOM);
           applyZoom();
         };
         const updateView = (name: ViewName | 'custom') => {
           setCurrentView(name);
           renderer.domElement.dataset.view = name;
         };
-        const setView = (name: ViewName) => {
+        const setView = (name: ViewName, options: { resetZoom?: boolean } = {}) => {
           updateView(name);
           rig.rotation.set(0, 0, 0);
-          userZoom = 1;
-          applyZoom();
+          if (options.resetZoom) userZoom = 1;
           renderer.domElement.dataset.view = name;
           const distance = distanceForViewport();
           camera.up.set(0, 1, 0);
@@ -490,10 +510,10 @@ export default function CadFixtureViewer({
           grid.position.copy(camera.position).normalize().multiplyScalar(-radius * 1.4);
           grid.quaternion.copy(camera.quaternion);
           grid.rotateX(Math.PI / 2);
-          camera.updateProjectionMatrix();
+          applyZoom();
         };
         viewerActions.current = {
-          isometric: () => setView('isometric'),
+          isometric: () => setView('isometric', { resetZoom: true }),
           zoomIn: () => setZoom(userZoom * 1.2),
           zoomOut: () => setZoom(userZoom / 1.2),
           compactOpen: () => {
@@ -508,7 +528,7 @@ export default function CadFixtureViewer({
         fixedViews.forEach(view => {
           viewerActions.current[view] = () => setView(view);
         });
-        setView('isometric');
+        setView('isometric', { resetZoom: true });
 
         let pointerDown = false;
         let lastX = 0;
@@ -637,6 +657,20 @@ export default function CadFixtureViewer({
   const elevationButtonBackground = (view: ElevationViewName) => currentView === view
     ? 'radial-gradient(circle at 50% 50%, rgba(127, 224, 192, 0.18), rgba(127, 224, 192, 0.05) 60%, transparent 72%)'
     : 'transparent';
+  const zoomProgress = Math.max(0, Math.min(1, (zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)));
+  const zoomArcDegrees = Math.round(zoomProgress * 360);
+  const canZoomOut = state === 'ready' && zoomLevel > MIN_ZOOM + ZOOM_EPSILON;
+  const canZoomIn = state === 'ready' && zoomLevel < MAX_ZOOM - ZOOM_EPSILON;
+  const zoomButtonStyle = (enabled: boolean): React.CSSProperties => ({
+    ...zoomControlStyle,
+    position: 'relative',
+    border: 0,
+    color: enabled ? '#e8fffa' : 'rgba(232, 255, 250, 0.38)',
+    background: `conic-gradient(#7fe0c0 0deg, #7fe0c0 ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) ${zoomArcDegrees}deg, rgba(161, 183, 178, 0.22) 360deg)`,
+    boxShadow: enabled ? zoomControlStyle.boxShadow : '0 4px 10px rgba(9, 16, 18, 0.1)',
+    cursor: enabled ? 'pointer' : 'not-allowed',
+    opacity: enabled ? 0.82 : 0.5,
+  });
 
   return (
     <div>
@@ -705,10 +739,11 @@ export default function CadFixtureViewer({
           </div>
         </div>
         <div style={{ position: 'absolute', right: 12, bottom: 12, zIndex: 2, display: 'flex', gap: 6 }} role="group" aria-label="Model zoom">
-          <button type="button" style={zoomControlStyle} disabled={state !== 'ready'} title="Zoom out" aria-label="Zoom out"
-            onClick={() => viewerActions.current.zoomOut?.()}>-</button>
-          <button type="button" style={zoomControlStyle} disabled={state !== 'ready'} title="Zoom in" aria-label="Zoom in"
-            onClick={() => viewerActions.current.zoomIn?.()}>+</button>
+          <span aria-live="polite" aria-label="Zoom level" style={visuallyHiddenStyle}>{canZoomIn ? 'Zoom can increase.' : 'Maximum zoom reached.'} {canZoomOut ? 'Zoom can decrease.' : 'Minimum zoom reached.'}</span>
+          <button type="button" data-testid="cad-zoom-out" style={zoomButtonStyle(canZoomOut)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
+            onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomInnerStyle}>-</span></button>
+          <button type="button" data-testid="cad-zoom-in" style={zoomButtonStyle(canZoomIn)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
+            onClick={() => viewerActions.current.zoomIn?.()}><span style={zoomInnerStyle}>+</span></button>
         </div>
         {state !== 'ready' ? (
           <div style={fallbackStyle} data-testid={`cad-fixture-${state}`}>
