@@ -2,7 +2,7 @@
 
 Status: source-only packet for continuing development while Mark reviews the
 public/internal Dispenser IGES preview path. Base:
-`e6be098d658f4e1b2d31dde8bb2526df66b6df00`. Expenses: USD 0.
+`223820ec2a4dc62ab2925af918497a28f3af5e02`. Expenses: USD 0.
 
 ## Handoff state
 
@@ -74,6 +74,13 @@ disabled gate:
    - Prepare the issue taxonomy and response boundaries for Mark's review.
    - Do not send a new external message from source-only work.
    - Do not ask Mark for private CAD in this review path.
+6. Internal tester diagnostics
+   - Prepare support-safe diagnostics for installed-app internal IGS preview
+     issues.
+   - Capture device/app/file-picker/local-render signals without telemetry
+     egress.
+   - Do not infer backend upload, conversion or Sandbox failures from local
+     preview symptoms.
 
 ## Feedback intake model
 
@@ -126,8 +133,7 @@ Stop before any of the following:
 
 ## Next recommended gate
 
-The next useful source-only gate is cost attribution and implementation
-readiness planning plus feedback-triage readiness. That work should convert the
-remaining high-level blockers into a fee-per-run model, a Build-phase readiness
-surface and a Mark-response handling path without activating CAD upload,
+The next useful source-only gate is internal tester diagnostics and
+support-readiness. That work should make the installed-app review path easier to
+support while Mark's feedback is pending, without activating CAD upload,
 conversion, Sandbox, private CAD or real-user paths.

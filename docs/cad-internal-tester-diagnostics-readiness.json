@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-tester-diagnostics-readiness",
+  "status": "source_only_internal_tester_diagnostics_ready",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "baseCommit": "223820ec2a4dc62ab2925af918497a28f3af5e02",
+  "upstream": {
+    "markFeedbackPending": true,
+    "markFeedbackPacket": "docs/cad-mark-feedback-parallel-readiness.json",
+    "costWorkbookPacket": "docs/cad-per-run-cost-workbook.json",
+    "canProceedBeforeMarkResponse": true,
+    "markStillRequiredFor": [
+      "external validation claims",
+      "source-correct geometry claims",
+      "reference interpretation corrections",
+      "stakeholder usefulness judgment"
+    ]
+  },
+  "diagnosticGoal": "distinguish installed-app setup issues, file-picker issues, local renderer compatibility issues, CAD interpretation feedback and commercial-readiness questions without activating production upload or conversion paths",
+  "minimumCapture": [
+    "tester role or opaque reviewer reference",
+    "device model",
+    "Android version if visible",
+    "WebView or Chrome version if visible",
+    "app install source or APK artifact reference",
+    "visible app version or build reference if available",
+    "whether Open internal IGS preview is visible",
+    "whether Live upload locked appears instead of the internal preview path",
+    "file name",
+    "file extension",
+    "approximate file size",
+    "whether file picker opened",
+    "whether selected file appeared in the app",
+    "whether render action appeared",
+    "whether preview rendered",
+    "whether dimensions, grid, zoom and orientation controls appeared",
+    "whether zoom state persisted across orientation changes",
+    "screenshot or short clip when possible",
+    "last action before failure",
+    "visible error or blocked-state copy",
+    "triage time spent",
+    "resolved or unresolved status"
+  ],
+  "classification": [
+    {
+      "id": "install-or-update",
+      "signals": [
+        "Live upload locked",
+        "Internal preview unavailable",
+        "missing Open internal IGS preview",
+        "old app shell after reinstall"
+      ],
+      "defaultAction": "confirm direct APK artifact, relaunch/update state and embedded renderer URL before changing source"
+    },
+    {
+      "id": "file-picker",
+      "signals": [
+        "file picker does not open",
+        "IGES file is hidden",
+        "permission denial",
+        "selected file does not appear"
+      ],
+      "defaultAction": "capture device picker details and reproduce with public or synthetic files before changing backend gates"
+    },
+    {
+      "id": "local-render",
+      "signals": [
+        "render action missing after file selection",
+        "render action fails",
+        "blank preview",
+        "dimensions missing",
+        "controls missing"
+      ],
+      "defaultAction": "treat as local renderer or file-compatibility issue; do not infer upload, conversion or Sandbox failure"
+    },
+    {
+      "id": "cad-interpretation",
+      "signals": [
+        "geometry looks wrong",
+        "orientation mapping disputed",
+        "dimensions unexpected",
+        "reference comparison mismatch"
+      ],
+      "defaultAction": "route to source or fixture interpretation review and keep external-validation claims blocked"
+    },
+    {
+      "id": "commercial-readiness",
+      "signals": [
+        "asks about production uploads",
+        "asks about private CAD",
+        "asks about conversion",
+        "asks about manufacturing output",
+        "asks about customer fee"
+      ],
+      "defaultAction": "answer from remaining gates and cost workbook; do not imply commercialization readiness"
+    }
+  ],
+  "supportCostHooks": {
+    "costWorkbookBucket": "internal-tester-support",
+    "meters": [
+      "device install support",
+      "file-picker failures",
+      "renderer compatibility triage",
+      "tester follow-up time"
+    ],
+    "feePerRunImpact": "support effort must be measured before quoting a customer fee"
+  },
+  "responseBoundaries": [
+    "do not ask Mark for private CAD in this review path",
+    "do not request production credentials or account enrollment",
+    "do not send a new external message from this source packet",
+    "do not claim a backend upload, conversion or Sandbox failure from a local preview symptom",
+    "do not store recipient addresses, private file paths or raw CAD contents in source",
+    "use opaque local evidence references for screenshots, clips or email receipts"
+  ],
+  "hardStops": [
+    "unknown outcome",
+    "request for private CAD",
+    "real-user enrollment",
+    "production upload activation",
+    "production conversion",
+    "Sandbox dispatch",
+    "provider/auth/resource/env changes",
+    "usage or billing changes",
+    "new paid commitment",
+    "external message send",
+    "telemetry egress without separate review"
+  ],
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanupMergedBranchAndWorktree": true,
+    "externalMessages": false,
+    "telemetryEgress": false,
+    "privateCad": false,
+    "uploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false,
+    "newPaidCommitments": false
+  },
+  "nextSafeAction": "source-only product diagnostics implementation for internal preview support, or wait for Mark feedback if the next change would alter the reviewed QA surface"
+}

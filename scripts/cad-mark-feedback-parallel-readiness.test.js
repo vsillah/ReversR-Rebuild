@@ -20,6 +20,7 @@ test('packet preserves Mark feedback as a narrow external-validation gate', () =
   assert(packet.markApprovalRequiredFor.includes('claims that the CAD preview is externally validated'));
   assert(packet.markApprovalNotRequiredFor.includes('source-only documentation and manifest updates'));
   assert(packet.markApprovalNotRequiredFor.includes('feedback intake and triage packet updates'));
+  assert(packet.markApprovalNotRequiredFor.includes('internal tester diagnostics and support-readiness updates'));
 });
 
 test('parallel work remains bounded and keeps dangerous authorities false', () => {
@@ -30,6 +31,7 @@ test('parallel work remains bounded and keeps dangerous authorities false', () =
     'cost-attribution-planning',
     'implementation-readiness',
     'feedback-intake-triage',
+    'internal-tester-diagnostics',
   ]);
   for (const key of [
     'externalMessages',
@@ -51,7 +53,7 @@ test('markdown distinguishes public-material review from validated CAD', () => {
   assert.match(markdown, /installed Android internal IGS upload-render/);
   assert.match(markdown, /cannot be called validated CAD/);
   assert.match(markdown, /BODY_ADMISSION_AUTHORIZED = false/);
-  assert.match(markdown, /fee-per-run model/);
+  assert.match(markdown, /internal tester diagnostics/);
   assert.doesNotMatch(markdown, /meadowsms@/);
 });
 
