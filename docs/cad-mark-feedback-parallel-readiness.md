@@ -27,7 +27,7 @@ grid, zoom controls and orientation controls.
 
 The installed app embeds the production-hosted public renderer route:
 
-`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render`
+`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input`
 
 The verified EAS update group for the corrected JS bundle is
 `81bf6888-3840-471e-b1c1-422e35d8fe0f`, and the Android preview build remains

@@ -22,7 +22,7 @@
       "expectedResult": "local 3D preview with dimensions, grid, zoom and orientation controls",
       "easUpdateGroup": "81bf6888-3840-471e-b1c1-422e35d8fe0f",
       "androidVersionCode": 52,
-      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render"
+      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input"
     }
   },
   "markApprovalRequiredFor": [

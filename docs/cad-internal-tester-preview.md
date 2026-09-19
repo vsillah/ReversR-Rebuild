@@ -45,7 +45,7 @@ The current Android internal tester path is the installed-app internal IGS previ
 not the older public-cube browser fixture. It embeds the production-hosted renderer
 route:
 
-`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render`
+`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input`
 
 The renderer route stays bounded to public/authorized material and local file
 preview behavior. It does not activate production upload sessions, backend
@@ -59,7 +59,7 @@ command:
 
 ```bash
 CI=1 \
-EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render' \
+EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input' \
 npx eas-cli@20.0.0 update \
   --channel cad-internal-upload-preview \
   --environment preview \

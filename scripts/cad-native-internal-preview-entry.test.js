@@ -57,6 +57,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
 
   assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
   assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);
+  assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PHASE = 'input'/);
   assert.match(targetConfig, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL/);
   assert.match(targetConfig, /process\.env\.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL/);
 
@@ -66,10 +67,11 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.equal(profile.channel, 'cad-internal-upload-preview');
   assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/reversr\.vercel\.app\//);
   assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /cadPreview=mark-dispenser-v1/);
+  assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /cadPhase=input/);
   assert.equal(packageJson.dependencies['react-native-webview'], '13.16.1');
 
   for (const releaseDoc of [internalPreviewDoc, nativeReleaseRunbook]) {
-    assert.match(releaseDoc, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https:\/\/reversr\.vercel\.app\/\?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render'/);
+    assert.match(releaseDoc, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https:\/\/reversr\.vercel\.app\/\?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input'/);
     assert.match(releaseDoc, /--channel cad-internal-upload-preview/);
     assert.match(releaseDoc, /--environment preview/);
     assert.match(releaseDoc, /--platform android/);

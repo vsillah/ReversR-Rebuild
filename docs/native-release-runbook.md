@@ -213,7 +213,7 @@ internal preview channel:
 
 ```bash
 CI=1 \
-EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render' \
+EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL='https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input' \
 npx eas-cli@20.0.0 update \
   --channel cad-internal-upload-preview \
   --environment preview \
