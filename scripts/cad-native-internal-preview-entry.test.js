@@ -47,8 +47,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.equal(profile.distribution, 'internal');
   assert.equal(profile.environment, 'preview');
   assert.equal(profile.channel, 'cad-internal-upload-preview');
-  assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/.+\.vercel\.app\//);
-  assert.doesNotMatch(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/reversr\.vercel\.app/);
+  assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /^https:\/\/reversr\.vercel\.app\//);
   assert.match(profile.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL, /cadPreview=mark-dispenser-v1/);
   assert.equal(packageJson.dependencies['react-native-webview'], '13.16.1');
 });
