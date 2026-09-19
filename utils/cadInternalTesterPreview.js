@@ -98,7 +98,7 @@ const MARK_DISPENSER_RESULT = Object.freeze({
 function isAllowedPreviewHostname(hostname) {
   const normalized = String(hostname || '').trim().toLowerCase();
   if (['localhost', '127.0.0.1', '::1'].includes(normalized)) return true;
-  return normalized.endsWith('.vercel.app') && normalized !== PRODUCTION_HOSTNAME;
+  return normalized === PRODUCTION_HOSTNAME || normalized.endsWith('.vercel.app');
 }
 
 function isNonProductionVercelPreview(hostname) {
