@@ -4,7 +4,7 @@
   "status": "mark_feedback_pending_parallel_work_allowed",
   "sourceOnly": true,
   "expensesUsd": 0,
-  "baseCommit": "e6be098d658f4e1b2d31dde8bb2526df66b6df00",
+  "baseCommit": "223820ec2a4dc62ab2925af918497a28f3af5e02",
   "handoff": {
     "recipientRef": "rrb-ref:approved-mark-recipient",
     "sent": true,
@@ -85,6 +85,7 @@
     "public preview hardening that preserves current disabled gates",
     "upload/session UX clarity while upload admission remains disabled",
     "feedback intake and triage packet updates",
+    "internal tester diagnostics and support-readiness updates",
     "cost/run attribution planning",
     "implementation readiness information architecture",
     "production fail-closed route smokes"
@@ -114,6 +115,11 @@
       "id": "feedback-intake-triage",
       "description": "Prepare Mark response handling, issue classification and follow-up boundaries without contacting Mark again.",
       "limits": ["no external messages", "no private CAD requests", "no production activation claims"]
+    },
+    {
+      "id": "internal-tester-diagnostics",
+      "description": "Prepare support diagnostics for installed-app internal IGS preview issues before Mark responds.",
+      "limits": ["no external messages", "no telemetry egress", "no upload activation", "no backend conversion claims"]
     }
   ],
   "hardStops": [
@@ -130,7 +136,7 @@
     "external messages beyond the already approved Mark handoff",
     "claims that Mark approved geometry before his response is received"
   ],
-  "nextRecommendedGate": "source-only cost-attribution and implementation-readiness planning",
+  "nextRecommendedGate": "source-only internal tester diagnostics and support-readiness packet",
   "authorizes": {
     "sourceOnlyDocsAndTests": true,
     "localValidation": true,
