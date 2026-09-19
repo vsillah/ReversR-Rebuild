@@ -55,6 +55,14 @@ meters are device install support, file-picker failures, renderer compatibility
 triage and tester follow-up time. That burden needs to be measured before any
 customer fee per CAD run is quoted.
 
+## Product binding
+
+The internal preview entry should expose diagnostics as a collapsed support
+detail, not a prominent warning. The primary tester action remains `Open
+internal IGS preview`. The diagnostics detail captures device/app/file/path/render
+signals and reminds the operator not to send private CAD, credentials, raw paths
+or production account data.
+
 ## Boundaries
 
 This authorizes source-only docs, tests, local validation, one-commit PRs,
@@ -66,7 +74,6 @@ new paid commitments.
 
 ## Next safe action
 
-The next safe implementation step is source-only product diagnostics for the
-internal preview support path. Stop if the change would alter the already
-reviewed Mark QA surface, require another external message, or cross into any
-production upload/conversion gate.
+The next safe action is human QA of the compact internal-preview diagnostics
+surface before merging the UI change. Stop if the change would require another
+external message or cross into any production upload/conversion gate.

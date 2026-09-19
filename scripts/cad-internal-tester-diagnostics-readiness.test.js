@@ -82,6 +82,16 @@ test('support cost hooks stay aligned with the cost workbook bucket', () => {
   assert.match(markdown, /customer fee per CAD run/);
 });
 
+test('implementation surface keeps diagnostics compact and tied to internal preview entry', () => {
+  assert.equal(packet.implementationSurface.entryComponent, 'components/CadImportPanel.tsx');
+  assert.equal(packet.implementationSurface.fallbackComponent, 'components/CadNativeInternalUploadPreview.tsx');
+  assert.equal(packet.implementationSurface.entryTestId, 'cad-native-internal-preview-entry');
+  assert.equal(packet.implementationSurface.diagnosticsDisclosureTestId, 'cad-internal-preview-diagnostics');
+  assert.equal(packet.implementationSurface.diagnosticsListTestId, 'cad-internal-preview-diagnostics-list');
+  assert.match(packet.implementationSurface.rule, /keep diagnostics collapsed/);
+  assert.match(markdown, /collapsed support\s+detail/);
+});
+
 test('authorities remain closed and no private evidence leaks into source', () => {
   for (const key of [
     'externalMessages',

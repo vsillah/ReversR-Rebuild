@@ -102,6 +102,9 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
               <Text style={[bodyText, { textAlign: 'center' }]}>
                 {unavailableMessage}
               </Text>
+              <Text style={[bodyText, { textAlign: 'center' }]}>
+                Note the install link, app version and whether the renderer opened before changing any upload or conversion gate.
+              </Text>
             </View>
           )}
         </View>

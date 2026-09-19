@@ -106,6 +106,14 @@
     ],
     "feePerRunImpact": "support effort must be measured before quoting a customer fee"
   },
+  "implementationSurface": {
+    "entryComponent": "components/CadImportPanel.tsx",
+    "fallbackComponent": "components/CadNativeInternalUploadPreview.tsx",
+    "entryTestId": "cad-native-internal-preview-entry",
+    "diagnosticsDisclosureTestId": "cad-internal-preview-diagnostics",
+    "diagnosticsListTestId": "cad-internal-preview-diagnostics-list",
+    "rule": "keep diagnostics collapsed and support-focused so the primary tester action remains Open internal IGS preview"
+  },
   "responseBoundaries": [
     "do not ask Mark for private CAD in this review path",
     "do not request production credentials or account enrollment",
@@ -145,5 +153,5 @@
     "providerEnvResourceBillingChanges": false,
     "newPaidCommitments": false
   },
-  "nextSafeAction": "source-only product diagnostics implementation for internal preview support, or wait for Mark feedback if the next change would alter the reviewed QA surface"
+  "nextSafeAction": "human QA of the compact internal-preview diagnostics surface before merging the UI change"
 }
