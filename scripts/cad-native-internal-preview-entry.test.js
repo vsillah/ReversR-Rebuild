@@ -36,6 +36,8 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(importPanel, /Live upload locked/);
 
   assert.match(nativePreview, /react-native-webview/);
+  assert.match(nativePreview, /import \{ WebView \} from 'react-native-webview';/);
+  assert.doesNotMatch(nativePreview, /require\('react-native-webview'\)/);
   assert.match(nativePreview, /useSafeAreaInsets/);
   assert.match(nativePreview, /nativePreviewCacheBust/);
   assert.match(nativePreview, /cad-native-upload-render-webview/);
