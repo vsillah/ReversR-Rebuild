@@ -41,6 +41,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
   assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
   assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);
   assert.match(targetConfig, /EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL/);
+  assert.match(targetConfig, /process\.env\.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL/);
 
   const profile = easConfig.build['cad-internal-upload-preview'];
   assert.equal(profile.distribution, 'internal');

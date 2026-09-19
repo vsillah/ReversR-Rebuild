@@ -24,8 +24,14 @@ function isAllowedCadNativeInternalUploadRenderUrl(value) {
   return parsed.protocol === 'https:' || (isLocal && parsed.protocol === 'http:');
 }
 
-function getCadNativeInternalUploadRenderConfig(env = process.env) {
-  const rawUrl = env[CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_ENV];
+function getDefaultCadNativeInternalUploadRenderUrl() {
+  return process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL;
+}
+
+function getCadNativeInternalUploadRenderConfig(env) {
+  const rawUrl = env
+    ? env[CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_ENV]
+    : getDefaultCadNativeInternalUploadRenderUrl();
   if (!rawUrl) {
     return Object.freeze({
       enabled: false,
@@ -53,5 +59,6 @@ module.exports = {
   CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_ENV,
   CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW,
   getCadNativeInternalUploadRenderConfig,
+  getDefaultCadNativeInternalUploadRenderUrl,
   isAllowedCadNativeInternalUploadRenderUrl,
 };

@@ -39,4 +39,18 @@ describe('native internal CAD upload-render target guard', () => {
       EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL: 'https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1',
     }).enabled, true);
   });
+
+  it('reads the default Expo public URL through a statically-inlineable env access', () => {
+    const previous = process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL;
+    try {
+      process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL = 'https://reversr-git-codex-cad-internal-upload-4c2f6d-vsillahs-projects.vercel.app/?cadPreview=mark-dispenser-v1';
+      assert.equal(getCadNativeInternalUploadRenderConfig().enabled, true);
+    } finally {
+      if (previous === undefined) {
+        delete process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL;
+      } else {
+        process.env.EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL = previous;
+      }
+    }
+  });
 });
