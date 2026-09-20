@@ -25,7 +25,7 @@
     "WebView or Chrome version if visible",
     "app install source or APK artifact reference",
     "visible app version or build reference if available",
-    "whether Open internal IGS preview is visible",
+    "whether Open internal CAD preview is visible",
     "whether Live upload locked appears instead of the internal preview path",
     "file name",
     "file extension",
@@ -48,7 +48,7 @@
       "signals": [
         "Live upload locked",
         "Internal preview unavailable",
-        "missing Open internal IGS preview",
+        "missing Open internal CAD preview",
         "old app shell after reinstall"
       ],
       "defaultAction": "confirm direct APK artifact, relaunch/update state and embedded renderer URL before changing source"
@@ -57,7 +57,7 @@
       "id": "file-picker",
       "signals": [
         "file picker does not open",
-        "IGES file is hidden",
+        "CAD file is hidden",
         "permission denial",
         "selected file does not appear"
       ],
@@ -112,7 +112,7 @@
     "entryTestId": "cad-native-internal-preview-entry",
     "diagnosticsDisclosureTestId": "cad-internal-preview-diagnostics",
     "diagnosticsListTestId": "cad-internal-preview-diagnostics-list",
-    "rule": "keep diagnostics collapsed and support-focused so the primary tester action remains Open internal IGS preview"
+    "rule": "keep diagnostics collapsed and support-focused so the primary tester action remains Open internal CAD preview"
   },
   "responseBoundaries": [
     "do not ask Mark for private CAD in this review path",

@@ -86,7 +86,9 @@ test('unconfigured, cancelled, timed-out, thrown and malformed issuers fail clos
 test('metadata preparation cannot read body or retain private filename; invalid selection recovers', () => {
   const file = { name: 'synthetic.iges', size: 64 };
   for (const key of ['text', 'arrayBuffer', 'stream', 'slice', 'body']) Object.defineProperty(file, key, { get() { throw Error('Body access prohibited'); } });
-  assert.deepEqual(prepareCadFileMetadata(file).metadata, { format: 'IGES', bytes: 64 });
+  assert.deepEqual(prepareCadFileMetadata(file).metadata, { format: 'IGES', bytes: 64, extension: 'iges', renderableLocalPreview: true });
+  assert.deepEqual(prepareCadFileMetadata({ name: 'bracket.stp', size: 42 }).metadata, { format: 'STEP', bytes: 42, extension: 'stp', renderableLocalPreview: true });
+  assert.deepEqual(prepareCadFileMetadata({ name: 'mesh.obj', size: 42 }).metadata, { format: 'OBJ', bytes: 42, extension: 'obj', renderableLocalPreview: false });
   for (const input of [{ name: 'bad.zip', size: 64 }, { name: 'empty.igs', size: 0 }]) assert.equal(prepareCadFileMetadata(input).metadata, null);
   assert.ok(prepareCadFileMetadata(file).metadata);
 });

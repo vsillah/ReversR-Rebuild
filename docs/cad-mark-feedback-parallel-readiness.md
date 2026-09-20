@@ -1,7 +1,7 @@
 # CAD Mark feedback parallel-readiness packet
 
 Status: source-only packet for continuing development while Mark reviews the
-public/internal Dispenser IGES preview path. Base:
+public/internal Dispenser CAD preview path. Base:
 `223820ec2a4dc62ab2925af918497a28f3af5e02`. Expenses: USD 0.
 
 ## Handoff state
@@ -17,11 +17,11 @@ The Mark handoff has been sent to the approved Mark recipient reference with:
 The checked-in packet deliberately uses recipient and receipt references rather
 than storing the email address in source.
 
-The current review path is the installed Android internal IGS upload-render
-preview, reached through `Import` -> `Open internal IGS preview`. The correction
+The current review path is the installed Android internal CAD upload-render
+preview, reached through `Import` -> `Open internal CAD preview`. The correction
 handoff points Mark to the direct APK artifact reference
 `rrb-ref:final-correction-direct-apk-link`; the source packet does not store the
-recipient address. The expected in-app choices are `Choose IGES file` and
+recipient address. The expected in-app choices are `Choose CAD file` and
 `Use public sample`. The expected result is a local 3D preview with dimensions,
 grid, zoom controls and orientation controls.
 
@@ -75,7 +75,7 @@ disabled gate:
    - Do not send a new external message from source-only work.
    - Do not ask Mark for private CAD in this review path.
 6. Internal tester diagnostics
-   - Prepare support-safe diagnostics for installed-app internal IGS preview
+   - Prepare support-safe diagnostics for installed-app internal CAD preview
      issues.
    - Capture device/app/file-picker/local-render signals without telemetry
      egress.
@@ -99,7 +99,7 @@ Classify the feedback before acting:
 | Class | Signals | Default handling |
 | --- | --- | --- |
 | Install/update | `Live upload locked`, `Internal preview unavailable`, missing internal preview entry | Confirm APK install path, relaunch/update state and installed-app bundle before changing source. |
-| File picker | No picker, picker cannot see IGES file, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
+| File picker | No picker, picker cannot see CAD file, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
 | Local render | Render button fails, blank preview, missing dimensions/model | Treat as local renderer/file compatibility; do not infer backend upload or conversion failure. |
 | CAD interpretation | Geometry looks wrong, orientation confusing, dimensions unexpected | Route to source/fixture interpretation review and keep external validation claims blocked. |
 | Commercial readiness | Questions about production uploads, private CAD or manufacturing output | Answer from remaining gates; do not imply production activation or commercialization readiness. |

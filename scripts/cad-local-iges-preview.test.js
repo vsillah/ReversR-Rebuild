@@ -6,6 +6,7 @@ const test = require('node:test');
 const {
   LOCAL_IGES_PREVIEW_MAX_BYTES,
   createLocalIgesFixture,
+  supportedLocalCadFile,
   supportedLocalIgesFile,
 } = require('../utils/cadLocalIgesPreview');
 
@@ -35,7 +36,10 @@ test('converts OCCT IGES output into an internal local-preview fixture', async (
 });
 
 test('rejects unsupported or too-large local preview selections before reading bytes', () => {
-  assert.equal(supportedLocalIgesFile({ name: 'part.step', size: 10 }), 'Choose a standalone .igs or .iges file.');
+  assert.equal(supportedLocalCadFile({ name: 'part.step', size: 10 }), null);
+  assert.equal(supportedLocalCadFile({ name: 'part.stp', size: 10 }), null);
+  assert.equal(supportedLocalCadFile({ name: 'part.brep', size: 10 }), null);
+  assert.equal(supportedLocalIgesFile({ name: 'mesh.obj', size: 10 }), 'Preview supports IGES, STEP, and BREP files right now.');
   assert.equal(supportedLocalIgesFile({ name: 'empty.igs', size: 0 }), 'This file is empty or has an invalid size.');
   assert.match(
     supportedLocalIgesFile({ name: 'huge.iges', size: LOCAL_IGES_PREVIEW_MAX_BYTES + 1 }),

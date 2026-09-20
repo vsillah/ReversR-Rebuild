@@ -6,7 +6,7 @@ USD 0.
 
 This packet converts the current roadmap concern into a reviewable cost model
 without pretending we know the current provider prices. It also keeps the Mark
-feedback boundary intact: while Mark reviews the installed Android internal IGS
+feedback boundary intact: while Mark reviews the installed Android internal CAD
 upload-render preview, we
 can continue source-only planning, disabled-gate UX work and implementation
 readiness. We cannot claim external CAD validation until his response is

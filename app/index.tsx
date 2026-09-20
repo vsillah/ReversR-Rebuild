@@ -26,7 +26,7 @@ import WelcomeScreen from "../components/WelcomeScreen";
 import WelcomeIntroScreen from "../components/WelcomeIntroScreen";
 import CadWorkflow from "../components/CadWorkflow";
 import CadNativeInternalUploadPreview from "../components/CadNativeInternalUploadPreview";
-import { getCadReviewPhase, getWorkflowPhaseStates } from "../utils/workflowPhases";
+import { getCadReviewPhase, getCadReviewPhaseStates, getWorkflowPhaseStates } from "../utils/workflowPhases";
 import PhaseOne from "../components/PhaseOne";
 import PhaseTwo from "../components/PhaseTwo";
 import PhaseThree from "../components/PhaseThree";
@@ -1759,7 +1759,7 @@ export default function HomeScreen() {
               steps={PHASE_STEP_LABELS}
               subLabels={PHASE_STEP_HINTS}
               currentStep={cadInternalPreview.enabled ? 3 : context.phase}
-              phaseStates={cadInternalPreview.enabled ? getWorkflowPhaseStates({ qualifiedCad: true }) : undefined}
+              phaseStates={cadInternalPreview.enabled ? getCadReviewPhaseStates({ selectedPhase: cadPhase }) : undefined}
               selectedStep={cadInternalPreview.enabled ? cadPhase : undefined}
               onStepPress={cadInternalPreview.enabled ? navigateCadPhase : (step) => setPhaseActionModal(step)}
               testID="reversr-tour-phase-nav"

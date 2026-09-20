@@ -12,14 +12,6 @@
       {
         "path": "/api/me",
         "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
       }
     ]
   },
@@ -35,14 +27,6 @@
     "blocked": [
       {
         "path": "/api/me",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
         "method": "GET"
       }
     ]
@@ -60,14 +44,6 @@
       {
         "path": "/api/me",
         "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
       }
     ]
   },
@@ -83,14 +59,6 @@
     "blocked": [
       {
         "path": "/api/me",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
-        "method": "GET"
-      },
-      {
-        "path": "/api/cad/capabilities",
         "method": "GET"
       }
     ]

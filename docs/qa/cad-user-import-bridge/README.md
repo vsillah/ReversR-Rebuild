@@ -13,7 +13,7 @@ The mounted server remains unchanged. It has no wired browser issuer/adapter and
 ## Review route and evidence
 
 Serve the local export with `python3 -m http.server 5198 --bind 127.0.0.1 --directory dist`.
-Open `http://127.0.0.1:5198`, enter ReversR, and choose Import. Select a public/synthetic IGES file, replace or clear it, expand Import access & service status, and inspect the disabled CTA and recovery explanation.
+Open `http://127.0.0.1:5198`, enter ReversR, and choose Import. Select a public/synthetic CAD file, replace or clear it, expand Import access & service status, and inspect the disabled CTA and recovery explanation.
 
 - `walkthrough.mp4`: actual 390px browser recording plus concise side text; 19.72 seconds, 750×1000. Final encoded frames inspected at four-second intervals, with desktop/mobile screenshots inspected separately.
 - `walkthrough-source.webm`: raw browser recording; `side-text.png`: annotation source.

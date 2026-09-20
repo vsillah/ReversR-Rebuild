@@ -7,7 +7,7 @@ import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 import CadFixtureViewer from './CadFixtureViewer';
 
-export default function CadDesignReview({ fixture }: { fixture: CadInternalTesterFixture }) {
+export default function CadDesignReview({ fixture, onChangeSource }: { fixture: CadInternalTesterFixture; onChangeSource?: () => void }) {
   const { colors } = useAppTheme();
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
@@ -37,9 +37,10 @@ export default function CadDesignReview({ fixture }: { fixture: CadInternalTeste
           <Text style={[Typography.caption, { color: colors.success }]}>{isLocalPreview ? 'Local render ready · Internal preview' : 'Admission passed · Public fixture'}</Text>
         </View>
       </View>
+      {onChangeSource ? <CadAction testID="cad-change-source-from-design" accessibilityLabel="Change CAD source" label="Change source" icon="arrow-back-outline" onPress={onChangeSource} /> : null}
       <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} />
       <CadSourceFacts fixture={fixture} />
-      {canDownloadSource ? <CadAction testID="cad-open-source-iges" role="link" accessibilityLabel={`Download original ${fixture.sourceFileName}`} label="Download original IGES" icon="download-outline" onPress={downloadSource} /> : null}
+      {canDownloadSource ? <CadAction testID="cad-open-source-iges" role="link" accessibilityLabel={`Download original ${fixture.sourceFileName}`} label="Download original CAD" icon="download-outline" onPress={downloadSource} /> : null}
       {isDispenserReview && <View testID="cad-reference-comparison" style={{ gap: Spacing.sm }}>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Supplied reference views</Text>
         <Text style={text}>Compare with the model. Open an image for a closer look.</Text>
@@ -59,9 +60,9 @@ export default function CadDesignReview({ fixture }: { fixture: CadInternalTeste
         {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
         <CadProvenance fixture={fixture} />
         <Text style={text}>{isDispenserReview
-          ? 'The interactive model is the calibrated display mesh derived from the authorized IGES source. Reference images remain independent visual checks.'
+          ? 'The interactive model is the calibrated display mesh derived from the authorized CAD source. Reference images remain independent visual checks.'
           : isLocalPreview
-            ? 'The interactive model was generated locally in this browser from the selected IGES file. It is an internal preview only and does not activate production upload or conversion.'
+            ? 'The interactive model was generated locally in this browser from the selected CAD file. It is an internal preview only and does not activate production upload or conversion.'
             : 'This interactive visual represents the reviewed synthetic public-cube fixture. It is not a render of a selected or uploaded file.'}</Text>
       </CadDetails>
     </View>

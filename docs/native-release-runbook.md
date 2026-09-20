@@ -224,7 +224,7 @@ npx eas-cli@20.0.0 update \
 
 Do not treat a successful Vercel deployment or a successful `eas update` command
 as installed-app QA. Relaunch the connected Android app, confirm it applies the
-new update, and verify the internal IGS preview shows the renderer instead of
+new update, and verify the internal CAD preview shows the renderer instead of
 `Internal preview unavailable`.
 
 Run device QA before store submission:

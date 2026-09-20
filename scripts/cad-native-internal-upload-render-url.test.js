@@ -34,7 +34,7 @@ describe('native internal CAD upload-render target guard', () => {
     assert.deepEqual(getCadNativeInternalUploadRenderConfig({}), {
       enabled: false,
       code: 'CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_MISSING',
-      message: 'Internal IGS preview is not configured for this app build.',
+      message: 'Internal CAD preview is not configured for this app build.',
     });
     assert.equal(getCadNativeInternalUploadRenderConfig({
       EXPO_PUBLIC_CAD_INTERNAL_UPLOAD_RENDER_URL: 'https://reversr.vercel.app/?cadPreview=mark-dispenser-v1',

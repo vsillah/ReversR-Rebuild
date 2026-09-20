@@ -35,7 +35,7 @@ fs.mkdirSync(out, { recursive: true });
       const skip = page.getByRole('button', { name: 'Skip welcome video', exact: true });
       await skip.waitFor({ state: 'visible', timeout: 5000 });
       await skip.click();
-      await page.getByRole('button', { name: 'Start new machine reconstruction — Import, IGES file', exact: true }).click();
+      await page.getByRole('button', { name: 'Start new machine reconstruction — Import, CAD file', exact: true }).click();
       const panel = page.getByTestId('cad-import-panel');
       await page.getByTestId('cad-session-state').waitFor();
       assert.equal(await page.getByTestId('cad-connect-session').count(), 0);

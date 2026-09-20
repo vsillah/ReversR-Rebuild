@@ -13,9 +13,9 @@ test('packet preserves Mark feedback as a narrow external-validation gate', () =
   assert.equal(packet.handoff.walkthroughAttached, true);
   assert.equal(packet.handoff.correctionSentMessageIdRef, 'rrb-ref:gmail-1a0b9f517d8ed94e');
   assert.match(packet.handoff.previewUrl, /^https:\/\/reversr\.vercel\.app\/\?cadPreview=mark-dispenser-v1/);
-  assert.equal(packet.handoff.currentReviewPath.surface, 'installed Android internal IGS upload-render preview');
-  assert.equal(packet.handoff.currentReviewPath.expectedEntry, 'Import -> Open internal IGS preview');
-  assert.deepEqual(packet.handoff.currentReviewPath.expectedChoices, ['Choose IGES file', 'Use public sample']);
+  assert.equal(packet.handoff.currentReviewPath.surface, 'installed Android internal CAD upload-render preview');
+  assert.equal(packet.handoff.currentReviewPath.expectedEntry, 'Import -> Open internal CAD preview');
+  assert.deepEqual(packet.handoff.currentReviewPath.expectedChoices, ['Choose CAD file', 'Use public sample']);
   assert.match(packet.handoff.currentReviewPath.productionRenderer, /qa=native-internal-upload-render/);
   assert(packet.markApprovalRequiredFor.includes('claims that the CAD preview is externally validated'));
   assert(packet.markApprovalNotRequiredFor.includes('source-only documentation and manifest updates'));
@@ -50,7 +50,7 @@ test('parallel work remains bounded and keeps dangerous authorities false', () =
 
 test('markdown distinguishes public-material review from validated CAD', () => {
   assert.match(markdown, /public-material\s+review build/);
-  assert.match(markdown, /installed Android internal IGS upload-render/);
+  assert.match(markdown, /installed Android internal CAD upload-render/);
   assert.match(markdown, /cannot be called validated CAD/);
   assert.match(markdown, /BODY_ADMISSION_AUTHORIZED = false/);
   assert.match(markdown, /internal tester diagnostics/);

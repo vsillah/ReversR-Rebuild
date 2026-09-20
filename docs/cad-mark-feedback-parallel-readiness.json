@@ -15,10 +15,10 @@
     "publicMaterial": "Dispenser.IGS and matching reference images",
     "walkthroughAttached": true,
     "currentReviewPath": {
-      "surface": "installed Android internal IGS upload-render preview",
+      "surface": "installed Android internal CAD upload-render preview",
       "installArtifactRef": "rrb-ref:final-correction-direct-apk-link",
-      "expectedEntry": "Import -> Open internal IGS preview",
-      "expectedChoices": ["Choose IGES file", "Use public sample"],
+      "expectedEntry": "Import -> Open internal CAD preview",
+      "expectedChoices": ["Choose CAD file", "Use public sample"],
       "expectedResult": "local 3D preview with dimensions, grid, zoom and orientation controls",
       "easUpdateGroup": "81bf6888-3840-471e-b1c1-422e35d8fe0f",
       "androidVersionCode": 52,
@@ -49,12 +49,12 @@
     "triageClasses": [
       {
         "id": "install-or-update",
-        "signals": ["Live upload locked", "Internal preview unavailable", "missing Open internal IGS preview"],
+        "signals": ["Live upload locked", "Internal preview unavailable", "missing Open internal CAD preview"],
         "defaultAction": "confirm APK install path, relaunch/update state and installed-app bundle before changing source"
       },
       {
         "id": "file-picker",
-        "signals": ["no picker", "picker cannot see IGES file", "permission denial"],
+        "signals": ["no picker", "picker cannot see CAD file", "permission denial"],
         "defaultAction": "capture Android picker/device details and reproduce with public or synthetic file before changing backend gates"
       },
       {
@@ -118,7 +118,7 @@
     },
     {
       "id": "internal-tester-diagnostics",
-      "description": "Prepare support diagnostics for installed-app internal IGS preview issues before Mark responds.",
+      "description": "Prepare support diagnostics for installed-app internal CAD preview issues before Mark responds.",
       "limits": ["no external messages", "no telemetry egress", "no upload activation", "no backend conversion claims"]
     }
   ],

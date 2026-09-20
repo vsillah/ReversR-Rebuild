@@ -98,7 +98,7 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
       const page = await context.newPage(); await page.goto(new URL('/', url).toString());
       const enter = page.getByRole('button', { name: 'Enter ReversR home', exact: true });
       if (await enter.count()) await enter.click();
-      await page.getByRole('button', { name: 'Start new machine reconstruction — Import, IGES file', exact: true }).click();
+      await page.getByRole('button', { name: 'Start new machine reconstruction — Import, CAD file', exact: true }).click();
       for (const mode of ['type', 'scan', 'lucky', 'import']) {
         await page.getByTestId(`phase-one-mode-${mode}`).click();
         await page.getByTestId('reversr-tour-scan').evaluate(el => el.scrollIntoView({ block: 'start' }));

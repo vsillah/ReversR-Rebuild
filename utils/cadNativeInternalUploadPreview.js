@@ -39,7 +39,7 @@ function getCadNativeInternalUploadRenderConfig(env) {
     return Object.freeze({
       enabled: false,
       code: 'CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_MISSING',
-      message: 'Internal IGS preview is not configured for this app build.',
+      message: 'Internal CAD preview is not configured for this app build.',
     });
   }
 
@@ -47,7 +47,7 @@ function getCadNativeInternalUploadRenderConfig(env) {
     return Object.freeze({
       enabled: false,
       code: 'CAD_NATIVE_INTERNAL_UPLOAD_RENDER_URL_INVALID',
-      message: 'Internal IGS preview is configured for an unapproved host or preview route.',
+      message: 'Internal CAD preview is configured for an unapproved host or preview route.',
     });
   }
 

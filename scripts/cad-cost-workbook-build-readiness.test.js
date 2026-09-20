@@ -57,7 +57,7 @@ test('Build readiness surface explains ready, missing, and blocked states', () =
   assert.deepEqual(CAD_BUILD_READINESS.costEvidenceNeeded, workbook.readinessSurface.costEvidenceNeeded);
   assert.deepEqual(CAD_BUILD_READINESS.blockedOutputs, workbook.readinessSurface.blockedOutputs);
   assert.ok(CAD_BUILD_READINESS.summaryCards.some(card => card.label === 'Fee per run' && card.value === 'Evidence pending'));
-  assert.ok(CAD_BUILD_READINESS.productReady.includes('Installed-app internal IGES preview controls'));
+  assert.ok(CAD_BUILD_READINESS.productReady.includes('Installed-app internal CAD preview controls'));
   assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Internal tester device and file-compatibility support'));
   assert.match(markdown, /Build phase can now explain three things/);
 });

@@ -41,7 +41,7 @@ mounted development upload path needs its own implementation and qualification.
 
 ## Installed-app internal upload-render preview
 
-The current Android internal tester path is the installed-app internal IGS preview,
+The current Android internal tester path is the installed-app internal CAD preview,
 not the older public-cube browser fixture. It embeds the production-hosted renderer
 route:
 
