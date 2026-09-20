@@ -12,14 +12,14 @@ wrong when an internal tester cannot reach or use the installed-app preview.
 ## Purpose
 
 This packet defines the minimum evidence needed when an internal tester reports
-an issue with the installed Android internal IGS upload-render preview. The goal
+an issue with the installed Android internal CAD upload-render preview. The goal
 is to distinguish five failure classes without activating production upload,
 backend conversion, Sandbox dispatch or private CAD handling:
 
 | Class | Example signal | Default handling |
 | --- | --- | --- |
 | Install or update | `Live upload locked`, `Internal preview unavailable`, missing internal preview entry | Confirm direct APK artifact, relaunch/update state and embedded renderer URL before changing source. |
-| File picker | Picker does not open, IGES file is hidden, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
+| File picker | Picker does not open, CAD file is hidden, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
 | Local render | Render action missing, blank preview, dimensions or controls missing | Treat as local renderer or file-compatibility issue; do not infer upload, conversion or Sandbox failure. |
 | CAD interpretation | Geometry, orientation or dimensions appear wrong | Route to source or fixture interpretation review and keep external-validation claims blocked. |
 | Commercial readiness | Questions about production upload, private CAD, conversion, manufacturing output or fee | Answer from remaining gates and cost workbook; do not imply commercialization readiness. |
@@ -32,7 +32,7 @@ For a tester issue, capture only support-safe details:
 - device model, Android version and WebView or Chrome version when visible
 - app install source or APK artifact reference
 - visible app version or build reference when available
-- whether `Open internal IGS preview` is visible
+- whether `Open internal CAD preview` is visible
 - whether `Live upload locked` appears instead of the internal preview path
 - file name, extension and approximate file size
 - whether the file picker opened and the selected file appeared in the app
@@ -59,7 +59,7 @@ customer fee per CAD run is quoted.
 
 The internal preview entry should expose diagnostics as a collapsed support
 detail, not a prominent warning. The primary tester action remains `Open
-internal IGS preview`. The diagnostics detail captures device/app/file/path/render
+internal CAD preview`. The diagnostics detail captures device/app/file/path/render
 signals and reminds the operator not to send private CAD, credentials, raw paths
 or production account data.
 

@@ -53,7 +53,7 @@ fs.mkdirSync(evidence, { recursive: true });
         await file.setInputFiles({ name: 'synthetic.txt', mimeType: 'text/plain', buffer: Buffer.from('fixture') });
         await page.getByText('Unsupported format.', { exact: false }).waitFor();
         await file.setInputFiles({ name: 'synthetic.igs', mimeType: 'application/octet-stream', buffer: Buffer.alloc(0) });
-        await page.getByText('This file is empty or has an invalid size. Choose another IGES file.', { exact: true }).waitFor();
+        await page.getByText('This file is empty or has an invalid size. Choose another CAD file.', { exact: true }).waitFor();
         await page.getByTestId('cad-choose-file').click();
         // In automation supply metadata through the file input; never parse a CAD source.
         await file.setInputFiles({ name: 'synthetic.IGES', mimeType: 'application/octet-stream', buffer: Buffer.from('synthetic metadata fixture') });

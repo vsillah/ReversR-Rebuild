@@ -69,7 +69,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
         <CadAction label="Review source in Input" icon="arrow-back-outline" onPress={() => onPhase(1)} />
       </>}
       {phase === 3 && <>
-        <CadDesignReview fixture={fixture} />
+        <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} />
         <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />
       </>}
       {phase === 4 && <>
@@ -79,7 +79,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
               {[
                 { icon: 'cube-outline' as const, label: 'Actual product UI', value: 'Controls + workflow', color: colors.success, background: colors.successSoft },
-                { icon: 'images-outline' as const, label: 'Fixture context', value: isLocalPreview ? 'Local IGES render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
+                { icon: 'images-outline' as const, label: 'Fixture context', value: isLocalPreview ? 'Local CAD render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
                 { icon: 'lock-closed-outline' as const, label: 'Locked product output', value: 'No build package yet', color: colors.warning, background: colors.warningSoft },
               ].map(item => <View key={item.label} style={{ flexGrow: 1, flexBasis: 150, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.elevated }}>
                 <View style={{ width: 34, height: 34, borderRadius: Radii.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: item.background }}>

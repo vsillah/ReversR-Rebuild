@@ -13,9 +13,15 @@ function getWorkflowPhaseStates({ currentPhase = 1, qualifiedCad = false, skippe
     return phase < current ? 'complete' : 'locked';
   });
 }
+function getCadReviewPhaseStates({ selectedPhase = 3 } = {}) {
+  const selected = Number.isInteger(selectedPhase) && selectedPhase >= 1 && selectedPhase <= 4 ? selectedPhase : 3;
+  const states = ['complete', 'complete', 'complete', 'locked'];
+  if (selected < 4) states[selected - 1] = 'active';
+  return states;
+}
 function getCadReviewPhase(search) {
   const name = new URLSearchParams(search || '').get('cadPhase');
   const index = PHASE_NAMES.findIndex(phase => phase.toLowerCase() === name);
   return index < 0 ? 3 : index + 1;
 }
-module.exports = { PHASE_NAMES, PHASE_STATES, getWorkflowPhaseStates, getCadReviewPhase };
+module.exports = { PHASE_NAMES, PHASE_STATES, getWorkflowPhaseStates, getCadReviewPhaseStates, getCadReviewPhase };

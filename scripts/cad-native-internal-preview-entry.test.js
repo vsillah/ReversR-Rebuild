@@ -6,7 +6,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 
-test('native Import opens the internal installed-app IGS renderer without unlocking production upload', () => {
+test('native Import opens the internal installed-app CAD renderer without unlocking production upload', () => {
   const appIndex = read('app/index.tsx');
   const phaseOne = read('components/PhaseOne.tsx');
   const importPanel = read('components/CadImportPanel.tsx');
@@ -32,7 +32,7 @@ test('native Import opens the internal installed-app IGS renderer without unlock
 
   assert.match(importPanel, /cad-native-internal-preview-entry/);
   assert.match(importPanel, /cad-open-native-internal-preview/);
-  assert.match(importPanel, /Open internal IGS preview/);
+  assert.match(importPanel, /Open internal CAD preview/);
   assert.match(importPanel, /Preview mode · upload\/conversion locked/);
   assert.match(importPanel, /cad-internal-preview-diagnostics/);
   assert.match(importPanel, /If this does not open/);

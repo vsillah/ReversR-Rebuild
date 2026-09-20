@@ -75,7 +75,7 @@ const CAD_BUILD_READINESS = Object.freeze({
     }),
   ]),
   productReady: Object.freeze([
-    'Installed-app internal IGES preview controls',
+    'Installed-app internal CAD preview controls',
     'Source/reference comparison flow',
     'Fail-closed route status',
   ]),

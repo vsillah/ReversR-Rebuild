@@ -72,7 +72,7 @@
   "readinessSurface": {
     "phase": "Build",
     "headline": "Build stays locked while cost and manufacturing evidence are incomplete.",
-    "productReady": ["Installed-app internal IGES preview controls", "Source/reference comparison flow", "Fail-closed route status"],
+    "productReady": ["Installed-app internal CAD preview controls", "Source/reference comparison flow", "Fail-closed route status"],
     "costEvidenceNeeded": [
       "Current Convex and Vercel plan terms",
       "Sandbox or conversion compute pricing",

@@ -41,7 +41,7 @@ test('metadata objects with forbidden body access work alongside handshake', asy
   let reads = 0;
   const file = { name: 'synthetic.iges', size: 23 };
   for (const key of ['text', 'arrayBuffer', 'stream', 'slice', 'body']) Object.defineProperty(file, key, { get() { reads++; throw Error('Forbidden body read'); } });
-  assert.deepEqual(prepareCadFileMetadata(file).metadata, { format: 'IGES', bytes: 23 });
+  assert.deepEqual(prepareCadFileMetadata(file).metadata, { format: 'IGES', bytes: 23, extension: 'iges', renderableLocalPreview: true });
   assert.equal((await createSyntheticSessionHandshake().adapter.connect()).canSubmit, false);
   assert.equal(reads, 0);
 });

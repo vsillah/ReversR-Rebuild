@@ -3,6 +3,30 @@ const CAD_USER_IMPORT_PATH = '/api/cad/user-import';
 const CAD_USER_IMPORT_ENABLED = false;
 const CAD_UPLOAD_SESSION_MAX_LIFETIME_MS = 15 * 60 * 1000;
 const CAD_UPLOAD_SESSION_TIMEOUT_MS = 8000;
+const CAD_FILE_FORMATS = Object.freeze({
+  igs: Object.freeze({ label: 'IGES', localPreviewFormat: 'iges' }),
+  iges: Object.freeze({ label: 'IGES', localPreviewFormat: 'iges' }),
+  stp: Object.freeze({ label: 'STEP', localPreviewFormat: 'step' }),
+  step: Object.freeze({ label: 'STEP', localPreviewFormat: 'step' }),
+  brep: Object.freeze({ label: 'BREP', localPreviewFormat: 'brep' }),
+  stl: Object.freeze({ label: 'STL', localPreviewFormat: null }),
+  obj: Object.freeze({ label: 'OBJ', localPreviewFormat: null }),
+  '3mf': Object.freeze({ label: '3MF', localPreviewFormat: null }),
+  dxf: Object.freeze({ label: 'DXF', localPreviewFormat: null }),
+  dwg: Object.freeze({ label: 'DWG', localPreviewFormat: null }),
+  sat: Object.freeze({ label: 'SAT', localPreviewFormat: null }),
+  sab: Object.freeze({ label: 'SAB', localPreviewFormat: null }),
+  x_t: Object.freeze({ label: 'Parasolid', localPreviewFormat: null }),
+  x_b: Object.freeze({ label: 'Parasolid', localPreviewFormat: null }),
+  sldprt: Object.freeze({ label: 'SolidWorks', localPreviewFormat: null }),
+  sldasm: Object.freeze({ label: 'SolidWorks Assembly', localPreviewFormat: null }),
+  prt: Object.freeze({ label: 'Part', localPreviewFormat: null }),
+  asm: Object.freeze({ label: 'Assembly', localPreviewFormat: null }),
+  catpart: Object.freeze({ label: 'CATIA Part', localPreviewFormat: null }),
+  catproduct: Object.freeze({ label: 'CATIA Product', localPreviewFormat: null }),
+  jt: Object.freeze({ label: 'JT', localPreviewFormat: null }),
+});
+const CAD_FILE_ACCEPT = Object.freeze(Object.keys(CAD_FILE_FORMATS).map(extension => `.${extension}`).join(','));
 const csrfPattern = /^[A-Za-z0-9_-]{43}$/;
 const messages = Object.freeze({
   USER_SESSION_REQUIRED: 'No upload session. Development sign-in is not connected; keep the file local.',
@@ -11,8 +35,8 @@ const messages = Object.freeze({
   ORIGIN_OR_CSRF_REJECTED: 'Session validation failed. Keep the file local; the operator must review session access.',
   USER_UPLOADS_DISABLED: 'Admission disabled. File contents remain on your device.',
   METHOD_NOT_ALLOWED: 'Import route unavailable. Contact your operator before trying again.',
-  UPLOAD_MALFORMED: 'File preparation was rejected. Clear the selection and choose a standalone IGES file.',
-  UPLOAD_UNSUPPORTED: 'Unsupported format. Choose an .igs or .iges file.',
+  UPLOAD_MALFORMED: 'File preparation was rejected. Clear the selection and choose a standalone CAD file.',
+  UPLOAD_UNSUPPORTED: 'Unsupported format. Choose a CAD file such as IGES, STEP, BREP, STL, OBJ, DXF, or DWG.',
   UPLOAD_TOO_LARGE: 'File exceeds the import limit. Choose a smaller public or synthetic file.',
   UPLOAD_CANCELLED: 'Request cancelled. Clear the selection to start again locally.',
   UPLOAD_TIMEOUT: 'Request timed out. Keep the file local and check service status.',
@@ -88,18 +112,42 @@ function createCadUploadSessionAdapter({ issue, now = Date.now, timeoutMs = CAD_
     },
   });
 }
+function extensionForFileName(name) {
+  if (typeof name !== 'string') return '';
+  const parts = name.trim().toLowerCase().split('.');
+  return parts.length > 1 ? parts.pop() : '';
+}
+function getCadFileFormat(fileName) {
+  return CAD_FILE_FORMATS[extensionForFileName(fileName)] || null;
+}
+function canRenderLocalCadFile(file) {
+  return Boolean(getCadFileFormat(file?.name)?.localPreviewFormat);
+}
 function prepareCadFileMetadata(file) {
   // Read only name and size. Never retain the File or read its contents.
-  const format = file.name.split('.').pop()?.toLowerCase();
-  if (!['igs', 'iges'].includes(format)) return { metadata: null, message: messages.UPLOAD_UNSUPPORTED };
-  if (!Number.isSafeInteger(file.size) || file.size <= 0) return { metadata: null, message: 'This file is empty or has an invalid size. Choose another IGES file.' };
-  return { metadata: { format: format.toUpperCase(), bytes: file.size }, message: 'File prepared locally. No request body was created; nothing was uploaded or converted.' };
+  const extension = extensionForFileName(file?.name);
+  const format = CAD_FILE_FORMATS[extension];
+  if (!format) return { metadata: null, message: messages.UPLOAD_UNSUPPORTED };
+  if (!Number.isSafeInteger(file.size) || file.size <= 0) return { metadata: null, message: 'This file is empty or has an invalid size. Choose another CAD file.' };
+  return {
+    metadata: {
+      format: format.label,
+      bytes: file.size,
+      extension,
+      renderableLocalPreview: Boolean(format.localPreviewFormat),
+    },
+    message: 'CAD file prepared locally. Nothing was uploaded or converted.',
+  };
 }
 module.exports = {
+  CAD_FILE_ACCEPT,
+  CAD_FILE_FORMATS,
   CAD_USER_IMPORT_PATH,
   CAD_USER_IMPORT_ENABLED,
   CAD_UPLOAD_SESSION_MAX_LIFETIME_MS,
+  canRenderLocalCadFile,
   createCadUploadSessionAdapter,
+  getCadFileFormat,
   parseCadUploadSessionResponse,
   mapCadImportError,
   prepareCadFileMetadata,

@@ -769,10 +769,8 @@ export default function CadFixtureViewer({
   });
   const puckSize = scaled(compactControls ? 144 : 176, controlScale);
   const innerPuckSize = scaled(compactControls ? 116 : 144, controlScale);
-  const innerPuckOffset = (puckSize - innerPuckSize) / 2;
   const orbitButtonSize = Math.max(24, scaled(34, controlScale));
   const resetButtonSize = Math.max(32, scaled(compactControls ? 42 : 48, controlScale));
-  const resetButtonOffset = (innerPuckSize - resetButtonSize) / 2;
   const elevationButtonBackground = (view: ElevationViewName) => currentView === view
     ? 'radial-gradient(circle at 50% 50%, rgba(127, 224, 192, 0.18), rgba(127, 224, 192, 0.05) 60%, transparent 72%)'
     : 'transparent';
@@ -864,17 +862,6 @@ export default function CadFixtureViewer({
           <span role="status" style={visuallyHiddenStyle}>{currentViewLabel}</span>
           <div ref={puckRef} id={puckId} hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
             <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...elevationRingStyle, width: puckSize, height: puckSize }} role="group" aria-label="Orientation puck">
-              <span aria-hidden="true" style={{
-                position: 'absolute',
-                left: compactControls ? 8 : 10,
-                right: compactControls ? 8 : 10,
-                top: '50%',
-                height: 1,
-                background: 'linear-gradient(90deg, transparent, rgba(216, 227, 223, 0.32) 18%, rgba(216, 227, 223, 0.32) 82%, transparent)',
-                boxShadow: '0 1px 0 rgba(0, 0, 0, 0.24)',
-                transform: 'translateY(-0.5px)',
-                pointerEvents: 'none',
-              }} />
               {elevationViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
                   style={{
@@ -891,7 +878,7 @@ export default function CadFixtureViewer({
                   </span>
                 </button>
               ))}
-              <div style={{ ...viewToolbarStyle, left: innerPuckOffset, top: innerPuckOffset, width: innerPuckSize, height: innerPuckSize }}>
+              <div style={{ ...viewToolbarStyle, left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: innerPuckSize, height: innerPuckSize }}>
               {orbitViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
                   style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, fontSize: scaled(21, controlScale), ...scalePosition(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
@@ -902,7 +889,7 @@ export default function CadFixtureViewer({
                 </button>
               ))}
               <button type="button" disabled={state !== 'ready'}
-                style={{ ...controlStyle, position: 'absolute', left: resetButtonOffset, top: resetButtonOffset, width: resetButtonSize, height: resetButtonSize, minWidth: resetButtonSize, minHeight: resetButtonSize, background: 'rgba(49, 65, 62, 0.28)', border: '1px solid rgba(207, 224, 219, 0.32)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)' }}
+                style={{ ...controlStyle, alignItems: 'center', display: 'flex', justifyContent: 'center', position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: resetButtonSize, height: resetButtonSize, minWidth: resetButtonSize, minHeight: resetButtonSize, background: 'rgba(49, 65, 62, 0.28)', border: '1px solid rgba(207, 224, 219, 0.32)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)' }}
                 title="Reset to fitted isometric view" aria-label="Reset to fitted isometric view"
                 onClick={() => viewerActions.current.isometric?.()}><span aria-hidden="true">↺</span></button>
               </div>

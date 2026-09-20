@@ -3,6 +3,13 @@ const LOCAL_IGES_PREVIEW_MAX_MESHES = 32;
 const LOCAL_IGES_PREVIEW_MAX_VERTICES = 160000;
 const LOCAL_IGES_PREVIEW_MAX_TRIANGLES = 100000;
 const OCCT_ASSET_ROOT = '/cad-preview/';
+const LOCAL_CAD_PREVIEW_FORMATS = Object.freeze({
+  igs: Object.freeze({ label: 'IGES', importFormat: 'iges', readMethod: 'ReadIgesFile' }),
+  iges: Object.freeze({ label: 'IGES', importFormat: 'iges', readMethod: 'ReadIgesFile' }),
+  stp: Object.freeze({ label: 'STEP', importFormat: 'step', readMethod: 'ReadStepFile' }),
+  step: Object.freeze({ label: 'STEP', importFormat: 'step', readMethod: 'ReadStepFile' }),
+  brep: Object.freeze({ label: 'BREP', importFormat: 'brep', readMethod: 'ReadBrepFile' }),
+});
 
 let occtScriptPromise;
 let occtRuntimePromise;
@@ -13,9 +20,19 @@ function fail(message) {
   throw error;
 }
 
-function supportedLocalIgesFile(file) {
-  if (!file || typeof file.name !== 'string') return 'Choose an IGES file to preview.';
-  if (!/\.(igs|iges)$/i.test(file.name)) return 'Choose a standalone .igs or .iges file.';
+function extensionForFileName(name) {
+  if (typeof name !== 'string') return '';
+  const parts = name.trim().toLowerCase().split('.');
+  return parts.length > 1 ? parts.pop() : '';
+}
+
+function localPreviewFormatForFile(file) {
+  return LOCAL_CAD_PREVIEW_FORMATS[extensionForFileName(file?.name)] || null;
+}
+
+function supportedLocalCadFile(file) {
+  if (!file || typeof file.name !== 'string') return 'Choose a CAD file to preview.';
+  if (!localPreviewFormatForFile(file)) return 'Preview supports IGES, STEP, and BREP files right now.';
   if (!Number.isSafeInteger(file.size) || file.size <= 0) return 'This file is empty or has an invalid size.';
   if (file.size > LOCAL_IGES_PREVIEW_MAX_BYTES) {
     return `This file is larger than the ${Math.round(LOCAL_IGES_PREVIEW_MAX_BYTES / 1024 / 1024)} MB internal-preview limit.`;
@@ -23,9 +40,13 @@ function supportedLocalIgesFile(file) {
   return null;
 }
 
+function supportedLocalIgesFile(file) {
+  return supportedLocalCadFile(file);
+}
+
 function loadScript() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
-    fail('Local IGES preview is only available in a browser.');
+    fail('Local CAD preview is only available in a browser.');
   }
   if (window.occtimportjs) return Promise.resolve();
   if (!occtScriptPromise) {
@@ -72,9 +93,10 @@ function numberArray(value) {
   return Array.from(value, Number);
 }
 
-function createLocalIgesFixture({ fileName, bytes, sha256, result }) {
+function createLocalCadFixture({ fileName, bytes, sha256, result, format }) {
+  const localFormat = format || localPreviewFormatForFile({ name: fileName }) || LOCAL_CAD_PREVIEW_FORMATS.igs;
   if (!result?.success || !Array.isArray(result.meshes) || !result.meshes.length) {
-    fail('The IGES file could not be converted into preview geometry.');
+    fail(`The ${localFormat.label} file could not be converted into preview geometry.`);
   }
   if (result.meshes.length > LOCAL_IGES_PREVIEW_MAX_MESHES) {
     fail('This file has too many mesh components for the internal browser preview.');
@@ -123,7 +145,7 @@ function createLocalIgesFixture({ fileName, bytes, sha256, result }) {
     fail('The converted IGES geometry has invalid bounds.');
   }
 
-  const displayName = String(fileName || 'Local IGES file').replace(/\.(igs|iges)$/i, '').trim() || 'Local IGES file';
+  const displayName = String(fileName || 'Local CAD file').replace(/\.(igs|iges|stp|step|brep)$/i, '').trim() || 'Local CAD file';
   return Object.freeze({
     fixtureName: displayName,
     sourceFileName: fileName,
@@ -132,7 +154,7 @@ function createLocalIgesFixture({ fileName, bytes, sha256, result }) {
     referenceImages: Object.freeze([]),
     sourcePackage: 'Local browser preview using occt-import-js 0.0.23',
     sourceLicense: 'User-selected local file; file contents are not uploaded by this preview path.',
-    format: 'IGES',
+    format: localFormat.label,
     bytes,
     sha256,
     units: 'millimeter',
@@ -161,27 +183,41 @@ function createLocalIgesFixture({ fileName, bytes, sha256, result }) {
   });
 }
 
-async function prepareLocalIgesPreview(file) {
-  const rejection = supportedLocalIgesFile(file);
+function createLocalIgesFixture(options) {
+  return createLocalCadFixture({ ...options, format: LOCAL_CAD_PREVIEW_FORMATS.igs });
+}
+
+async function prepareLocalCadPreview(file) {
+  const rejection = supportedLocalCadFile(file);
   if (rejection) fail(rejection);
+  const format = localPreviewFormatForFile(file);
   const buffer = await file.arrayBuffer();
   const sha256 = await sha256Hex(buffer);
   const occt = await loadOcctRuntime();
-  const result = occt.ReadIgesFile(new Uint8Array(buffer), {
+  const params = {
     linearUnit: 'millimeter',
     linearDeflectionType: 'bounding_box_ratio',
     linearDeflection: 0.0008,
     angularDeflection: 0.5,
-  });
-  return createLocalIgesFixture({
+  };
+  const bytes = new Uint8Array(buffer);
+  const result = typeof occt[format.readMethod] === 'function'
+    ? occt[format.readMethod](bytes, params)
+    : occt.ReadFile(format.importFormat, bytes, params);
+  return createLocalCadFixture({
     fileName: file.name,
     bytes: file.size,
     sha256,
     result,
+    format,
   });
 }
 
-function supportsLocalIgesPreview() {
+async function prepareLocalIgesPreview(file) {
+  return prepareLocalCadPreview(file);
+}
+
+function supportsLocalCadPreview() {
   return typeof window !== 'undefined'
     && typeof document !== 'undefined'
     && typeof File !== 'undefined'
@@ -189,10 +225,19 @@ function supportsLocalIgesPreview() {
     && Boolean(crypto.subtle);
 }
 
+function supportsLocalIgesPreview() {
+  return supportsLocalCadPreview();
+}
+
 module.exports = {
+  LOCAL_CAD_PREVIEW_FORMATS,
   LOCAL_IGES_PREVIEW_MAX_BYTES,
+  createLocalCadFixture,
   createLocalIgesFixture,
+  prepareLocalCadPreview,
   prepareLocalIgesPreview,
+  supportedLocalCadFile,
   supportedLocalIgesFile,
+  supportsLocalCadPreview,
   supportsLocalIgesPreview,
 };

@@ -8,7 +8,7 @@ a fee claim. The approved USD 50 figure remains an internal development ceiling.
 It is not a customer price, not a unit cost and not evidence that production
 uploads or conversion can be activated.
 
-The current internal review path is the installed Android IGS upload-render
+The current internal review path is the installed Android CAD upload-render
 preview, not only the earlier browser fixture. Mark can choose an `.igs` or
 `.iges` file locally on the Android device, but that remains a local/internal
 preview path. It does not activate production upload sessions, backend
@@ -36,7 +36,7 @@ fill missing provider data with guesses.
 
 The Build phase can now explain three things in-product:
 
-- what is ready: installed-app internal IGES preview controls,
+- what is ready: installed-app internal CAD preview controls,
   source/reference comparison and fail-closed route status
 - what cost evidence is missing: current provider terms, Sandbox/compute price,
   operation counts, storage, egress, tester support burden and commercial buffer

@@ -51,13 +51,13 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
           paddingTop: Math.max(insets.top + Spacing.sm, Spacing.lg),
         }]}>
           <View style={styles.headerCopy}>
-            <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal IGS preview</Text>
-            <Text style={bodyText}>Choose an authorized .igs/.iges file.</Text>
+            <Text style={[Typography.bodyStrong, { color: colors.text }]}>Internal CAD preview</Text>
+            <Text style={bodyText}>Choose an authorized CAD file.</Text>
           </View>
           <TouchableOpacity
             testID="cad-native-upload-render-close"
             accessibilityRole="button"
-            accessibilityLabel="Close internal IGS preview"
+            accessibilityLabel="Close internal CAD preview"
             onPress={onClose}
             hitSlop={8}
             style={[styles.closeButton, { borderColor: colors.border, backgroundColor: colors.elevated }]}
