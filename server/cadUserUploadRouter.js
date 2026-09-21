@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { admissionErrors, validateRequestBody } = require('./cadUserUploadAdmission');
+const { createCadInternalProductionAdmissionSwitch } = require('./cadInternalProductionAdmissionSwitch');
 // Source-closed gate: no environment, request or factory option can open it.
 const BODY_ADMISSION_AUTHORIZED = false;
 const { createUploadSessionVerifier } = require('./uploadSession');
@@ -17,9 +18,15 @@ const errors = Object.freeze({
 });
 const sessionFailures = new Set(['SESSION_MISSING', 'SESSION_MALFORMED', 'SESSION_INVALID', 'SESSION_REVOKED', 'SESSION_EXPIRED']);
 
-// Server-only injection consumes the shared service contract. No enable switch,
-// issuer endpoint, executor dependency or conversion path exists.
-function createCadUserUploadRouter({ sessionService = uploadSessionService, allowedOrigins = [], corsOrigins = [] } = {}) {
+// Server-only injection consumes the shared service contract. The admission
+// switch is imported but default-closed; no executor dependency or conversion
+// path exists.
+function createCadUserUploadRouter({
+  sessionService = uploadSessionService,
+  allowedOrigins = [],
+  corsOrigins = [],
+  admissionSwitch = createCadInternalProductionAdmissionSwitch(),
+} = {}) {
   const router = express.Router();
   const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
   const send = (res, code) => res.status(errors[code][0]).json({ schemaVersion: 1, status: 'error', code, message: errors[code][1] });
@@ -44,6 +51,16 @@ function createCadUserUploadRouter({ sessionService = uploadSessionService, allo
         : result.code === 'ORIGIN_OR_CSRF_REJECTED' ? result.code : 'USER_AUTH_UNAVAILABLE';
       return send(res, code);
     }
+    let decision;
+    try {
+      decision = await admissionSwitch.decide({
+        bodyAdmissionAuthorized: BODY_ADMISSION_AUTHORIZED,
+        principal: result.principal,
+      });
+    } catch {
+      decision = null;
+    }
+    if (!decision || decision.bodyReadAuthorized !== true) return send(res, 'USER_UPLOADS_DISABLED');
     if (!BODY_ADMISSION_AUTHORIZED) return send(res, 'USER_UPLOADS_DISABLED');
     // Future activation requires shared controls and a transactional authority fence
     // BEFORE opening this gate. Offline tests instrument the literal only.
