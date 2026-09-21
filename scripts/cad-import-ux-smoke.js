@@ -59,16 +59,10 @@ fs.mkdirSync(evidence, { recursive: true });
         await file.setInputFiles({ name: 'synthetic.IGES', mimeType: 'application/octet-stream', buffer: Buffer.from('synthetic metadata fixture') });
         await page.getByTestId('cad-selected-metadata').waitFor();
         assert(!(await page.locator('body').innerText()).includes('synthetic.IGES'));
-        await page.getByTestId('cad-upload-locked-status').waitFor();
+        assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+        assert.equal(await page.getByTestId('cad-import-details').count(), 0);
+        assert.equal(await page.getByTestId('cad-session-state').count(), 0);
         assert.equal(await page.getByLabel('Upload unavailable: operator access required').count(), 0);
-        await page.getByTestId('cad-import-details').click();
-        await page.getByTestId('cad-check-status').waitFor();
-        for (const state of ['enabled', 'disabled', 'error']) {
-          capability = state;
-          await page.getByTestId('cad-check-status').click();
-          await page.getByText(state === 'enabled' ? 'The protected conversion service is available.' : state === 'disabled' ? 'The conversion service is unavailable.' : 'Import status unavailable.', { exact: false }).waitFor();
-        }
-        await page.getByTestId('cad-operator-gate').scrollIntoViewIfNeeded();
         await page.screenshot({ path: `${evidence}/import-${width}.png`, fullPage: true });
         await page.getByLabel('Clear selected CAD file', { exact: true }).click();
         assert.equal(await page.getByTestId('cad-selected-metadata').count(), 0);
@@ -80,7 +74,7 @@ fs.mkdirSync(evidence, { recursive: true });
       await page.getByTestId('cad-picker-unavailable').waitFor();
       assert.equal(await page.getByTestId('cad-choose-file').count(), 0);
       await context.close();
-      console.log(`PASS ${width}px: entry routing, file metadata validation, status recovery, upload gate`);
+      console.log(`PASS ${width}px: entry routing, file metadata validation, clean local import state`);
     }
     assert.equal(uploads, 0);
     console.log('PASS: no CAD upload requests');

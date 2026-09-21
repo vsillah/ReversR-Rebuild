@@ -18,7 +18,7 @@ backend conversion, Sandbox dispatch or private CAD handling:
 
 | Class | Example signal | Default handling |
 | --- | --- | --- |
-| Install or update | `Live upload locked`, `Internal preview unavailable`, missing internal preview entry | Confirm direct APK artifact, relaunch/update state and embedded renderer URL before changing source. |
+| Install or update | legacy lock/admission message, `Internal preview unavailable`, missing internal preview entry | Confirm direct APK artifact, relaunch/update state and embedded renderer URL before changing source. |
 | File picker | Picker does not open, CAD file is hidden, permission denial | Capture Android picker/device details and reproduce with public or synthetic files before changing backend gates. |
 | Local render | Render action missing, blank preview, dimensions or controls missing | Treat as local renderer or file-compatibility issue; do not infer upload, conversion or Sandbox failure. |
 | CAD interpretation | Geometry, orientation or dimensions appear wrong | Route to source or fixture interpretation review and keep external-validation claims blocked. |
@@ -33,7 +33,7 @@ For a tester issue, capture only support-safe details:
 - app install source or APK artifact reference
 - visible app version or build reference when available
 - whether `Open internal CAD preview` is visible
-- whether `Live upload locked` appears instead of the internal preview path
+- whether a legacy lock/admission message appears instead of the internal preview path
 - file name, extension and approximate file size
 - whether the file picker opened and the selected file appeared in the app
 - whether the render action appeared and whether the preview rendered

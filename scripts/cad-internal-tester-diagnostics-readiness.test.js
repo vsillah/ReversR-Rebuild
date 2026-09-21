@@ -32,7 +32,7 @@ test('minimum capture covers device, app path, file, render and support effort',
     'WebView or Chrome version if visible',
     'app install source or APK artifact reference',
     'whether Open internal CAD preview is visible',
-    'whether Live upload locked appears instead of the internal preview path',
+    'whether a legacy lock/admission message appears instead of the internal preview path',
     'file name',
     'file extension',
     'approximate file size',
@@ -59,7 +59,7 @@ test('classification separates setup, picker, render, interpretation and commerc
 
   const allSignals = packet.classification.flatMap(item => item.signals).join('\n');
   for (const signal of [
-    'Live upload locked',
+    'legacy lock/admission message',
     'Internal preview unavailable',
     'file picker does not open',
     'blank preview',
