@@ -4,43 +4,66 @@
   "status": "mark_feedback_pending_parallel_work_allowed",
   "sourceOnly": true,
   "expensesUsd": 0,
-  "baseCommit": "223820ec2a4dc62ab2925af918497a28f3af5e02",
+  "baseCommit": "fee2efd5a1ab4afc3cdb76c4ab6e7cbd3f1a2827",
   "handoff": {
     "recipientRef": "rrb-ref:approved-mark-recipient",
-    "sent": true,
-    "sentEvidenceRef": "rrb-ref:captain-gmail-sent-message",
-    "sentMessageIdRef": "rrb-ref:gmail-1a0b5a66cc16d714",
-    "correctionSentMessageIdRef": "rrb-ref:gmail-1a0b9f517d8ed94e",
-    "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=build&qa=003a370",
+    "priorSent": true,
+    "priorSentEvidenceRef": "rrb-ref:captain-gmail-sent-message",
+    "priorSentMessageIdRef": "rrb-ref:gmail-1a0b5a66cc16d714",
+    "priorCorrectionSentMessageIdRef": "rrb-ref:gmail-1a0b9f517d8ed94e",
+    "correctionSent": true,
+    "correctionSentEvidenceRef": "rrb-ref:captain-gmail-sent-windows-browser-correction",
+    "sendAuthorizedByThisPacket": false,
+    "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff",
     "publicMaterial": "Dispenser.IGS and matching reference images",
-    "walkthroughAttached": true,
+    "walkthroughRequired": true,
     "currentReviewPath": {
-      "surface": "installed Android internal CAD upload-render preview",
-      "installArtifactRef": "rrb-ref:final-correction-direct-apk-link",
-      "expectedEntry": "Import -> Open internal CAD preview",
+      "surface": "Windows desktop browser CAD upload-to-preview path",
+      "expectedBrowser": "Chrome or Edge on Windows",
+      "expectedEntry": "Email link -> production browser preview -> Choose CAD file",
       "expectedChoices": ["Choose CAD file", "Use public sample"],
+      "primaryRequestedChoice": "Choose CAD file",
+      "acceptedTestExtensions": [".igs", ".iges"],
       "expectedResult": "local 3D preview with dimensions, grid, zoom and orientation controls",
-      "easUpdateGroup": "81bf6888-3840-471e-b1c1-422e35d8fe0f",
-      "androidVersionCode": 52,
-      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input"
+      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff",
+      "secondaryPath": "installed Android internal preview remains internal fallback context only"
+    },
+    "sentCorrectionEmail": {
+      "subject": "Updated ReversR CAD preview: please test in Windows browser first",
+      "bodySummary": "Ask Mark to open the production browser preview on Windows, choose an authorized .igs or .iges file, render the preview, validate dimensions/grid/zoom/orientation controls, and report browser/file/screenshot details if anything fails.",
+      "knownLimitationsDisclosure": "This is still an internal preview; production upload, backend conversion, manufacturing/export output and private CAD workflows are not enabled."
+    },
+    "recording": {
+      "required": true,
+      "artifactRef": "rrb-ref:windows-browser-walkthrough-mp4",
+      "mustShow": [
+        "draft email view with exact link",
+        "link opening production browser preview",
+        "Choose CAD file",
+        "select public authorized Dispenser.IGS fixture for the demonstration",
+        "Render preview",
+        "3D viewer opening",
+        "basic zoom and orientation validation"
+      ]
     }
   },
   "markApprovalRequiredFor": [
     "rendered dispenser geometry credibility",
     "reference orientation and fixed-view mapping",
+    "Windows browser upload-to-preview usability",
     "external stakeholder usefulness",
     "source interpretation corrections",
     "claims that the CAD preview is externally validated"
   ],
   "feedbackIntake": {
     "minimumFields": [
-      "device model",
-      "Android version if visible",
-      "app install source",
+      "Windows version if visible",
+      "browser name",
+      "browser version if visible",
       "file name",
       "file extension",
       "approximate file size",
-      "whether file picker opened",
+      "whether browser file picker opened",
       "whether render button appeared",
       "whether preview rendered",
       "what was visible on screen",
@@ -48,14 +71,14 @@
     ],
     "triageClasses": [
       {
-        "id": "install-or-update",
-        "signals": ["Live upload locked", "Internal preview unavailable", "missing Open internal CAD preview"],
-        "defaultAction": "confirm APK install path, relaunch/update state and installed-app bundle before changing source"
+        "id": "link-or-browser-access",
+        "signals": ["page does not open", "link blocked", "stale build"],
+        "defaultAction": "confirm URL, browser and production deployment before changing source"
       },
       {
         "id": "file-picker",
         "signals": ["no picker", "picker cannot see CAD file", "permission denial"],
-        "defaultAction": "capture Android picker/device details and reproduce with public or synthetic file before changing backend gates"
+        "defaultAction": "capture Windows/browser/file details and reproduce with public or synthetic file before changing backend gates"
       },
       {
         "id": "local-render",
@@ -85,7 +108,7 @@
     "public preview hardening that preserves current disabled gates",
     "upload/session UX clarity while upload admission remains disabled",
     "feedback intake and triage packet updates",
-    "internal tester diagnostics and support-readiness updates",
+    "browser tester diagnostics and support-readiness updates",
     "cost/run attribution planning",
     "implementation readiness information architecture",
     "production fail-closed route smokes"
@@ -94,7 +117,7 @@
     {
       "id": "preview-hardening",
       "description": "Keep the public-material preview usable and clear while Mark reviews it.",
-      "limits": ["public materials only", "no private CAD", "no product accuracy claims"]
+      "limits": ["public or explicitly authorized materials only", "no private CAD", "no product accuracy claims"]
     },
     {
       "id": "upload-session-ux",
@@ -117,8 +140,8 @@
       "limits": ["no external messages", "no private CAD requests", "no production activation claims"]
     },
     {
-      "id": "internal-tester-diagnostics",
-      "description": "Prepare support diagnostics for installed-app internal CAD preview issues before Mark responds.",
+      "id": "browser-tester-diagnostics",
+      "description": "Prepare support diagnostics for Windows browser preview issues before Mark responds.",
       "limits": ["no external messages", "no telemetry egress", "no upload activation", "no backend conversion claims"]
     }
   ],
@@ -133,10 +156,10 @@
     "provider/auth/resource/env changes outside the approved development target",
     "usage or billing changes",
     "new paid commitments at or above the approved cap",
-    "external messages beyond the already approved Mark handoff",
+    "external messages beyond the completed approved Mark correction send",
     "claims that Mark approved geometry before his response is received"
   ],
-  "nextRecommendedGate": "source-only internal tester diagnostics and support-readiness packet",
+  "nextRecommendedGate": "source-only Windows-browser handoff closeout, then non-conflicting internal readiness work while Mark feedback remains pending",
   "authorizes": {
     "sourceOnlyDocsAndTests": true,
     "localValidation": true,
