@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "mode": "public-sample-render-matrix",
+  "sourceCommit": "2f47b24011f764223b7fbcd4243ed3e0d2e704e1",
+  "sampleManifest": "public/cad-fixtures/public-sample-set/manifest.json",
+  "localQualificationEvidence": "docs/cad-fixture-qualification-evidence.json",
+  "scope": "source-only public sample download and local renderer qualification register",
+  "publicMaterialOnly": true,
+  "sourceOnly": true,
+  "liveUploadActivated": false,
+  "productionConversionActivated": false,
+  "sandboxDispatchAllowed": false,
+  "privateCadIncluded": false,
+  "rows": [
+    {
+      "id": "mark-dispenser-v1",
+      "downloadStatus": "served-static-public-sample",
+      "renderEvidence": {
+        "type": "public-preview-derived-display-mesh",
+        "manifest": "public/cad-fixtures/mark-dispenser-v1/manifest.json",
+        "sourceSha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+        "derivedMeshSha256": "9b5bfa4b86d6976ae87e6f023b3a243d4b04966b2337b224203bb630e7b8096e",
+        "triangles": 2634,
+        "rerenderedByThisMatrix": false
+      },
+      "claim": "Mark dispenser is authorized for public preview/download and is bound to the committed derived display mesh already used by the visual QA route."
+    },
+    {
+      "id": "kantoku-mit-sample",
+      "downloadStatus": "served-static-public-sample",
+      "renderEvidence": {
+        "type": "occt-local-fixture-qualification",
+        "caseId": "kantoku-mit-sample-import",
+        "sourceSha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+        "meshes": 6,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [-30, 30],
+          [-30, 30],
+          [0, 50]
+        ]
+      },
+      "claim": "Pinned public MIT IGES source converted locally through the existing OCCT fixture harness."
+    },
+    {
+      "id": "poseidon-cover-slide",
+      "downloadStatus": "served-static-public-sample",
+      "renderEvidence": {
+        "type": "occt-local-fixture-qualification",
+        "caseId": "poseidon-cover-slide-import",
+        "sourceSha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+        "meshes": 1,
+        "vertices": 232,
+        "triangles": 200,
+        "bounds": [
+          [-7.451267451363921, -2.4512674513639197],
+          [34.2, 61],
+          [-26.4999999999999, 21.43889729614702]
+        ]
+      },
+      "claim": "Pinned public BSD IGES source converted locally through the existing OCCT fixture harness."
+    },
+    {
+      "id": "poseidon-syringe-brace",
+      "downloadStatus": "served-static-public-sample",
+      "renderEvidence": {
+        "type": "occt-local-fixture-qualification",
+        "caseId": "poseidon-syringe-brace-import",
+        "sourceSha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+        "meshes": 1,
+        "vertices": 1419,
+        "triangles": 2450,
+        "bounds": [
+          [0.430478727233887, 12.4304787272339],
+          [4.84713279031561, 12.704997166584702],
+          [6.68023761973826, 13.6802376644418]
+        ]
+      },
+      "claim": "Pinned public BSD IGES source converted locally through the existing OCCT fixture harness."
+    },
+    {
+      "id": "vibe-mit-solid",
+      "downloadStatus": "served-static-public-sample",
+      "renderEvidence": {
+        "type": "occt-local-fixture-qualification",
+        "caseId": "vibe-mit-solid-import",
+        "sourceSha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+        "meshes": 1,
+        "vertices": 24,
+        "triangles": 12,
+        "bounds": [
+          [0, 1],
+          [0, 1],
+          [0, 1]
+        ]
+      },
+      "claim": "Pinned public MIT IGES source converted locally through the existing OCCT fixture harness."
+    }
+  ],
+  "unproven": [
+    "Arbitrary customer CAD compatibility",
+    "Production upload activation",
+    "Production conversion or Sandbox dispatch",
+    "Private CAD handling",
+    "Dimensional certification",
+    "Commercial run-cost pricing"
+  ]
+}
