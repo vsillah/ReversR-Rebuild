@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-opening-bundle-template",
+  "mode": "source-only-guarded-switch-opening-bundle-template",
+  "status": "TEMPLATE_ONLY_SWITCH_STILL_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "256ab774763d7b039916276d40a47d7e631a42ad",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "evidenceBinding": "docs/cad-internal-admission-evidence-binding.json",
+  "requestedOpening": {
+    "scope": "admission-only internal upload body validation",
+    "executableNow": false,
+    "requestBodyReadAuthorizedNow": false,
+    "requiresSeparateActivationApproval": true,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "requiredEvidence": [
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "exact-deployment-and-route",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactDeploymentAndRoute",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "exact-internal-cohort-and-window",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.explicitUploadActivationApproval",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "concurrent-session-revocation-fence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "browser-csrf-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "native-bearer-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.nativeBearerTransportReview",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "retention-or-deletion-disposition",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "durable-private-register-lockout",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "environment-deployment-test-approvals",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "cost-workbook-fee-readiness",
+      "bindingSource": "docs/cad-per-run-cost-workbook.json#feePerRunReady",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    },
+    {
+      "id": "separate-conversion-sandbox-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.separateConversionAndSandboxApproval",
+      "receiptRef": null,
+      "reviewerRef": null,
+      "satisfied": false
+    }
+  ],
+  "openingBundleRequirements": {
+    "exactRuntimeCommit": null,
+    "productionUrlAndRoute": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "internalCohortRef": null,
+    "explicitUploadActivationPhrase": null,
+    "rollbackSessionRevocationEvidence": null,
+    "retentionDisposition": null,
+    "allInCostCapEvidence": null,
+    "stopOnUnknownOutcome": true,
+    "postRollbackSmokeRefs": []
+  },
+  "checkerPolicy": {
+    "readyStateName": "readyForSeparateActivationApproval",
+    "readyStateDoesNotExecute": true,
+    "routeMustRemainFailClosedUntilSeparateApproval": true,
+    "checkedBundleMayNotCarrySecrets": true,
+    "checkedBundleMayNotCarryCadBytes": true
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "fill this bundle with sanitized evidence for human approval review; do not execute production upload activation from this packet"
+}
