@@ -21,6 +21,13 @@ export type CadCostWorkbook = {
 
 export type CadBuildReadiness = {
   headline: string;
+  userSteps: readonly {
+    label: string;
+    state: string;
+    detail: string;
+    tone: 'success' | 'warning' | 'muted';
+    icon: 'document-text-outline' | 'cube-outline' | 'construct-outline';
+  }[];
   summaryCards: readonly {
     label: string;
     value: string;
@@ -29,6 +36,12 @@ export type CadBuildReadiness = {
   productReady: readonly string[];
   costEvidenceNeeded: readonly string[];
   blockedOutputs: readonly string[];
+  commercializationGates: readonly {
+    label: string;
+    state: string;
+    detail: string;
+    tone: 'warning' | 'muted';
+  }[];
 };
 
 export const CAD_COST_WORKBOOK: Readonly<CadCostWorkbook>;

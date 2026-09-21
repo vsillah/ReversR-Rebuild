@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packet": "cad-per-run-cost-workbook",
   "status": "source_only_workbook_ready",
-  "baseCommit": "205b23fb82b8ca01cab096d3d83c2fc51fce61a4",
+  "baseCommit": "b7b9d4d3248b9fc7395bf11244d07a6cd8e12efb",
   "sourceOnly": true,
   "expensesUsd": 0,
   "unit": "one CAD run",
@@ -80,6 +80,29 @@
   "readinessSurface": {
     "phase": "Build",
     "headline": "Build stays locked while cost and manufacturing evidence are incomplete.",
+    "userSteps": [
+      {
+        "label": "Source",
+        "state": "Ready",
+        "detail": "CAD source is selected and ready for review.",
+        "tone": "success",
+        "icon": "document-text-outline"
+      },
+      {
+        "label": "Geometry",
+        "state": "Review",
+        "detail": "Inspect the model, dimensions, and references before preparing implementation.",
+        "tone": "warning",
+        "icon": "cube-outline"
+      },
+      {
+        "label": "Package",
+        "state": "Locked",
+        "detail": "The implementation package opens after the required review is complete.",
+        "tone": "muted",
+        "icon": "construct-outline"
+      }
+    ],
     "productReady": [
       "Desktop/browser and installed-app internal CAD preview controls",
       "Local CAD source chooser with IGES, STEP and BREP render support",
@@ -98,6 +121,38 @@
       "CAD conversion or Sandbox dispatch for user files",
       "Durable account-backed reconstruction history",
       "Customer fee quote or manufacturing package"
+    ],
+    "commercializationGates": [
+      {
+        "label": "Run cost",
+        "state": "Needs evidence",
+        "detail": "Provider terms, metered operation counts, storage and support burden are still open.",
+        "tone": "warning"
+      },
+      {
+        "label": "Account history",
+        "state": "Fast follow",
+        "detail": "Saved reconstruction history needs account-backed persistence or an explicit local-only policy.",
+        "tone": "warning"
+      },
+      {
+        "label": "Production upload",
+        "state": "Locked",
+        "detail": "User-file upload activation still requires a separate production gate.",
+        "tone": "muted"
+      },
+      {
+        "label": "Conversion compute",
+        "state": "Locked",
+        "detail": "Sandbox or conversion dispatch for user files remains separately gated.",
+        "tone": "muted"
+      },
+      {
+        "label": "Manufacturing output",
+        "state": "Blocked",
+        "detail": "Build packages and customer fee quotes wait on cost, geometry and review evidence.",
+        "tone": "muted"
+      }
     ]
   },
   "authorizes": {

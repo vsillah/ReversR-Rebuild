@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
-import { CAD_BUILD_READINESS, CAD_COST_WORKBOOK } from '../utils/cadCostWorkbook';
+import { CAD_BUILD_READINESS } from '../utils/cadCostWorkbook';
 import CadImportPanel from './CadImportPanel';
 import CadDesignReview from './CadDesignReview';
 import { CadAction, CadDetails, CadNotice, CadSourceFacts, CadProvenance, cadReviewStyles as styles } from './CadReviewUI';
@@ -18,14 +18,15 @@ type Props = {
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
-const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Costs scoped · Outputs locked'];
+const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Source, geometry, and package readiness'];
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
 export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false }: Props) {
   const { colors } = useAppTheme();
   const [fixture, setFixture] = useState(preview.fixture);
-  const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
+  const [selectedBuildGate, setSelectedBuildGate] = useState(0);
+  const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const panelStyle = compact
     ? { padding: 0, gap: Spacing.sm, borderWidth: 0, backgroundColor: 'transparent' }
@@ -76,84 +77,71 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
       </>}
       {phase === 4 && <>
         <View testID="cad-build-locked" style={{ gap: Spacing.md }}>
-          <CadNotice icon="lock-closed-outline">{CAD_BUILD_READINESS.headline}</CadNotice>
           <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
-              {[
-                { icon: 'cube-outline' as const, label: 'Actual product UI', value: 'Controls + workflow', color: colors.success, background: colors.successSoft },
-                { icon: 'images-outline' as const, label: 'Fixture context', value: isLocalPreview ? 'Local CAD render' : 'Public dispenser file', color: colors.primary, background: colors.primarySoft },
-                { icon: 'lock-closed-outline' as const, label: 'Locked product output', value: 'No build package yet', color: colors.warning, background: colors.warningSoft },
-              ].map(item => <View key={item.label} style={{ flexGrow: 1, flexBasis: 150, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.elevated }}>
-                <View style={{ width: 34, height: 34, borderRadius: Radii.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: item.background }}>
-                  <Ionicons name={item.icon} size={18} color={item.color} accessible={false} />
-                </View>
-                <Text style={[Typography.caption, { color: colors.mutedText }]}>{item.label}</Text>
-                <Text style={[Typography.label, { color: colors.text }]}>{item.value}</Text>
-              </View>)}
-            </View>
-            <View testID="cad-run-economics" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.panel }}>
+            <View testID="cad-commercialization-gates" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.panel }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-                <Ionicons name="calculator-outline" size={18} color={colors.primary} accessible={false} />
-                <Text style={[Typography.heading, { color: colors.text, flex: 1 }]}>Run economics</Text>
+                <Ionicons name="construct-outline" size={18} color={colors.primary} accessible={false} />
+                <Text style={[Typography.heading, { color: colors.text, flex: 1 }]}>Build readiness</Text>
               </View>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
-                {CAD_BUILD_READINESS.summaryCards.map(card => {
-                  const tone = toneStyles[card.tone];
-                  return <View key={card.label} style={{ flexGrow: 1, flexBasis: 145, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.xs, backgroundColor: colors.surface }}>
-                    <Text style={[Typography.caption, { color: colors.mutedText }]}>{card.label}</Text>
-                    <Text style={[Typography.label, { color: tone.color }]}>{card.value}</Text>
+              <View testID="cad-commercialization-stepper" style={{ position: 'relative', flexDirection: 'row', alignItems: 'flex-start', paddingTop: Spacing.xs }}>
+                <View pointerEvents="none" style={{ position: 'absolute', left: '16%', right: '16%', top: 24, height: 2, borderRadius: 2, backgroundColor: colors.border }} />
+                {CAD_BUILD_READINESS.userSteps.map((step, index) => {
+                  const tone = toneStyles[step.tone];
+                  const selected = index === selectedBuildGate;
+                  return <View key={step.label} style={{ flex: 1, minWidth: 0, alignItems: 'center', gap: 4 }}>
+                    <TouchableOpacity
+                      testID={`cad-commercialization-step-${index + 1}`}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${step.label}: ${step.state}`}
+                      accessibilityState={{ selected }}
+                      onPress={() => setSelectedBuildGate(index)}
+                      activeOpacity={0.75}
+                      style={{ minWidth: 40, minHeight: 40, alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <View style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: Radii.pill,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: selected ? 2 : 1,
+                        borderColor: selected ? colors.accent : tone.color,
+                        backgroundColor: selected ? colors.background : tone.backgroundColor,
+                      }}>
+                        <Ionicons name={step.icon} size={14} color={selected ? colors.accent : tone.color} accessible={false} />
+                      </View>
+                    </TouchableOpacity>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: selected ? colors.text : colors.mutedText, textAlign: 'center' }} numberOfLines={1}>
+                      {step.label}
+                    </Text>
+                    <Text style={{ fontSize: 9, color: tone.color, textAlign: 'center' }} numberOfLines={1}>{step.state}</Text>
+                    {selected ? <View style={{ width: 24, height: 3, borderRadius: 2, backgroundColor: colors.accent }} /> : null}
                   </View>;
                 })}
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, padding: Spacing.sm, borderRadius: Radii.sm, backgroundColor: colors.elevated }}>
-                <Ionicons name="information-circle-outline" size={16} color={colors.mutedText} accessible={false} />
-                <Text style={[...text, { flex: 1 }]}>The USD {CAD_COST_WORKBOOK.approvedDevelopmentCeilingUsd} ceiling is an internal development cap, not a customer price or per-run fee.</Text>
+              <View testID="cad-commercialization-gate-detail" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+                  <Text style={[Typography.label, { color: colors.text, flex: 1 }]}>{buildStep.label}</Text>
+                  <View style={{ borderRadius: Radii.pill, paddingHorizontal: Spacing.sm, paddingVertical: 4, backgroundColor: toneStyles[buildStep.tone].backgroundColor }}>
+                    <Text style={[Typography.caption, { color: toneStyles[buildStep.tone].color }]}>{buildStep.state}</Text>
+                  </View>
+                </View>
+                <Text style={[Typography.caption, { color: colors.mutedText, lineHeight: 18 }]}>{buildStep.detail}</Text>
+                {selectedBuildGate === 0 ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+                  <View style={{ flexGrow: 1, flexBasis: 140 }}>
+                    <Text style={[Typography.caption, { color: colors.mutedText }]}>Selected source</Text>
+                    <Text style={[Typography.label, { color: colors.text }]}>{fixture.sourceFileName}</Text>
+                  </View>
+                  <View style={{ flexGrow: 1, flexBasis: 180 }}>
+                    <Text style={[Typography.caption, { color: colors.mutedText }]}>Extents</Text>
+                    <Text style={[Typography.label, { color: colors.text }]}>{fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}</Text>
+                  </View>
+                </View> : null}
               </View>
             </View>
-            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.panel }}>
-              <Text style={[Typography.heading, { color: colors.text }]}>Actual product behavior to validate</Text>
-              {CAD_BUILD_READINESS.productReady.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
-                <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
-                <Text style={[...text, { flex: 1, color: colors.text }]}>{label}</Text>
-              </View>)}
-            </View>
-            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
-              <Text style={[Typography.heading, { color: colors.text }]}>Fixture context</Text>
-              {(isLocalPreview ? [
-                `${fixture.sourceFileName} is rendered locally for this QA pass.`,
-                `Preview extents: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
-                'Upload and conversion remain locked.',
-              ] : [
-                `${fixture.sourceFileName} and reference images are public review materials.`,
-                `Preview dimensions: ${fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}.`,
-                'Review fixture only; customer upload remains gated.',
-              ]).map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
-                <Ionicons name="flask-outline" size={16} color={colors.primary} accessible={false} />
-                <Text style={[...text, { flex: 1 }]}>{label}</Text>
-              </View>)}
-            </View>
-            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
-              <Text style={[Typography.heading, { color: colors.text }]}>Cost evidence still needed</Text>
-              {CAD_BUILD_READINESS.costEvidenceNeeded.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
-                <Ionicons name="time-outline" size={16} color={colors.warning} accessible={false} />
-                <Text style={[...text, { flex: 1 }]}>{label}</Text>
-              </View>)}
-              <Text style={[Typography.caption, { color: colors.mutedText }]}>Workbook rows: {CAD_COST_WORKBOOK.buckets.map(bucket => bucket.label).join(' · ')}</Text>
-            </View>
-            <View style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.sm, backgroundColor: colors.surface }}>
-              <Text style={[Typography.heading, { color: colors.text }]}>Not part of this product QA</Text>
-              {CAD_BUILD_READINESS.blockedOutputs.map(label => <View key={label} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm }}>
-                <Ionicons name="ellipse-outline" size={16} color={colors.mutedText} accessible={false} />
-                <Text style={[...text, { flex: 1 }]}>{label}</Text>
-              </View>)}
-            </View>
           </View>
-          <CadAction label="Prepare implementation package · Locked" accessibilityLabel="Prepare outputs unavailable: manufacturing review required" icon="lock-closed-outline" disabled />
+          <CadAction label="Prepare implementation package · Locked" accessibilityLabel="Prepare implementation package locked" icon="lock-closed-outline" disabled />
         </View>
-        <CadDetails title="Geometry warnings & review limits" testID="cad-build-details">
-          {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
-          <Text style={text}>The implementation package remains locked because this {isLocalPreview ? 'local CAD render' : 'public fixture review'} is visual QA only.</Text>
-        </CadDetails>
         <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
       </>}

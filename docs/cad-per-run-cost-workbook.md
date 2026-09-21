@@ -1,7 +1,7 @@
 # CAD per-run cost workbook and Build readiness
 
 Status: source-only workbook and product-surface binding. Base:
-`205b23fb82b8ca01cab096d3d83c2fc51fce61a4`. Expenses: USD 0.
+`b7b9d4d3248b9fc7395bf11244d07a6cd8e12efb`. Expenses: USD 0.
 
 This packet turns the cost discussion into a concrete workbook without creating
 a fee claim. The approved USD 50 figure remains an internal development ceiling.
@@ -37,20 +37,30 @@ fill missing provider data with guesses.
 
 ## Build readiness surface
 
-The Build phase can now explain three things in-product:
+The Build phase now separates product-facing readiness from internal
+commercialization evidence. The visible UI uses a compact sub-step rail:
 
-- what is ready: desktop/browser and installed-app internal CAD preview
-  controls, local CAD source choice and fail-closed route status
-- what cost evidence is missing: current provider terms, Sandbox/compute price,
-  operation counts, storage, egress, account-history persistence, tester support
-  burden and commercial buffer policy
-- what remains blocked: production CAD upload activation, conversion/Sandbox
-  dispatch, durable account-backed history, customer fee quote and manufacturing
-  package
+| Step | State | User-facing meaning |
+| --- | --- | --- |
+| Source | Ready | CAD source is selected and ready for review. |
+| Geometry | Review | Inspect the model, dimensions and references before preparing implementation. |
+| Package | Locked | The implementation package opens after the required review is complete. |
 
-This keeps Mark's QA focused on local/internal preview behavior while giving the
-internal team a clean place to reason about implementation readiness and support
-cost.
+Cost, provider, production upload, conversion, persistence and fee-policy
+details stay in this source packet and are not rendered as visible end-user
+explainer copy.
+
+## Commercialization gate checklist
+
+The Build phase also carries a compact remaining-gates checklist:
+
+| Gate | State | Meaning |
+| --- | --- | --- |
+| Run cost | Needs evidence | Provider terms, metered operation counts, storage and support burden are still open. |
+| Account history | Fast follow | Saved reconstruction history needs account-backed persistence or an explicit local-only policy. |
+| Production upload | Locked | User-file upload activation still requires a separate production gate. |
+| Conversion compute | Locked | Sandbox or conversion dispatch for user files remains separately gated. |
+| Manufacturing output | Blocked | Build packages and customer fee quotes wait on cost, geometry and review evidence. |
 
 ## Account history fast follow
 
