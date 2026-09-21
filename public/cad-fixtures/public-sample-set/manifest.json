@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "id": "cad-public-sample-set",
+  "status": "public-static-samples",
+  "purpose": "Public CAD files for internal tester device/browser download and local preview checks.",
+  "publicMaterialOnly": true,
+  "sourceOnly": true,
+  "liveUploadActivated": false,
+  "productionConversionActivated": false,
+  "sandboxDispatchAllowed": false,
+  "privateCadIncluded": false,
+  "files": [
+    {
+      "id": "mark-dispenser-v1",
+      "label": "Mark dispenser",
+      "fileName": "Dispenser.IGS",
+      "format": "IGES",
+      "downloadUrl": "/cad-fixtures/mark-dispenser-v1/Dispenser.IGS",
+      "bytes": 701346,
+      "sha256": "1e52b301cf33bc241cd0d3d039691236ab45116f439197820f690b424750f0b8",
+      "provenance": "Source-provider authorized anyone-with-link Vercel preview redistribution.",
+      "authorizationManifest": "/cad-fixtures/mark-dispenser-v1/manifest.json"
+    },
+    {
+      "id": "kantoku-mit-sample",
+      "label": "Kantoku MIT sample",
+      "fileName": "sample.igs",
+      "format": "IGES",
+      "downloadUrl": "/cad-fixtures/public-sample-set/kantoku-mit/sample.igs",
+      "bytes": 24948,
+      "sha256": "f2ebe63992eaf1f91b33d1f1773b3fa0ad5eb2fe66f1a477fb5f86f0427e1893",
+      "sourceUrl": "https://raw.githubusercontent.com/kantoku-code/CATIA_V5-igs2cat_groupbylayer/main/sample/sample.igs",
+      "license": "MIT",
+      "licenseFile": "/cad-fixtures/public-sample-set/kantoku-mit/LICENSE"
+    },
+    {
+      "id": "poseidon-cover-slide",
+      "label": "Poseidon pump cover slide",
+      "fileName": "pump-cover-slide.iges",
+      "format": "IGES",
+      "downloadUrl": "/cad-fixtures/public-sample-set/poseidon-bsd/pump-cover-slide.iges",
+      "bytes": 48357,
+      "sha256": "054992f5b7cd0fc3cd2f2f2ac8358b329708b7573a6ee154d9ddf128b1ff0402",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Cover%20Slide.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "license": "BSD-2-Clause",
+      "licenseFile": "/cad-fixtures/public-sample-set/poseidon-bsd/LICENSE",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6"
+    },
+    {
+      "id": "poseidon-syringe-brace",
+      "label": "Poseidon pump syringe brace",
+      "fileName": "pump-syringe-brace.iges",
+      "format": "IGES",
+      "downloadUrl": "/cad-fixtures/public-sample-set/poseidon-bsd/pump-syringe-brace.iges",
+      "bytes": 40824,
+      "sha256": "ffa127dfd22931f5b518b466a49dca91b4d35fa1361ead8dba37dd6b7868a60c",
+      "sourceUrl": "https://raw.githubusercontent.com/pachterlab/poseidon/5a139fed350bbf5d775ffa9650f465e557b6ccb0/HARDWARE/pump/iges/Pump%20Syringe%20Brace.iges",
+      "sourceCommit": "5a139fed350bbf5d775ffa9650f465e557b6ccb0",
+      "license": "BSD-2-Clause",
+      "licenseFile": "/cad-fixtures/public-sample-set/poseidon-bsd/LICENSE",
+      "licenseSha256": "5188559ecc761ecb869ed20b8eccce9cb43cb93b4afec9b62530b3f49b3af9b6"
+    },
+    {
+      "id": "vibe-mit-solid",
+      "label": "Vibe MIT solid",
+      "fileName": "solid.igs",
+      "format": "IGES",
+      "downloadUrl": "/cad-fixtures/public-sample-set/vibe-mit/solid.igs",
+      "bytes": 12393,
+      "sha256": "d1e88b9e5ab38751e22bda59977d4aa37fd523040f75bc8a2f3428b50f562d71",
+      "sourceUrl": "https://raw.githubusercontent.com/Masoudjafaripour/Vibe_CADing/main/src/B-rep/results/solid.igs",
+      "license": "MIT",
+      "licenseFile": "/cad-fixtures/public-sample-set/vibe-mit/LICENSE"
+    }
+  ],
+  "boundaries": [
+    "Static public fixture download only.",
+    "No production upload activation.",
+    "No production conversion or Sandbox dispatch.",
+    "No private CAD, real-user enrollment, provider mutation, environment mutation, billing change, or external message."
+  ]
+}
