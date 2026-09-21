@@ -53,7 +53,10 @@ test('native Import opens the internal installed-app CAD renderer without unlock
   assert.match(nativePreview, /setSupportMultipleWindows=\{false\}/);
   assert.match(nativePreview, /isAllowedCadNativeInternalUploadRenderUrl/);
   assert.match(nativePreview, /Preview mode · upload and conversion locked/);
-  assert.match(nativePreview, /install link, app version and whether the renderer opened/);
+  assert.match(nativePreview, /cad-native-upload-render-support-toggle/);
+  assert.match(nativePreview, /cad-native-upload-render-support-details/);
+  assert.match(nativePreview, /Capture only support-safe details/);
+  assert.match(nativePreview, /Do not send private CAD, raw paths, credentials or production account data/);
 
   assert.match(targetConfig, /PRODUCTION_HOSTNAME = 'reversr\.vercel\.app'/);
   assert.match(targetConfig, /CAD_NATIVE_INTERNAL_UPLOAD_RENDER_PREVIEW = 'mark-dispenser-v1'/);

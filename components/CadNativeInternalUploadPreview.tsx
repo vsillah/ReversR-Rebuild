@@ -10,6 +10,14 @@ import {
   isAllowedCadNativeInternalUploadRenderUrl,
 } from '../utils/cadNativeInternalUploadPreview';
 
+const SUPPORT_CHECKS = [
+  'Install source and app version',
+  'Open internal CAD preview visibility',
+  'File picker opened and CAD file selected',
+  'Render action appeared',
+  'Preview, grid, dimensions and controls rendered',
+];
+
 function getNativePreviewUrl(value?: string) {
   if (!value) return '';
   try {
@@ -31,6 +39,7 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
   const configUrl = config.enabled ? config.url : undefined;
   const previewUrl = useMemo(() => getNativePreviewUrl(configUrl), [configUrl]);
   const [loadError, setLoadError] = useState('');
+  const [supportOpen, setSupportOpen] = useState(false);
   const canRender = Platform.OS !== 'web' && config.enabled && !loadError;
   const unavailableMessage = loadError || (config.enabled
     ? 'The internal preview is configured but cannot be shown in this session.'
@@ -102,9 +111,32 @@ export default function CadNativeInternalUploadPreview({ visible, onClose }: {
               <Text style={[bodyText, { textAlign: 'center' }]}>
                 {unavailableMessage}
               </Text>
-              <Text style={[bodyText, { textAlign: 'center' }]}>
-                Note the install link, app version and whether the renderer opened before changing any upload or conversion gate.
-              </Text>
+              <TouchableOpacity
+                testID="cad-native-upload-render-support-toggle"
+                accessibilityRole="button"
+                accessibilityLabel={supportOpen ? 'Hide internal preview support details' : 'Show internal preview support details'}
+                accessibilityState={{ expanded: supportOpen }}
+                onPress={() => setSupportOpen(value => !value)}
+                style={[styles.supportToggle, { borderColor: colors.border, backgroundColor: colors.elevated }]}
+              >
+                <Ionicons name="information-circle-outline" size={16} color={colors.primary} accessible={false} />
+                <Text style={[Typography.caption, styles.supportToggleText, { color: colors.text }]}>Support details</Text>
+                <Ionicons name={supportOpen ? 'chevron-up' : 'chevron-down'} size={16} color={colors.mutedText} accessible={false} />
+              </TouchableOpacity>
+              {supportOpen ? (
+                <View testID="cad-native-upload-render-support-details" style={[styles.supportDetails, { borderColor: colors.border, backgroundColor: colors.elevated }]}>
+                  <Text style={bodyText}>Capture only support-safe details before changing any upload or conversion gate.</Text>
+                  <View testID="cad-native-upload-render-support-list" style={styles.supportList}>
+                    {SUPPORT_CHECKS.map(item => (
+                      <View key={item} style={styles.supportItem}>
+                        <Ionicons name="checkmark-circle-outline" size={15} color={colors.mutedText} accessible={false} />
+                        <Text style={[Typography.caption, styles.supportItemText, { color: colors.mutedText }]}>{item}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <Text style={bodyText}>Do not send private CAD, raw paths, credentials or production account data.</Text>
+                </View>
+              ) : null}
             </View>
           )}
         </View>
@@ -170,5 +202,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
+  },
+  supportToggle: {
+    minHeight: 38,
+    borderRadius: Radii.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 8,
+  },
+  supportToggleText: {
+    fontWeight: '700',
+  },
+  supportDetails: {
+    alignSelf: 'stretch',
+    borderRadius: Radii.lg,
+    borderWidth: 1,
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+    padding: Spacing.md,
+  },
+  supportList: {
+    gap: 7,
+  },
+  supportItem: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    alignItems: 'flex-start',
+  },
+  supportItemText: {
+    flex: 1,
   },
 });

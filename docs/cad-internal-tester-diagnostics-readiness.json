@@ -112,6 +112,8 @@
     "entryTestId": "cad-native-internal-preview-entry",
     "diagnosticsDisclosureTestId": "cad-internal-preview-diagnostics",
     "diagnosticsListTestId": "cad-internal-preview-diagnostics-list",
+    "fallbackSupportToggleTestId": "cad-native-upload-render-support-toggle",
+    "fallbackSupportDetailsTestId": "cad-native-upload-render-support-details",
     "rule": "keep diagnostics collapsed and support-focused so the primary tester action remains Open internal CAD preview"
   },
   "responseBoundaries": [

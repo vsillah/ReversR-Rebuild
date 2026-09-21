@@ -63,6 +63,11 @@ internal CAD preview`. The diagnostics detail captures device/app/file/path/rend
 signals and reminds the operator not to send private CAD, credentials, raw paths
 or production account data.
 
+The native fallback state should follow the same pattern: show a short
+unavailable message, then keep the support checklist behind a compact
+`Support details` disclosure. The fallback should not add another large warning
+block or imply that backend upload, conversion, or Sandbox failed.
+
 ## Boundaries
 
 This authorizes source-only docs, tests, local validation, one-commit PRs,

@@ -88,8 +88,13 @@ test('implementation surface keeps diagnostics compact and tied to internal prev
   assert.equal(packet.implementationSurface.entryTestId, 'cad-native-internal-preview-entry');
   assert.equal(packet.implementationSurface.diagnosticsDisclosureTestId, 'cad-internal-preview-diagnostics');
   assert.equal(packet.implementationSurface.diagnosticsListTestId, 'cad-internal-preview-diagnostics-list');
+  assert.equal(packet.implementationSurface.fallbackSupportToggleTestId, 'cad-native-upload-render-support-toggle');
+  assert.equal(packet.implementationSurface.fallbackSupportDetailsTestId, 'cad-native-upload-render-support-details');
   assert.match(packet.implementationSurface.rule, /keep diagnostics collapsed/);
   assert.match(markdown, /collapsed support\s+detail/);
+  assert.match(markdown, /Support details/);
+  assert.match(markdown, /should not add another large warning\s+block/);
+  assert.match(markdown, /backend upload, conversion, or Sandbox failed/);
 });
 
 test('authorities remain closed and no private evidence leaks into source', () => {
