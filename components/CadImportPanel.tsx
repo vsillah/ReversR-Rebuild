@@ -10,6 +10,13 @@ import { prepareLocalCadPreview, supportsLocalCadPreview } from '../utils/cadLoc
 
 type FixtureSourceMode = 'local' | 'sample' | null;
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
+type CadSelectedSource = {
+  format: string;
+  bytes: number;
+  extension?: string;
+  renderableLocalPreview?: boolean;
+  sourceFileName?: string;
+};
 const CAD_GRID_MAJOR_LINES = Object.freeze([25, 50, 75]);
 const CAD_GRID_MINOR_LINES = Object.freeze(
   Array.from({ length: 15 }, (_, index) => (index + 1) * 6.25).filter(position => !CAD_GRID_MAJOR_LINES.includes(position)),
@@ -63,7 +70,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
 }) {
   const { colors } = useAppTheme();
   const picker = useRef<HTMLInputElement | null>(null);
-  const [selected, setSelected] = useState<{ format: string; bytes: number; extension?: string; renderableLocalPreview?: boolean } | null>(null);
+  const [selected, setSelected] = useState<CadSelectedSource | null>(null);
   const [message, setMessage] = useState('');
   const [connecting, setConnecting] = useState(false);
   const [renderingLocal, setRenderingLocal] = useState(false);
@@ -93,7 +100,6 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     }
   };
   const text = { ...Typography.caption, color: colors.mutedText, lineHeight: 20 };
-  const button = { padding: 14, borderRadius: 10, borderWidth: 1, borderColor: colors.border };
   const fixture = internalPreview?.enabled ? internalPreview.fixture : null;
   const localPreviewEnabled = Boolean(fixture && onLocalPreviewResult && supportsLocalCadPreview());
   const formatFileSize = (bytes: number) => {
@@ -140,7 +146,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       const result = await prepareLocalCadPreview(file);
       pendingLocalFile.current = null;
       setPendingLocalFileName('');
-      setSelected({ format: result.format, bytes: result.bytes, renderableLocalPreview: true });
+      setSelected({ format: result.format, bytes: result.bytes, renderableLocalPreview: true, sourceFileName: result.sourceFileName });
       setLocalPreview(result);
       setMessage(`${result.sourceFileName} rendered locally for internal preview. No production upload route was used.`);
       onLocalPreviewResult(result);
@@ -163,7 +169,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       pendingLocalFile.current = file;
       setFixtureSourceMode('local');
       setPendingLocalFileName(file.name);
-      setSelected(prepared.metadata);
+      setSelected({ ...prepared.metadata, sourceFileName: file.name });
       setLocalPreview(null);
       setMessage(prepared.metadata.renderableLocalPreview
         ? `${file.name} selected. Preview is available locally.`
@@ -171,7 +177,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       return;
     }
     const prepared = prepareCadFileMetadata(file);
-    setSelected(prepared.metadata);
+    setSelected(prepared.metadata ? { ...prepared.metadata, sourceFileName: file.name } : null);
     setMessage(prepared.message);
   };
   const selectSample = () => {
@@ -189,10 +195,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         if (!file) return;
         void handleFile(file);
       }} />}
-      {!fixture && <Text style={[Typography.heading, { color: colors.text }]}>Import CAD</Text>}
-      <Text style={text}>{fixture
-        ? 'Choose a CAD file from this device, or use the public sample.'
-        : 'Choose a CAD file for a local compatibility check.'}</Text>
+      {fixture ? <Text style={text}>Choose a CAD file from this device, or use the public sample.</Text> : null}
       {fixture ? (
         <View testID="cad-public-fixture-ready" style={{ gap: Spacing.md }}>
           <View testID="cad-source-choice-panel" style={{ gap: Spacing.md, borderWidth: desktop ? 0 : 1, borderColor: colors.border, borderRadius: Radii.lg, padding: desktop ? 0 : Spacing.md, backgroundColor: colors.surface }}>
@@ -350,13 +353,42 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
       ) : supported ? (
         null
       ) : <Text testID="cad-picker-unavailable" style={text}>File selection is unavailable on this surface. Open ReversR in a web browser with file-picker support to select a CAD file. Native selection is pending.</Text>}
-      {!fixture && selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
-        <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Prepared locally</Text>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
-      </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
       {!fixture && !onOpenInternalPreview && (
-        <CadImportGridPreview selected={Boolean(selected)} onPress={supported ? chooseLocalFile : undefined} />
+        <>
+          <CadImportGridPreview selected={selected} onPress={supported ? chooseLocalFile : undefined} />
+          <View style={importPreviewStyles.sourceFooter}>
+            {selected ? (
+              <View testID="cad-selected-metadata" style={importPreviewStyles.selectedSourceMeta}>
+                <Text style={[Typography.caption, { color: colors.mutedText, flex: 1 }]}>{selected.sourceFileName ? `${selected.sourceFileName} · ` : ''}{selected.format} · {selected.bytes.toLocaleString()} bytes</Text>
+              </View>
+            ) : null}
+            <View style={importPreviewStyles.sourceActions}>
+              {selected ? (
+                <View style={importPreviewStyles.sourceActionItem}>
+                  <CadAction
+                    testID="cad-clear-selected-source"
+                    accessibilityLabel="Choose another CAD source"
+                    icon="swap-horizontal-outline"
+                    label="Change source"
+                    onPress={supported ? chooseLocalFile : () => { setSelected(null); setMessage('Selection cleared.'); }}
+                  />
+                </View>
+              ) : null}
+              <View style={importPreviewStyles.sourceActionItem}>
+                <CadAction
+                  testID="cad-source-check-button"
+                  accessibilityLabel={selected ? 'Continue with selected CAD source' : 'Continue with selected CAD source inactive. Choose a CAD file first.'}
+                  disabled={!selected}
+                  onPress={() => setMessage('CAD source check is ready locally. Upload and conversion remain locked.')}
+                  primary={Boolean(selected)}
+                  icon={selected ? 'arrow-forward-circle-outline' : 'flash'}
+                  label="Continue With Selected Source"
+                />
+              </View>
+            </View>
+          </View>
+        </>
       )}
       {!fixture && !onOpenInternalPreview && uploadSessionAdapter && (
         <CadDetails title="Development session diagnostics" testID="cad-import-details">
@@ -379,13 +411,14 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
   );
 }
 
-function CadImportGridPreview({ selected, onPress }: { selected: boolean; onPress?: () => void }) {
+function CadImportGridPreview({ selected, onPress }: { selected: CadSelectedSource | null; onPress?: () => void }) {
   const { colors } = useAppTheme();
   const isDarkGrid = colors.mode === 'dark';
+  const isSelected = Boolean(selected);
   const gridBackground = isDarkGrid ? 'rgba(15, 23, 42, 0.94)' : '#dce6ef';
   const gridMinor = isDarkGrid ? 'rgba(148, 163, 184, 0.18)' : 'rgba(194, 207, 219, 0.72)';
   const gridMajor = isDarkGrid ? 'rgba(148, 163, 184, 0.30)' : 'rgba(156, 171, 184, 0.68)';
-  const gridEdge = isDarkGrid ? 'rgba(148, 163, 184, 0.32)' : 'rgba(156, 171, 184, 0.46)';
+  const gridEdge = isSelected ? colors.success : colors.primary;
   const gridCenterGuide = isDarkGrid ? 'rgba(226, 232, 240, 0.22)' : 'rgba(91, 105, 119, 0.42)';
   const previewDialSurface = isDarkGrid ? 'rgba(8, 12, 18, 0.42)' : 'rgba(23, 33, 31, 0.24)';
   const previewDialBorder = isDarkGrid ? 'rgba(226, 232, 240, 0.14)' : 'rgba(156, 171, 184, 0.28)';
@@ -399,13 +432,17 @@ function CadImportGridPreview({ selected, onPress }: { selected: boolean; onPres
   const previewZoomRail = isDarkGrid ? 'rgba(127, 224, 192, 0.26)' : 'rgba(127, 224, 192, 0.34)';
   const previewZoomTick = isDarkGrid ? 'rgba(226, 232, 240, 0.26)' : 'rgba(232, 255, 250, 0.30)';
   const previewZoomThumb = isDarkGrid ? 'rgba(226, 232, 240, 0.82)' : 'rgba(232, 255, 250, 0.78)';
-  const promptBackground = isDarkGrid ? 'rgba(8, 12, 18, 0.72)' : 'rgba(255, 255, 255, 0.78)';
+  const promptIconBackground = isSelected ? colors.successSoft : colors.primarySoft;
+  const promptIconColor = isSelected ? colors.success : colors.primary;
+  const selectedDetail = selected
+    ? `${selected.sourceFileName ? `${selected.sourceFileName} · ` : ''}${selected.format} · ${selected.bytes.toLocaleString()} bytes · Prepared locally`
+    : '';
 
   return (
     <TouchableOpacity
       testID="cad-import-grid-preview"
       accessibilityRole="button"
-      accessibilityLabel={selected ? 'Choose another CAD file from this device' : 'Choose CAD file to load'}
+      accessibilityLabel={isSelected ? 'Choose another CAD file from this device' : 'Choose CAD file to load'}
       disabled={!onPress}
       activeOpacity={0.88}
       onPress={onPress}
@@ -468,13 +505,16 @@ function CadImportGridPreview({ selected, onPress }: { selected: boolean; onPres
           </View>
         </View>
       </View>
-      <View style={[importPreviewStyles.prompt, { backgroundColor: promptBackground, borderColor: colors.hairline }]} pointerEvents="none">
-        <View style={[importPreviewStyles.promptIcon, { backgroundColor: selected ? colors.successSoft : colors.primarySoft }]}>
-          <Ionicons name={selected ? 'checkmark-circle-outline' : 'document-attach-outline'} size={20} color={selected ? colors.success : colors.primary} accessible={false} />
+      <View testID="cad-import-dropzone-prompt" style={importPreviewStyles.prompt} pointerEvents="none">
+        <View style={[importPreviewStyles.promptIcon, { backgroundColor: promptIconBackground }]}>
+          <Ionicons name={isSelected ? 'checkmark-circle-outline' : 'document-attach-outline'} size={34} color={promptIconColor} accessible={false} />
         </View>
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text testID="cad-import-grid-prompt" style={[Typography.bodyStrong, { color: colors.text }]}>
-            {selected ? 'CAD file ready for processing' : 'Choose CAD file to load'}
+        <View style={{ alignItems: 'center', gap: Spacing.xs }}>
+          <Text testID="cad-import-grid-prompt" style={[Typography.heading, { color: promptIconColor, textAlign: 'center' }]}>
+            {isSelected ? 'CAD Source Ready' : 'Choose CAD File'}
+          </Text>
+          <Text style={[Typography.caption, { color: colors.mutedText, textAlign: 'center' }]}>
+            {isSelected ? selectedDetail : 'Tap to select a CAD source'}
           </Text>
         </View>
       </View>
@@ -486,7 +526,8 @@ const importPreviewStyles = StyleSheet.create({
   preview: {
     minHeight: 304,
     borderRadius: Radii.lg,
-    borderWidth: 1,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
     overflow: 'hidden',
     position: 'relative',
   },
@@ -639,23 +680,38 @@ const importPreviewStyles = StyleSheet.create({
   },
   prompt: {
     position: 'absolute',
-    left: 74,
-    right: Spacing.md,
-    bottom: Spacing.md,
-    minHeight: 56,
-    borderRadius: Radii.md,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  promptIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    left: '50%',
+    top: '50%',
+    width: 260,
+    maxWidth: '72%',
+    marginLeft: -130,
+    marginTop: -74,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.md,
+  },
+  promptIcon: {
+    width: 74,
+    height: 74,
+    borderRadius: 37,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sourceFooter: {
+    gap: Spacing.sm,
+  },
+  selectedSourceMeta: {
+    minHeight: 36,
+    paddingHorizontal: Spacing.sm,
+    justifyContent: 'center',
+  },
+  sourceActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  sourceActionItem: {
+    flex: 1,
+    minWidth: 240,
   },
 });

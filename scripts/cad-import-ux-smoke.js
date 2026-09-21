@@ -26,9 +26,11 @@ fs.mkdirSync(evidence, { recursive: true });
       const page = await context.newPage();
       for (const mode of ['import', 'scan', 'type', 'lucky']) {
         await page.goto(url);
-        await page.getByTestId(`home-mode-${mode}`).waitFor();
+        const enter = page.getByRole('button', { name: 'Enter ReversR home', exact: true });
+        if (await enter.count()) await enter.click();
         const skip = page.getByText('Skip', { exact: true });
         if (await skip.isVisible()) { await skip.click(); await skip.waitFor({ state: 'hidden' }); }
+        await page.getByTestId(`home-mode-${mode}`).waitFor();
         assert((await page.getByTestId('home-phase-nav').innerText()).includes('INPUT'));
         assert((await page.getByTestId('home-phase-nav').innerText()).includes('Import, scan, describe, or try a sample'));
         assert.deepEqual(await page.locator('[data-testid^="home-mode-"]').allTextContents().then(values => values.map(text => text.match(/Import|Scan|Describe|Sample/)[0])), ['Import', 'Scan', 'Describe', 'Sample']);
@@ -56,7 +58,11 @@ fs.mkdirSync(evidence, { recursive: true });
         assert.equal(await page.getByTestId('cad-import-grid-wave').count(), 0);
         assert.equal(await page.getByTestId('cad-import-grid-object').count(), 0);
         assert.equal(await page.getByTestId('cad-choose-file').count(), 0);
-        await page.getByText('Choose CAD file to load', { exact: true }).waitFor();
+        await page.getByTestId('cad-import-dropzone-prompt').waitFor();
+        await page.getByText('Choose CAD File', { exact: true }).waitFor();
+        await page.getByText('Tap to select a CAD source', { exact: true }).waitFor();
+        await page.getByTestId('cad-source-check-button').waitFor();
+        await page.getByLabel('Continue with selected CAD source inactive. Choose a CAD file first.', { exact: true }).waitFor();
         const file = page.getByTestId('cad-file-input');
         await file.setInputFiles({ name: 'synthetic.txt', mimeType: 'text/plain', buffer: Buffer.from('fixture') });
         await page.getByText('Unsupported format.', { exact: false }).waitFor();
@@ -66,15 +72,15 @@ fs.mkdirSync(evidence, { recursive: true });
         // In automation supply metadata through the file input; never parse a CAD source.
         await file.setInputFiles({ name: 'synthetic.IGES', mimeType: 'application/octet-stream', buffer: Buffer.from('synthetic metadata fixture') });
         await page.getByTestId('cad-selected-metadata').waitFor();
-        assert(!(await page.locator('body').innerText()).includes('synthetic.IGES'));
+        assert((await page.locator('body').innerText()).includes('synthetic.IGES'));
         assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
         assert.equal(await page.getByTestId('cad-import-details').count(), 0);
         assert.equal(await page.getByTestId('cad-session-state').count(), 0);
         assert.equal(await page.getByLabel('Upload unavailable: operator access required').count(), 0);
-        await page.getByText('CAD file ready for processing', { exact: true }).waitFor();
+        await page.getByText('CAD Source Ready', { exact: true }).waitFor();
+        await page.getByLabel('Continue with selected CAD source', { exact: true }).waitFor();
+        await page.getByLabel('Choose another CAD source', { exact: true }).waitFor();
         await page.screenshot({ path: `${evidence}/import-${width}.png`, fullPage: true });
-        await page.getByLabel('Clear selected CAD file', { exact: true }).click();
-        assert.equal(await page.getByTestId('cad-selected-metadata').count(), 0);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       }
       await page.addInitScript(() => { window.File = undefined; });
