@@ -1,3 +1,4 @@
+import DesktopNavigation from '../components/DesktopNavigation';
 import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
 import { InputMode } from '../utils/inputModes';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
@@ -1496,7 +1497,17 @@ export default function HomeScreen() {
     setShowHistory(false);
     setStarted(false);
   }, []);
-  const tabBarInset = safeAreaInsets.bottom + 84;
+  const tabBarInset = desktopWorkspace ? 0 : safeAreaInsets.bottom + 84;
+  const desktopNavigation = desktopWorkspace && !desktopCadWorkspace ? (
+    <DesktopNavigation
+      active={showSettings ? 'more' : tourActive ? 'tour' : !started ? 'home' : showHistory ? 'projects' : null}
+      onHome={goHome}
+      onProjects={openHistory}
+      onNew={() => handleStartNew()}
+      onTour={startTour}
+      onMore={() => openSettings('account')}
+    />
+  ) : null;
 
   const renderTourGuide = () => (
     <TourGuide
@@ -1565,6 +1576,7 @@ export default function HomeScreen() {
           style={styles.homeContentLayer}
           pointerEvents={welcomeIntroVisible ? 'none' : 'auto'}
         >
+          {desktopNavigation}
           <WelcomeScreen
             onStart={handleStartNew}
             onHistory={openHistory}
@@ -1584,7 +1596,7 @@ export default function HomeScreen() {
             initialSection={settingsInitialSection}
           />
           {renderTourGuide()}
-          <BottomTabBar
+          {!desktopWorkspace && <BottomTabBar
             active="home"
             onHome={goHome}
             onProjects={openHistory}
@@ -1592,7 +1604,7 @@ export default function HomeScreen() {
             onTour={startTour}
             onMore={() => openSettings('account')}
             bottomInset={safeAreaInsets.bottom}
-          />
+          />}
         </View>
         {welcomeIntroVisible ? (
           <View style={styles.welcomeIntroOverlay}>
@@ -1606,6 +1618,7 @@ export default function HomeScreen() {
   if (showHistory) {
     return (
       <View style={styles.container}>
+        {desktopNavigation}
         <HistoryScreen
           onBack={() => setShowHistory(false)}
           onResume={handleResume}
@@ -1613,7 +1626,8 @@ export default function HomeScreen() {
           bottomBarInset={tabBarInset}
         />
         {renderTourGuide()}
-        {keyboardInset === 0 && (
+        <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
+        {!desktopWorkspace && keyboardInset === 0 && (
           <BottomTabBar
             active="projects"
             onHome={goHome}
@@ -1634,6 +1648,7 @@ export default function HomeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? safeAreaInsets.top + 12 : 0}
     >
+      {desktopNavigation}
       {!nativeEmbeddedCadPreview && <View style={styles.header} testID="reversr-workflow-header">
         <View style={styles.logoContainer}>
           <ReversRLogoMark colors={Colors} size={40} />
@@ -2001,7 +2016,7 @@ export default function HomeScreen() {
         onClose={() => setNativeCadUploadPreviewVisible(false)}
       />
       {renderTourGuide()}
-      {!keyboardOpen && !nativeEmbeddedCadPreview && !desktopCadWorkspace && (
+      {!desktopWorkspace && !keyboardOpen && !nativeEmbeddedCadPreview && (
         <BottomTabBar
           active={null}
           onHome={goHome}

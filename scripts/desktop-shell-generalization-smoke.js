@@ -42,17 +42,47 @@ fs.mkdirSync(out, { recursive: true });
       };
       await page.goto(base);
       await enterHome();
-      assert.equal(await page.getByTestId('reversr-bottom-new').count(), 1, 'ordinary surfaces retain navigation');
+      assert.equal(await page.getByTestId('reversr-bottom-new').count(), width < 1024 ? 1 : 0);
+      assert.equal(await page.getByTestId('desktop-navigation').count(), width >= 1024 ? 1 : 0);
+      if (width >= 1024) {
+        assert.equal(await page.getByTestId('desktop-nav-home').getAttribute('aria-pressed'), 'true');
+        for (const key of ['home', 'projects', 'new', 'tour', 'more']) {
+          const box = await page.getByTestId(`desktop-nav-${key}`).boundingBox();
+          assert(box.x >= 0 && box.x + box.width <= width && box.y >= 0 && box.y + box.height < 100, 'navigation is visible at the top');
+        }
+        await page.getByTestId('desktop-nav-more').click();
+        await page.getByTestId('reversr-tour-settings').waitFor();
+        await check('settings');
+        await page.getByRole('button', { name: 'Close settings', exact: true }).click();
+        await page.getByTestId('desktop-nav-tour').click();
+        await page.getByTestId('reversr-tour-guide').waitFor();
+        await check('tour');
+        await page.getByRole('button', { name: 'Exit guided tour', exact: true }).click();
+        await page.getByTestId('desktop-nav-new').click();
+        await page.getByRole('textbox', { name: 'Machine description', exact: true }).waitFor();
+        await page.getByTestId('desktop-nav-home').click();
+      }
       await check('home');
       await page.getByTestId('home-mode-type').click();
       await page.getByRole('textbox', { name: 'Machine description', exact: true }).waitFor();
       await check('description');
+      for (const mode of ['scan', 'lucky']) {
+        await page.getByTestId(`phase-one-mode-${mode}`).click();
+        assert.equal(await page.getByTestId(`phase-one-mode-${mode}`).getAttribute('aria-pressed'), 'true');
+        await check(mode);
+      }
       await page.getByTestId('phase-one-mode-import').click();
       await checkLocked();
       await check('import-locked');
       await page.getByRole('button', { name: 'Projects', exact: true }).click();
       await page.getByTestId('reversr-tour-history').waitFor();
       await check('history');
+      if (width >= 1024) {
+        assert.equal(await page.getByTestId('desktop-nav-projects').getAttribute('aria-pressed'), 'true');
+        await page.getByTestId('desktop-nav-more').click();
+        await page.getByTestId('reversr-tour-settings').waitFor();
+        await page.getByRole('button', { name: 'Close settings', exact: true }).click();
+      }
       await page.getByRole('button', { name: 'Home', exact: true }).click();
       await page.getByRole('button', { name: 'Manage journey credits', exact: true }).click();
       await page.getByText('Repair shop plan and credits', { exact: true }).waitFor();
@@ -76,6 +106,11 @@ fs.mkdirSync(out, { recursive: true });
         await page.setViewportSize({ width: resized, height });
         await page.waitForFunction(expected => Math.abs(document.querySelector('[data-testid="app-shell"]').getBoundingClientRect().width - expected) < 1, resized >= 1024 ? resized : Math.min(resized, 600));
         assert.equal(await input.inputValue(), 'Retain synthetic local draft on resize');
+        await page.waitForFunction(
+          expected => document.querySelectorAll('[data-testid="desktop-navigation"]').length === expected,
+          resized >= 1024 ? 1 : 0,
+        );
+        await page.getByTestId('desktop-navigation').waitFor({ state: resized >= 1024 ? 'visible' : 'detached' });
       }
       await page.setViewportSize({ width, height });
       await page.goto(`${base}/?cadPreview=invalid`);
@@ -87,6 +122,8 @@ fs.mkdirSync(out, { recursive: true });
       await page.goto(`${base}/?cadPreview=mark-dispenser-v1&qa=native-internal-upload-render&cadPhase=input`);
       await page.getByTestId('cad-source-choice-panel').waitFor();
       await check('native-embedded', true);
+      assert.equal(await page.getByTestId('desktop-navigation').count(), 0);
+      assert.equal(await page.getByTestId('reversr-bottom-new').count(), 0, 'embedded preview remains free of application navigation');
       assert.equal(await page.getByTestId('reversr-workflow-header').count(), 0);
       assert.equal(writes, 0); assert.deepEqual(errors, []);
       const video = page.video(); await context.close();
