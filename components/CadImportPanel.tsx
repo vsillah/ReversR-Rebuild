@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
@@ -10,6 +10,21 @@ import { prepareLocalCadPreview, supportsLocalCadPreview } from '../utils/cadLoc
 
 type FixtureSourceMode = 'local' | 'sample' | null;
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
+const CAD_GRID_MAJOR_LINES = Object.freeze([25, 50, 75]);
+const CAD_GRID_MINOR_LINES = Object.freeze(
+  Array.from({ length: 15 }, (_, index) => (index + 1) * 6.25).filter(position => !CAD_GRID_MAJOR_LINES.includes(position)),
+);
+const CAD_IMPORT_PREVIEW_DIAL_ARROWS = Object.freeze([
+  { key: 'front', left: 40, top: 4, rotate: '0deg' },
+  { key: 'front-right', left: 68, top: 16, rotate: '45deg' },
+  { key: 'right', left: 80, top: 40, rotate: '90deg' },
+  { key: 'back-right', left: 68, top: 68, rotate: '135deg' },
+  { key: 'back', left: 40, top: 80, rotate: '180deg' },
+  { key: 'back-left', left: 12, top: 68, rotate: '225deg' },
+  { key: 'left', left: 0, top: 40, rotate: '270deg' },
+  { key: 'front-left', left: 12, top: 16, rotate: '315deg' },
+]);
+const CAD_IMPORT_PREVIEW_ZOOM_TICKS = Object.freeze([0, 25, 50, 75, 100]);
 
 const INTERNAL_PREVIEW_DIAGNOSTICS: ReadonlyArray<{
   icon: IconName;
@@ -333,15 +348,16 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
           </View>
         </View>
       ) : supported ? (
-        <>
-          <CadAction testID="cad-choose-file" accessibilityLabel="Choose CAD file from this device" primary icon="document-attach-outline" label={selected ? 'Choose another CAD file' : 'Choose CAD file'} onPress={chooseLocalFile} />
-        </>
+        null
       ) : <Text testID="cad-picker-unavailable" style={text}>File selection is unavailable on this surface. Open ReversR in a web browser with file-picker support to select a CAD file. Native selection is pending.</Text>}
       {!fixture && selected && <View testID="cad-selected-metadata" style={{ gap: 10 }}>
         <Text style={text}>{selected.format} · {selected.bytes.toLocaleString()} bytes · Prepared locally</Text>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Clear selected CAD file" style={button} onPress={() => { setSelected(null); setMessage('Selection cleared.'); }}><Text style={text}>Clear selection</Text></TouchableOpacity>
       </View>}
       {!!message && <Text accessibilityLiveRegion="polite" style={text}>{message}</Text>}
+      {!fixture && !onOpenInternalPreview && (
+        <CadImportGridPreview selected={Boolean(selected)} onPress={supported ? chooseLocalFile : undefined} />
+      )}
       {!fixture && !onOpenInternalPreview && uploadSessionAdapter && (
         <CadDetails title="Development session diagnostics" testID="cad-import-details">
           <Text testID="cad-session-state" accessibilityLiveRegion="polite" style={text}>{sessionReady
@@ -362,3 +378,284 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     </View>
   );
 }
+
+function CadImportGridPreview({ selected, onPress }: { selected: boolean; onPress?: () => void }) {
+  const { colors } = useAppTheme();
+  const isDarkGrid = colors.mode === 'dark';
+  const gridBackground = isDarkGrid ? 'rgba(15, 23, 42, 0.94)' : '#dce6ef';
+  const gridMinor = isDarkGrid ? 'rgba(148, 163, 184, 0.18)' : 'rgba(194, 207, 219, 0.72)';
+  const gridMajor = isDarkGrid ? 'rgba(148, 163, 184, 0.30)' : 'rgba(156, 171, 184, 0.68)';
+  const gridEdge = isDarkGrid ? 'rgba(148, 163, 184, 0.32)' : 'rgba(156, 171, 184, 0.46)';
+  const gridCenterGuide = isDarkGrid ? 'rgba(226, 232, 240, 0.22)' : 'rgba(91, 105, 119, 0.42)';
+  const previewDialSurface = isDarkGrid ? 'rgba(8, 12, 18, 0.42)' : 'rgba(23, 33, 31, 0.24)';
+  const previewDialBorder = isDarkGrid ? 'rgba(226, 232, 240, 0.14)' : 'rgba(156, 171, 184, 0.28)';
+  const previewDialInnerSurface = isDarkGrid ? 'rgba(226, 232, 240, 0.08)' : 'rgba(255, 255, 255, 0.10)';
+  const previewDialInnerBorder = isDarkGrid ? 'rgba(226, 232, 240, 0.16)' : 'rgba(207, 224, 219, 0.24)';
+  const previewControlSurface = isDarkGrid ? 'rgba(15, 23, 42, 0.58)' : 'rgba(49, 65, 62, 0.34)';
+  const previewControlBorder = isDarkGrid ? 'rgba(226, 232, 240, 0.18)' : 'rgba(207, 224, 219, 0.32)';
+  const previewControlText = isDarkGrid ? 'rgba(226, 232, 240, 0.84)' : 'rgba(232, 255, 250, 0.78)';
+  const previewZoomSurface = isDarkGrid ? 'rgba(8, 12, 18, 0.38)' : 'rgba(23, 33, 31, 0.22)';
+  const previewZoomButtonSurface = isDarkGrid ? 'rgba(15, 23, 42, 0.54)' : 'rgba(23, 33, 31, 0.34)';
+  const previewZoomRail = isDarkGrid ? 'rgba(127, 224, 192, 0.26)' : 'rgba(127, 224, 192, 0.34)';
+  const previewZoomTick = isDarkGrid ? 'rgba(226, 232, 240, 0.26)' : 'rgba(232, 255, 250, 0.30)';
+  const previewZoomThumb = isDarkGrid ? 'rgba(226, 232, 240, 0.82)' : 'rgba(232, 255, 250, 0.78)';
+  const promptBackground = isDarkGrid ? 'rgba(8, 12, 18, 0.72)' : 'rgba(255, 255, 255, 0.78)';
+
+  return (
+    <TouchableOpacity
+      testID="cad-import-grid-preview"
+      accessibilityRole="button"
+      accessibilityLabel={selected ? 'Choose another CAD file from this device' : 'Choose CAD file to load'}
+      disabled={!onPress}
+      activeOpacity={0.88}
+      onPress={onPress}
+      style={[
+        importPreviewStyles.preview,
+        {
+          borderColor: gridEdge,
+          backgroundColor: gridBackground,
+        },
+      ]}
+    >
+      <View style={importPreviewStyles.grid} pointerEvents="none">
+        {CAD_GRID_MINOR_LINES.map(position => (
+          <View key={`v-minor-${position}`} style={[importPreviewStyles.verticalLine, { left: `${position}%`, backgroundColor: gridMinor }]} />
+        ))}
+        {CAD_GRID_MINOR_LINES.map(position => (
+          <View key={`h-minor-${position}`} style={[importPreviewStyles.horizontalLine, { top: `${position}%`, backgroundColor: gridMinor }]} />
+        ))}
+        {CAD_GRID_MAJOR_LINES.map(position => (
+          <View key={`v-major-${position}`} style={[importPreviewStyles.verticalLine, { left: `${position}%`, width: 1, backgroundColor: gridMajor }]} />
+        ))}
+        {CAD_GRID_MAJOR_LINES.map(position => (
+          <View key={`h-major-${position}`} style={[importPreviewStyles.horizontalLine, { top: `${position}%`, height: 1, backgroundColor: gridMajor }]} />
+        ))}
+        <View style={[importPreviewStyles.centerHorizontal, { backgroundColor: gridCenterGuide }]} />
+        <View style={[importPreviewStyles.centerVertical, { backgroundColor: gridCenterGuide }]} />
+        <View testID="cad-import-viewfinder-controls" style={importPreviewStyles.viewfinderChrome} pointerEvents="none">
+          <View testID="cad-import-viewfinder-dial" style={[importPreviewStyles.previewDial, { borderColor: previewDialBorder, backgroundColor: previewDialSurface }]}>
+            <View style={[importPreviewStyles.previewDialInner, { borderColor: previewDialInnerBorder, backgroundColor: previewDialInnerSurface }]}>
+              {CAD_IMPORT_PREVIEW_DIAL_ARROWS.map(arrow => (
+                <View
+                  key={arrow.key}
+                  style={[
+                    importPreviewStyles.previewDialArrow,
+                    {
+                      left: arrow.left,
+                      top: arrow.top,
+                      transform: [{ rotate: arrow.rotate }],
+                    },
+                  ]}
+                >
+                  <Ionicons name="caret-up" size={24} color={previewControlText} accessible={false} />
+                </View>
+              ))}
+              <View style={[importPreviewStyles.previewDialReset, { borderColor: previewControlBorder, backgroundColor: previewControlSurface }]}>
+                <Text style={[importPreviewStyles.previewDialResetText, { color: previewControlText }]}>↺</Text>
+              </View>
+            </View>
+          </View>
+          <View testID="cad-import-viewfinder-zoom" style={[importPreviewStyles.previewZoom, { borderColor: previewControlBorder, backgroundColor: previewZoomSurface }]}>
+            <Text style={[importPreviewStyles.previewZoomButton, { color: previewControlText, backgroundColor: previewZoomButtonSurface, borderColor: previewControlBorder }]}>+</Text>
+            <View style={importPreviewStyles.previewZoomRail}>
+              <View style={[importPreviewStyles.previewZoomRailFill, { backgroundColor: previewZoomRail }]} />
+              {CAD_IMPORT_PREVIEW_ZOOM_TICKS.map(tick => (
+                <View key={tick} style={[importPreviewStyles.previewZoomTick, { bottom: `${tick}%`, backgroundColor: previewZoomTick }]} />
+              ))}
+              <View style={[importPreviewStyles.previewZoomThumb, { backgroundColor: previewZoomThumb }]} />
+            </View>
+            <Text style={[importPreviewStyles.previewZoomButton, { color: previewControlText, backgroundColor: previewZoomButtonSurface, borderColor: previewControlBorder }]}>−</Text>
+          </View>
+        </View>
+      </View>
+      <View style={[importPreviewStyles.prompt, { backgroundColor: promptBackground, borderColor: colors.hairline }]} pointerEvents="none">
+        <View style={[importPreviewStyles.promptIcon, { backgroundColor: selected ? colors.successSoft : colors.primarySoft }]}>
+          <Ionicons name={selected ? 'checkmark-circle-outline' : 'document-attach-outline'} size={20} color={selected ? colors.success : colors.primary} accessible={false} />
+        </View>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text testID="cad-import-grid-prompt" style={[Typography.bodyStrong, { color: colors.text }]}>
+            {selected ? 'CAD file ready for processing' : 'Choose CAD file to load'}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const importPreviewStyles = StyleSheet.create({
+  preview: {
+    minHeight: 304,
+    borderRadius: Radii.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  grid: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  verticalLine: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: StyleSheet.hairlineWidth,
+  },
+  horizontalLine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: StyleSheet.hairlineWidth,
+  },
+  centerHorizontal: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: '50%',
+    height: 1,
+  },
+  centerVertical: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: '50%',
+    width: 1,
+  },
+  viewfinderChrome: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  previewDial: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    width: 128,
+    height: 128,
+    borderRadius: 64,
+    borderWidth: 1,
+    borderColor: 'rgba(156, 171, 184, 0.28)',
+    backgroundColor: 'rgba(23, 33, 31, 0.24)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewDialInner: {
+    position: 'relative',
+    width: 104,
+    height: 104,
+    borderRadius: 52,
+    borderWidth: 1,
+    borderColor: 'rgba(207, 224, 219, 0.24)',
+    backgroundColor: 'rgba(255, 255, 255, 0.10)',
+  },
+  previewDialArrow: {
+    position: 'absolute',
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewDialReset: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    width: 36,
+    height: 36,
+    marginLeft: -18,
+    marginTop: -18,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(207, 224, 219, 0.32)',
+    backgroundColor: 'rgba(49, 65, 62, 0.34)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewDialResetText: {
+    color: 'rgba(232, 255, 250, 0.86)',
+    fontSize: 19,
+    lineHeight: 20,
+  },
+  previewZoom: {
+    position: 'absolute',
+    left: 16,
+    top: 20,
+    width: 42,
+    borderRadius: 999,
+    paddingVertical: 7,
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(216, 227, 223, 0.14)',
+    backgroundColor: 'rgba(23, 33, 31, 0.22)',
+  },
+  previewZoomButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    overflow: 'hidden',
+    textAlign: 'center',
+    color: 'rgba(232, 255, 250, 0.78)',
+    backgroundColor: 'rgba(23, 33, 31, 0.34)',
+    borderWidth: 1,
+    borderColor: 'rgba(216, 227, 223, 0.16)',
+    fontSize: 21,
+    lineHeight: 28,
+    fontWeight: '500',
+  },
+  previewZoomRail: {
+    position: 'relative',
+    width: 28,
+    height: 74,
+    alignItems: 'center',
+  },
+  previewZoomRailFill: {
+    position: 'absolute',
+    top: 6,
+    bottom: 6,
+    width: 5,
+    borderRadius: 999,
+    backgroundColor: 'rgba(127, 224, 192, 0.34)',
+  },
+  previewZoomTick: {
+    position: 'absolute',
+    left: 6,
+    right: 6,
+    height: 1,
+    backgroundColor: 'rgba(232, 255, 250, 0.30)',
+  },
+  previewZoomThumb: {
+    position: 'absolute',
+    left: '50%',
+    bottom: 34,
+    width: 14,
+    height: 14,
+    marginLeft: -7,
+    borderRadius: 7,
+    backgroundColor: 'rgba(232, 255, 250, 0.78)',
+  },
+  prompt: {
+    position: 'absolute',
+    left: 74,
+    right: Spacing.md,
+    bottom: Spacing.md,
+    minHeight: 56,
+    borderRadius: Radii.md,
+    borderWidth: 1,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  promptIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
