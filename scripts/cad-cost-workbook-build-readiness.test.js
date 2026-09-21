@@ -42,6 +42,7 @@ test('cost model covers required CAD run buckets and keeps unresolved estimates 
     'conversion-sandbox-compute',
     'preview-render-retention',
     'internal-tester-support',
+    'account-history-persistence',
     'commercial-buffer',
   ]);
 
@@ -57,9 +58,23 @@ test('Build readiness surface explains ready, missing, and blocked states', () =
   assert.deepEqual(CAD_BUILD_READINESS.costEvidenceNeeded, workbook.readinessSurface.costEvidenceNeeded);
   assert.deepEqual(CAD_BUILD_READINESS.blockedOutputs, workbook.readinessSurface.blockedOutputs);
   assert.ok(CAD_BUILD_READINESS.summaryCards.some(card => card.label === 'Fee per run' && card.value === 'Evidence pending'));
-  assert.ok(CAD_BUILD_READINESS.productReady.includes('Installed-app internal CAD preview controls'));
-  assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Internal tester device and file-compatibility support'));
+  assert.ok(CAD_BUILD_READINESS.productReady.includes('Desktop/browser and installed-app internal CAD preview controls'));
+  assert.ok(CAD_BUILD_READINESS.productReady.includes('Local CAD source chooser with IGES, STEP and BREP render support'));
+  assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Account-backed history persistence and preview-to-project retention policy'));
+  assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Internal tester browser, device and file-compatibility support'));
+  assert.ok(CAD_BUILD_READINESS.blockedOutputs.includes('Durable account-backed reconstruction history'));
   assert.match(markdown, /Build phase can now explain three things/);
+});
+
+test('workbook records current preview support without overpromising commercialization', () => {
+  assert.equal(workbook.baseCommit, '205b23fb82b8ca01cab096d3d83c2fc51fce61a4');
+  assert.match(markdown, /production-hosted desktop browser/);
+  assert.match(markdown, /installed internal app build/);
+  assert.match(markdown, /picker recognizes common CAD extensions/);
+  assert.match(markdown, /local renderer supports IGES, STEP and BREP preview only/);
+  assert.match(markdown, /Saved reconstruction history is still a commercialization dependency/);
+  assert.match(markdown, /Normal\s+app updates should preserve local `AsyncStorage`/);
+  assert.doesNotMatch(markdown, /Mark can choose an `\.igs` or `\.iges` file locally on the Android device/);
 });
 
 test('dangerous authorities remain closed in workbook and upstream readiness packet', () => {

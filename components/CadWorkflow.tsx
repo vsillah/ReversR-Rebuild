@@ -152,7 +152,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
         </View>
         <CadDetails title="Geometry warnings & review limits" testID="cad-build-details">
           {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
-          <Text style={text}>The implementation package remains locked because this {isLocalPreview ? 'local IGES render' : 'public fixture review'} is visual QA only.</Text>
+          <Text style={text}>The implementation package remains locked because this {isLocalPreview ? 'local CAD render' : 'public fixture review'} is visual QA only.</Text>
         </CadDetails>
         <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
