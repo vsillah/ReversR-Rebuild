@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-opening-review-packet",
+  "mode": "source-only-opening-review-gap-packet",
+  "status": "NOT_READY_FOR_ACTIVATION_REVIEW_MISSING_EVIDENCE",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "a81e217a223d810ee727d5b1e8841a40f82d8293",
+  "observedAtUtc": "2026-09-21T21:31:05Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "reviewScope": {
+    "purpose": "Clarify the exact evidence still required before an internal upload-admission opening can be requested.",
+    "currentUserApprovalInterpretedAs": "source-only opening review packet approval",
+    "explicitUploadActivationApprovalSatisfied": false,
+    "productionUploadActivationAuthorizedNow": false,
+    "requestBodyReadAuthorizedNow": false
+  },
+  "sourceBindings": {
+    "openingBundleTemplate": "docs/cad-internal-admission-opening-bundle-template.json",
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "evidenceBinding": "docs/cad-internal-admission-evidence-binding.json",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "defaultClosedSwitch": "docs/cad-default-closed-admission-switch.json",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "costWorkbook": "docs/cad-per-run-cost-workbook.json"
+  },
+  "knownFactsNotActivationEvidence": {
+    "latestMainCommit": "a81e217a223d810ee727d5b1e8841a40f82d8293",
+    "productionUrl": "https://reversr.vercel.app",
+    "route": "POST /api/cad/user-import",
+    "latestFailClosedSmoke": {
+      "cacheBuster": "qa=a81e217",
+      "routes": [
+        {
+          "route": "GET /",
+          "status": 200,
+          "title": "ReversR Rebuild"
+        },
+        {
+          "route": "GET /api/cad/capabilities",
+          "status": 200
+        },
+        {
+          "route": "POST /api/cad/user-import {}",
+          "status": 401,
+          "code": "USER_SESSION_REQUIRED"
+        },
+        {
+          "route": "POST /api/cad/import {}",
+          "status": 401,
+          "code": "UNAUTHORIZED"
+        },
+        {
+          "route": "GET /api/cad/import-source-record",
+          "status": 404
+        }
+      ]
+    }
+  },
+  "currentRouteState": {
+    "switchImported": true,
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "activationReadinessEnabled": false,
+    "activationLiveReady": false,
+    "activationExecutable": false,
+    "checkerReadyForSeparateActivationApproval": false,
+    "routeMayOpenNow": false
+  },
+  "blockingEvidence": [
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "A reviewed runtime implementation commit accepted into the activation readiness evidence."
+    },
+    {
+      "id": "exact-deployment-and-route",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactDeploymentAndRoute",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "A receipt tying the reviewed commit to the exact production deployment and route."
+    },
+    {
+      "id": "exact-internal-cohort-and-window",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "A named internal tester cohort plus startsAt/expiresAt activation window."
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.explicitUploadActivationApproval",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "A separate explicit approval phrase for production upload admission only."
+    },
+    {
+      "id": "concurrent-session-revocation-fence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Proof that session revocation closes admission before any body read."
+    },
+    {
+      "id": "browser-csrf-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Browser upload transport review for exact HTTPS origin and session CSRF."
+    },
+    {
+      "id": "native-bearer-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.nativeBearerTransportReview",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Installed-app native bearer transport review."
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Rollback evidence that upload sessions can be revoked and the endpoint returns the disabled code."
+    },
+    {
+      "id": "retention-or-deletion-disposition",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Supported deletion or approved bounded retention disposition for accepted bodies and receipts."
+    },
+    {
+      "id": "durable-private-register-lockout",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Private-file register and lockout evidence before any private CAD path."
+    },
+    {
+      "id": "environment-deployment-test-approvals",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Separate deployment and test approvals for the exact target environment."
+    },
+    {
+      "id": "cost-workbook-fee-readiness",
+      "bindingSource": "docs/cad-per-run-cost-workbook.json#feePerRunReady",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Per-run provider, compute, storage, support and fee evidence."
+    },
+    {
+      "id": "separate-conversion-sandbox-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.separateConversionAndSandboxApproval",
+      "upstreamSatisfied": false,
+      "activationBlocking": true,
+      "needed": "Separate future approval before conversion or Sandbox dispatch."
+    }
+  ],
+  "candidateOpeningBundleReview": {
+    "checker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "template": "docs/cad-internal-admission-opening-bundle-template.json",
+    "expectedResultNow": {
+      "ok": false,
+      "readyForSeparateActivationApproval": false,
+      "terminalCodeUntilSeparateApproval": "USER_UPLOADS_DISABLED",
+      "routeMayOpenNow": false
+    }
+  },
+  "nextHumanGateDraft": {
+    "type": "exact-production-upload-admission-opening-approval",
+    "requiredBeforeUse": true,
+    "draftApprovalPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import on the exact reviewed commit, deployment, cohort, window, rollback, retention, and cost evidence named in the accepted opening bundle. Scope is admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource changes outside the accepted bundle, or second run.",
+    "note": "This phrase is a draft only and is not accepted by this packet."
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "fill and review an opening bundle only after exact cohort, time window, rollback, transport, retention, and cost evidence are available"
+}
