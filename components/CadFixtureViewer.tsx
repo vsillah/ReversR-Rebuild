@@ -352,9 +352,11 @@ const fallbackStyle: React.CSSProperties = {
 export default function CadFixtureViewer({
   geometry,
   label,
+  height,
 }: {
   geometry: CadInternalTesterFixture['previewGeometry'];
   label: string;
+  height?: number;
 }) {
   const puckId = useId();
   const [expanded, setExpanded] = useState(false);
@@ -844,7 +846,7 @@ export default function CadFixtureViewer({
   return (
     <div>
       <div
-        style={frameStyle}
+        style={{ ...frameStyle, ...(height ? { height, maxHeight: height } : {}) }}
         role="group"
         aria-label={`${label} model viewer`}
         data-testid="cad-fixture-canvas-host"
