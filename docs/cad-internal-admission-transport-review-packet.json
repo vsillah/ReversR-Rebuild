@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-transport-review-packet",
+  "mode": "source-only-transport-review-requirements",
+  "status": "TRANSPORT_REVIEW_DRAFT_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "dc6c789d2e5b5524256a4514d30fe8c3539720e4",
+  "observedAtUtc": "2026-09-21T21:59:15Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "sourceBindings": {
+    "uploadSessionVerifier": "server/uploadSession.js",
+    "uploadSessionStore": "server/uploadSessionStore.js",
+    "userUploadRoute": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "uploadSessionTests": "scripts/cad-upload-session.test.js",
+    "userUploadRouteTests": "scripts/cad-user-upload-route.test.js",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "openingReviewPacket": "docs/cad-internal-admission-opening-review-packet.json",
+    "cohortWindowPacket": "docs/cad-internal-admission-cohort-window-packet.json"
+  },
+  "currentRouteState": {
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "activationReadinessEnabled": false,
+    "activationLiveReady": false,
+    "activationExecutable": false,
+    "browserCsrfEvidenceAccepted": false,
+    "nativeBearerEvidenceAccepted": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateActivationApproval": "USER_UPLOADS_DISABLED"
+  },
+  "browserCookieTransportReview": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+    "transport": "cookie",
+    "cookieName": "__Host-reversr-upload-session",
+    "requiredHeaders": [
+      "Cookie",
+      "Origin",
+      "X-Upload-CSRF"
+    ],
+    "exactHttpsOriginRequired": true,
+    "wildcardOriginAccepted": false,
+    "csrfDigestRequired": true,
+    "credentialAndCsrfNeverLogged": true,
+    "mixedCookieAndBearerRejected": true,
+    "coveredBy": [
+      "scripts/cad-upload-session.test.js#cookie-sessions-require-exact-https-origin-and-session-bound-csrf",
+      "scripts/cad-user-upload-route.test.js#cookie-csrf-validation-precedes-the-disabled-response"
+    ],
+    "stillNeededBeforeActivation": [
+      "accepted exact HTTPS production origin list",
+      "accepted session issuer route and cookie disposition",
+      "accepted CSRF custody and revocation evidence",
+      "accepted rollback receipt proving browser admission closes before request body read"
+    ]
+  },
+  "nativeBearerTransportReview": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.nativeBearerTransportReview",
+    "transport": "bearer",
+    "authorizationScheme": "Bearer us1.<opaque-token>",
+    "duplicateAuthorizationRejected": true,
+    "mixedCookieAndBearerRejected": true,
+    "tokenDigestOnly": true,
+    "membershipPermissionRefreshRequired": true,
+    "coveredBy": [
+      "scripts/cad-upload-session.test.js#malformed-credentials-and-ambiguous-transports-never-reach-store",
+      "scripts/cad-upload-session.test.js#revocation-and-entitlement-changes-are-re-read-on-every-call",
+      "scripts/cad-user-upload-route.test.js#valid-sessions-stay-disabled"
+    ],
+    "stillNeededBeforeActivation": [
+      "accepted installed-app issuer and refresh provenance",
+      "accepted device install or update custody evidence",
+      "accepted revocation fence for bearer sessions",
+      "accepted rollback receipt proving native admission closes before request body read"
+    ]
+  },
+  "guardrails": {
+    "requestBodyReadAuthorizedNow": false,
+    "productionUploadActivationAuthorizedNow": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "externalMessagesAllowed": false
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "browserCookieTransportAccepted": false,
+    "nativeBearerTransportAccepted": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "accept exact browser-cookie and native-bearer transport evidence in a later opening bundle review, still without executing production upload activation"
+}
