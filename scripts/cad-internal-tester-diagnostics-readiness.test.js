@@ -116,10 +116,10 @@ test('authorities remain closed and no private evidence leaks into source', () =
   assert.doesNotMatch(combined, /conversion dispatched/i);
 });
 
-test('Mark parallel-work guard includes internal tester diagnostics as allowed source work', () => {
+test('Mark parallel-work guard preserves diagnostics while Windows browser is primary', () => {
   assert.ok(markPacket.markApprovalNotRequiredFor.includes(
-    'internal tester diagnostics and support-readiness updates',
+    'browser tester diagnostics and support-readiness updates',
   ));
-  assert.ok(markPacket.parallelWorkAllowed.some(item => item.id === 'internal-tester-diagnostics'));
-  assert.equal(markPacket.nextRecommendedGate, 'source-only internal tester diagnostics and support-readiness packet');
+  assert.ok(markPacket.parallelWorkAllowed.some(item => item.id === 'browser-tester-diagnostics'));
+  assert.match(markPacket.nextRecommendedGate, /Windows-browser handoff closeout/);
 });

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-windows-browser-handoff",
+  "status": "source_only_reviewer_packet_sent",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "targetReviewer": "rrb-ref:approved-mark-recipient",
+  "sendCompleted": true,
+  "sendCompletedEvidenceRef": "rrb-ref:captain-gmail-sent-windows-browser-correction",
+  "futureExternalSendAuthorized": false,
+  "reviewerLink": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff",
+  "primarySurface": "Windows desktop browser",
+  "preferredBrowsers": ["Chrome", "Edge"],
+  "requestedAction": "Choose CAD file and render local preview",
+  "acceptedReviewerExtensions": [".igs", ".iges"],
+  "fallbackAction": "Use public sample only as a fallback comparison",
+  "recording": {
+    "required": true,
+    "artifactRef": "rrb-ref:windows-browser-walkthrough-mp4",
+    "usesPrivateRecipientDetails": false,
+    "usesGmailSend": true,
+    "demoFixture": "public/cad-fixtures/mark-dispenser-v1/Dispenser.IGS",
+    "steps": [
+      "open draft email page",
+      "click production preview link",
+      "choose CAD file",
+      "select Dispenser.IGS for the demonstration",
+      "render preview",
+      "open viewer",
+      "exercise orientation and zoom controls"
+    ]
+  },
+  "knownLimitations": [
+    "not commercialization ready",
+    "production upload sessions are not enabled",
+    "backend conversion is not enabled",
+    "Sandbox processing is not enabled",
+    "manufacturing/export output is not enabled",
+    "private CAD workflows are not enabled",
+    "fee or run-cost readiness is not proven"
+  ],
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "walkthroughRecording": true,
+    "externalSend": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "providerEnvResourceBillingChanges": false
+  }
+}
