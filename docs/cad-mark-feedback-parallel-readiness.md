@@ -20,12 +20,14 @@ than storing the email address in source.
 The current review path has changed. Mark should test the Windows desktop
 browser path first, reached from a new correction email link:
 
-`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff`
+`https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-desktop-handoff`
 
 The expected browser choices are `Choose CAD file` and `Use public sample`.
-The primary requested test is `Choose CAD file` with an authorized `.igs` or
-`.iges` file on Mark's Windows computer. The expected result is a local 3D
-preview with dimensions, grid, zoom controls and orientation controls. The file
+The primary requested test is `Choose CAD file` with an authorized CAD file on
+Mark's Windows computer. IGES, STEP and BREP are the expected renderable
+formats in this preview; other recognized CAD formats may stay preview-pending
+instead of rendering. The expected result is a local 3D preview with dimensions,
+grid, zoom controls and orientation controls. The file
 contents stay in the browser-local preview path and do not prove production
 upload, backend conversion or Sandbox processing.
 
@@ -62,11 +64,11 @@ Quick correction to simplify the testing path. Please test the browser version
 on your Windows computer first instead of using the mobile app.
 
 Open this link in Chrome or Edge on Windows:
-https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff
+https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-desktop-handoff
 
 Then:
 1. Click Choose CAD file.
-2. Select an authorized .igs or .iges file from your computer.
+2. Select an authorized CAD file from your computer.
 3. Click Render preview.
 4. Confirm whether the model appears and whether the dimensions, grid, zoom and
    orientation controls are usable.
@@ -178,7 +180,7 @@ Stop before any of the following:
 
 ## Next Recommended Gate
 
-The next useful gate is source-only closeout of the Windows-browser handoff
-packet, then continued non-conflicting internal readiness work while Mark's
-feedback is pending. Any further external message to Mark remains a separate
-approval gate.
+The Windows-browser handoff closeout now lives in
+`docs/cad-windows-browser-handoff-closeout.json`. The next useful gate is
+continued non-conflicting internal readiness work while Mark's feedback is
+pending. Any further external message to Mark remains a separate approval gate.

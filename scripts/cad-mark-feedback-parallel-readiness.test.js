@@ -17,8 +17,11 @@ test('packet pivots Mark feedback to the Windows browser review path', () => {
   assert.equal(packet.handoff.currentReviewPath.expectedBrowser, 'Chrome or Edge on Windows');
   assert.equal(packet.handoff.currentReviewPath.expectedEntry, 'Email link -> production browser preview -> Choose CAD file');
   assert.deepEqual(packet.handoff.currentReviewPath.expectedChoices, ['Choose CAD file', 'Use public sample']);
-  assert.deepEqual(packet.handoff.currentReviewPath.acceptedTestExtensions, ['.igs', '.iges']);
-  assert.match(packet.handoff.currentReviewPath.productionRenderer, /qa=windows-browser-handoff/);
+  assert.equal(packet.handoff.closeoutCompleted, true);
+  assert.equal(packet.handoff.closeoutPacket, 'docs/cad-windows-browser-handoff-closeout.json');
+  assert.deepEqual(packet.handoff.currentReviewPath.acceptedTestExtensions,
+    ['.igs', '.iges', '.stp', '.step', '.brep']);
+  assert.match(packet.handoff.currentReviewPath.productionRenderer, /qa=windows-desktop-handoff/);
   assert.equal(packet.handoff.currentReviewPath.secondaryPath, 'installed Android internal preview remains internal fallback context only');
   assert(packet.markApprovalRequiredFor.includes('Windows browser upload-to-preview usability'));
   assert(packet.markApprovalNotRequiredFor.includes('source-only documentation and manifest updates'));
@@ -75,5 +78,5 @@ test('feedback intake triages Windows browser issues without opening production 
   assert(packet.feedbackIntake.minimumFields.includes('screenshot or short clip when possible'));
   assert(packet.feedbackIntake.responseRules.includes('do not ask Mark for private CAD in this review path'));
   assert(packet.feedbackIntake.responseRules.includes('do not claim a backend upload, conversion or Sandbox failure from a local preview symptom'));
-  assert.match(packet.nextRecommendedGate, /Windows-browser handoff closeout/);
+  assert.equal(packet.nextRecommendedGate, 'continue non-conflicting internal readiness work while Mark feedback remains pending');
 });

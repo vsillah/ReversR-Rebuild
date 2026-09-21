@@ -14,18 +14,20 @@
     "correctionSent": true,
     "correctionSentEvidenceRef": "rrb-ref:captain-gmail-sent-windows-browser-correction",
     "sendAuthorizedByThisPacket": false,
-    "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff",
+    "previewUrl": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-desktop-handoff",
     "publicMaterial": "Dispenser.IGS and matching reference images",
     "walkthroughRequired": true,
+    "closeoutCompleted": true,
+    "closeoutPacket": "docs/cad-windows-browser-handoff-closeout.json",
     "currentReviewPath": {
       "surface": "Windows desktop browser CAD upload-to-preview path",
       "expectedBrowser": "Chrome or Edge on Windows",
       "expectedEntry": "Email link -> production browser preview -> Choose CAD file",
       "expectedChoices": ["Choose CAD file", "Use public sample"],
       "primaryRequestedChoice": "Choose CAD file",
-      "acceptedTestExtensions": [".igs", ".iges"],
+      "acceptedTestExtensions": [".igs", ".iges", ".stp", ".step", ".brep"],
       "expectedResult": "local 3D preview with dimensions, grid, zoom and orientation controls",
-      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-browser-handoff",
+      "productionRenderer": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-desktop-handoff",
       "secondaryPath": "installed Android internal preview remains internal fallback context only"
     },
     "sentCorrectionEmail": {
@@ -159,7 +161,7 @@
     "external messages beyond the completed approved Mark correction send",
     "claims that Mark approved geometry before his response is received"
   ],
-  "nextRecommendedGate": "source-only Windows-browser handoff closeout, then non-conflicting internal readiness work while Mark feedback remains pending",
+  "nextRecommendedGate": "continue non-conflicting internal readiness work while Mark feedback remains pending",
   "authorizes": {
     "sourceOnlyDocsAndTests": true,
     "localValidation": true,
