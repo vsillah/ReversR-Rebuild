@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-human-qa-acceptance",
+  "mode": "source-only-human-qa-acceptance-receipt",
+  "status": "HUMAN_QA_ACCEPTED_CANDIDATE_BUNDLE_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "92b73ff0bf05e15e0d204a1a0303133faedcdc09",
+  "observedAtUtc": "2026-09-21T23:18:22Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "acceptedArtifact": {
+    "type": "source-only-candidate-opening-bundle",
+    "pullRequest": "https://github.com/vsillah/ReversR-Rebuild/pull/374",
+    "mergeCommit": "92b73ff0bf05e15e0d204a1a0303133faedcdc09",
+    "branch": "codex/cad-internal-admission-candidate-opening-bundle",
+    "reviewedPacket": "docs/cad-internal-admission-candidate-opening-bundle.json",
+    "reviewedMarkdown": "docs/cad-internal-admission-candidate-opening-bundle.md",
+    "humanQaAccepted": true
+  },
+  "qaInterpretation": {
+    "acceptsCandidateForNextDecision": true,
+    "acceptsSourceOnlyEvidenceShape": true,
+    "acceptsProductionUploadActivation": false,
+    "acceptsRequestBodyReads": false,
+    "acceptsRuntimeRouteChange": false,
+    "acceptsProviderEnvResourceBillingChanges": false,
+    "acceptsExternalMessages": false,
+    "acceptsCommercialReadinessClaim": false
+  },
+  "routeStateAfterQa": {
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateApproval": "USER_UPLOADS_DISABLED"
+  },
+  "sourceBindings": {
+    "candidateOpeningBundle": "docs/cad-internal-admission-candidate-opening-bundle.json",
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "productionActivationScope": "docs/cad-production-upload-activation-scope.json"
+  },
+  "nextDecisionPacket": {
+    "type": "exact-production-upload-admission-opening-approval",
+    "requiredBeforeUse": true,
+    "minimumFieldsRequired": [
+      "accepted candidate opening bundle reference",
+      "exact runtime commit",
+      "exact production deployment and route",
+      "exact internal cohort",
+      "exact UTC startsAt",
+      "exact UTC expiresAt",
+      "one concurrent session and one attempt limit",
+      "stop-on-unknown-outcome rule",
+      "rollback and session revocation evidence",
+      "retention or deletion disposition",
+      "private-register lockout boundary",
+      "transport evidence",
+      "cost cap and fee-readiness evidence",
+      "post-rollback fail-closed smoke requirement"
+    ],
+    "draftApprovalPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import on candidate opening bundle docs/cad-internal-admission-candidate-opening-bundle.json at merge commit 92b73ff0bf05e15e0d204a1a0303133faedcdc09, with the exact production deployment, internal cohort, UTC startsAt, UTC expiresAt, rollback, retention, lockout, transport, and cost evidence named in the accepted packet. Scope is admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD, one concurrent session, one attempt, stop on unknown outcome, and post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes outside the accepted bundle, second run, retry, or commercial-readiness claim.",
+    "acceptedByThisPacket": false,
+    "note": "This source-only QA acceptance does not accept the activation phrase."
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "collect exact UTC opening window and explicit production upload-admission approval phrase; do not execute from this QA receipt"
+}
