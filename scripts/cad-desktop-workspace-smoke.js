@@ -8,7 +8,7 @@ fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const results = [];
   try {
-    for (const [width, height] of [[1366,768], [1440,900], [768,1024], [390,844], [320,740]]) {
+    for (const [width, height] of [[1366,768], [1440,900], [1024,768], [768,1024], [390,844], [320,740]]) {
       const context = await browser.newContext({ viewport: { width, height }, recordVideo: { dir: out, size: { width, height } } });
       let writes = 0; const errors = [];
       await context.route('**/*', route => {
@@ -23,10 +23,13 @@ fs.mkdirSync(out, { recursive: true });
       await page.goto(`${base}/?cadPreview=mark-dispenser-v1&cadPhase=design`);
       await page.getByTestId('cad-zoom-in').waitFor();
       await page.waitForFunction(() => !document.querySelector('[data-testid="cad-zoom-in"]').disabled);
+      assert.equal(await page.getByTestId('desktop-navigation').count(), 0, 'CAD retains its dedicated workspace header');
       const viewer = page.getByTestId('cad-fixture-canvas-host');
       const bounds = await viewer.boundingBox();
       if (width >= 1024) {
-        assert(bounds.width > width * 0.65, `viewer too narrow: ${JSON.stringify(bounds)}`);
+        const rail = await page.getByTestId('cad-review-rail').boundingBox();
+        assert(bounds.width >= width - 380, `viewer too narrow: ${JSON.stringify(bounds)}`);
+        assert(bounds.x + bounds.width <= rail.x && rail.x + rail.width <= width, 'viewer and details rail fit without overlap');
         assert(bounds.y + bounds.height <= height, `viewer below fold: ${JSON.stringify(bounds)}`);
         assert.equal(await page.getByTestId('app-shell').evaluate(el => Math.round(el.getBoundingClientRect().width)), width);
       } else assert((await page.getByTestId('app-shell').boundingBox()).width <= 600);

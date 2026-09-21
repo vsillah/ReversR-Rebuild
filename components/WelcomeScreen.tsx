@@ -8,6 +8,7 @@ import {
   Image,
   Animated,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
@@ -126,6 +127,8 @@ export default function WelcomeScreen({
   bottomBarInset = 0,
 }: WelcomeScreenProps) {
   const { colors: Colors, mode: themeMode, setMode: setThemeMode } = useAppTheme();
+  const { width: viewportWidth } = useWindowDimensions();
+  const compactHeroTitle = viewportWidth < 360;
   const isDark = Colors.mode === 'dark';
   const useNativeDarkHeroFallback = false;
   const useNativeLightHero = Platform.OS !== 'web' && !isDark && !useNativeDarkHeroFallback;
@@ -443,7 +446,7 @@ export default function WelcomeScreen({
         </Animated.View>
         <View style={styles.heroContent}>
           <Badge label="AI-assisted rebuild" tone="accent" icon="sparkles-outline" style={styles.heroBadge} />
-          <Text style={styles.heroTitle}>
+          <Text style={[styles.heroTitle, compactHeroTitle && styles.heroTitleCompact]}>
             Reconstruct.{'\n'}Restore.{'\n'}Rebuild with{'\n'}
             <Text style={styles.heroTitleAccent}>confidence.</Text>
           </Text>
@@ -952,6 +955,11 @@ const createStyles = (Colors: AppColors) => {
       letterSpacing: 0,
       color: Colors.text,
       maxWidth: '94%',
+    },
+    heroTitleCompact: {
+      fontSize: 31,
+      lineHeight: 36,
+      maxWidth: '100%',
     },
     heroTitleAccent: {
       color: Colors.accent,
