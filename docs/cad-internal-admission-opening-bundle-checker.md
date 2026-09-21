@@ -9,7 +9,7 @@ This slice adds a template and local checker for the future internal production 
 
 - Every evidence slot from `docs/cad-internal-admission-evidence-binding.json` is present.
 - Each future slot has a sanitized receipt reference and reviewer reference.
-- The exact runtime commit, deployment route, cohort, window, rollback, retention, cost, and post-rollback smoke references are present.
+- The exact runtime commit, deployment route, cohort, window, transport, revocation fence, rollback, retention, private-register lockout, environment/test split, cost, conversion/Sandbox split, and post-rollback smoke references are present.
 - The candidate remains admission-only and non-executable.
 - Conversion, Sandbox dispatch, store mutation, private CAD, real users, external messages, and commercial-readiness claims remain off.
 
