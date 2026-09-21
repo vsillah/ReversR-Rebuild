@@ -23,7 +23,7 @@ test('native Import opens the internal installed-app CAD renderer without unlock
   assert.match(appIndex, /isCadNativeEmbeddedPreview/);
   assert.match(appIndex, /nativeEmbeddedCadPreview/);
   assert.match(appIndex, /styles\.embeddedPreviewContent/);
-  assert.match(appIndex, /compact=\{nativeEmbeddedCadPreview \|\| desktopCadWorkspace\}/);
+  assert.match(appIndex, /compact=\{nativeEmbeddedCadPreview \|\| desktopWorkspace\}/);
   assert.match(appIndex, /<CadNativeInternalUploadPreview/);
   assert.match(appIndex, /onOpenCadInternalPreview=\{Platform\.OS === 'web' \? undefined : openNativeCadInternalPreview\}/);
 

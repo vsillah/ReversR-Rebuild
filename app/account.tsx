@@ -94,7 +94,7 @@ export default function AccountScreen() {
       {...accountFocusVisibilityProps}
     >
       <View style={styles.headerRow}>
-        <View>
+        <View style={styles.headerCopy}>
           <Text style={styles.kicker}>ReversR Commercial Account</Text>
           <Text style={styles.title}>Repair shop plan and credits</Text>
         </View>
@@ -249,6 +249,10 @@ const createStyles = (Colors: AppColors) => StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     gap: 16,
+  },
+  headerCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   headerRow: {
     flexDirection: 'row',
