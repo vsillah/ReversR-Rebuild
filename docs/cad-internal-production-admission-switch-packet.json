@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-production-admission-switch-packet",
+  "mode": "source-only-internal-production-admission-switch",
+  "status": "SOURCE_ONLY_SWITCH_PACKET_READY_DISABLED_DEFAULT",
+  "sourceOnly": true,
+  "baseCommit": "a68e7d36ddb752df60238fe8b356818c56aef0ad",
+  "observedAtUtc": "2026-09-21T20:19:25Z",
+  "expensesUsd": 0,
+  "summary": "Defines the next internal production admission switch as a default-closed server-owned decision model. This packet does not mount the switch, read request bodies, enable upload admission, persist files, dispatch conversion, or dispatch Sandbox work.",
+  "sourceBindings": {
+    "activationScope": "docs/cad-production-upload-activation-scope.json",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "costWorkbook": "docs/cad-per-run-cost-workbook.json",
+    "disabledRollbackAdapter": "offline/cad-convex/disabledUploadAdmissionAdapter.js",
+    "durableAdapter": "offline/cad-convex/uploadAdmissionDurableAdapter.js",
+    "runtimeBridge": "server/cadUploadAdmissionRuntimeBridge.js",
+    "mountedRoute": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "currentRouteState": {
+    "route": "POST /api/cad/user-import",
+    "mounted": true,
+    "bodyAdmissionAuthorized": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "runtimeBridgeMounted": false,
+    "activationSwitchMounted": false
+  },
+  "switchModel": {
+    "defaultDecision": "USER_UPLOADS_DISABLED",
+    "closedWhenAnyGuardMissing": true,
+    "serverOwned": true,
+    "requestOwnedFlagsAccepted": false,
+    "envOnlyActivationAccepted": false,
+    "exactProductionRoute": "POST /api/cad/user-import",
+    "firstEligibleLevel": "internal-production-admission-dry-run",
+    "bodyReadOnlyAfterAllGuardsPass": true,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "durableProjectHistoryAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false
+  },
+  "guardsRequiredBeforeSwitchCanOpen": [
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "satisfiedNow": false
+    },
+    {
+      "id": "exact-deployment-route",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactDeploymentAndRoute",
+      "satisfiedNow": false
+    },
+    {
+      "id": "exact-internal-cohort-window",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+      "satisfiedNow": false
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.explicitUploadActivationApproval",
+      "satisfiedNow": false
+    },
+    {
+      "id": "session-concurrent-revocation-fence",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "satisfiedNow": false
+    },
+    {
+      "id": "browser-csrf-or-native-bearer-transport",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf and nativeBearerTransportReview",
+      "satisfiedNow": false
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+      "satisfiedNow": false
+    },
+    {
+      "id": "retention-disposition",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "satisfiedNow": false
+    },
+    {
+      "id": "cost-workbook-readiness",
+      "source": "docs/cad-per-run-cost-workbook.json#feePerRunReady",
+      "satisfiedNow": false
+    }
+  ],
+  "futureInternalDryRunBehavior": {
+    "eligibleMaterials": "public, synthetic, or explicitly authorized internal tester files only",
+    "acceptedFormats": "bounded by the reviewed admission validator for the first backend dry-run; frontend local preview may recognize broader CAD formats separately",
+    "bodyRead": "allowed only after exact approved switch guards pass",
+    "result": "sanitized admission receipt or fail-closed error",
+    "notResult": [
+      "converted CAD output",
+      "Sandbox job",
+      "durable reconstruction history",
+      "private CAD retention",
+      "commercial readiness"
+    ]
+  },
+  "rollbackPlan": {
+    "firstAction": "close switch before drain",
+    "requiredTerminalCode": "USER_UPLOADS_DISABLED",
+    "postRollbackSmoke": "GET /, GET /api/cad/capabilities, POST {} /api/cad/user-import, POST {} /api/cad/import, GET /api/cad/import-source-record",
+    "unknownOutcomePolicy": "retain reservations and reconcile read-only by original selector",
+    "deleteRowsWithoutDisposition": false
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "runtimeRouteMount": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "default-closed runtime switch implementation that is imported by the route but returns USER_UPLOADS_DISABLED until exact internal admission approval evidence is present"
+}
