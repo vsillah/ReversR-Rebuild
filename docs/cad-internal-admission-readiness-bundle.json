@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-readiness-bundle",
+  "mode": "source-only-internal-admission-readiness-bundle",
+  "status": "READINESS_BUNDLE_DRAFT_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "c591c853cb353815cdd526270ef715efd6deb19f",
+  "observedAtUtc": "2026-09-21T22:52:35Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "sourceBindings": {
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "evidenceBinding": "docs/cad-internal-admission-evidence-binding.json",
+    "openingBundleTemplate": "docs/cad-internal-admission-opening-bundle-template.json",
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "transportReviewPacket": "docs/cad-internal-admission-transport-review-packet.json",
+    "rollbackRevocationPacket": "docs/cad-internal-admission-rollback-revocation-packet.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "lockoutRetainedTerminalState": "docs/cad-lockout-retained-terminal-state.md",
+    "productionActivationScope": "docs/cad-production-upload-activation-scope.json",
+    "costWorkbook": "docs/cad-per-run-cost-workbook.json",
+    "userUploadRoute": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "currentRouteState": {
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "activationReadinessEnabled": false,
+    "activationLiveReady": false,
+    "activationExecutable": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateActivationApproval": "USER_UPLOADS_DISABLED"
+  },
+  "retainedStateDispositionReview": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+    "rollbackCompanionSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.safeRetainedStateDisposition",
+    "sourceBackedConstraints": [
+      "unknown reservations remain locked",
+      "row deletion remains disallowed without separate disposition review",
+      "post-rollback fail-closed smoke remains required",
+      "retained state cannot be erased by code rollback"
+    ],
+    "stillNeededBeforeActivation": [
+      "accepted supported deletion or approved bounded retention disposition",
+      "accepted retained-state custody receipt for exact cohort/window",
+      "accepted selector ownership and drift check references",
+      "accepted expiry/review deadline references"
+    ]
+  },
+  "privateRegisterLockoutReview": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+    "privateCadAllowed": false,
+    "sourceBackedConstraints": [
+      "private ownership requires opaque source, destination, cohort and selector references",
+      "lockout remains a future implementation and live qualification requirement",
+      "private-register selectors must not expose identities, credentials, filenames, CAD bytes or hashes in public packets",
+      "missing lockout state denies rather than falling back to enabled upload"
+    ],
+    "stillNeededBeforeActivation": [
+      "accepted private-register lockout receipt",
+      "accepted abuse, concurrency and rollback matrix references",
+      "accepted stale-session denial references",
+      "accepted proof that private CAD remains blocked unless separately approved"
+    ]
+  },
+  "environmentDeploymentTestApprovalSplit": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+    "deploymentApprovalSeparate": true,
+    "liveTestApprovalSeparate": true,
+    "providerEnvResourceChangeApprovalSeparate": true,
+    "productionUploadActivationApprovalSeparate": true,
+    "currentNormalDeploymentDoesNotSatisfyActivation": true,
+    "stillNeededBeforeActivation": [
+      "accepted exact deployment receipt for the reviewed runtime commit",
+      "accepted exact route receipt",
+      "accepted test window and test scope receipt",
+      "accepted statement that provider/env/resource changes are either absent or separately approved"
+    ]
+  },
+  "openingBundleRollup": {
+    "checkerUpdated": true,
+    "checkedTemplateStillIncomplete": true,
+    "readyStateName": "readyForSeparateActivationApproval",
+    "readyStateDoesNotExecute": true,
+    "routeMayOpenWhenCheckerPasses": false,
+    "newRequirementKeys": [
+      "concurrentSessionRevocationFence",
+      "browserCookieTransportReview",
+      "nativeBearerTransportReview",
+      "durablePrivateRegisterAndLockout",
+      "environmentDeploymentTestApprovals",
+      "conversionSandboxApprovalSplit"
+    ],
+    "stillNeedsSeparateHumanGate": [
+      "explicitUploadActivationPhrase",
+      "exactRuntimeCommit",
+      "productionUrlAndRoute",
+      "startsAtUtc",
+      "expiresAtUtc",
+      "internalCohortRef"
+    ]
+  },
+  "upstreamEvidenceSlotsRemainUnaccepted": {
+    "concurrentSessionRevocationFence": null,
+    "browserCookieOriginCsrf": null,
+    "nativeBearerTransportReview": null,
+    "rollbackSessionRevocationEvidence": null,
+    "supportedDispositionOrApprovedBoundedRetention": null,
+    "durablePrivateRegisterAndLockout": null,
+    "separateEnvironmentDeploymentTestApprovals": null,
+    "reviewedRuntimeImplementationCommit": null,
+    "exactDeploymentAndRoute": null,
+    "exactCohortAndWindow": null,
+    "explicitUploadActivationApproval": null,
+    "separateConversionAndSandboxApproval": null
+  },
+  "guardrails": {
+    "requestBodyReadAuthorizedNow": false,
+    "productionUploadActivationAuthorizedNow": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "externalMessagesAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "retainedStateDispositionAccepted": false,
+    "privateRegisterLockoutAccepted": false,
+    "environmentDeploymentTestSplitAccepted": false,
+    "openingBundleAccepted": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "fill a sanitized candidate opening bundle for human approval review only; route remains closed until separate production upload activation approval"
+}
