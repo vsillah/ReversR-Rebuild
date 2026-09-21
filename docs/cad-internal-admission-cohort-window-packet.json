@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-cohort-window-packet",
+  "mode": "source-only-exact-cohort-window-draft",
+  "status": "COHORT_WINDOW_DRAFT_NOT_ACCEPTED_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "f712cc98712284a35006c2fa576d78370bf3b667",
+  "observedAtUtc": "2026-09-21T21:49:27Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "sourceBindings": {
+    "openingReviewPacket": "docs/cad-internal-admission-opening-review-packet.json",
+    "openingBundleTemplate": "docs/cad-internal-admission-opening-bundle-template.json",
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED"
+  },
+  "cohortDraft": {
+    "accepted": false,
+    "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "participantRefs": [
+      "rrb-ref:cad-upload-internal-tester-reviewer-mark"
+    ],
+    "participantCount": 1,
+    "maxConcurrentUploadSessions": 1,
+    "maxUploadAttempts": 1,
+    "materialsAllowed": "public, synthetic, or explicitly authorized internal tester CAD only",
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "commercialUseAllowed": false,
+    "externalDeliveryAllowed": false
+  },
+  "windowDraft": {
+    "accepted": false,
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "maxDurationMinutes": 60,
+    "singleWindowOnly": true,
+    "retry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "requiresFreshApprovalWhenExpired": true
+  },
+  "activationReadinessProjection": {
+    "targetSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+    "upstreamSlotCurrentlySatisfied": false,
+    "openingBundleReceiptRef": null,
+    "checkerReadyForSeparateActivationApproval": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateApproval": "USER_UPLOADS_DISABLED"
+  },
+  "guardrails": {
+    "bodyAdmissionAuthorized": false,
+    "requestBodyReadAuthorizedNow": false,
+    "productionUploadActivationAuthorizedNow": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "externalMessagesAllowed": false
+  },
+  "nextHumanGateDraft": {
+    "type": "exact-cohort-window-approval",
+    "requiredBeforeUse": true,
+    "draftApprovalPhrase": "I approve the exact internal CAD upload-admission cohort/window for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1 on POST /api/cad/user-import, with startsAtUtc and expiresAtUtc exactly as named in the accepted opening bundle. Scope remains admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD, one attempt, one concurrent session, no retry, no second run, and stop on unknown outcome. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource changes, or production upload activation outside the accepted bundle.",
+    "note": "This phrase is a draft only; this packet does not accept a cohort, set a time window, or authorize upload activation."
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "cohortAccepted": false,
+    "windowAccepted": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "obtain exact UTC startsAt/expiresAt values and fill the opening bundle for human review, still without executing production upload activation"
+}
