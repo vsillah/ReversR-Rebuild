@@ -1,4 +1,4 @@
-import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
+import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
 import { InputMode } from '../utils/inputModes';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
@@ -524,7 +524,7 @@ export default function HomeScreen() {
   const { account, profile } = useCommercialization();
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
-  const { desktop: desktopCadWorkspace } = useCadDesktopWorkspace();
+  const { desktop: desktopWorkspace } = useDesktopWorkspace();
   const routeCadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
   const nativeEmbeddedCadPreview = useMemo(() => (
     Platform.OS === 'web'
@@ -534,6 +534,7 @@ export default function HomeScreen() {
   const [nativeCadUploadPreviewVisible, setNativeCadUploadPreviewVisible] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
   const cadInternalPreview: CadInternalTesterPreview = routeCadInternalPreview;
+  const desktopCadWorkspace = desktopWorkspace && cadInternalPreview.enabled;
   const navigateCadPhase = (phase: number) => {
     if (phase < 1 || phase > 4 || phase === cadPhase) return;
     setCadPhase(phase);
@@ -1755,8 +1756,8 @@ export default function HomeScreen() {
       )}
 
       {!keyboardOpen && !nativeEmbeddedCadPreview && (
-        <View style={[styles.progressBar, desktopCadWorkspace && { paddingVertical: Spacing.xs }]}>
-          <View style={[styles.phaseStepperCard, desktopCadWorkspace && { borderWidth: 0, paddingVertical: Spacing.xs, backgroundColor: 'transparent', boxShadow: 'none' }]}>
+        <View style={[styles.progressBar, desktopWorkspace && { paddingVertical: Spacing.xs }]}>
+          <View style={[styles.phaseStepperCard, desktopWorkspace && { borderWidth: 0, paddingVertical: Spacing.xs, backgroundColor: 'transparent', boxShadow: 'none' }]}>
             <HorizontalStepper
               steps={PHASE_STEP_LABELS}
               subLabels={PHASE_STEP_HINTS}
@@ -1785,7 +1786,7 @@ export default function HomeScreen() {
         onContentSizeChange={flushWorkflowScrollReset}
         {...workflowFocusVisibilityProps}
       >
-        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} compact={nativeEmbeddedCadPreview || desktopCadWorkspace} desktop={desktopCadWorkspace} />}
+        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} compact={nativeEmbeddedCadPreview || desktopWorkspace} desktop={desktopCadWorkspace} />}
         {!cadInternalPreview.enabled && context.phase === 1 && (
           <PhaseOne
             key={context.id}

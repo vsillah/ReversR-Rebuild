@@ -1,4 +1,4 @@
-import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
+import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -62,7 +62,7 @@ export default function RootLayout() {
 
 function ThemedRootLayout() {
   const { colors } = useAppTheme();
-  const { desktop } = useCadDesktopWorkspace();
+  const { desktop } = useDesktopWorkspace();
   const isDark = colors.mode === 'dark';
   const styles = createStyles(colors);
 

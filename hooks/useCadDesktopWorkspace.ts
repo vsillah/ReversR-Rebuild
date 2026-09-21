@@ -1,12 +1,11 @@
-import { Platform, useWindowDimensions } from 'react-native';
-import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview } from '../utils/cadInternalTesterPreview';
+import { useDesktopWorkspace } from './useDesktopWorkspace';
+import { getCadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 
 /** Presentation only: reuse the existing host/route gate without granting capabilities. */
 export function useCadDesktopWorkspace() {
-  const { width, height } = useWindowDimensions();
-  const desktop = Platform.OS === 'web' && width >= 1024
+  const { desktop: desktopWeb, height } = useDesktopWorkspace();
+  const desktop = desktopWeb
     && getCadInternalTesterPreview().enabled
-    && typeof window !== 'undefined' && window.location.pathname === '/'
-    && !isCadNativeEmbeddedPreview(window.location);
+    && typeof window !== 'undefined' && window.location.pathname === '/';
   return { desktop, viewerHeight: Math.max(320, height - 296) };
 }
