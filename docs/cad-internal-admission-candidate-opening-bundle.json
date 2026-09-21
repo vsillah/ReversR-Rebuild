@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-candidate-opening-bundle",
+  "mode": "source-only-guarded-switch-opening-bundle-template",
+  "status": "CANDIDATE_READY_FOR_SEPARATE_HUMAN_REVIEW_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "0c8f676d9eeedb188db94223f6b46c52167c1295",
+  "observedAtUtc": "2026-09-21T23:05:14Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "evidenceBinding": "docs/cad-internal-admission-evidence-binding.json",
+  "sourceBindings": {
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js",
+    "openingBundleTemplate": "docs/cad-internal-admission-opening-bundle-template.json",
+    "openingReviewPacket": "docs/cad-internal-admission-opening-review-packet.json",
+    "cohortWindowPacket": "docs/cad-internal-admission-cohort-window-packet.json",
+    "readinessBundle": "docs/cad-internal-admission-readiness-bundle.json",
+    "transportReviewPacket": "docs/cad-internal-admission-transport-review-packet.json",
+    "rollbackRevocationPacket": "docs/cad-internal-admission-rollback-revocation-packet.json",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "costWorkbook": "docs/cad-per-run-cost-workbook.json"
+  },
+  "reviewDisposition": {
+    "candidatePreparedForHumanReview": true,
+    "humanApprovalAccepted": false,
+    "openingBundleAccepted": false,
+    "activationApprovalAccepted": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateApproval": "USER_UPLOADS_DISABLED",
+    "requestBodyReadAuthorizedNow": false,
+    "productionUploadActivationAuthorizedNow": false
+  },
+  "requestedOpening": {
+    "scope": "admission-only internal upload body validation",
+    "executableNow": false,
+    "requestBodyReadAuthorizedNow": false,
+    "requiresSeparateActivationApproval": true,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "requiredEvidence": [
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "receiptRef": "rrb-ref:main-0c8f676-reviewed-runtime-route-fail-closed",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "exact-deployment-and-route",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactDeploymentAndRoute",
+      "receiptRef": "rrb-ref:vercel-production-deploy-0c8f676-post-api-cad-user-import",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "exact-internal-cohort-and-window",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+      "receiptRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1-window-to-be-accepted",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.explicitUploadActivationApproval",
+      "receiptRef": "rrb-ref:draft-approval-phrase-required-before-use",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "concurrent-session-revocation-fence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "receiptRef": "rrb-ref:rollback-revocation-packet-concurrent-session-fence",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "browser-csrf-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+      "receiptRef": "rrb-ref:transport-review-browser-cookie-origin-csrf",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "native-bearer-transport-review",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.nativeBearerTransportReview",
+      "receiptRef": "rrb-ref:transport-review-native-bearer-installed-app",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+      "receiptRef": "rrb-ref:rollback-revocation-packet-session-digest-revocation",
+      "reviewerRef": "rrb-reviewer:integration-captain-source-only",
+      "satisfied": true
+    },
+    {
+      "id": "retention-or-deletion-disposition",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "receiptRef": "rrb-ref:bounded-retention-disposition-required-no-delete-authority",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "durable-private-register-lockout",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+      "receiptRef": "rrb-ref:private-register-lockout-required-private-cad-blocked",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "environment-deployment-test-approvals",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+      "receiptRef": "rrb-ref:separate-environment-deployment-test-approvals-required",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "cost-workbook-fee-readiness",
+      "bindingSource": "docs/cad-per-run-cost-workbook.json#feePerRunReady",
+      "receiptRef": "rrb-ref:cost-workbook-fast-follow-fee-not-commercial-ready",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    },
+    {
+      "id": "separate-conversion-sandbox-approval",
+      "bindingSource": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.separateConversionAndSandboxApproval",
+      "receiptRef": "rrb-ref:conversion-sandbox-approval-split-required-before-dispatch",
+      "reviewerRef": "rrb-reviewer:pending-human-approval",
+      "satisfied": true
+    }
+  ],
+  "openingBundleRequirements": {
+    "exactRuntimeCommit": "rrb-ref:main-0c8f676d9eeedb188db94223f6b46c52167c1295",
+    "productionUrlAndRoute": "rrb-ref:reversr-production-post-api-cad-user-import",
+    "startsAtUtc": "rrb-ref:starts-at-utc-to-be-accepted-at-human-gate",
+    "expiresAtUtc": "rrb-ref:expires-at-utc-to-be-accepted-at-human-gate",
+    "internalCohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "explicitUploadActivationPhrase": "rrb-ref:draft-activation-phrase-in-this-packet-not-accepted",
+    "concurrentSessionRevocationFence": "rrb-ref:rollback-revocation-packet-concurrent-session-fence",
+    "browserCookieTransportReview": "rrb-ref:transport-review-browser-cookie-origin-csrf",
+    "nativeBearerTransportReview": "rrb-ref:transport-review-native-bearer-installed-app",
+    "rollbackSessionRevocationEvidence": "rrb-ref:rollback-revocation-packet-session-digest-revocation",
+    "retentionDisposition": "rrb-ref:bounded-retention-disposition-required-no-delete-authority",
+    "durablePrivateRegisterAndLockout": "rrb-ref:private-register-lockout-required-private-cad-blocked",
+    "environmentDeploymentTestApprovals": "rrb-ref:separate-environment-deployment-test-approvals-required",
+    "allInCostCapEvidence": "rrb-ref:cost-workbook-fast-follow-fee-not-commercial-ready",
+    "conversionSandboxApprovalSplit": "rrb-ref:conversion-sandbox-approval-split-required-before-dispatch",
+    "stopOnUnknownOutcome": true,
+    "postRollbackSmokeRefs": [
+      "rrb-ref:post-opening-rollback-fail-closed-smoke-required-before-closeout"
+    ]
+  },
+  "checkerPolicy": {
+    "readyStateName": "readyForSeparateActivationApproval",
+    "readyStateDoesNotExecute": true,
+    "routeMustRemainFailClosedUntilSeparateApproval": true,
+    "checkedBundleMayNotCarrySecrets": true,
+    "checkedBundleMayNotCarryCadBytes": true
+  },
+  "latestProductionFailClosedSmoke": {
+    "commit": "0c8f676d9eeedb188db94223f6b46c52167c1295",
+    "cacheBuster": "qa=0c8f676",
+    "results": [
+      {
+        "route": "GET /",
+        "status": 200,
+        "title": "ReversR Rebuild"
+      },
+      {
+        "route": "GET /api/cad/capabilities",
+        "status": 200
+      },
+      {
+        "route": "POST /api/cad/user-import {}",
+        "status": 401,
+        "code": "USER_SESSION_REQUIRED"
+      },
+      {
+        "route": "POST /api/cad/import {}",
+        "status": 401,
+        "code": "UNAUTHORIZED"
+      },
+      {
+        "route": "GET /api/cad/import-source-record",
+        "status": 404
+      }
+    ]
+  },
+  "nextHumanGateDraft": {
+    "type": "exact-production-upload-admission-opening-approval",
+    "requiredBeforeUse": true,
+    "draftApprovalPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import on the exact reviewed commit, deployment, cohort, UTC window, rollback, retention, lockout, transport, and cost evidence named in the accepted candidate opening bundle. Scope is admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD, one concurrent session, one attempt, stop on unknown outcome, and post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes outside the accepted bundle, second run, retry, or commercial-readiness claim.",
+    "note": "This phrase is a draft only. It is not accepted by this source-only packet."
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "human review of this candidate opening bundle; execution remains blocked until a separate explicit production upload activation approval names this exact bundle"
+}
