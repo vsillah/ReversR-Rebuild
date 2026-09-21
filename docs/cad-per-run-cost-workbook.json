@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packet": "cad-per-run-cost-workbook",
   "status": "source_only_workbook_ready",
-  "baseCommit": "ea82b675598c343e2c936f66efa44595d4e253a7",
+  "baseCommit": "205b23fb82b8ca01cab096d3d83c2fc51fce61a4",
   "sourceOnly": true,
   "expensesUsd": 0,
   "unit": "one CAD run",
@@ -56,8 +56,16 @@
       "id": "internal-tester-support",
       "provider": "Internal tester support",
       "status": "feedback-evidence-required",
-      "meters": ["device install support", "file-picker failures", "renderer compatibility triage", "tester follow-up time"],
-      "requiredEvidence": ["tester device model", "Android/WebView version", "file size and extension", "triage class and resolution time"],
+      "meters": ["device install support", "browser compatibility", "file-picker failures", "renderer compatibility triage", "tester follow-up time"],
+      "requiredEvidence": ["tester device model", "browser or Android/WebView version", "file size and extension", "triage class and resolution time"],
+      "estimateUsd": null
+    },
+    {
+      "id": "account-history-persistence",
+      "provider": "ReversR account/storage policy",
+      "status": "commercialization-fast-follow",
+      "meters": ["saved reconstruction records", "sync or export/import operations", "retained metadata", "migration support", "empty-state support"],
+      "requiredEvidence": ["account-backed history decision", "local-history migration plan", "OTA/update validation", "uninstall and device-replacement behavior"],
       "estimateUsd": null
     },
     {
@@ -72,17 +80,23 @@
   "readinessSurface": {
     "phase": "Build",
     "headline": "Build stays locked while cost and manufacturing evidence are incomplete.",
-    "productReady": ["Installed-app internal CAD preview controls", "Source/reference comparison flow", "Fail-closed route status"],
+    "productReady": [
+      "Desktop/browser and installed-app internal CAD preview controls",
+      "Local CAD source chooser with IGES, STEP and BREP render support",
+      "Fail-closed production upload route status"
+    ],
     "costEvidenceNeeded": [
       "Current Convex and Vercel plan terms",
       "Sandbox or conversion compute pricing",
       "Per-run operation, storage and egress counts",
-      "Internal tester device and file-compatibility support",
+      "Account-backed history persistence and preview-to-project retention policy",
+      "Internal tester browser, device and file-compatibility support",
       "Tax, fee, FX, contingency and support policy"
     ],
     "blockedOutputs": [
       "Production CAD upload activation",
       "CAD conversion or Sandbox dispatch for user files",
+      "Durable account-backed reconstruction history",
       "Customer fee quote or manufacturing package"
     ]
   },

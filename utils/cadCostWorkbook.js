@@ -43,8 +43,14 @@ const CAD_COST_WORKBOOK = Object.freeze({
     Object.freeze({
       id: 'internal-tester-support',
       label: 'Tester support',
-      readiness: 'needs device, file-picker, renderer and triage evidence',
-      meters: Object.freeze(['device install support', 'file-picker failures', 'renderer compatibility triage', 'tester follow-up time']),
+      readiness: 'needs browser, device, file-picker, renderer and triage evidence',
+      meters: Object.freeze(['device install support', 'browser compatibility', 'file-picker failures', 'renderer compatibility triage', 'tester follow-up time']),
+    }),
+    Object.freeze({
+      id: 'account-history-persistence',
+      label: 'Account history',
+      readiness: 'needs account-backed history or explicit local-only policy',
+      meters: Object.freeze(['saved reconstruction records', 'sync or export/import operations', 'retained metadata', 'migration support', 'empty-state support']),
     }),
     Object.freeze({
       id: 'commercial-buffer',
@@ -75,20 +81,22 @@ const CAD_BUILD_READINESS = Object.freeze({
     }),
   ]),
   productReady: Object.freeze([
-    'Installed-app internal CAD preview controls',
-    'Source/reference comparison flow',
-    'Fail-closed route status',
+    'Desktop/browser and installed-app internal CAD preview controls',
+    'Local CAD source chooser with IGES, STEP and BREP render support',
+    'Fail-closed production upload route status',
   ]),
   costEvidenceNeeded: Object.freeze([
     'Current Convex and Vercel plan terms',
     'Sandbox or conversion compute pricing',
     'Per-run operation, storage and egress counts',
-    'Internal tester device and file-compatibility support',
+    'Account-backed history persistence and preview-to-project retention policy',
+    'Internal tester browser, device and file-compatibility support',
     'Tax, fee, FX, contingency and support policy',
   ]),
   blockedOutputs: Object.freeze([
     'Production CAD upload activation',
     'CAD conversion or Sandbox dispatch for user files',
+    'Durable account-backed reconstruction history',
     'Customer fee quote or manufacturing package',
   ]),
 });
