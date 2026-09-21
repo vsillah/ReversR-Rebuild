@@ -36,8 +36,10 @@ fs.mkdirSync(out, { recursive: true });
         await page.getByTestId('home-mode-type').waitFor();
       };
       const checkLocked = async () => {
-        await page.getByTestId('cad-upload-locked-status').waitFor();
-        assert.match(await page.getByTestId('cad-session-state').innerText(), /Upload admission remains disabled/);
+        await page.getByTestId('cad-import-panel').waitFor();
+        assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+        assert.equal(await page.getByTestId('cad-session-state').count(), 0);
+        assert.equal(await page.getByTestId('cad-import-details').count(), 0);
         assert.equal(await page.getByTestId('cad-render-local-preview').count(), 0);
       };
       await page.goto(base);

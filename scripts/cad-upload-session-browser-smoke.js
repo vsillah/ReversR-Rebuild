@@ -62,8 +62,14 @@ async function run() {
       });
       const page = await context.newPage();
       const pageErrors = []; page.on('pageerror', error => pageErrors.push(error.message));
-      const checkClosed = async () => {
-        await page.getByTestId('cad-upload-locked-status').waitFor();
+      const checkClosed = async ({ diagnostics = false } = {}) => {
+        if (diagnostics) {
+          await page.getByTestId('cad-session-diagnostic-status').waitFor();
+        } else {
+          assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+          assert.equal(await page.getByTestId('cad-import-details').count(), 0);
+          assert.equal(await page.getByTestId('cad-session-state').count(), 0);
+        }
         assert.equal(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).count(), 0);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         assert.equal(await page.getByTestId('cad-qualified-result').count(), 0);
@@ -88,13 +94,10 @@ async function run() {
       await page.screenshot({ path: `${out}/${width}-default-selection.png` }); await wait(900);
       await page.getByRole('button', { name: 'Clear selected CAD file', exact: true }).click();
       await page.getByText('Selection cleared.', { exact: true }).waitFor();
-      await page.getByTestId('cad-import-details').click();
-      await page.getByTestId('cad-check-status').click();
-      await page.getByText('Import status unavailable.', { exact: false }).waitFor();
       await checkClosed();
-      await page.screenshot({ path: `${out}/${width}-default-status.png` }); await wait(900);
+      await page.screenshot({ path: `${out}/${width}-default-clean.png` }); await wait(900);
       const expected = {
-        success: 'Development upload session connected. Upload admission remains disabled.',
+        success: 'Synthetic development session connected. Import remains local.',
         revoked: 'No upload session. Development sign-in is not connected; keep the file local.',
         error: 'Development session unavailable. Session access must be connected before import can proceed.',
         malformed: 'Import status unavailable. Keep the file local and check service status.',
@@ -103,6 +106,7 @@ async function run() {
       };
       for (const [mode, message] of Object.entries(expected)) {
         await page.goto(`${origin}/session-contract-qa?mode=${mode}`);
+        await page.getByTestId('cad-import-details').click();
         await page.getByTestId('cad-connect-session').click();
         if (mode === 'cancel') {
           await page.getByText('Connecting session…', { exact: true }).waitFor();
@@ -114,7 +118,7 @@ async function run() {
         await wait(1100); // Beyond the harness timeout: no automatic retry after any result.
         assert.equal(await page.getByTestId('qa-issuer-calls').innerText(), 'Issuer calls: 1');
         assert.equal(await page.evaluate(() => window.__cadSessionQaCalls), 1);
-        await checkClosed();
+        await checkClosed({ diagnostics: true });
         assert.equal(await page.getByTestId('cad-connect-session').count(), mode === 'success' ? 0 : 1);
         if (mode !== 'success') assert.equal(await page.getByTestId('cad-connect-session').isEnabled(), true);
         await page.screenshot({ path: `${out}/${width}-${mode}.png` });

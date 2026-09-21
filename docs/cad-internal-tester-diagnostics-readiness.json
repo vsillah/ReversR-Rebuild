@@ -26,7 +26,7 @@
     "app install source or APK artifact reference",
     "visible app version or build reference if available",
     "whether Open internal CAD preview is visible",
-    "whether Live upload locked appears instead of the internal preview path",
+    "whether a legacy lock/admission message appears instead of the internal preview path",
     "file name",
     "file extension",
     "approximate file size",
@@ -46,7 +46,7 @@
     {
       "id": "install-or-update",
       "signals": [
-        "Live upload locked",
+        "legacy lock/admission message",
         "Internal preview unavailable",
         "missing Open internal CAD preview",
         "old app shell after reinstall"

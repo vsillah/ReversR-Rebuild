@@ -4,7 +4,6 @@ const { chromium } = require('playwright');
 const url = process.env.CAD_PHASE_URL || 'http://127.0.0.1:5196/?cadPreview=mark-dispenser-v1';
 const out = process.env.CAD_REVIEW_POLISH_EVIDENCE || 'docs/qa/cad-design-review-polish';
 fs.mkdirSync(out, { recursive: true });
-const importUnavailableMessage = /Import status unavailable|Could not check service status/;
 (async () => {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const results = [];
@@ -70,14 +69,15 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
       await capture('inventory');
       await disclosure('cad-inventory-details', 'Source confidence:');
 	      await page.getByRole('button', { name: 'Review source in Input', exact: true }).click();
-	      await page.getByTestId('cad-public-fixture-ready').waitFor();
-	      await page.getByTestId('cad-source-choice-panel').waitFor();
-	      assert.equal(await page.getByTestId('cad-sample-file-ready').count(), 0);
-	      assert.equal(await page.getByTestId('cad-file-input').count(), 1);
-	      assert.equal(await page.getByTestId('cad-choose-file').count(), 0);
-	      assert.equal(await page.getByTestId('cad-operator-gate').count(), 0);
-	      assert.equal(await page.getByTestId('cad-import-details').count(), 0);
-	      assert.equal(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).count(), 0);
+      await page.getByTestId('cad-public-fixture-ready').waitFor();
+      await page.getByTestId('cad-source-choice-panel').waitFor();
+      assert.equal(await page.getByTestId('cad-sample-file-ready').count(), 0);
+      assert.equal(await page.getByTestId('cad-file-input').count(), 1);
+      assert.equal(await page.getByTestId('cad-choose-file').count(), 0);
+      assert.equal(await page.getByTestId('cad-operator-gate').count(), 0);
+      assert.equal(await page.getByTestId('cad-import-details').count(), 0);
+      assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+      assert.equal(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).count(), 0);
 	      await capture('input');
 	      await phase('Inventory');
 	      await page.getByRole('button', { name: 'Review in Design', exact: true }).click();
@@ -105,7 +105,9 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
         await page.screenshot({ path: `${out}/${width}-ordinary-${mode}.png` });
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       }
-      await page.getByTestId('cad-upload-locked-status').waitFor();
+      assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+      assert.equal(await page.getByTestId('cad-import-details').count(), 0);
+      assert.equal(await page.getByTestId('cad-session-state').count(), 0);
       assert.equal(await page.getByRole('button', { name: 'Upload unavailable: operator access required' }).count(), 0);
       const chooser = page.waitForEvent('filechooser');
       await page.getByTestId('cad-choose-file').click();
@@ -113,14 +115,12 @@ const importUnavailableMessage = /Import status unavailable|Could not check serv
       await page.getByTestId('cad-selected-metadata').waitFor();
       await page.getByRole('button', { name: 'Clear selected CAD file', exact: true }).click();
       assert.equal(await page.getByTestId('cad-selected-metadata').count(), 0);
-      await page.getByTestId('cad-import-details').click();
-      assert.equal(await page.getByTestId('cad-import-details').getAttribute('aria-expanded'), 'true');
-      await page.getByTestId('cad-check-status').click();
-      await page.getByText(importUnavailableMessage).waitFor();
-      await page.getByTestId('cad-import-details').click();
+      assert.equal(await page.getByText('Live upload locked', { exact: true }).count(), 0);
+      assert.equal(await page.getByTestId('cad-import-details').count(), 0);
+      assert.equal(await page.getByTestId('cad-session-state').count(), 0);
       await context.close();
-      results.push({ width, ordinaryInputModes: true, sharedImportSelectionAndClear: true, uploadDisabled: true });
-      console.log(`PASS ${width}: ordinary Type/Scan/Sample/Import layout and local-only Import actions`);
+      results.push({ width, ordinaryInputModes: true, sharedImportSelectionAndClear: true, uploadRoadmapWarningHidden: true });
+      console.log(`PASS ${width}: ordinary Type/Scan/Sample/Import layout and local-only Import actions without roadmap warning`);
     }
     fs.writeFileSync(`${out}/polish-results.json`, JSON.stringify(results, null, 2));
   } finally { await browser.close(); }

@@ -75,7 +75,7 @@ function parseCadUploadSessionResponse(response, { now = Date.now() } = {}) {
   return Object.freeze({
     ok: true,
     code: 'SESSION_READY',
-    message: 'Development upload session connected. Upload admission remains disabled.',
+    message: 'Synthetic development session connected. Import remains local.',
     canSubmit: false,
     session,
   });

@@ -39,7 +39,7 @@ test('native Import opens the internal installed-app CAD renderer without unlock
   assert.match(importPanel, /device model, Android\/WebView version, install source/);
   assert.match(importPanel, /Do not send private CAD, credentials, raw paths, or production account data/);
   assert.match(importPanel, /!onOpenInternalPreview/);
-  assert.match(importPanel, /Live upload locked/);
+  assert.doesNotMatch(importPanel, /Live upload locked/);
 
   assert.match(nativePreview, /react-native-webview/);
   assert.match(nativePreview, /import \{ WebView \} from 'react-native-webview';/);

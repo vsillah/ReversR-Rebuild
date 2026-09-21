@@ -6,14 +6,14 @@ Worktree: `/Users/vambahsillah/.codex/worktrees/8206/ReversR-Rebuild`.
 
 ## Scope and contract
 
-The existing Import panel distinguishes local metadata preparation, no connected upload session, unavailable development session integration, and disabled admission. It preserves the existing qualified public-fixture Design workflow. Selection retains format and size only; clearing/replacing is local recovery. The upload CTA stays disabled with no handler, credentials, body builder, or POST transport. Error projection accepts only known schema-v1 error codes; unknown and purported success responses remain closed. No success contract is added.
+The existing Import panel presents local metadata preparation without exposing backend upload-session or admission-route warnings in the user-facing path. It preserves the existing qualified public-fixture Design workflow. Selection retains format and size only; clearing/replacing is local recovery. No upload CTA, handler, credentials, body builder, or POST transport is added. Error projection accepts only known schema-v1 error codes; unknown and purported success responses remain closed. No success contract is added.
 
 The mounted server remains unchanged. It has no wired browser issuer/adapter and keeps `BODY_ADMISSION_AUTHORIZED = false`. This change does not resolve those integration prerequisites. The client source constant is a disabled-state projection, not an activation switch or server authorization.
 
 ## Review route and evidence
 
 Serve the local export with `python3 -m http.server 5198 --bind 127.0.0.1 --directory dist`.
-Open `http://127.0.0.1:5198`, enter ReversR, and choose Import. Select a public/synthetic CAD file, replace or clear it, expand Import access & service status, and inspect the disabled CTA and recovery explanation.
+Open `http://127.0.0.1:5198`, enter ReversR, and choose Import. Select a public/synthetic CAD file, replace or clear it, and confirm the panel stays focused on local preparation without roadmap upload warnings.
 
 - `walkthrough.mp4`: actual 390px browser recording plus concise side text; 19.72 seconds, 750×1000. Final encoded frames inspected at four-second intervals, with desktop/mobile screenshots inspected separately.
 - `walkthrough-source.webm`: raw browser recording; `side-text.png`: annotation source.
