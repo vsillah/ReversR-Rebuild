@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-rollback-revocation-packet",
+  "mode": "source-only-rollback-session-revocation-requirements",
+  "status": "ROLLBACK_REVOCATION_DRAFT_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "857eacd1177f86b14e0a63b08fcc5b8eec0ccc7f",
+  "observedAtUtc": "2026-09-21T22:18:31Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "sourceBindings": {
+    "uploadSessionStore": "server/uploadSessionStore.js",
+    "uploadSessionVerifier": "server/uploadSession.js",
+    "userUploadRoute": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "devIssuerBridge": "server/cadDevAuthSessionIssuerBridge.js",
+    "uploadSessionStoreTests": "scripts/cad-upload-session-store.test.js",
+    "uploadSessionVerifierTests": "scripts/cad-upload-session.test.js",
+    "devIssuerBridgeTests": "scripts/cad-dev-auth-session-issuer-bridge.test.js",
+    "userUploadRouteTests": "scripts/cad-user-upload-route.test.js",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "transportReviewPacket": "docs/cad-internal-admission-transport-review-packet.json",
+    "openingReviewPacket": "docs/cad-internal-admission-opening-review-packet.json"
+  },
+  "currentRouteState": {
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "activationReadinessEnabled": false,
+    "activationLiveReady": false,
+    "activationExecutable": false,
+    "sessionRevocationEvidenceAccepted": false,
+    "concurrentRevocationFenceAccepted": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateActivationApproval": "USER_UPLOADS_DISABLED"
+  },
+  "rollbackRevocationReview": {
+    "accepted": false,
+    "evidenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+    "companionFenceSlot": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+    "sourceGuaranteesObserved": [
+      "known session digests can be revoked without deleting retained state",
+      "revoked session records verify as SESSION_REVOKED",
+      "session lookup re-reads authoritative state on every call",
+      "login, membership and CAD permission changes deny without stale positive grants",
+      "configured development issuer sessions reach the upload route but still terminate as USER_UPLOADS_DISABLED",
+      "upload route verifies session state before request body validation"
+    ],
+    "coveredBy": [
+      "scripts/cad-upload-session-store.test.js#revocation-is-immediate-across-service-instances-sharing-a-store-no-positive-cache",
+      "scripts/cad-upload-session.test.js#revocation-and-entitlement-changes-are-re-read-on-every-call-store-sees-only-digest",
+      "scripts/cad-dev-auth-session-issuer-bridge.test.js#store-revocation-login-revocation-entitlement-loss-expiry-and-csrf-are-rechecked",
+      "scripts/cad-dev-auth-session-issuer-bridge.test.js#configured-development-route-issues-a-browser-session-while-upload-admission-remains-closed"
+    ],
+    "stillNeededBeforeActivation": [
+      "accepted rollback receipt for the exact production deployment and route",
+      "accepted revocation receipt for the exact internal cohort/window session set",
+      "accepted concurrent-client fence showing revocation wins before request body read",
+      "accepted post-rollback production fail-closed smoke receipt",
+      "accepted retained-state disposition that forbids deletion without separate review"
+    ]
+  },
+  "rollbackPlanProjection": {
+    "firstAction": "close admission before drain",
+    "requiredTerminalCode": "USER_UPLOADS_DISABLED",
+    "deleteRowsWithoutDisposition": false,
+    "unknownReservationsRemainLocked": true,
+    "sessionRevocationEvidenceRequired": true,
+    "postRollbackSmokeRequired": true,
+    "rollbackCanOpenRoute": false
+  },
+  "guardrails": {
+    "requestBodyReadAuthorizedNow": false,
+    "productionUploadActivationAuthorizedNow": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "externalMessagesAllowed": false
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "rollbackEvidenceAccepted": false,
+    "concurrentRevocationFenceAccepted": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "source-only retained-state disposition and private-register lockout packet, still without production upload activation"
+}
