@@ -54,20 +54,27 @@ test('cost model covers required CAD run buckets and keeps unresolved estimates 
 
 test('Build readiness surface explains ready, missing, and blocked states', () => {
   assert.match(CAD_BUILD_READINESS.headline, /Build stays locked/);
+  assert.deepEqual(CAD_BUILD_READINESS.userSteps, workbook.readinessSurface.userSteps);
   assert.deepEqual(CAD_BUILD_READINESS.productReady, workbook.readinessSurface.productReady);
   assert.deepEqual(CAD_BUILD_READINESS.costEvidenceNeeded, workbook.readinessSurface.costEvidenceNeeded);
   assert.deepEqual(CAD_BUILD_READINESS.blockedOutputs, workbook.readinessSurface.blockedOutputs);
+  assert.deepEqual(CAD_BUILD_READINESS.commercializationGates, workbook.readinessSurface.commercializationGates);
+  assert.deepEqual(CAD_BUILD_READINESS.userSteps.map(step => step.label), ['Source', 'Geometry', 'Package']);
   assert.ok(CAD_BUILD_READINESS.summaryCards.some(card => card.label === 'Fee per run' && card.value === 'Evidence pending'));
   assert.ok(CAD_BUILD_READINESS.productReady.includes('Desktop/browser and installed-app internal CAD preview controls'));
   assert.ok(CAD_BUILD_READINESS.productReady.includes('Local CAD source chooser with IGES, STEP and BREP render support'));
   assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Account-backed history persistence and preview-to-project retention policy'));
   assert.ok(CAD_BUILD_READINESS.costEvidenceNeeded.includes('Internal tester browser, device and file-compatibility support'));
   assert.ok(CAD_BUILD_READINESS.blockedOutputs.includes('Durable account-backed reconstruction history'));
-  assert.match(markdown, /Build phase can now explain three things/);
+  assert.ok(CAD_BUILD_READINESS.commercializationGates.some(gate => gate.label === 'Run cost' && gate.state === 'Needs evidence'));
+  assert.ok(CAD_BUILD_READINESS.commercializationGates.some(gate => gate.label === 'Production upload' && gate.state === 'Locked'));
+  assert.match(markdown, /separates product-facing readiness from internal\s+commercialization evidence/);
+  assert.match(markdown, /not rendered as visible end-user\s+explainer copy/);
+  assert.match(markdown, /Commercialization gate checklist/);
 });
 
 test('workbook records current preview support without overpromising commercialization', () => {
-  assert.equal(workbook.baseCommit, '205b23fb82b8ca01cab096d3d83c2fc51fce61a4');
+  assert.equal(workbook.baseCommit, 'b7b9d4d3248b9fc7395bf11244d07a6cd8e12efb');
   assert.match(markdown, /production-hosted desktop browser/);
   assert.match(markdown, /installed internal app build/);
   assert.match(markdown, /picker recognizes common CAD extensions/);
@@ -102,7 +109,17 @@ test('source files avoid secrets, recipient data, and activation drift', () => {
   const component = fs.readFileSync('components/CadWorkflow.tsx', 'utf8');
   const combined = `${markdown}\n${JSON.stringify(workbook, null, 2)}\n${component}`;
   assert.match(component, /CAD_BUILD_READINESS/);
-  assert.match(component, /CAD_COST_WORKBOOK/);
+  assert.match(component, /cad-commercialization-gates/);
+  assert.match(component, /cad-commercialization-stepper/);
+  assert.ok(component.includes('cad-commercialization-step-${index + 1}'));
+  assert.match(component, /cad-commercialization-gate-detail/);
+  assert.doesNotMatch(component, /CAD_COST_WORKBOOK/);
+  assert.doesNotMatch(component, /Run economics/);
+  assert.doesNotMatch(component, /Cost evidence still needed/);
+  assert.doesNotMatch(component, /Not part of this product QA/);
+  assert.doesNotMatch(component, /Development cap/);
+  assert.doesNotMatch(component, /Production CAD upload activation/);
+  assert.doesNotMatch(component, /conversion dispatch/i);
   assert.doesNotMatch(combined, /meadowsms@/i);
   assert.doesNotMatch(combined, /BEGIN PRIVATE KEY|PRIVATE KEY-----/);
   assert.doesNotMatch(combined, /BODY_ADMISSION_AUTHORIZED = true/);

@@ -63,6 +63,29 @@ const CAD_COST_WORKBOOK = Object.freeze({
 
 const CAD_BUILD_READINESS = Object.freeze({
   headline: 'Build stays locked while cost and manufacturing evidence are incomplete.',
+  userSteps: Object.freeze([
+    Object.freeze({
+      label: 'Source',
+      state: 'Ready',
+      detail: 'CAD source is selected and ready for review.',
+      tone: 'success',
+      icon: 'document-text-outline',
+    }),
+    Object.freeze({
+      label: 'Geometry',
+      state: 'Review',
+      detail: 'Inspect the model, dimensions, and references before preparing implementation.',
+      tone: 'warning',
+      icon: 'cube-outline',
+    }),
+    Object.freeze({
+      label: 'Package',
+      state: 'Locked',
+      detail: 'The implementation package opens after the required review is complete.',
+      tone: 'muted',
+      icon: 'construct-outline',
+    }),
+  ]),
   summaryCards: Object.freeze([
     Object.freeze({
       label: 'Development cap',
@@ -98,6 +121,38 @@ const CAD_BUILD_READINESS = Object.freeze({
     'CAD conversion or Sandbox dispatch for user files',
     'Durable account-backed reconstruction history',
     'Customer fee quote or manufacturing package',
+  ]),
+  commercializationGates: Object.freeze([
+    Object.freeze({
+      label: 'Run cost',
+      state: 'Needs evidence',
+      detail: 'Provider terms, metered operation counts, storage and support burden are still open.',
+      tone: 'warning',
+    }),
+    Object.freeze({
+      label: 'Account history',
+      state: 'Fast follow',
+      detail: 'Saved reconstruction history needs account-backed persistence or an explicit local-only policy.',
+      tone: 'warning',
+    }),
+    Object.freeze({
+      label: 'Production upload',
+      state: 'Locked',
+      detail: 'User-file upload activation still requires a separate production gate.',
+      tone: 'muted',
+    }),
+    Object.freeze({
+      label: 'Conversion compute',
+      state: 'Locked',
+      detail: 'Sandbox or conversion dispatch for user files remains separately gated.',
+      tone: 'muted',
+    }),
+    Object.freeze({
+      label: 'Manufacturing output',
+      state: 'Blocked',
+      detail: 'Build packages and customer fee quotes wait on cost, geometry and review evidence.',
+      tone: 'muted',
+    }),
   ]),
 });
 
