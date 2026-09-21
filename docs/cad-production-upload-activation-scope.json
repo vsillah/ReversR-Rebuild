@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-production-upload-activation-scope",
+  "status": "source_only_scope_ready",
+  "sourceOnly": true,
+  "baseCommit": "a2f514c2de5a080f6b13fb8aba9b3328aeb88a0e",
+  "observedAtUtc": "2026-09-21T20:09:48Z",
+  "expensesUsd": 0,
+  "summary": "ReversR is not one toggle away from production CAD upload activation. The next safe production-facing step is a bounded internal admission dry-run that preserves disabled defaults and explicitly excludes conversion, Sandbox dispatch, private CAD and real users.",
+  "currentState": {
+    "localPreview": {
+      "available": true,
+      "scope": "browser and installed-app internal preview can load supported local CAD files for visual review without backend upload"
+    },
+    "productionUserUploadRoute": {
+      "route": "POST /api/cad/user-import",
+      "mounted": true,
+      "bodyAdmissionAuthorized": false,
+      "terminalCode": "USER_UPLOADS_DISABLED",
+      "runtimeExecutorWired": false,
+      "conversionWired": false,
+      "sandboxDispatchWired": false,
+      "activationSwitch": "hardcoded disabled scaffold in server/cadUserUploadRouter.js"
+    },
+    "activationReadiness": {
+      "enabled": false,
+      "liveReady": false,
+      "executable": false,
+      "readinessRef": "offline/cad-convex/userUploadActivationReadiness.json"
+    },
+    "costModel": {
+      "feePerRunReady": false,
+      "customerFeeReady": false,
+      "workbookRef": "docs/cad-per-run-cost-workbook.json"
+    }
+  },
+  "activationLevels": [
+    {
+      "id": "local-preview-only",
+      "state": "complete_for_internal_preview",
+      "purpose": "Let internal testers choose supported CAD files locally and inspect a browser or installed-app preview.",
+      "scope": {
+        "productionRouteMayReadBodyDuringApprovedWindow": false,
+        "backendUpload": false,
+        "conversionDispatch": false,
+        "sandboxDispatch": false,
+        "durableProjectHistory": false,
+        "privateCad": false,
+        "realUsers": false
+      }
+    },
+    {
+      "id": "internal-production-admission-dry-run",
+      "state": "next_implementable_gate",
+      "purpose": "Allow an approved internal cohort to exercise production route admission and body validation during an exact window while keeping conversion and storage closed.",
+      "scope": {
+        "productionRouteMayReadBodyDuringApprovedWindow": true,
+        "backendUpload": "admission_only",
+        "conversionDispatch": false,
+        "sandboxDispatch": false,
+        "durableProjectHistory": false,
+        "privateCad": false,
+        "realUsers": false
+      },
+      "requiresSeparateApproval": [
+        "reviewed runtime implementation commit",
+        "exact deployment and route",
+        "exact internal cohort and time window",
+        "rollback session revocation evidence",
+        "supported retention or deletion disposition",
+        "explicit upload activation approval"
+      ]
+    },
+    {
+      "id": "internal-production-upload-plus-conversion",
+      "state": "future_gate",
+      "purpose": "Add bounded Sandbox conversion for public or explicitly authorized internal materials after admission dry-run closeout.",
+      "scope": {
+        "productionRouteMayReadBodyDuringApprovedWindow": true,
+        "backendUpload": true,
+        "conversionDispatch": "separate_approval_required",
+        "sandboxDispatch": "separate_approval_required",
+        "durableProjectHistory": false,
+        "privateCad": false,
+        "realUsers": false
+      }
+    },
+    {
+      "id": "private-or-commercial-upload",
+      "state": "blocked",
+      "purpose": "Customer-facing or private-CAD upload with durable reconstruction history and commercial fee readiness.",
+      "scope": {
+        "productionRouteMayReadBodyDuringApprovedWindow": true,
+        "backendUpload": true,
+        "conversionDispatch": true,
+        "sandboxDispatch": true,
+        "durableProjectHistory": true,
+        "privateCad": "separate_privacy_and_retention_gate_required",
+        "realUsers": "separate_commercialization_gate_required"
+      }
+    }
+  ],
+  "remainingEvidenceBeforeFirstProductionAdmission": [
+    {
+      "id": "session-concurrent-revocation-fence",
+      "source": "readiness",
+      "readinessPath": "gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "currentValue": null
+    },
+    {
+      "id": "browser-cookie-origin-csrf-review",
+      "source": "readiness",
+      "readinessPath": "gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+      "currentValue": null
+    },
+    {
+      "id": "native-bearer-transport-review",
+      "source": "readiness",
+      "readinessPath": "gates.uploadPermission.evidence.nativeBearerTransportReview",
+      "currentValue": null
+    },
+    {
+      "id": "supported-retention-or-deletion-disposition",
+      "source": "readiness",
+      "readinessPath": "gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "currentValue": null
+    },
+    {
+      "id": "durable-private-register-lockout",
+      "source": "readiness",
+      "readinessPath": "gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+      "currentValue": null
+    },
+    {
+      "id": "environment-deployment-test-approval-split",
+      "source": "readiness",
+      "readinessPath": "gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+      "currentValue": null
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "source": "readiness",
+      "readinessPath": "gates.rollback.evidence.sessionRevocationEvidence",
+      "currentValue": null
+    },
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "source": "readiness",
+      "readinessPath": "gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "currentValue": null
+    },
+    {
+      "id": "exact-deployment-route-cohort-window",
+      "source": "readiness",
+      "readinessPath": "gates.activation.evidence.exactDeploymentAndRoute",
+      "currentValue": null
+    },
+    {
+      "id": "exact-cohort-window",
+      "source": "readiness",
+      "readinessPath": "gates.activation.evidence.exactCohortAndWindow",
+      "currentValue": null
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "source": "readiness",
+      "readinessPath": "gates.activation.evidence.explicitUploadActivationApproval",
+      "currentValue": null
+    },
+    {
+      "id": "conversion-sandbox-approval-split",
+      "source": "readiness",
+      "readinessPath": "gates.activation.evidence.separateConversionAndSandboxApproval",
+      "currentValue": null
+    },
+    {
+      "id": "run-cost-and-fee-readiness",
+      "source": "cost-workbook",
+      "workbookRef": "docs/cad-per-run-cost-workbook.json",
+      "currentValue": {
+        "feePerRunReady": false,
+        "customerFeeReady": false
+      }
+    }
+  ],
+  "routeChangeStrategy": {
+    "doNot": [
+      "flip BODY_ADMISSION_AUTHORIZED directly to true",
+      "use an environment variable as the only activation authority",
+      "wire conversion or Sandbox dispatch into the first production admission gate",
+      "expose private CAD or real-user upload"
+    ],
+    "recommendedImplementation": [
+      "introduce a reviewed server-owned activation adapter or manifest",
+      "default the route closed when manifest, cohort, window or rollback receipt is missing",
+      "scope admission to the exact approved route, deployment, cohort and time window",
+      "record sanitized admission receipts without storing CAD bytes or private file names",
+      "keep conversion and Sandbox dispatch behind separate authorities"
+    ]
+  },
+  "rollbackRequirements": [
+    "close admission before any drain or rollback work",
+    "verify USER_UPLOADS_DISABLED before parser, storage or executor paths",
+    "run the production fail-closed smoke after rollback",
+    "retain unknown reservations until read-only reconciliation proves disposition",
+    "record session revocation or expiry evidence before calling rollback complete"
+  ],
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "externalMessages": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false,
+    "usageBillingChanges": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "source-only runtime implementation packet for internal production admission dry-run switch while preserving disabled default and no conversion or Sandbox authority"
+}
