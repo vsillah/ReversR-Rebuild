@@ -73,6 +73,27 @@ useful surfaces are:
 4. Copy guardrails that keep public-material tests distinct from actual product
    readiness.
 
+## Account history persistence fast follow
+
+Before commercialization, tester expansion or any paid workflow, reconstruction
+history needs a durable account-backed path or an explicit local-only product
+decision. The current implementation stores saved reconstructions locally on
+the device with `AsyncStorage`, which should survive normal app updates but not
+uninstall/reinstall, app data clearing, a different app package identity, a new
+device, or a different web preview origin.
+
+Commercialization readiness should include:
+
+- account-backed reconstruction history or a reviewed sync/export/import path,
+- a migration plan that preserves existing local history where possible,
+- release validation proving OTA and app updates do not clear saved records,
+- explicit behavior for uninstall/reinstall, device replacement and web preview
+  origins,
+- empty-state copy that says "No saved reconstructions on this device" or
+  equivalent if history remains local-only,
+- clear separation between internal CAD preview renders and saved reconstruction
+  journeys so testers do not assume a preview was recorded as project history.
+
 The current source boundary stays closed:
 
 - `BODY_ADMISSION_AUTHORIZED = false`
