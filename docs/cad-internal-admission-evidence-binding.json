@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-evidence-binding",
+  "mode": "source-only-internal-admission-evidence-binding",
+  "status": "EVIDENCE_BINDING_READY_SWITCH_STILL_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "f1901fd04cc1e323391d872f5d8f508e0d552f2e",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "sourceBindings": {
+    "defaultClosedSwitch": "docs/cad-default-closed-admission-switch.json",
+    "switchSource": "server/cadInternalProductionAdmissionSwitch.js",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "runManifest": "docs/cad-upload-activation-run-manifest.json",
+    "costWorkbook": "docs/cad-per-run-cost-workbook.json"
+  },
+  "currentState": {
+    "switchImported": true,
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "terminalCode": "USER_UPLOADS_DISABLED",
+    "readinessEnabled": false,
+    "readinessLiveReady": false,
+    "readinessExecutable": false,
+    "feePerRunReady": false,
+    "customerFeeReady": false
+  },
+  "evidenceSlots": [
+    {
+      "id": "reviewed-runtime-implementation-commit",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.reviewedRuntimeImplementationCommit",
+      "requiredFutureEvidence": "exact reviewed runtime implementation commit",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "exact-deployment-and-route",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactDeploymentAndRoute",
+      "requiredFutureEvidence": "exact production deployment and route receipt",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "exact-internal-cohort-and-window",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.exactCohortAndWindow",
+      "requiredFutureEvidence": "internal cohort, startsAt, expiresAt and operator references",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "explicit-upload-activation-approval",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.explicitUploadActivationApproval",
+      "requiredFutureEvidence": "separate explicit approval for production upload admission only",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "concurrent-session-revocation-fence",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.exactSessionAuthority.evidence.concurrentRevocationFence",
+      "requiredFutureEvidence": "evidence that concurrent session revocation closes admission before body reads",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "browser-csrf-transport-review",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.cookieExactHttpsOriginAndSessionCsrf",
+      "requiredFutureEvidence": "exact HTTPS origin and session CSRF review for browser upload transport",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "native-bearer-transport-review",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.uploadPermission.evidence.nativeBearerTransportReview",
+      "requiredFutureEvidence": "native installed-app bearer transport review",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "rollback-session-revocation-evidence",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.rollback.evidence.sessionRevocationEvidence",
+      "requiredFutureEvidence": "rollback evidence proving upload sessions can be revoked and endpoint returns the disabled code",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "retention-or-deletion-disposition",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.supportedDispositionOrApprovedBoundedRetention",
+      "requiredFutureEvidence": "supported deletion or approved bounded retention disposition for accepted bodies and receipts",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "durable-private-register-lockout",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.durablePrivateRegisterAndLockout",
+      "requiredFutureEvidence": "private-file register and lockout evidence before any private CAD path",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "environment-deployment-test-approvals",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.providerReadiness.evidence.separateEnvironmentDeploymentTestApprovals",
+      "requiredFutureEvidence": "separate deployment and test approvals for the exact target environment",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "cost-workbook-fee-readiness",
+      "source": "docs/cad-per-run-cost-workbook.json#feePerRunReady",
+      "requiredFutureEvidence": "per-run provider, compute, storage, support and fee evidence",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    },
+    {
+      "id": "separate-conversion-sandbox-approval",
+      "source": "offline/cad-convex/userUploadActivationReadiness.json#gates.activation.evidence.separateConversionAndSandboxApproval",
+      "requiredFutureEvidence": "separate future approval before conversion or Sandbox dispatch",
+      "satisfiedNow": false,
+      "opensWhat": "nothing"
+    }
+  ],
+  "openingBundleRequirements": {
+    "exactRuntimeCommit": "required before any switch opening",
+    "productionUrlAndRoute": "required before any switch opening",
+    "startsAtUtc": "required before any switch opening",
+    "expiresAtUtc": "required before any switch opening",
+    "internalCohortRef": "required before any switch opening",
+    "explicitUploadActivationPhrase": "required before any switch opening",
+    "rollbackSessionRevocationEvidence": "required before any switch opening",
+    "retentionDisposition": "required before any switch opening",
+    "allInCostCapEvidence": "required before any switch opening",
+    "stopOnUnknownOutcome": true,
+    "postRollbackSmokeRefs": "required before any switch opening"
+  },
+  "firstFutureAllowedOpening": {
+    "scope": "admission-only internal upload body validation",
+    "eligibleMaterials": "public, synthetic, or explicitly authorized internal tester CAD only",
+    "bodyRead": "allowed only after every bound evidence slot is satisfied and separate approval is recorded",
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "storeMutationAllowed": false,
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "source-only guarded switch opening bundle generator and checker, still disabled by default and not executable"
+}
