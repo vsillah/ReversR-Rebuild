@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-windows-browser-handoff-closeout",
+  "status": "source_only_closeout_complete",
+  "sourceOnly": true,
+  "expensesUsd": 0,
+  "baseCommit": "dc3ffd8b28ce840a33b9cf1583ea53613748eb42",
+  "closesGate": "source-only Windows-browser handoff closeout",
+  "handoffPacket": "docs/cad-windows-browser-handoff.json",
+  "parallelReadinessPacket": "docs/cad-mark-feedback-parallel-readiness.json",
+  "publicSampleRenderMatrix": "docs/cad-public-sample-render-matrix.json",
+  "reviewerLink": "https://reversr.vercel.app/?cadPreview=mark-dispenser-v1&cadPhase=input&qa=windows-desktop-handoff",
+  "primarySurface": "Windows desktop browser with production desktop shell",
+  "preferredBrowsers": ["Chrome", "Edge"],
+  "primaryRequestedAction": "Choose CAD file and render local preview",
+  "fallbackAction": "Use public sample only as a fallback comparison",
+  "expectedRenderableExtensions": [".igs", ".iges", ".stp", ".step", ".brep"],
+  "recording": {
+    "artifactRef": "rrb-ref:windows-desktop-browser-walkthrough-mp4",
+    "usesPrivateRecipientDetails": false,
+    "usesGmailSend": false,
+    "demoFixture": "public/cad-fixtures/mark-dispenser-v1/Dispenser.IGS"
+  },
+  "closeoutFindings": [
+    "The active handoff packet points Mark to the production desktop browser route.",
+    "The handoff asks for local file selection and browser rendering, not backend upload.",
+    "The public sample render matrix supplies additional public sample coverage while keeping Mark's dispenser preview-mesh boundary explicit.",
+    "The prior Mark correction send remains the only completed external-send evidence; this closeout sends nothing."
+  ],
+  "remainingMarkGates": [
+    "Windows browser upload-to-preview usability",
+    "rendered dispenser geometry credibility",
+    "reference orientation and fixed-view mapping",
+    "source interpretation corrections",
+    "external stakeholder usefulness",
+    "any statement that the CAD preview is externally validated"
+  ],
+  "nextRecommendedGate": "continue non-conflicting internal readiness work while Mark feedback remains pending",
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanupMergedBranchAndWorktree": true,
+    "externalMessages": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCad": false,
+    "realUsers": false,
+    "providerEnvResourceBillingChanges": false,
+    "usageBillingChanges": false
+  }
+}
