@@ -1,3 +1,4 @@
+import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -61,6 +62,7 @@ export default function RootLayout() {
 
 function ThemedRootLayout() {
   const { colors } = useAppTheme();
+  const { desktop } = useCadDesktopWorkspace();
   const isDark = colors.mode === 'dark';
   const styles = createStyles(colors);
 
@@ -78,7 +80,7 @@ function ThemedRootLayout() {
         />
         <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
           <StatusBar style={isDark ? 'light' : 'dark'} />
-          <View style={styles.shell}>
+          <View testID="app-shell" style={[styles.shell, desktop && { maxWidth: '100%' }]}>
             <Stack
               screenOptions={{
                 headerShown: false,

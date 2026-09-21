@@ -14,6 +14,7 @@ type Props = {
   phase: number;
   onPhase: (phase: number) => void;
   compact?: boolean;
+  desktop?: boolean;
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
@@ -21,7 +22,7 @@ const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry 
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
-export default function CadWorkflow({ preview, phase, onPhase, compact = false }: Props) {
+export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false }: Props) {
   const { colors } = useAppTheme();
   const [fixture, setFixture] = useState(preview.fixture);
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
@@ -46,6 +47,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
       {phase === 1 && <>
         <CadImportPanel
           internalPreview={preview}
+          desktop={desktop}
           onReviewQualifiedResult={() => {
             setFixture(preview.fixture);
             onPhase(3);
@@ -69,8 +71,8 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false }
         <CadAction label="Review source in Input" icon="arrow-back-outline" onPress={() => onPhase(1)} />
       </>}
       {phase === 3 && <>
-        <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} />
-        <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />
+        <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} desktop={desktop} onReadiness={() => onPhase(4)} />
+        {!desktop && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
       </>}
       {phase === 4 && <>
         <View testID="cad-build-locked" style={{ gap: Spacing.md }}>

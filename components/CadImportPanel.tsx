@@ -39,7 +39,8 @@ const INTERNAL_PREVIEW_DIAGNOSTICS: ReadonlyArray<{
   }),
 ]);
 
-export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, onOpenInternalPreview, uploadSessionAdapter }: {
+export default function CadImportPanel({ internalPreview, onReviewQualifiedResult, onLocalPreviewResult, onOpenInternalPreview, uploadSessionAdapter, desktop = false }: {
+  desktop?: boolean;
   internalPreview?: CadInternalTesterPreview;
   onReviewQualifiedResult?: () => void;
   onLocalPreviewResult?: (fixture: CadInternalTesterFixture) => void;
@@ -194,7 +195,8 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     setMessage(`${fixture.sourceFileName} selected as the public sample. Generate the sample preview when you are ready.`);
   };
   return (
-    <View testID="cad-import-panel" style={{ gap: 14 }}>
+    <View testID="cad-import-panel" style={{ gap: 14, maxWidth: desktop ? 840 : undefined, width: '100%', alignSelf: desktop ? 'flex-start' : undefined }}>
+      {desktop && <Text accessibilityRole="header" style={[Typography.title, { color: colors.text }]}>CAD source</Text>}
       {supported && <input ref={picker} type="file" accept={CAD_FILE_ACCEPT} aria-label="Choose CAD file" data-testid="cad-file-input" style={{ display: 'none' }} onChange={event => {
         const file = event.currentTarget.files?.[0];
         event.currentTarget.value = '';
@@ -207,7 +209,7 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
         : 'Choose a CAD file for a local compatibility check.'}</Text>
       {fixture ? (
         <View testID="cad-public-fixture-ready" style={{ gap: Spacing.md }}>
-          <View testID="cad-source-choice-panel" style={{ gap: Spacing.md, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md, backgroundColor: colors.surface }}>
+          <View testID="cad-source-choice-panel" style={{ gap: Spacing.md, borderWidth: desktop ? 0 : 1, borderColor: colors.border, borderRadius: Radii.lg, padding: desktop ? 0 : Spacing.md, backgroundColor: colors.surface }}>
             {!fixtureSourceMode && (
               <View style={{ gap: Spacing.md }}>
                 <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>

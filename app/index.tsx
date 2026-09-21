@@ -1,3 +1,4 @@
+import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
 import { InputMode } from '../utils/inputModes';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
@@ -523,6 +524,7 @@ export default function HomeScreen() {
   const { account, profile } = useCommercialization();
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
+  const { desktop: desktopCadWorkspace } = useCadDesktopWorkspace();
   const routeCadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
   const nativeEmbeddedCadPreview = useMemo(() => (
     Platform.OS === 'web'
@@ -1519,7 +1521,7 @@ export default function HomeScreen() {
   );
   const keyboardInset = useAndroidKeyboardInset(32);
   const keyboardOpen = workflowInputActive || keyboardInset > 0;
-  const contentBottomPadding = nativeEmbeddedCadPreview
+  const contentBottomPadding = (nativeEmbeddedCadPreview || desktopCadWorkspace)
     ? Spacing.md + keyboardInset
     : tabBarInset + Spacing.md + keyboardInset;
   const workflowFocusVisibilityProps = {
@@ -1732,7 +1734,7 @@ export default function HomeScreen() {
         </View>
       </View>}
 
-      {isGuestPlan && !keyboardOpen && !nativeEmbeddedCadPreview && (
+      {isGuestPlan && !keyboardOpen && !nativeEmbeddedCadPreview && !desktopCadWorkspace && (
         <View style={styles.guestCreditBar} testID="reversr-guest-credit-bar">
           <Text style={styles.guestCreditText} numberOfLines={2}>
             {guestCreditCopySegments.map((segment, index) => (
@@ -1753,8 +1755,8 @@ export default function HomeScreen() {
       )}
 
       {!keyboardOpen && !nativeEmbeddedCadPreview && (
-        <View style={styles.progressBar}>
-          <View style={styles.phaseStepperCard}>
+        <View style={[styles.progressBar, desktopCadWorkspace && { paddingVertical: Spacing.xs }]}>
+          <View style={[styles.phaseStepperCard, desktopCadWorkspace && { borderWidth: 0, paddingVertical: Spacing.xs, backgroundColor: 'transparent', boxShadow: 'none' }]}>
             <HorizontalStepper
               steps={PHASE_STEP_LABELS}
               subLabels={PHASE_STEP_HINTS}
@@ -1783,7 +1785,7 @@ export default function HomeScreen() {
         onContentSizeChange={flushWorkflowScrollReset}
         {...workflowFocusVisibilityProps}
       >
-        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} compact={nativeEmbeddedCadPreview} />}
+        {cadInternalPreview.enabled && <CadWorkflow preview={cadInternalPreview} phase={cadPhase} onPhase={navigateCadPhase} compact={nativeEmbeddedCadPreview || desktopCadWorkspace} desktop={desktopCadWorkspace} />}
         {!cadInternalPreview.enabled && context.phase === 1 && (
           <PhaseOne
             key={context.id}
@@ -1998,7 +2000,7 @@ export default function HomeScreen() {
         onClose={() => setNativeCadUploadPreviewVisible(false)}
       />
       {renderTourGuide()}
-      {!keyboardOpen && !nativeEmbeddedCadPreview && (
+      {!keyboardOpen && !nativeEmbeddedCadPreview && !desktopCadWorkspace && (
         <BottomTabBar
           active={null}
           onHome={goHome}
