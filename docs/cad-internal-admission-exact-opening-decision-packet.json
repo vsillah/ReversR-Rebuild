@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-exact-opening-decision-packet",
+  "mode": "source-only-exact-opening-decision-request",
+  "status": "EXACT_OPENING_DECISION_DRAFT_UPLOADS_DISABLED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "92db313ed4c3452e98c72ac16bf1bf16e84159f7",
+  "observedAtUtc": "2026-09-22T06:23:55Z",
+  "expensesUsd": 0,
+  "route": "POST /api/cad/user-import",
+  "acceptedPredecessor": {
+    "humanQaReceipt": "docs/cad-internal-admission-human-qa-acceptance.json",
+    "candidateOpeningBundle": "docs/cad-internal-admission-candidate-opening-bundle.json",
+    "humanQaAccepted": true,
+    "productionUploadActivationAccepted": false
+  },
+  "proposedOpening": {
+    "acceptedByThisPacket": false,
+    "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "participantCount": 1,
+    "startsAtUtc": "2026-09-22T17:00:00Z",
+    "expiresAtUtc": "2026-09-22T18:00:00Z",
+    "maxDurationMinutes": 60,
+    "maxConcurrentUploadSessions": 1,
+    "maxUploadAttempts": 1,
+    "retry": false,
+    "secondRun": false,
+    "stopOnUnknownOutcome": true,
+    "materialsAllowed": "public, synthetic, or explicitly authorized internal tester CAD only",
+    "privateCadAllowed": false,
+    "realUsersAllowed": false,
+    "commercialUseAllowed": false,
+    "externalDeliveryAllowed": false
+  },
+  "exactApprovalPhrase": {
+    "requiredBeforeUse": true,
+    "acceptedByThisPacket": false,
+    "draft": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import on candidate opening bundle docs/cad-internal-admission-candidate-opening-bundle.json at merge commit 92db313ed4c3452e98c72ac16bf1bf16e84159f7, against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-22T17:00:00Z and expiring 2026-09-22T18:00:00Z. Scope is admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD, one concurrent session, one upload attempt, stop on unknown outcome, and post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes outside the accepted bundle, second run, retry, or commercial-readiness claim.",
+    "note": "Generic proceed is not this approval. The phrase above must be explicitly accepted before any runtime activation work."
+  },
+  "sourceBindings": {
+    "humanQaAcceptance": "docs/cad-internal-admission-human-qa-acceptance.json",
+    "candidateOpeningBundle": "docs/cad-internal-admission-candidate-opening-bundle.json",
+    "cohortWindowPacket": "docs/cad-internal-admission-cohort-window-packet.json",
+    "activationReadiness": "offline/cad-convex/userUploadActivationReadiness.json",
+    "productionActivationScope": "docs/cad-production-upload-activation-scope.json",
+    "routeSource": "server/cadUserUploadRouter.js#BODY_ADMISSION_AUTHORIZED",
+    "openingBundleChecker": "scripts/cad-internal-admission-opening-bundle-checker.js"
+  },
+  "routeState": {
+    "bodyAdmissionAuthorized": false,
+    "bodyReadAuthorized": false,
+    "routeMayOpenNow": false,
+    "terminalCodeUntilSeparateApproval": "USER_UPLOADS_DISABLED"
+  },
+  "preActivationChecklist": {
+    "requiresSeparateRuntimeImplementation": true,
+    "requiresExactActivationApproval": true,
+    "requiresPreWindowFailClosedSmoke": true,
+    "requiresPostRollbackFailClosedSmoke": true,
+    "requiresImmediateRollbackOnUnknownOutcome": true,
+    "requiresNoConversionOrSandbox": true,
+    "requiresNoPrivateCad": true,
+    "requiresNoRealUsers": true,
+    "requiresNoExternalMessages": true
+  },
+  "latestProductionFailClosedSmoke": {
+    "commit": "92db313ed4c3452e98c72ac16bf1bf16e84159f7",
+    "cacheBuster": "qa=92db313",
+    "results": [
+      {
+        "route": "GET /",
+        "status": 200,
+        "title": "ReversR Rebuild"
+      },
+      {
+        "route": "GET /api/cad/capabilities",
+        "status": 200
+      },
+      {
+        "route": "POST /api/cad/user-import {}",
+        "status": 401,
+        "code": "USER_SESSION_REQUIRED"
+      },
+      {
+        "route": "POST /api/cad/import {}",
+        "status": 401,
+        "code": "UNAUTHORIZED"
+      },
+      {
+        "route": "GET /api/cad/import-source-record",
+        "status": 404
+      }
+    ]
+  },
+  "authorizes": {
+    "sourceOnlyDocsAndTests": true,
+    "localValidation": true,
+    "draftPr": true,
+    "greenCheckMerge": true,
+    "normalVercelDeploymentFromMain": true,
+    "productionFailClosedSmoke": true,
+    "cleanup": true,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "storeMutation": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secrets": false
+  },
+  "nextRecommendedGate": "explicitly accept the exact approval phrase or choose a different UTC window; do not execute production upload activation from this packet"
+}
