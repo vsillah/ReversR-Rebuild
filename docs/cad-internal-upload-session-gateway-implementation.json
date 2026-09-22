@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-upload-session-gateway-implementation",
+  "mode": "source-only-server-authenticated-gateway-support",
+  "status": "IMPLEMENTED_FAIL_CLOSED_PENDING_ENV_AND_ISSUER_GATE",
+  "sourceOnly": true,
+  "runtimeRouteChanged": true,
+  "route": "POST /api/cad/user-import",
+  "cohort": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+  "sourceBindings": {
+    "gatewayService": "server/cadUploadSessionGatewayService.js",
+    "routeMount": "server/index.js#createCadUploadSessionGatewayService",
+    "sessionStore": "server/uploadSessionStore.js",
+    "convexStorePort": "server/convexUploadSessionStore.js",
+    "storeDesign": "docs/cad-convex-store-design.md",
+    "tests": "scripts/cad-upload-session-gateway-service.test.js"
+  },
+  "envManifest": {
+    "requiredTogether": [
+      "CAD_UPLOAD_SESSION_GATEWAY_URL",
+      "CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN",
+      "CAD_UPLOAD_SESSION_GATEWAY_AUDIENCE"
+    ],
+    "authorizedValuesInThisGate": {
+      "CAD_UPLOAD_SESSION_GATEWAY_AUDIENCE": "rrb-ref:cad-upload-internal-mark-test-cohort-v1"
+    },
+    "valuesInstalledByThisGate": false,
+    "secretValuesStoredByThisGate": false,
+    "providerSettingsChangedByThisGate": false
+  },
+  "runtimeBehavior": {
+    "missingEnv": "AUTH_UNAVAILABLE",
+    "partialEnv": "AUTH_UNAVAILABLE",
+    "invalidEnv": "AUTH_UNAVAILABLE",
+    "bodyAdmissionAuthorized": false,
+    "requestBodyReadAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "lookupCanUseGatewayWhenSeparatelyConfigured": true,
+    "credentialOrSecretEchoAllowed": false,
+    "retryPolicy": "no-automatic-retry"
+  },
+  "guardrails": {
+    "productionUploadActivationAllowed": false,
+    "requestBodyReadAllowed": false,
+    "uploadSessionIssuanceAllowed": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUserCommercializationAllowed": false,
+    "externalMessagesAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "nextGate": {
+    "requiredBeforeLiveUse": true,
+    "summary": "Install exact gateway env values and approve the authenticated upload-session issuer separately before any production session can be minted or body admission can read CAD bytes."
+  }
+}
