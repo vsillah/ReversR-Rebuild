@@ -10,7 +10,14 @@ assert.equal(require('./cad-production-verifier-evidence-checker').checkEvidence
   JSON.parse(read('docs/cad-production-verifier-evidence-template.json'))).ok, true);
 assert.equal(require('./cad-auth-live-evidence-plan-checker').checkPlan(
   JSON.parse(read('docs/cad-auth-live-evidence-plan.json'))).ok, true);
+assert.equal(require('./cad-auth-sealed-evidence-card-checker').checkCard(
+  JSON.parse(read('docs/cad-auth-sealed-evidence-card.json'))).ok, true);
 const files = [
+  'docs/cad-auth-sealed-evidence-card.md',
+  'docs/cad-auth-sealed-evidence-card.json',
+  'scripts/cad-auth-sealed-evidence-card-checker.js',
+  'scripts/cad-auth-sealed-evidence-card.test.js',
+
   'docs/cad-auth-live-evidence-plan.md',
   'docs/cad-auth-live-evidence-plan.json',
   'scripts/cad-auth-live-evidence-plan-checker.js',
