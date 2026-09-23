@@ -1,0 +1,1244 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-production-verifier-evidence-template",
+  "baseCommit": "b885f1f9a569b5bfa5627858cbb1542342b7da43",
+  "sourceOnly": true,
+  "status": "PENDING_SEPARATE_PROVIDER_EVIDENCE_GATE",
+  "claims": {
+    "productionVerifierAccepted": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeValuesInstalled": false,
+    "runtimeActivationAuthorized": false,
+    "liveProviderTestsAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "deploymentAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "activation": {
+    "separateApprovalRequired": true,
+    "historicalWindowReusable": false,
+    "historicalApprovalReusable": false,
+    "approvalRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null
+  },
+  "localSynthetic": {
+    "scope": "SOURCE_BEHAVIOR_ONLY",
+    "testCommand": "node --test scripts/cad-production-verifier-candidate.test.js",
+    "provesProviderAuth": false,
+    "provesActualRouteBodyOrdering": false,
+    "storedRunReceipt": null
+  },
+  "futureProviderEvidence": {
+    "provider": {
+      "required": "Identify the concrete verifier source commit, provider and SDK versions, trusted issuer/audience and allowed algorithms by sanitized references. Prove cryptographic verification in the authenticated user context; gateway service credentials and caller claims cannot supply login authority. Development-only password assumptions are not production evidence.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "verified-user-context",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "service-credential-is-not-login",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "sdk-issuer-audience-algorithms",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "identity": {
+      "required": "Derive user and exact login session IDs from the provider-verified context, point-read the live session and existing owner, and prove ownership matches. Reject missing/deleted owners, missing sessions, cross-user substitutions, supplied principals and opaque loginSessionRef mappings.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "missing-owner",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "deleted-session",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "owner-mismatch",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "supplied-principal",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "opaque-login-reference",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "exactLogin": {
+      "required": "Use two simultaneous logins for one user. Resolve each independently, then attempt to refresh login A binding using login B: deny despite matching user/shop. Also reject cross-user and auth-method substitution and concurrent request credential crossover.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "two-same-user-logins",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "cross-login-refresh",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "cross-user-refresh",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "method-substitution",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "concurrent-credential-isolation",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "authorization": {
+      "required": "Freshly read current selected-shop membership and CAD permission on resolve and every refresh. Match user, login session, auth method and shop; shop selection is not authority. Membership removal, shop substitution and permission loss must deny new grants and invalidate refresh authority without stale cached success.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "selected-shop-membership",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "removed-membership",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "permission-loss",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "shop-substitution",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "fresh-resolve-and-refresh",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "expiry": {
+      "required": "Deny expired login or authorization grants before and after asynchronous reads, including exact expiry boundaries and expiry during a read. Use the minimum expiry; reject invalid timestamps and clock rollback. Cached query results must not extend liveness.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "exact-expiry",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "expiry-during-read",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "minimum-expiry",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "invalid-timestamp",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "clock-rollback",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "cached-query-liveness",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "lifecycle": {
+      "required": "After logout, revocation, session deletion or replacement, repeat resolve and refresh with the old credential and deny. A replacement login cannot inherit an old upload-session binding. Record sanitized before/after observations and provider invalidation semantics, including token/session cache behavior.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "logout",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "revocation",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "session-deletion",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "replacement-login",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "provider-cache-invalidation",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "tokens": {
+      "required": "Reject forged signatures, unsigned/disallowed algorithms, wrong issuer/audience, expired or not-yet-valid tokens, malformed/truncated/oversized credentials, missing credentials, duplicate or conflicting Authorization headers, and unavailable provider/key verification. Return only sanitized denial; no credential or private exception logging.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "forged-signature",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "unsigned-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "disallowed-algorithm",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "wrong-issuer",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "wrong-audience",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "expired-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "not-yet-valid-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "malformed-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "oversized-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "missing-token",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "duplicate-authorization",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "unavailable-verification",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "cancellation": {
+      "required": "Prove bounded completion with an explicit operation deadline and propagated AbortSignal: abort before reads, between reads, during authorization, and after delayed completion. Hung or cancellation-ignoring dependencies must never yield late authority or side effects. The binding alone supplies no timer; direct callers need a reviewed deadline owner and service composition needs bounded-operation evidence.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "abort-before-read",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "abort-between-reads",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "abort-during-authorization",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "hung-reader",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "late-result",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "no-late-side-effects",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "transport": {
+      "required": "Accept only an unambiguous bearer header on the reviewed request path. Reject cookies and mixed cookie/bearer headers. Inspect the actual router/header normalization and middleware order, not only a fabricated request. Cookie support remains rejected pending separate origin, CSRF, SameSite and credential-scope review; a caller transport label cannot authorize cookies.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "actual-router-bearer-normalization",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "cookie-rejected",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "mixed-transport-rejected",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "middleware-order",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "body": {
+      "required": "Instrument the actual user-upload route and middleware for getters, stream listeners, parsing and byte reads. Denied, malformed, cancelled and timed-out requests must read zero upload-body bytes before session acceptance. This packet keeps body admission closed even after a valid verifier result; separate body-admission approval is still required. Service-envelope JSON is not proof of upload-body admission.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "denied-zero-bytes",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "malformed-zero-bytes",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "cancelled-zero-bytes",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "timed-out-zero-bytes",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "closed-after-valid-verifier",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "isolation": {
+      "required": "Prove credentials stay request-local and never enter gateway envelopes, stored bindings, evidence artifacts or logs. Provider failures produce fail-closed sanitized errors; no fallback to client profiles, development verifier assumptions or service-envelope refreshAuthorization as login proof.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "request-local-credentials",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "no-envelope-credentials",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "no-binding-credentials",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "no-log-or-evidence-credentials",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "sanitized-provider-failure",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    },
+    "review": {
+      "required": "For every case provide sanitized expected/observed outcome, exact candidate commit/deployment, test version, UTC execution time, evidence digest/reference and reviewer disposition in a separately authorized evidence packet. Synthetic doubles and historical smoke establish source behavior only. No live collection is authorized here.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "cases": [
+        {
+          "id": "exact-candidate-deployment-test-version",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "sanitized-digest-reference",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "utc-execution-time",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        },
+        {
+          "id": "reviewer-disposition",
+          "paths": [
+            "resolve",
+            "refresh"
+          ],
+          "expected": "REQUIRES_SEPARATELY_REVIEWED_CASE_PLAN",
+          "observed": null,
+          "candidateCommit": null,
+          "deploymentRef": null,
+          "testVersion": null,
+          "executedAtUtc": null,
+          "evidenceRef": null,
+          "evidenceSha256": null,
+          "reviewerDisposition": null,
+          "status": "NOT_COLLECTED"
+        }
+      ]
+    }
+  },
+  "bodyOrdering": {
+    "requiredUploadBytesBeforeAcceptance": 0,
+    "observedUploadBytesBeforeAcceptance": null,
+    "actualRouteInstrumented": false,
+    "status": "NOT_COLLECTED"
+  },
+  "sourceBindings": {
+    "offline/cad-convex/productionVerifierCandidate.js": "d762441f63b735b66e92bfe776d1900e532bccd45008757488c5010bea2cac24",
+    "scripts/cad-production-verifier-candidate.test.js": "5f44412cbc756ee81a9b0567a25d2633d04dbde600b1d35f052ffb4b655b00a9",
+    "scripts/cad-production-verifier-evidence-checker.js": "7ec0e005d724554636ca126fe06721ac7bbc8e699a54babf888c1191f73f990e",
+    "scripts/cad-production-verifier-evidence.test.js": "0de48fd3ea3a3c751d01aa8c5af227df91815c6b3167945ade48987a575b01c1",
+    "docs/cad-production-auth-verifier-acceptance.json": "31d1368957f770c423c903644decbc8043ac076a0dd8d76edfc3105a9643176f"
+  }
+}
