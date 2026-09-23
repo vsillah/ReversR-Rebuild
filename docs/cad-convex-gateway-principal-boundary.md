@@ -49,17 +49,17 @@ This packet does not:
 - send external messages,
 - or claim commercial readiness.
 
-## Next Gate
+## Follow-On Exact Bridge
 
-The next implementation gate should choose one exact session bridge. Acceptable
-options include a reviewed request-session handoff that preserves Convex Auth
-context, or a server-owned verification design that independently proves the
-same user, login session, shop membership and CAD permission without accepting
-payload principal claims.
+The follow-on packet `docs/cad-gateway-exact-session-bridge.md` chooses a
+source-only server-owned verification design. It rejects payload principal
+claims, accepts only opaque issue context or server-owned refresh binding fields,
+and remains inert unless a reviewed caller injects a verifier. No env name can
+select that bridge, so production issuance is still blocked by default.
 
-That next gate should remain separate from production upload activation. Even
-after gateway dispatch is source-ready, body admission and conversion still need
-their own bounded approvals, rollback receipts and fail-closed smokes.
+Production upload activation remains separate: request-session binding, runtime
+values, body admission and conversion still need their own bounded approvals,
+rollback receipts and fail-closed smokes.
 
 ## Validation
 

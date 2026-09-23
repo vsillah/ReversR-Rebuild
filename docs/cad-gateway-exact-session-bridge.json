@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-gateway-exact-session-bridge",
+  "mode": "source-only-exact-session-bridge",
+  "status": "IMPLEMENTED_SOURCE_ONLY_INJECTION_DEFAULT_CLOSED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "route": "POST /api/cad/user-import",
+  "cohort": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+  "baseCommit": "676a6e454e4fd896540f6f6e6735ea94db249346",
+  "sourceBindings": {
+    "bridge": "server/cadExactSessionBridge.js",
+    "gatewayService": "server/cadUploadSessionGatewayService.js",
+    "sessionStore": "server/uploadSessionStore.js",
+    "tests": "scripts/cad-gateway-exact-session-bridge.test.js"
+  },
+  "bridgeDesign": {
+    "acceptsCallerPrincipal": false,
+    "acceptsCallerUserId": false,
+    "acceptsRequestBody": false,
+    "acceptsCredentials": false,
+    "acceptsArbitraryContextFields": false,
+    "issueContext": [
+      "schemaVersion",
+      "cohort",
+      "requestRef",
+      "shopId",
+      "loginSessionRef",
+      "transport"
+    ],
+    "refreshBinding": [
+      "userId",
+      "shopId",
+      "sessionId",
+      "loginSessionId",
+      "authMethod"
+    ],
+    "verifierInjectionRequired": true,
+    "verifierFailureCode": "AUTH_UNAVAILABLE"
+  },
+  "runtimeBehavior": {
+    "defaultGatewayIssuanceEnabled": false,
+    "envCanSelectBridge": false,
+    "injectedBridgeCanIssueOnlyInReviewedSourceHarness": true,
+    "productionIssuerBoundByThisGate": false,
+    "liveGatewayDeploymentEnabled": false,
+    "requestBodyAdmissionEnabled": false,
+    "conversionOrSandboxDispatchEnabled": false
+  },
+  "guardrails": {
+    "providerEnvResourceBillingChangesAllowed": false,
+    "secretValuesStoredByThisGate": false,
+    "liveGatewayDeploymentAllowed": false,
+    "uploadSessionIssuanceAllowed": false,
+    "productionUploadActivationAllowed": false,
+    "requestBodyReadAllowed": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUserCommercializationAllowed": false,
+    "externalMessagesAllowed": false,
+    "secondRunOrRetryAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "nextGate": {
+    "requiredBeforeProductionIssuance": true,
+    "summary": "Bind this source-only bridge to an accepted production request-session verifier and install reviewed runtime values in a separate gate before issuing any production upload-session credential."
+  }
+}

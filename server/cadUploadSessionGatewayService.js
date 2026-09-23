@@ -2,6 +2,7 @@
 // required env values are installed by a separate approval gate.
 const { createUploadSessionService } = require('./uploadSessionStore');
 const { createConvexUploadSessionStore } = require('./convexUploadSessionStore');
+const { createCadExactSessionBridge } = require('./cadExactSessionBridge');
 
 const OPERATION_BUDGET_MS = 800;
 const INTERNAL_MARK_TEST_COHORT = 'rrb-ref:cad-upload-internal-mark-test-cohort-v1';
@@ -104,7 +105,20 @@ function withDeadline(payload, now) {
   return Object.freeze({ ...payload, deadlineAt: startedAt + OPERATION_BUDGET_MS });
 }
 
-function createCadUploadSessionGatewayService({ env = process.env, fetchImpl = globalThis.fetch, now = Date.now } = {}) {
+function normalizeExactSessionBridge(exactSessionBridge) {
+  if (exactSessionBridge === undefined || exactSessionBridge === null) return createCadExactSessionBridge();
+  if (typeof exactSessionBridge !== 'object'
+    || typeof exactSessionBridge.resolveAuthorization !== 'function'
+    || typeof exactSessionBridge.refreshAuthorization !== 'function') fail();
+  return exactSessionBridge;
+}
+
+function createCadUploadSessionGatewayService({
+  env = process.env,
+  fetchImpl = globalThis.fetch,
+  now = Date.now,
+  exactSessionBridge,
+} = {}) {
   const config = readGatewayConfig(env);
   if (!config.ok) {
     return Object.freeze({
@@ -115,13 +129,19 @@ function createCadUploadSessionGatewayService({ env = process.env, fetchImpl = g
   }
   const client = createCadUploadSessionGatewayClient({ ...config, fetchImpl, now });
   const store = createConvexUploadSessionStore({ call: client.call, now });
+  const bridge = normalizeExactSessionBridge(exactSessionBridge);
+  const bridgeConfigured = bridge.configured === true;
   const sessionService = createUploadSessionService({
     store,
     now,
-    // This gate wires verification only. A later explicit gate must define the
-    // exact authenticated issuer before production can mint upload sessions.
-    resolveAuthorization: async () => null,
-    refreshAuthorization: async binding => client.call('refreshAuthorization', withDeadline({ binding }, now)),
+    // Default production construction still has no issuer. The source-only
+    // bridge can be injected only by reviewed code/tests, never by env values.
+    resolveAuthorization: bridgeConfigured
+      ? (context, options) => bridge.resolveAuthorization(context, options)
+      : async () => null,
+    refreshAuthorization: bridgeConfigured
+      ? (binding, options) => bridge.refreshAuthorization(binding, options)
+      : async binding => client.call('refreshAuthorization', withDeadline({ binding }, now)),
   });
   return Object.freeze({
     configured: true,
@@ -131,7 +151,8 @@ function createCadUploadSessionGatewayService({ env = process.env, fetchImpl = g
       origin: config.gatewayUrl.origin,
       pathname: config.gatewayUrl.pathname,
       audience: config.audience,
-      issuanceEnabled: false,
+      exactSessionBridge: bridgeConfigured ? 'source-only-injected' : 'absent',
+      issuanceEnabled: bridgeConfigured,
     }),
     sessionService,
   });

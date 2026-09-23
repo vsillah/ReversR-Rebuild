@@ -412,6 +412,11 @@ const files = [
   'docs/cad-convex-gateway-principal-boundary.md',
   'docs/cad-convex-gateway-principal-boundary.json',
   'scripts/cad-convex-gateway-principal-boundary.test.js',
+  'server/cadExactSessionBridge.js',
+  'server/cadUploadSessionGatewayService.js',
+  'docs/cad-gateway-exact-session-bridge.md',
+  'docs/cad-gateway-exact-session-bridge.json',
+  'scripts/cad-gateway-exact-session-bridge.test.js',
   'offline/cad-convex/previewRuntime.js', 'offline/cad-convex/previewRuntime.d.ts',
   'scripts/cad-convex-preview-runtime.test.js', 'docs/cad-convex-preview-setup.md', 'scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
   ...fs.readdirSync(path.join(root, 'convex/_generated')).map(n => 'convex/_generated/' + n),
@@ -446,8 +451,21 @@ assert.equal(principalBoundary.currentRuntimeBehavior.uploadSessionIssuanceEnabl
 assert.equal(principalBoundary.boundaryDecision.serviceTokenIsNotUserPrincipal, true);
 assert.equal(principalBoundary.boundaryDecision.payloadPrincipalOverrideAllowed, false);
 assert.equal(principalBoundary.nextGate.requiredBeforeLiveDispatch, true);
+assert.equal(principalBoundary.nextGate.sourceOnlyBridgePacket, 'docs/cad-gateway-exact-session-bridge.json');
 assert.equal(principalBoundary.guardrails.productionUploadActivationAllowed, false);
 assert.match(read('docs/cad-convex-gateway-principal-boundary.md'), /live dispatch remains blocked/i);
+const exactSessionBridge = JSON.parse(read('docs/cad-gateway-exact-session-bridge.json'));
+assert.equal(exactSessionBridge.status, 'IMPLEMENTED_SOURCE_ONLY_INJECTION_DEFAULT_CLOSED');
+assert.equal(exactSessionBridge.runtimeBehavior.defaultGatewayIssuanceEnabled, false);
+assert.equal(exactSessionBridge.runtimeBehavior.envCanSelectBridge, false);
+assert.equal(exactSessionBridge.runtimeBehavior.productionIssuerBoundByThisGate, false);
+assert.equal(exactSessionBridge.bridgeDesign.acceptsCallerPrincipal, false);
+assert.equal(exactSessionBridge.bridgeDesign.acceptsRequestBody, false);
+assert.equal(exactSessionBridge.guardrails.providerEnvResourceBillingChangesAllowed, false);
+assert.match(read('server/cadExactSessionBridge.js'), /FORBIDDEN_CONTEXT_KEYS/);
+assert.match(read('server/cadExactSessionBridge.js'), /never selected from environment/);
+assert.match(read('server/cadUploadSessionGatewayService.js'), /exactSessionBridge: bridgeConfigured \? 'source-only-injected' : 'absent'/);
+assert.match(read('server/cadUploadSessionGatewayService.js'), /resolveAuthorization: bridgeConfigured/);
 const httpGatewaySource = read('convex/cadUploadSessionGateway.ts');
 assert.match(httpGatewaySource, /CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN_SHA256/);
 assert.match(httpGatewaySource, /crypto\.subtle\.digest/);

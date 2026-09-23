@@ -49,8 +49,9 @@ test('user principal must come from exact library session review, not service to
 
 test('server gateway service still has no production issuer grant', () => {
   const service = read('server/cadUploadSessionGatewayService.js');
-  assert.match(service, /resolveAuthorization: async \(\) => null/);
-  assert.match(service, /issuanceEnabled: false/);
+  assert.match(service, /: async \(\) => null/);
+  assert.match(service, /issuanceEnabled: bridgeConfigured/);
+  assert.match(service, /exactSessionBridge: bridgeConfigured \? 'source-only-injected' : 'absent'/);
   assert.match(service, /CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN/);
   assert.doesNotMatch(service, /resolveAuthorization: async \(\) => \(\{/);
 });
@@ -75,7 +76,7 @@ test('markdown does not overclaim production readiness', () => {
   const markdown = read('docs/cad-convex-gateway-principal-boundary.md');
   assert.match(markdown, /live dispatch remains blocked/i);
   assert.match(markdown, /not production wiring/i);
-  assert.match(markdown, /remain separate from production upload activation/i);
+  assert.match(markdown, /Production upload activation remains separate/i);
   assert.doesNotMatch(markdown, /production upload activation completed/i);
   assert.doesNotMatch(markdown, /conversion dispatched/i);
   assert.doesNotMatch(markdown, /commercial readiness achieved/i);

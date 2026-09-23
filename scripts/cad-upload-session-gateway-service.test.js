@@ -101,6 +101,7 @@ test('service stays unconfigured without env and cannot issue sessions even when
   });
   assert.equal(opened.configured, true);
   assert.equal(opened.gateway.issuanceEnabled, false);
+  assert.equal(opened.gateway.exactSessionBridge, 'absent');
   assert.deepEqual(await opened.sessionService.issueSession({ userId: 'user-test' }), {
     ok: false,
     code: 'AUTHORIZATION_REQUIRED',
