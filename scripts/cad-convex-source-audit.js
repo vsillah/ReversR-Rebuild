@@ -5,6 +5,9 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'server/cadProductionSessionVerifierBinding.js',
+  'scripts/cad-production-session-verifier-binding.test.js',
+  'docs/cad-production-session-verifier-binding.md',
   'docs/cad-internal-admission-current-commit-rebind.md',
   'docs/cad-internal-admission-current-commit-rebind.json',
   'scripts/cad-internal-admission-current-commit-rebind-checker.js',

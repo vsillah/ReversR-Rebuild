@@ -4,6 +4,9 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'server/cadProductionSessionVerifierBinding.js',
+  'scripts/cad-production-session-verifier-binding.test.js',
+  'docs/cad-production-session-verifier-binding.md',
   'docs/cad-internal-admission-current-commit-rebind.md',
   'docs/cad-internal-admission-current-commit-rebind.json',
   'scripts/cad-internal-admission-current-commit-rebind-checker.js',
