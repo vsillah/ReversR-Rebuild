@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-sealed-evidence-card-v1",
+  "sourceOnly": true,
+  "status": "BLOCKED_CARD_NOT_SEALED",
+  "parentPlan": {
+    "packet": "cad-auth-live-evidence-plan-v1",
+    "mergeCommit": "06468abb5424aea56f4f89dd9cd05a9602864806",
+    "candidateCommit": "dc7d733cff6d94841725e721cc8e7b0da7be4cff",
+    "planDoc": "docs/cad-auth-live-evidence-plan.md",
+    "planJson": "docs/cad-auth-live-evidence-plan.json",
+    "planSha256": "869e07bddbc0e8f713bf847739b4cf333424a1cab1a223ee23004d2e0252168a",
+    "livePhraseFromPlanReusableNow": false,
+    "reason": "Provider, collector, instrumentation, deployment target, cohort mapping, custody and fresh approval are unbound."
+  },
+  "claims": {
+    "sealedCommandCardReady": false,
+    "concreteProviderAdapterBound": false,
+    "collectorAndReceiptValidatorBound": false,
+    "routeInstrumentationBound": false,
+    "immutableCollectionTargetBound": false,
+    "syntheticCohortMappingBound": false,
+    "custodyReviewerBound": false,
+    "freshWindowBound": false,
+    "liveProviderTestsAuthorized": false,
+    "liveCollectionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "card": {
+    "id": "cad-auth-sealed-evidence-card-v1",
+    "sealed": false,
+    "sha256": null,
+    "executable": false,
+    "liveApprovalPhrase": null,
+    "liveApprovalPhraseActionable": false,
+    "exactCommandLine": null,
+    "dryRunCommandLine": null,
+    "canBeExecutedByThisPacket": false,
+    "requiresNewReviewAfterAnySourceOrTargetDrift": true
+  },
+  "prerequisites": {
+    "providerAdapter": {
+      "status": "MISSING_SOURCE_IMPLEMENTATION",
+      "mustBind": [
+        "sourceCommit",
+        "deployedVersionRef",
+        "sdkPolicyDigest",
+        "issuerAudienceAlgorithmPolicy"
+      ],
+      "evidenceRef": null
+    },
+    "providerPolicyAndVersions": {
+      "status": "MISSING_PROVIDER_RECEIPT",
+      "mustBind": [
+        "authSdkVersion",
+        "authCoreVersion",
+        "providerPolicyRef",
+        "cacheInvalidationPolicyRef"
+      ],
+      "evidenceRef": null
+    },
+    "collectorAndReceiptValidator": {
+      "status": "MISSING_SOURCE_IMPLEMENTATION",
+      "mustBind": [
+        "collectorCommit",
+        "receiptValidatorCommit",
+        "caseScheduleSha256",
+        "limitsSha256"
+      ],
+      "evidenceRef": null
+    },
+    "actualRouteInstrumentation": {
+      "status": "MISSING_SOURCE_IMPLEMENTATION",
+      "mustBind": [
+        "instrumentationCommit",
+        "entrypointRef",
+        "bodyAccessCounterRef",
+        "platformBufferingReviewRef"
+      ],
+      "evidenceRef": null
+    },
+    "immutableCollectionTarget": {
+      "status": "MISSING_DEPLOYMENT_REF",
+      "mustBind": [
+        "deploymentUrl",
+        "deploymentCommit",
+        "deploymentProviderRef",
+        "sourceMapDigest"
+      ],
+      "evidenceRef": null
+    },
+    "syntheticCohortMapping": {
+      "status": "MISSING_RESTRICTED_MAPPING_REF",
+      "mustBind": [
+        "cohortRef",
+        "aliasMapRef",
+        "lifecycleSetupReceiptRef",
+        "noRealUserReceiptRef"
+      ],
+      "evidenceRef": null
+    },
+    "custodyAndReviewer": {
+      "status": "MISSING_CUSTODY_RECEIPT",
+      "mustBind": [
+        "custodianRef",
+        "reviewerRef",
+        "restrictedStoreRef",
+        "retentionDeletionRef"
+      ],
+      "evidenceRef": null
+    },
+    "rollbackAndStopControls": {
+      "status": "MISSING_REVIEWED_RUNBOOK",
+      "mustBind": [
+        "stopRunbookRef",
+        "lateGrantObserverRef",
+        "partialEvidencePolicyRef",
+        "remediationEscalationRef"
+      ],
+      "evidenceRef": null
+    },
+    "freshExplicitApprovalWindow": {
+      "status": "MISSING_FRESH_APPROVAL",
+      "mustBind": [
+        "startsAtUtc",
+        "expiresAtUtc",
+        "exactApprovalReceiptRef",
+        "sealedCardSha256"
+      ],
+      "evidenceRef": null
+    }
+  },
+  "proposedSealedFields": {
+    "candidateCommit": "dc7d733cff6d94841725e721cc8e7b0da7be4cff",
+    "planMergeCommit": "06468abb5424aea56f4f89dd9cd05a9602864806",
+    "providerAdapterCommit": null,
+    "providerPolicyDigest": null,
+    "collectorCommit": null,
+    "receiptValidatorCommit": null,
+    "instrumentationCommit": null,
+    "immutableCollectionTarget": null,
+    "syntheticCohortMappingRef": null,
+    "custodyRef": null,
+    "reviewerRef": null,
+    "window": {
+      "startsAtUtc": null,
+      "expiresAtUtc": null,
+      "durationMinutes": 30,
+      "freshAtSealTime": false
+    },
+    "limits": {
+      "maxRuns": 1,
+      "maxAttemptsPerCasePathPhase": 1,
+      "retries": 0,
+      "maxOperationBudgetMs": 800,
+      "concurrentCasePairs": 1,
+      "maxLogicalOperations": 160,
+      "maxReaderInvocations": 320,
+      "maxProviderHttpRequests": 640,
+      "sdkRetries": 0,
+      "providerWrites": 0,
+      "setupChanges": 0,
+      "uploadSessionIssuances": 0,
+      "applicationUploadBodyReads": 0,
+      "conversionDispatches": 0,
+      "sandboxDispatches": 0,
+      "privateCadFiles": 0,
+      "realUsers": 0,
+      "externalMessages": 0,
+      "purchases": 0
+    },
+    "stopConditions": [
+      "MISSING_PREREQUISITE",
+      "WINDOW_EXPIRED_OR_NOT_STARTED",
+      "SOURCE_OR_TARGET_DRIFT",
+      "IDENTITY_OUTSIDE_COHORT",
+      "CREDENTIAL_OR_ACCOUNT_LEAK",
+      "ANY_BODY_ACCESS_OR_PARSER_INVOCATION",
+      "ISSUANCE_OR_WRITE_ATTEMPT",
+      "UNEXPECTED_AUTHORITY",
+      "DEADLINE_OR_CANCELLATION_FAILURE",
+      "UNKNOWN_OUTCOME_OR_INTERRUPTION",
+      "CASE_FAILURE",
+      "RETRY_REQUEST"
+    ],
+    "approvedObservationTypes": [
+      "ACTUAL_ROUTE_OR_ENTRYPOINT",
+      "INSPECTION",
+      "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+      "PROVIDER_READ"
+    ],
+    "caseCount": 65,
+    "route": {
+      "path": "POST /api/cad/user-import",
+      "entrypoint": "api/[...path].js -> server/index.js",
+      "uploadCredentialType": "UPLOAD_SESSION_BEARER_NOT_LOGIN_BEARER",
+      "candidateMounted": false,
+      "instrumentationInstalled": false,
+      "bodyAdmissionAuthorized": false,
+      "requestBodyBytesToSend": 0,
+      "requiredApplicationBytesRead": 0,
+      "observedApplicationBytesRead": null,
+      "observedBodyGetterAttempts": null,
+      "observedReadAttempts": null,
+      "observedParserInvocations": null,
+      "platformBufferingEvidence": null,
+      "positiveUploadSessionRouteCase": "BLOCKED_NO_SESSION_ISSUANCE_AUTHORITY",
+      "emptyBodyLimit": "Empty requests alone cannot prove nonempty stream admission order. Instrumentation and entrypoint/platform review remain required."
+    },
+    "custodyPolicy": "RESTRICTED_ALLOWLIST_AT_CAPTURE_SHA256_AFTER_SANITIZATION_REVIEWED_PUBLIC_PROJECTION_ONLY"
+  },
+  "evidenceFormat": {
+    "publicProjectionFields": [
+      "caseId",
+      "path",
+      "phase",
+      "candidateCommit",
+      "deploymentRef",
+      "syntheticAlias",
+      "expectedCode",
+      "observedCode",
+      "disposition",
+      "sanitizedEvidenceSha256",
+      "reviewerRef"
+    ],
+    "restrictedFieldsOnly": [
+      "operatorAccountRef",
+      "providerAccountRef",
+      "loginSessionRef",
+      "membershipRef",
+      "rawProviderResponseRef",
+      "rawNetworkTraceRef"
+    ],
+    "forbiddenEverywhere": [
+      "tokens",
+      "cookies",
+      "rawHeaders",
+      "secretValues",
+      "privateCad",
+      "rawExceptionPayloads"
+    ],
+    "receiptPublicationAllowed": false,
+    "rawCredentialCaptureAllowed": false,
+    "rawAccountRecordCaptureAllowed": false
+  },
+  "nextNonLiveGate": {
+    "status": "SOURCE_SETUP_REVIEW_REQUIRED",
+    "exactApprovalPhrase": "I approve a bounded source-only CAD Auth sealed evidence setup implementation gate for ReversR-Rebuild. Scope: implement and review only the missing provider-adapter interface, collector/receipt-validator source, route/body instrumentation source, immutable-target binding manifest, synthetic-cohort mapping manifest, custody/reviewer manifest, rollback/stop runbook, and sealed-card generator needed to populate cad-auth-sealed-evidence-card-v1. Allow local validation, draft PR, green-check merge, normal Vercel deployment from main, production fail-closed smoke, and cleanup. No live Auth/provider tests, provider/env/resource/billing changes, secrets or secret reads, upload-session issuance, production upload activation, request body admission/read, conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, second run/retry, or commercial-readiness claim. Stop before any live evidence collection, runtime activation, env installation, credential generation, or executable command-card issuance.",
+    "phraseActionableNow": false,
+    "phraseActionableReason": "This PR only records the sealed-card prerequisites. It does not implement the missing setup artifacts."
+  },
+  "completion": {
+    "cardSealed": false,
+    "prerequisitesBound": false,
+    "approvalReceived": false,
+    "liveCollectionExecutable": false,
+    "liveCollectionRun": false,
+    "productionVerifierAccepted": false,
+    "runtimeActivationAuthorized": false
+  },
+  "sourceBindings": {
+    "docs/cad-auth-sealed-evidence-card.md": "549f1894c12bf97b7b4b9de45faa5254ec4014d01628b1344f0f65322b7c70ed",
+    "scripts/cad-auth-sealed-evidence-card-checker.js": "1295d21a7cbfbb04f3826280b55c5c0c1ae9e8bf5b4d4714cb55ac9dc1fa47a5",
+    "scripts/cad-auth-sealed-evidence-card.test.js": "1c7f81faedff52eb675c7b1b129fd29bcb27aba54ff57608638b777d3c672624",
+    "docs/cad-auth-live-evidence-plan.md": "221ac5e0b50581c8f82cca9890ded0d16325cde431c621c3500f65dc69c772fb",
+    "docs/cad-auth-live-evidence-plan.json": "869e07bddbc0e8f713bf847739b4cf333424a1cab1a223ee23004d2e0252168a",
+    "scripts/cad-auth-live-evidence-plan-checker.js": "c9f53ddd94768d361e8f293dadd06fb1f3232bee935eca282897c9d40711e1d5",
+    "scripts/cad-auth-live-evidence-plan.test.js": "ff6d497e0f20fc64e57ab0e2625cde380a8abf8903ee7229edc1e67a606a867e",
+    "docs/cad-production-auth-verifier-acceptance.json": "31d1368957f770c423c903644decbc8043ac076a0dd8d76edfc3105a9643176f",
+    "docs/cad-production-verifier-evidence-template.json": "8735d780c6b5ba3b95de77ce74a67691b4a50595334ee6f59c49898c9b2d6dfb",
+    "offline/cad-convex/productionVerifierCandidate.js": "d762441f63b735b66e92bfe776d1900e532bccd45008757488c5010bea2cac24",
+    "server/cadProductionSessionVerifierBinding.js": "b76fccd7e1d4984e04ea062d5ae6cec5c91e23b90b7a53499582ee712ff6a020",
+    "server/cadExactSessionBridge.js": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee",
+    "server/cadUploadSessionGatewayService.js": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07",
+    "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
+    "server/uploadSessionStore.js": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "server/index.js": "e09d48b87f86163fe325a38d1b99cf3c00f8624691f8d7aa08953d926d969f1a",
+    "api/[...path].js": "a6d1b11010f141e43ced43c304692e90d79d78d40f5c064c964e4b55ccc39d7c",
+    "vercel.json": "3bda7784136889e0e9247802ba4e62130ea9e26dcf3a8c6cc67ceceea2ae0014",
+    "package-lock.json": "3fe8025bf3dad56fd1636935f4bbaccbed665b6301f1cbcd88c02fb5aec509d6"
+  }
+}
