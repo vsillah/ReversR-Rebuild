@@ -4,7 +4,14 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
+assert.equal(require('./cad-production-auth-verifier-acceptance-checker').checkAcceptance(
+  JSON.parse(read('docs/cad-production-auth-verifier-acceptance.json'))).ok, true);
 const files = [
+  'docs/cad-production-auth-verifier-acceptance.md',
+  'docs/cad-production-auth-verifier-acceptance.json',
+  'scripts/cad-production-auth-verifier-acceptance-checker.js',
+  'scripts/cad-production-auth-verifier-acceptance.test.js',
+
   'server/cadProductionSessionVerifierBinding.js',
   'scripts/cad-production-session-verifier-binding.test.js',
   'docs/cad-production-session-verifier-binding.md',

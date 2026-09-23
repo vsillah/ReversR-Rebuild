@@ -4,6 +4,11 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-production-auth-verifier-acceptance.md',
+  'docs/cad-production-auth-verifier-acceptance.json',
+  'scripts/cad-production-auth-verifier-acceptance-checker.js',
+  'scripts/cad-production-auth-verifier-acceptance.test.js',
+
   'server/cadProductionSessionVerifierBinding.js',
   'scripts/cad-production-session-verifier-binding.test.js',
   'docs/cad-production-session-verifier-binding.md',
@@ -521,7 +526,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 56, mode: 'offline-source-unqualified',
+const manifest = { version: 57, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
