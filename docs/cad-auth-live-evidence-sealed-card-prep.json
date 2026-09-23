@@ -1,0 +1,157 @@
+{
+  "payload": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-live-evidence-sealed-card-prep-v1",
+    "sourceOnly": true,
+    "status": "PREPARED_NON_EXECUTABLE_PENDING_REVIEW",
+    "acceptancePacket": "cad-auth-live-evidence-acceptance-v1",
+    "acceptancePacketSha256": "826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba",
+    "candidateCommit": "0d5ae30935f399c7f3e08b7fd05b8f12dc10489d",
+    "deployment": {
+      "id": "dpl_S2p5mUfjMnCHy9etD23Un4gNT4iy",
+      "url": "https://reversr-bg0p4jccq-vsillahs-projects.vercel.app",
+      "productionAlias": "https://reversr.vercel.app",
+      "target": "production",
+      "status": "READY",
+      "commit": "0d5ae30935f399c7f3e08b7fd05b8f12dc10489d",
+      "observedAtUtc": "2026-09-23T20:33:00Z",
+      "metadataProvenance": [
+        "GitHub deployment 6623661776 and success status",
+        "Vercel immutable deployment and production alias metadata; captain independently confirmed"
+      ],
+      "installedProviderOrInstrumentationVerified": false,
+      "currentAliasMustBeRecheckedBeforeCollection": true
+    },
+    "schedule": {
+      "scheduleSha256": "30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066",
+      "limitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+      "limits": {
+        "maxRuns": 1,
+        "maxAttemptsPerCasePathPhase": 1,
+        "retries": 0,
+        "maxOperationBudgetMs": 800,
+        "concurrentCasePairs": 1,
+        "maxLogicalOperations": 160,
+        "maxReaderInvocations": 320,
+        "maxProviderHttpRequests": 640,
+        "sdkRetries": 0,
+        "providerWrites": 0,
+        "setupChanges": 0,
+        "uploadSessionIssuances": 0,
+        "applicationUploadBodyReads": 0,
+        "conversionDispatches": 0,
+        "sandboxDispatches": 0,
+        "privateCadFiles": 0,
+        "realUsers": 0,
+        "externalMessages": 0,
+        "purchases": 0
+      },
+      "authorizedRuns": 0,
+      "reviewed": false
+    },
+    "proposedReferences": {
+      "cohortRef": "rrb-ref:cad-auth-synthetic-cohort-v1-proposed",
+      "custodianRef": "rrb-ref:cad-auth-evidence-custodian-captain-proposed",
+      "reviewerRef": "rrb-ref:cad-auth-evidence-independent-reviewer-proposed",
+      "restrictedStoreRef": "rrb-ref:cad-auth-restricted-evidence-store-proposed",
+      "status": "PROPOSED_PENDING_VERIFICATION",
+      "receiptRef": null,
+      "assignmentsAccepted": false,
+      "syntheticOwnershipVerified": false,
+      "independentReviewerVerified": false,
+      "retentionDays": 7,
+      "publicAccountIdentifiersAllowed": false
+    },
+    "window": {
+      "startsAtUtc": "2026-09-24T20:00:00Z",
+      "expiresAtUtc": "2026-09-24T20:30:00Z",
+      "status": "PROPOSED_NOT_APPROVED",
+      "durationMinutes": 30,
+      "automaticRolloverAllowed": false,
+      "freshApprovalRequired": true
+    },
+    "stopRollback": {
+      "runbookRef": "docs/cad-auth-sealed-setup-stop-runbook.md",
+      "runbookSha256": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1",
+      "stopConditions": [
+        "MISSING_PREREQUISITE",
+        "WINDOW_EXPIRED_OR_NOT_STARTED",
+        "SOURCE_OR_TARGET_DRIFT",
+        "IDENTITY_OUTSIDE_COHORT",
+        "CREDENTIAL_OR_ACCOUNT_LEAK",
+        "ANY_BODY_ACCESS_OR_PARSER_INVOCATION",
+        "ISSUANCE_OR_WRITE_ATTEMPT",
+        "UNEXPECTED_AUTHORITY",
+        "DEADLINE_OR_CANCELLATION_FAILURE",
+        "UNKNOWN_OUTCOME_OR_INTERRUPTION",
+        "CASE_FAILURE",
+        "RETRY_REQUEST",
+        "BUDGET_EXHAUSTION"
+      ],
+      "stopConsumesRun": true,
+      "unknownConsumesRun": true,
+      "retryAllowed": false,
+      "rollback": "Stop, cancel pending reads, invalidate unused authority and discard ephemeral bindings; retain only sanitized partial evidence.",
+      "observerReceiptRef": null,
+      "durableRunLedgerReceiptRef": null,
+      "reviewed": false,
+      "providerOrDeploymentRollbackAuthorized": false
+    },
+    "claims": {
+      "sealedCommandCardReady": false,
+      "concreteProviderAdapterBound": false,
+      "collectorAndReceiptValidatorBound": false,
+      "routeInstrumentationBound": false,
+      "immutableCollectionTargetBound": false,
+      "syntheticCohortMappingBound": false,
+      "custodyReviewerBound": false,
+      "freshWindowBound": false,
+      "liveProviderTestsAuthorized": false,
+      "liveCollectionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "bodyAdmissionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "providerEnvResourceBillingChanges": false,
+      "secretReads": false,
+      "externalMessagesAuthorized": false,
+      "secondRunOrRetryAuthorized": false,
+      "commercialReadinessClaim": false,
+      "providerPolicyAccepted": false,
+      "actualRouteProven": false,
+      "commercialReadiness": false,
+      "livePrerequisitesSatisfied": false,
+      "executableCommandCardIssued": false,
+      "evidenceAccepted": false
+    },
+    "requiredBeforeSeparateApproval": [
+      "Captain reviews this exact payload and all source bindings.",
+      "Verify proposed cohort, custody, independent reviewer, restricted store and setup receipts.",
+      "Review concrete provider implementation, installed route instrumentation, platform buffering, observer and durable consumed-run ledger.",
+      "Recheck immutable target and source digests, schedule, limits and window freshness.",
+      "Record separate exact user approval; any changed binding requires a regenerated packet and fresh review."
+    ],
+    "sourceBindings": {
+      "docs/cad-auth-live-evidence-acceptance.json": "826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba",
+      "docs/cad-auth-live-evidence-sealed-card-prep.md": "33e3ad2ff56eb6cf3c649d71fe1a47768de11f01a95d9f1c9b07b135f2371e78",
+      "scripts/cad-auth-live-evidence-sealed-card-prep-checker.js": "8c21b79857bc85e68358334b98b18ecc53458348f946f9f4e5c34be0eda1efa0",
+      "scripts/cad-auth-live-evidence-sealed-card-prep.test.js": "657736f4767171a7996a1c961df56f2b4b1104ccf9f841923c2a2890b72a1b50",
+      "docs/cad-auth-sealed-setup-stop-runbook.md": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1"
+    }
+  },
+  "seal": {
+    "algorithm": "SHA-256",
+    "encoding": "RECURSIVE_SORTED_JSON_UTF8_NO_NEWLINE",
+    "scope": "payload only; excludes seal and futureApproval to avoid circular hashing",
+    "sha256": "225d0dcae688df5e3bcc546af33e7deb44db02081c115478a2c75ae7bd34586b",
+    "executable": false,
+    "executableCommandCardIssued": false
+  },
+  "futureApproval": {
+    "exactPhrase": "Approve one read-only synthetic CAD Auth evidence collection for acceptance packet cad-auth-live-evidence-acceptance-v1, reviewed packet SHA-256 826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba, sealed card SHA-256 225d0dcae688df5e3bcc546af33e7deb44db02081c115478a2c75ae7bd34586b, candidate 0d5ae30935f399c7f3e08b7fd05b8f12dc10489d, immutable deployment dpl_S2p5mUfjMnCHy9etD23Un4gNT4iy, schedule SHA-256 30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066, restricted cohort rrb-ref:cad-auth-synthetic-cohort-v1-proposed, custodian rrb-ref:cad-auth-evidence-custodian-captain-proposed, independent reviewer rrb-ref:cad-auth-evidence-independent-reviewer-proposed, during 2026-09-24T20:00:00Z through 2026-09-24T20:30:00Z. Only the sealed observations and ceilings are authorized. No setup changes, upload sessions, request-body reads, activation, retries or second run. Limits SHA-256 ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4.",
+    "phraseActionableNow": false,
+    "captainReviewed": false,
+    "userApproved": false,
+    "approvalReceiptRef": null,
+    "reason": "Proposed references require verification and acceptance; source and installed prerequisite reviews remain pending. This phrase grants no authority."
+  }
+}

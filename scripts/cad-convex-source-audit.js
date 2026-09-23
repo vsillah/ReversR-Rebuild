@@ -20,7 +20,14 @@ assert.equal(require('./cad-auth-live-evidence-prereq-completion-checker').check
   JSON.parse(read('docs/cad-auth-live-evidence-prereq-completion.json'))).ok, true);
 assert.equal(require('./cad-auth-live-evidence-acceptance-checker').checkAcceptance(
   JSON.parse(read('docs/cad-auth-live-evidence-acceptance.json'))).ok, true);
+assert.equal(require('./cad-auth-live-evidence-sealed-card-prep-checker').checkPreparation(
+  JSON.parse(read('docs/cad-auth-live-evidence-sealed-card-prep.json'))).ok, true);
 const files = [
+  'docs/cad-auth-live-evidence-sealed-card-prep.md',
+  'docs/cad-auth-live-evidence-sealed-card-prep.json',
+  'scripts/cad-auth-live-evidence-sealed-card-prep-checker.js',
+  'scripts/cad-auth-live-evidence-sealed-card-prep.test.js',
+
   'docs/cad-auth-live-evidence-acceptance.md',
   'docs/cad-auth-live-evidence-acceptance.json',
   'scripts/cad-auth-live-evidence-acceptance-checker.js',
