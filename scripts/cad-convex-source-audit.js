@@ -14,7 +14,14 @@ assert.equal(require('./cad-auth-sealed-evidence-card-checker').checkCard(
   JSON.parse(read('docs/cad-auth-sealed-evidence-card.json'))).ok, true);
 assert.equal(require('./cad-auth-sealed-setup-checker').checkSetup(
   JSON.parse(read('docs/cad-auth-sealed-setup.json'))).ok, true);
+assert.equal(require('./cad-auth-live-evidence-prereq-checker').checkPrerequisites(
+  JSON.parse(read('docs/cad-auth-live-evidence-prerequisites.json'))).ok, true);
 const files = [
+  'docs/cad-auth-live-evidence-prerequisites.md',
+  'docs/cad-auth-live-evidence-prerequisites.json',
+  'scripts/cad-auth-live-evidence-prereq-checker.js',
+  'scripts/cad-auth-live-evidence-prereq.test.js',
+
   'docs/cad-auth-sealed-setup.md',
   'docs/cad-auth-sealed-setup-stop-runbook.md',
   'docs/cad-auth-sealed-setup.json',
