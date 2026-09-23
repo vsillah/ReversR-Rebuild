@@ -409,6 +409,9 @@ const files = [
   'docs/cad-convex-http-gateway-scaffold.md',
   'docs/cad-convex-http-gateway-scaffold.json',
   'scripts/cad-convex-http-gateway-scaffold.test.js',
+  'docs/cad-convex-gateway-principal-boundary.md',
+  'docs/cad-convex-gateway-principal-boundary.json',
+  'scripts/cad-convex-gateway-principal-boundary.test.js',
   'offline/cad-convex/previewRuntime.js', 'offline/cad-convex/previewRuntime.d.ts',
   'scripts/cad-convex-preview-runtime.test.js', 'docs/cad-convex-preview-setup.md', 'scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
   ...fs.readdirSync(path.join(root, 'convex/_generated')).map(n => 'convex/_generated/' + n),
@@ -434,6 +437,17 @@ assert.equal(httpGatewayScaffold.runtimeBehavior.dispatchEnabled, false);
 assert.equal(httpGatewayScaffold.runtimeBehavior.requestBodyReadBeforeServiceAuth, false);
 assert.equal(httpGatewayScaffold.guardrails.requestBodyAdmissionAllowed, false);
 assert.equal(httpGatewayScaffold.envManifest.secretValuesStoredByThisGate, false);
+assert.equal(httpGatewayScaffold.nextGate.principalBoundaryPacket, 'docs/cad-convex-gateway-principal-boundary.json');
+const principalBoundary = JSON.parse(read('docs/cad-convex-gateway-principal-boundary.json'));
+assert.equal(principalBoundary.status, 'SOURCE_BOUNDARY_READY_DISPATCH_BLOCKED');
+assert.equal(principalBoundary.currentRuntimeBehavior.serviceEnvelopeDispatchImplemented, false);
+assert.equal(principalBoundary.currentRuntimeBehavior.livePrincipalDerivationImplemented, false);
+assert.equal(principalBoundary.currentRuntimeBehavior.uploadSessionIssuanceEnabled, false);
+assert.equal(principalBoundary.boundaryDecision.serviceTokenIsNotUserPrincipal, true);
+assert.equal(principalBoundary.boundaryDecision.payloadPrincipalOverrideAllowed, false);
+assert.equal(principalBoundary.nextGate.requiredBeforeLiveDispatch, true);
+assert.equal(principalBoundary.guardrails.productionUploadActivationAllowed, false);
+assert.match(read('docs/cad-convex-gateway-principal-boundary.md'), /live dispatch remains blocked/i);
 const httpGatewaySource = read('convex/cadUploadSessionGateway.ts');
 assert.match(httpGatewaySource, /CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN_SHA256/);
 assert.match(httpGatewaySource, /crypto\.subtle\.digest/);

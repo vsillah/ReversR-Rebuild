@@ -469,6 +469,9 @@ const files = [
   'docs/cad-convex-http-gateway-scaffold.md',
   'docs/cad-convex-http-gateway-scaffold.json',
   'scripts/cad-convex-http-gateway-scaffold.test.js',
+  'docs/cad-convex-gateway-principal-boundary.md',
+  'docs/cad-convex-gateway-principal-boundary.json',
+  'scripts/cad-convex-gateway-principal-boundary.test.js',
 
   'offline/cad-convex/previewRuntime.js',
   'offline/cad-convex/previewRuntime.d.ts',

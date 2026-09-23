@@ -61,6 +61,13 @@ A later explicit gate must approve all of the following before live use:
 
 Until that gate lands, this route remains a tested scaffold only.
 
+The follow-on principal-boundary packet in
+`docs/cad-convex-gateway-principal-boundary.md` records why the current
+service-token HTTP action still cannot dispatch user authority: it authenticates
+the server hop, not the user's exact Convex Auth session. A later bridge must
+prove the exact user, login session, shop membership and CAD permission before
+`internal.cad.*` dispatch can become live.
+
 ## Validation
 
 Focused validation for this packet:
