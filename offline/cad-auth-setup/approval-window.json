@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_TEMPLATE",
+  "bindingAuthority": false,
+  "bindings": {
+    "freshExplicitApprovalWindow": {
+      "startsAtUtc": null,
+      "expiresAtUtc": null,
+      "exactApprovalReceiptRef": null,
+      "sealedCardSha256": null
+    }
+  },
+  "policy": {
+    "durationMinutes": 30,
+    "historicalApprovalReusable": false,
+    "automaticRolloverAllowed": false,
+    "executableCommandCardIssuanceAllowed": false
+  }
+}

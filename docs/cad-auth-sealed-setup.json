@@ -1,0 +1,1149 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-sealed-setup-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_IMPLEMENTED_LIVE_BINDINGS_BLOCKED",
+  "parentCard": {
+    "packet": "cad-auth-sealed-evidence-card-v1",
+    "sha256": "103a3c44df0baa77b1df7f195ae8b1e764232eb5a6c2e95103266eb1709cc123"
+  },
+  "card": {
+    "id": "cad-auth-sealed-evidence-card-v1",
+    "sealed": false,
+    "sha256": null,
+    "executable": false,
+    "liveApprovalPhrase": null,
+    "liveApprovalPhraseActionable": false,
+    "exactCommandLine": null,
+    "dryRunCommandLine": null,
+    "canBeExecutedByThisPacket": false,
+    "requiresNewReviewAfterAnySourceOrTargetDrift": true
+  },
+  "claims": {
+    "sealedCommandCardReady": false,
+    "concreteProviderAdapterBound": false,
+    "collectorAndReceiptValidatorBound": false,
+    "routeInstrumentationBound": false,
+    "immutableCollectionTargetBound": false,
+    "syntheticCohortMappingBound": false,
+    "custodyReviewerBound": false,
+    "freshWindowBound": false,
+    "liveProviderTestsAuthorized": false,
+    "liveCollectionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "sourceArtifacts": {
+    "providerAdapterInterface": "offline/cad-auth-setup/providerAdapter.d.ts",
+    "disabledProviderAdapter": "offline/cad-auth-setup/providerAdapter.js",
+    "collectorAndReceiptValidator": "offline/cad-auth-setup/collector.js",
+    "unmountedBodyGuard": "offline/cad-auth-setup/bodyInstrumentation.js",
+    "rollbackAndStopRunbook": "docs/cad-auth-sealed-setup-stop-runbook.md",
+    "reviewCardGenerator": "scripts/cad-auth-sealed-setup-checker.js"
+  },
+  "bindingManifests": {
+    "offline/cad-auth-setup/provider-policy.json": {
+      "schemaVersion": 1,
+      "sourceOnly": true,
+      "status": "UNBOUND_TEMPLATE",
+      "bindingAuthority": false,
+      "bindings": {
+        "providerAdapter": {
+          "sourceCommit": null,
+          "deployedVersionRef": null,
+          "sdkPolicyDigest": null,
+          "issuerAudienceAlgorithmPolicy": null
+        },
+        "providerPolicyAndVersions": {
+          "authSdkVersion": null,
+          "authCoreVersion": null,
+          "providerPolicyRef": null,
+          "cacheInvalidationPolicyRef": null
+        }
+      },
+      "policy": {
+        "sdkVersionsFromSource": {
+          "convex": "1.45.0",
+          "auth": "0.0.95",
+          "authCore": "0.41.3"
+        },
+        "deployedVersionsVerified": false,
+        "cryptographicVerificationRequired": true,
+        "freshExactSessionOwnerRequired": true,
+        "freshMembershipRequired": true,
+        "sdkRetries": 0,
+        "requestBudgetMs": 800
+      }
+    },
+    "offline/cad-auth-setup/immutable-target.json": {
+      "schemaVersion": 1,
+      "sourceOnly": true,
+      "status": "UNBOUND_TEMPLATE",
+      "bindingAuthority": false,
+      "bindings": {
+        "immutableCollectionTarget": {
+          "deploymentUrl": null,
+          "deploymentCommit": null,
+          "deploymentProviderRef": null,
+          "sourceMapDigest": null
+        },
+        "actualRouteInstrumentation": {
+          "instrumentationCommit": null,
+          "entrypointRef": null,
+          "bodyAccessCounterRef": null,
+          "platformBufferingReviewRef": null
+        }
+      },
+      "policy": {
+        "mutableAliasAllowed": false,
+        "historicalPlanDeploymentReusable": false,
+        "candidateMounted": false,
+        "instrumentationInstalled": false,
+        "emptyBodyProvesNonemptyAdmissionOrder": false
+      }
+    },
+    "offline/cad-auth-setup/synthetic-cohort.json": {
+      "schemaVersion": 1,
+      "sourceOnly": true,
+      "status": "UNBOUND_TEMPLATE",
+      "bindingAuthority": false,
+      "bindings": {
+        "syntheticCohortMapping": {
+          "cohortRef": null,
+          "aliasMapRef": null,
+          "lifecycleSetupReceiptRef": null,
+          "noRealUserReceiptRef": null
+        }
+      },
+      "policy": {
+        "aliases": [
+          "U1/L1",
+          "U1/L2",
+          "U2/L3"
+        ],
+        "shops": [
+          "S1",
+          "S2"
+        ],
+        "realUsers": 0,
+        "lifecycleMutationsAuthorized": false,
+        "correlatedBeforeAfterRequired": true,
+        "rawIdentityMappingsAllowedInRepo": false
+      }
+    },
+    "offline/cad-auth-setup/custody-reviewer.json": {
+      "schemaVersion": 1,
+      "sourceOnly": true,
+      "status": "UNBOUND_TEMPLATE",
+      "bindingAuthority": false,
+      "bindings": {
+        "custodyAndReviewer": {
+          "custodianRef": null,
+          "reviewerRef": null,
+          "restrictedStoreRef": null,
+          "retentionDeletionRef": null
+        }
+      },
+      "policy": {
+        "independentReviewerRequired": true,
+        "retentionDays": 7,
+        "hashAfterSanitization": true,
+        "receiptPublicationAllowed": false,
+        "rawCredentialCaptureAllowed": false,
+        "rawAccountCaptureAllowed": false
+      }
+    },
+    "offline/cad-auth-setup/approval-window.json": {
+      "schemaVersion": 1,
+      "sourceOnly": true,
+      "status": "UNBOUND_TEMPLATE",
+      "bindingAuthority": false,
+      "bindings": {
+        "freshExplicitApprovalWindow": {
+          "startsAtUtc": null,
+          "expiresAtUtc": null,
+          "exactApprovalReceiptRef": null,
+          "sealedCardSha256": null
+        }
+      },
+      "policy": {
+        "durationMinutes": 30,
+        "historicalApprovalReusable": false,
+        "automaticRolloverAllowed": false,
+        "executableCommandCardIssuanceAllowed": false
+      }
+    }
+  },
+  "schedule": [
+    {
+      "caseId": "verified-user-context",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "verified-user-context",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "service-credential-is-not-login",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "service-credential-is-not-login",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "sdk-issuer-audience-algorithms",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "sdk-issuer-audience-algorithms",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "missing-owner",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "missing-owner",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "missing-owner",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "missing-owner",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "deleted-session",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "deleted-session",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "deleted-session",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "deleted-session",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "owner-mismatch",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "owner-mismatch",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "supplied-principal",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "supplied-principal",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "opaque-login-reference",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "opaque-login-reference",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "two-same-user-logins",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "two-same-user-logins",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "cross-login-refresh",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "cross-login-refresh",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "cross-user-refresh",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "cross-user-refresh",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "method-substitution",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "method-substitution",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "concurrent-credential-isolation",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "concurrent-credential-isolation",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "selected-shop-membership",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "selected-shop-membership",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "removed-membership",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "removed-membership",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "removed-membership",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "removed-membership",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "permission-loss",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "permission-loss",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "permission-loss",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "permission-loss",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "shop-substitution",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "shop-substitution",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "fresh-resolve-and-refresh",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "fresh-resolve-and-refresh",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "exact-expiry",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "exact-expiry",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "expiry-during-read",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "expiry-during-read",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "minimum-expiry",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "minimum-expiry",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "invalid-timestamp",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "invalid-timestamp",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "clock-rollback",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "clock-rollback",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "cached-query-liveness",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "cached-query-liveness",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "logout",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "logout",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "logout",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "logout",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "revocation",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "revocation",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "revocation",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "revocation",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "session-deletion",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "session-deletion",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "session-deletion",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "session-deletion",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "replacement-login",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "replacement-login",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "replacement-login",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "replacement-login",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "provider-cache-invalidation",
+      "path": "resolve",
+      "phase": "before",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "provider-cache-invalidation",
+      "path": "resolve",
+      "phase": "after",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "provider-cache-invalidation",
+      "path": "refresh",
+      "phase": "before",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "provider-cache-invalidation",
+      "path": "refresh",
+      "phase": "after",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "forged-signature",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "forged-signature",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "unsigned-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "unsigned-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "disallowed-algorithm",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "disallowed-algorithm",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "wrong-issuer",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "wrong-issuer",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "wrong-audience",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "wrong-audience",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "expired-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "expired-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "not-yet-valid-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "not-yet-valid-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "malformed-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "malformed-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "oversized-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "oversized-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "missing-token",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "missing-token",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "duplicate-authorization",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "duplicate-authorization",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "unavailable-verification",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "unavailable-verification",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-before-read",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-before-read",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-between-reads",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-between-reads",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-during-authorization",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "abort-during-authorization",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "hung-reader",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "hung-reader",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "late-result",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "late-result",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "no-late-side-effects",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "no-late-side-effects",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "actual-router-bearer-normalization",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "actual-router-bearer-normalization",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "cookie-rejected",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "cookie-rejected",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "mixed-transport-rejected",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "mixed-transport-rejected",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "middleware-order",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "middleware-order",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "denied-zero-bytes",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "denied-zero-bytes",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "malformed-zero-bytes",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "malformed-zero-bytes",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "cancelled-zero-bytes",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "cancelled-zero-bytes",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "timed-out-zero-bytes",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "timed-out-zero-bytes",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "closed-after-valid-verifier",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "closed-after-valid-verifier",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT"
+    },
+    {
+      "caseId": "request-local-credentials",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "request-local-credentials",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "PROVIDER_READ"
+    },
+    {
+      "caseId": "no-envelope-credentials",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "no-envelope-credentials",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "no-binding-credentials",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "no-binding-credentials",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "no-log-or-evidence-credentials",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "no-log-or-evidence-credentials",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "sanitized-provider-failure",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "sanitized-provider-failure",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE"
+    },
+    {
+      "caseId": "exact-candidate-deployment-test-version",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "exact-candidate-deployment-test-version",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "sanitized-digest-reference",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "sanitized-digest-reference",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "utc-execution-time",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "utc-execution-time",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "reviewer-disposition",
+      "path": "resolve",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    },
+    {
+      "caseId": "reviewer-disposition",
+      "path": "refresh",
+      "phase": "single",
+      "observationType": "INSPECTION"
+    }
+  ],
+  "caseCount": 65,
+  "logicalOperations": 148,
+  "caseScheduleSha256": "98c560d81c957df646dc4145299edf23ce92a7162b965564aaa6a0f044bd753b",
+  "limits": {
+    "maxRuns": 1,
+    "maxAttemptsPerCasePathPhase": 1,
+    "retries": 0,
+    "maxOperationBudgetMs": 800,
+    "concurrentCasePairs": 1,
+    "maxLogicalOperations": 160,
+    "maxReaderInvocations": 320,
+    "maxProviderHttpRequests": 640,
+    "sdkRetries": 0,
+    "providerWrites": 0,
+    "setupChanges": 0,
+    "uploadSessionIssuances": 0,
+    "applicationUploadBodyReads": 0,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "privateCadFiles": 0,
+    "realUsers": 0,
+    "externalMessages": 0,
+    "purchases": 0
+  },
+  "limitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+  "stopConditions": [
+    "MISSING_PREREQUISITE",
+    "WINDOW_EXPIRED_OR_NOT_STARTED",
+    "SOURCE_OR_TARGET_DRIFT",
+    "IDENTITY_OUTSIDE_COHORT",
+    "CREDENTIAL_OR_ACCOUNT_LEAK",
+    "ANY_BODY_ACCESS_OR_PARSER_INVOCATION",
+    "ISSUANCE_OR_WRITE_ATTEMPT",
+    "UNEXPECTED_AUTHORITY",
+    "DEADLINE_OR_CANCELLATION_FAILURE",
+    "UNKNOWN_OUTCOME_OR_INTERRUPTION",
+    "CASE_FAILURE",
+    "RETRY_REQUEST"
+  ],
+  "remainingGates": [
+    "providerAdapter",
+    "providerPolicyAndVersions",
+    "collectorAndReceiptValidator",
+    "actualRouteInstrumentation",
+    "immutableCollectionTarget",
+    "syntheticCohortMapping",
+    "custodyAndReviewer",
+    "rollbackAndStopControls",
+    "freshExplicitApprovalWindow"
+  ],
+  "completion": {
+    "sourceImplementationPresent": true,
+    "liveCollectionRun": false,
+    "actualRouteObserved": false,
+    "providerEvidenceCollected": false,
+    "cardSealed": false,
+    "productionVerifierAccepted": false,
+    "runtimeActivationAuthorized": false
+  },
+  "sourceBindings": {
+    "docs/cad-auth-sealed-evidence-card.json": "103a3c44df0baa77b1df7f195ae8b1e764232eb5a6c2e95103266eb1709cc123",
+    "offline/cad-auth-setup/provider-policy.json": "afc65531b81efbc5a61a0266bd57bfa47b98874faef8619561bd3d20886ac7a5",
+    "offline/cad-auth-setup/immutable-target.json": "8adbef38161c0f562e2738ad8bf0af2564662361cf7ddf696cef17f05f256c5d",
+    "offline/cad-auth-setup/synthetic-cohort.json": "ab4ba3a84fa7aaef1f38106b33f439816a8c1d4252f7479a46dde5d7c2f729db",
+    "offline/cad-auth-setup/custody-reviewer.json": "749a522cf09111e58b1ed98a5695c5ec0f7fa1f7a473a08b16c29e5909edfbcb",
+    "offline/cad-auth-setup/approval-window.json": "60227bf196e9582f57c9d761115e89eec635db69e6425b1fef528b96ad5dd0a2",
+    "offline/cad-auth-setup/manifests.js": "d8366a45fed88218a8ef7f53723777af8a8c20353b31018eed4c7604d789498d",
+    "offline/cad-auth-setup/providerAdapter.js": "f38448a8f7be0d2e1c6c3c59f3b38641fb05594132df1aa6c79287898848a57e",
+    "offline/cad-auth-setup/providerAdapter.d.ts": "ec8716e485deeff935c1fd3b3ce28b0761a2325efdc00dd3935dff68e39113e1",
+    "offline/cad-auth-setup/bodyInstrumentation.js": "74816528a3ea6c1166ec04e98a2cda6ac481e6782ab1214e9833775593b5c30b",
+    "offline/cad-auth-setup/collector.js": "d033d02569cdb88600d61bc77e4c45180236b0250ba777b09632a5d7649ac626",
+    "scripts/cad-auth-sealed-setup-checker.js": "7aa1c72bc474e48c168f1c5c5198b944d7bf92cab514bd05e85378e40547d44d",
+    "scripts/cad-auth-sealed-setup.test.js": "19a83715a37593d5f93db420bfa579f529e93e74e9c9c401845768a4c95ac73b",
+    "docs/cad-auth-sealed-setup.md": "6e876d12954dc86a4bf09dbbae474c742add9c7cf9a69183904cf052c1bb6e28",
+    "docs/cad-auth-sealed-setup-stop-runbook.md": "00728b36f62ec0338bbe7f8a366759073e66e2b77ac6ca6f93b3bc9436e73cf6"
+  }
+}

@@ -4,6 +4,22 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-sealed-setup.md',
+  'docs/cad-auth-sealed-setup-stop-runbook.md',
+  'docs/cad-auth-sealed-setup.json',
+  'scripts/cad-auth-sealed-setup-checker.js',
+  'scripts/cad-auth-sealed-setup.test.js',
+  'offline/cad-auth-setup/approval-window.json',
+  'offline/cad-auth-setup/bodyInstrumentation.js',
+  'offline/cad-auth-setup/collector.js',
+  'offline/cad-auth-setup/custody-reviewer.json',
+  'offline/cad-auth-setup/immutable-target.json',
+  'offline/cad-auth-setup/manifests.js',
+  'offline/cad-auth-setup/provider-policy.json',
+  'offline/cad-auth-setup/providerAdapter.d.ts',
+  'offline/cad-auth-setup/providerAdapter.js',
+  'offline/cad-auth-setup/synthetic-cohort.json',
+
   'docs/cad-auth-sealed-evidence-card.md',
   'docs/cad-auth-sealed-evidence-card.json',
   'scripts/cad-auth-sealed-evidence-card-checker.js',
@@ -542,7 +558,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 60, mode: 'offline-source-unqualified',
+const manifest = { version: 61, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

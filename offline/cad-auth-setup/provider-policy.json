@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_TEMPLATE",
+  "bindingAuthority": false,
+  "bindings": {
+    "providerAdapter": {
+      "sourceCommit": null,
+      "deployedVersionRef": null,
+      "sdkPolicyDigest": null,
+      "issuerAudienceAlgorithmPolicy": null
+    },
+    "providerPolicyAndVersions": {
+      "authSdkVersion": null,
+      "authCoreVersion": null,
+      "providerPolicyRef": null,
+      "cacheInvalidationPolicyRef": null
+    }
+  },
+  "policy": {
+    "sdkVersionsFromSource": {
+      "convex": "1.45.0",
+      "auth": "0.0.95",
+      "authCore": "0.41.3"
+    },
+    "deployedVersionsVerified": false,
+    "cryptographicVerificationRequired": true,
+    "freshExactSessionOwnerRequired": true,
+    "freshMembershipRequired": true,
+    "sdkRetries": 0,
+    "requestBudgetMs": 800
+  }
+}

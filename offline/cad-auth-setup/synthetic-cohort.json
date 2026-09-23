@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_TEMPLATE",
+  "bindingAuthority": false,
+  "bindings": {
+    "syntheticCohortMapping": {
+      "cohortRef": null,
+      "aliasMapRef": null,
+      "lifecycleSetupReceiptRef": null,
+      "noRealUserReceiptRef": null
+    }
+  },
+  "policy": {
+    "aliases": [
+      "U1/L1",
+      "U1/L2",
+      "U2/L3"
+    ],
+    "shops": [
+      "S1",
+      "S2"
+    ],
+    "realUsers": 0,
+    "lifecycleMutationsAuthorized": false,
+    "correlatedBeforeAfterRequired": true,
+    "rawIdentityMappingsAllowedInRepo": false
+  }
+}

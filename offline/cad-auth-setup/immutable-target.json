@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_TEMPLATE",
+  "bindingAuthority": false,
+  "bindings": {
+    "immutableCollectionTarget": {
+      "deploymentUrl": null,
+      "deploymentCommit": null,
+      "deploymentProviderRef": null,
+      "sourceMapDigest": null
+    },
+    "actualRouteInstrumentation": {
+      "instrumentationCommit": null,
+      "entrypointRef": null,
+      "bodyAccessCounterRef": null,
+      "platformBufferingReviewRef": null
+    }
+  },
+  "policy": {
+    "mutableAliasAllowed": false,
+    "historicalPlanDeploymentReusable": false,
+    "candidateMounted": false,
+    "instrumentationInstalled": false,
+    "emptyBodyProvesNonemptyAdmissionOrder": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_TEMPLATE",
+  "bindingAuthority": false,
+  "bindings": {
+    "custodyAndReviewer": {
+      "custodianRef": null,
+      "reviewerRef": null,
+      "restrictedStoreRef": null,
+      "retentionDeletionRef": null
+    }
+  },
+  "policy": {
+    "independentReviewerRequired": true,
+    "retentionDays": 7,
+    "hashAfterSanitization": true,
+    "receiptPublicationAllowed": false,
+    "rawCredentialCaptureAllowed": false,
+    "rawAccountCaptureAllowed": false
+  }
+}
