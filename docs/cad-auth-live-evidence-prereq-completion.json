@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-evidence-prereq-completion-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_DETAILS_BOUND_LIVE_EVIDENCE_STILL_BLOCKED",
+  "parent": {
+    "packet": "cad-auth-live-evidence-prerequisites-v1",
+    "mergeCommit": "aa263e6458f902e9d6bfd337d12e6dbeb48bccb9",
+    "sha256": "d891b624ab979fe9cc2b2ea680c180eae507dc497b4c3f64846c26835a0c91ca"
+  },
+  "claims": {
+    "sealedCommandCardReady": false,
+    "concreteProviderAdapterBound": false,
+    "collectorAndReceiptValidatorBound": false,
+    "routeInstrumentationBound": false,
+    "immutableCollectionTargetBound": false,
+    "syntheticCohortMappingBound": false,
+    "custodyReviewerBound": false,
+    "freshWindowBound": false,
+    "liveProviderTestsAuthorized": false,
+    "liveCollectionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false,
+    "providerPolicyAccepted": false,
+    "actualRouteProven": false,
+    "commercialReadiness": false,
+    "livePrerequisitesSatisfied": false,
+    "executableCommandCardIssued": false
+  },
+  "completion": {
+    "sourceProviderPolicyAdapterDetails": true,
+    "sourceRouteBodyInstallationReview": true,
+    "sourceImmutableTargetReviewManifest": true,
+    "sourceRestrictedSyntheticCohortLifecycleManifest": true,
+    "sourceCustodyReviewerDispositionManifest": true,
+    "sourceLateGrantObserverDesign": true,
+    "liveEvidenceReady": false,
+    "sealed": false,
+    "executable": false
+  },
+  "card": {
+    "sealed": false,
+    "executable": false,
+    "commandLine": null,
+    "dryRunCommandLine": null,
+    "approvalPhrase": null,
+    "approvalReceiptRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null
+  },
+  "manifests": {
+    "providerPolicyAdapterDetails": {
+      "disabledAdapterRef": "source-only:offline/cad-auth-sealed-setup/providerAdapter.js",
+      "adapterInterfaceRef": "source-only:offline/cad-auth-sealed-setup/providerAdapter.d.ts",
+      "candidateRef": "source-only:offline/cad-convex/productionVerifierCandidate.js",
+      "exactBindingRef": "source-only:server/cadProductionSessionVerifierBinding.js",
+      "sourceSdkVersions": {
+        "@convex-dev/auth": "0.0.95",
+        "@auth/core": "0.41.3",
+        "convex": "1.45.0"
+      },
+      "concreteProviderImplementationRef": null,
+      "deployedSdkReceiptRef": null,
+      "issuerAudienceAlgorithmPolicyRef": null,
+      "signingKeyRotationPolicyRef": null,
+      "cacheInvalidationPolicyRef": null,
+      "httpReservationTransportRef": null,
+      "sourceRequirements": [
+        "REQUEST_LOCAL_BEARER_PRINCIPAL_ONLY",
+        "NO_COOKIE_SERVICE_CREDENTIAL_OR_JWT_PERMISSION_FALLBACK",
+        "FRESH_SESSION_OWNER_AND_METHOD_ON_RESOLVE_AND_REFRESH",
+        "FRESH_SHOP_MEMBERSHIP_AND_CAD_PERMISSION_AFTER_IDENTITY_BINDING",
+        "EVERY_PROVIDER_HTTP_CALL_REQUIRES_RESERVATION_DEADLINE_AND_CANCELLATION",
+        "DISABLE_OR_WRAP_SDK_RETRIES_BEFORE_LIVE_PROVIDER_TESTS",
+        "KEY_METADATA_AND_DISCOVERY_CALLS_COUNT_AGAINST_BUDGET"
+      ],
+      "sourceReviewed": true,
+      "liveProviderBound": false,
+      "providerCallsAuthorized": false,
+      "review": {
+        "status": "SOURCE_DETAIL_REVIEWED_LIVE_PROVIDER_REVIEW_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    },
+    "routeBodyInstallationReview": {
+      "entrypointRef": "source-only:api/[...path].js",
+      "appRef": "source-only:server/index.js",
+      "routeRef": "source-only:server/cadUserUploadRouter.js",
+      "guardRef": "source-only:offline/cad-auth-sealed-setup/routeInstrumentation.js",
+      "sourceOrdering": [
+        "API_HANDLER_DELEGATES_TO_EXPRESS_APP",
+        "DEV_ISSUER_AND_USER_IMPORT_ROUTERS_MOUNT_BEFORE_GENERAL_JSON_PARSER",
+        "USER_IMPORT_ROUTE_CHECKS_METHOD_ORIGIN_AND_SESSION_BEFORE_ADMISSION",
+        "SOURCE_CLOSED_BODY_ADMISSION_DENIES_BEFORE_VALIDATE_REQUEST_BODY",
+        "GENERAL_JSON_PARSER_REMAINS_AFTER_CAD_USER_IMPORT_ROUTE"
+      ],
+      "forbiddenBeforeAdmission": [
+        "bodyGetterAttempts",
+        "readAttempts",
+        "parserInvocations",
+        "streamSubscriptions",
+        "pipeAttempts",
+        "iteratorAttempts",
+        "rawHeadersCapture"
+      ],
+      "sourceReviewed": true,
+      "installedRuntimeGuard": false,
+      "actualRouteCounterReceiptRef": null,
+      "platformBufferingReviewRef": null,
+      "requestBodyReadAuthorized": false,
+      "review": {
+        "status": "SOURCE_ORDER_REVIEWED_LIVE_ROUTE_RECEIPT_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    },
+    "immutableDeploymentTargetReviewManifest": {
+      "targetPolicy": "PIN_EXACT_DEPLOYMENT_ID_COMMIT_AND_SOURCE_DIGESTS_BEFORE_ANY_LIVE_OBSERVATION",
+      "productionAliasRef": null,
+      "deploymentUrl": null,
+      "deploymentCommit": null,
+      "deploymentProviderRef": null,
+      "sourceMapDigest": null,
+      "targetAttestationRef": null,
+      "sourceBaselineCommit": "aa263e6458f902e9d6bfd337d12e6dbeb48bccb9",
+      "reviewedSourceBindingSha256": "43ab6b79b6f4e9009edf387e2a7d808a1addbe84ebf6695f3d3d910e96aa4d6a",
+      "mutableAliasAllowed": false,
+      "historicalDeploymentReusable": false,
+      "liveTargetBound": false,
+      "review": {
+        "status": "SOURCE_TARGET_MANIFEST_REVIEWED_IMMUTABLE_DEPLOYMENT_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    },
+    "restrictedSyntheticCohortLifecycle": {
+      "cohort": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "aliases": [
+        "U1/L1",
+        "U1/L2",
+        "U2/L3"
+      ],
+      "restrictedAliasMapRef": null,
+      "syntheticOwnershipReceiptRef": null,
+      "lifecycleCases": [
+        {
+          "caseId": "U1_L1_VALID_THEN_REVOKED",
+          "beforeReceiptRef": null,
+          "afterReceiptRef": null
+        },
+        {
+          "caseId": "U1_L2_SEPARATE_LOGIN_SUBSTITUTION_DENIED",
+          "beforeReceiptRef": null,
+          "afterReceiptRef": null
+        },
+        {
+          "caseId": "U2_L3_DIFFERENT_USER_DENIED",
+          "beforeReceiptRef": null,
+          "afterReceiptRef": null
+        },
+        {
+          "caseId": "EXPIRED_OR_DELETED_SESSION_DENIED",
+          "beforeReceiptRef": null,
+          "afterReceiptRef": null
+        },
+        {
+          "caseId": "PERMISSION_REMOVAL_DENIED",
+          "beforeReceiptRef": null,
+          "afterReceiptRef": null
+        }
+      ],
+      "setupAuthorized": false,
+      "mutationAuthorized": false,
+      "teardownAuthorized": false,
+      "realUserEnrollmentAllowed": false,
+      "rawIdentityPublicProjectionAllowed": false,
+      "review": {
+        "status": "SOURCE_COHORT_LIFECYCLE_REVIEWED_RESTRICTED_RECEIPTS_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    },
+    "custodyReviewerDisposition": {
+      "custodianRef": null,
+      "independentReviewerRef": null,
+      "distinctRolesRequired": true,
+      "restrictedStoreRef": null,
+      "retentionDays": 7,
+      "deletionReceiptRef": null,
+      "reviewerDispositionRef": null,
+      "sanitizedReceiptFields": [
+        "caseId",
+        "phase",
+        "candidateCommit",
+        "deploymentRef",
+        "syntheticAlias",
+        "expectedDisposition",
+        "observedDisposition",
+        "sanitizedEvidenceSha256"
+      ],
+      "restrictedFieldsOnly": [
+        "operatorAccountRef",
+        "providerAccountRef",
+        "loginSessionRef",
+        "membershipRef",
+        "rawProviderResponseRef",
+        "rawNetworkTraceRef"
+      ],
+      "forbiddenEverywhere": [
+        "tokens",
+        "cookies",
+        "rawHeaders",
+        "secretValues",
+        "privateCad",
+        "rawExceptionPayloads",
+        "requestBody",
+        "providerCredentials"
+      ],
+      "publicProjectionAllowed": false,
+      "rawCredentialCaptureAllowed": false,
+      "review": {
+        "status": "SOURCE_CUSTODY_REVIEWED_CUSTODIAN_AND_REVIEWER_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    },
+    "lateGrantObserverDesign": {
+      "candidateRef": "source-only:offline/cad-convex/productionVerifierCandidate.js",
+      "stopRunbookRef": "source-only:docs/cad-auth-sealed-setup-stop-runbook.md",
+      "observerImplementationRef": null,
+      "durableConsumedRunLedgerRef": null,
+      "partialEvidencePolicyRef": null,
+      "remediationEscalationRef": null,
+      "stateMachine": [
+        "NOT_STARTED",
+        "STOP_REQUESTED",
+        "PENDING_SETTLEMENT_OBSERVED",
+        "SANITIZED_PARTIAL_RECEIPT_RECORDED",
+        "TERMINAL_CONSUMED"
+      ],
+      "terminalUnknownConsumesRun": true,
+      "noGrantPublicationAfterStop": true,
+      "noDiagnosticCallsAfterStop": true,
+      "authorizedRuns": 0,
+      "retriesAllowed": false,
+      "secondRunAllowed": false,
+      "observerInstalled": false,
+      "review": {
+        "status": "SOURCE_OBSERVER_DESIGN_REVIEWED_LIVE_OBSERVER_MISSING",
+        "reviewerRef": null,
+        "receiptRef": null,
+        "accepted": false
+      }
+    }
+  },
+  "remainingGates": [
+    "CONCRETE_PROVIDER_IMPLEMENTATION_AND_POLICY_REVIEW",
+    "LIVE_ROUTE_COUNTER_AND_PLATFORM_BUFFERING_RECEIPTS",
+    "IMMUTABLE_PRODUCTION_TARGET_BINDING",
+    "RESTRICTED_SYNTHETIC_COHORT_SETUP_TEARDOWN_RECEIPTS",
+    "CUSTODIAN_AND_REVIEWER_ASSIGNMENT",
+    "LATE_GRANT_OBSERVER_IMPLEMENTATION_AND_LEDGER",
+    "SEALED_COMMAND_CARD_AND_FRESH_WINDOW"
+  ],
+  "sourceBindings": {
+    "docs/cad-auth-live-evidence-prerequisites.json": "d891b624ab979fe9cc2b2ea680c180eae507dc497b4c3f64846c26835a0c91ca",
+    "api/[...path].js": "a6d1b11010f141e43ced43c304692e90d79d78d40f5c064c964e4b55ccc39d7c",
+    "server/index.js": "e09d48b87f86163fe325a38d1b99cf3c00f8624691f8d7aa08953d926d969f1a",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
+    "server/cadProductionSessionVerifierBinding.js": "b76fccd7e1d4984e04ea062d5ae6cec5c91e23b90b7a53499582ee712ff6a020",
+    "server/cadExactSessionBridge.js": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee",
+    "server/cadUploadSessionGatewayService.js": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07",
+    "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
+    "offline/cad-convex/productionVerifierCandidate.js": "d762441f63b735b66e92bfe776d1900e532bccd45008757488c5010bea2cac24",
+    "offline/cad-auth-sealed-setup/providerAdapter.js": "101386b4a1ece8c2bcd5f41edc44cacd32b1f5a1b1b20055d538d163218ad2fc",
+    "offline/cad-auth-sealed-setup/providerAdapter.d.ts": "5ee5fdeea7467c4f64a2ba90a08c5459ee7c4ae1f10502fc1c121c1efe28b390",
+    "offline/cad-auth-sealed-setup/receiptCollector.js": "dcd78ea1e31703c427bb0202a3747d9d80669f8da5a26227ed511268bc616724",
+    "offline/cad-auth-sealed-setup/routeInstrumentation.js": "c9761773d6f225e758c5f004cb130d8d2b2431570495bba949d3e9d65693551c",
+    "docs/cad-auth-live-evidence-prereq-completion.md": "ce52e803f1278f95d6a94bb31c2ff85ae234d1432cacebd179a6237c43758210",
+    "scripts/cad-auth-live-evidence-prereq-completion-checker.js": "efd30a7390594e6c2f2061c06ea1e7d406215cb5788538cc00328b0fc3312349",
+    "scripts/cad-auth-live-evidence-prereq-completion.test.js": "fdd9b4602b97eb6ae39de972c0bd33ccb450de4c23c75f8f423321ff20b1184b",
+    "package.json": "c064226d1132e869c2ecb30d5c9da882a134a39a1693d08aa694dfd6ecd101b5",
+    "package-lock.json": "3fe8025bf3dad56fd1636935f4bbaccbed665b6301f1cbcd88c02fb5aec509d6",
+    "vercel.json": "3bda7784136889e0e9247802ba4e62130ea9e26dcf3a8c6cc67ceceea2ae0014"
+  }
+}
