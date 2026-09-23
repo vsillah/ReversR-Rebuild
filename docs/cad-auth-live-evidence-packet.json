@@ -1,0 +1,1191 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-evidence-v1",
+  "sourceOnly": true,
+  "status": "PLANNED_BLOCKED_NOT_EXECUTABLE",
+  "claims": {
+    "productionVerifierAccepted": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeValuesInstalled": false,
+    "runtimeActivationAuthorized": false,
+    "liveProviderTestsAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "deploymentAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "candidate": {
+    "acceptancePr": 383,
+    "acceptanceMerge": "b885f1f9a569b5bfa5627858cbb1542342b7da43",
+    "candidatePr": 384,
+    "candidateHead": "96b465bc8f27b4b7a0b79a7ac2c932f07dfa53a8",
+    "candidateMerge": "dc7d733cff6d94841725e721cc8e7b0da7be4cff",
+    "appDeployment": {
+      "githubId": 6613179379,
+      "commit": "dc7d733cff6d94841725e721cc8e7b0da7be4cff",
+      "environment": "Production",
+      "status": "success",
+      "statusAtUtc": "2026-09-23T11:49:34Z",
+      "url": "https://reversr-6ubf0dy2w-vsillahs-projects.vercel.app",
+      "vercelRef": "https://vercel.com/vsillahs-projects/reversr/G5sHvxfktoKGwrretFWpQ4EvMcQ2",
+      "evidenceKind": "GITHUB_METADATA_ONLY_NOT_LIVE_PROVIDER_PROOF"
+    },
+    "providerAdapterCommit": null,
+    "providerDeploymentRef": null,
+    "collectionDeploymentRef": null,
+    "providerPolicyReceipt": null,
+    "collectorCommit": null,
+    "collectorSha256": null,
+    "sourceSdkPins": {
+      "convex": "1.45.0",
+      "auth": "0.0.95",
+      "authCore": "0.41.3"
+    },
+    "runtimeSdkAttestation": null,
+    "candidateMountedInProductionRoute": false
+  },
+  "proposedWindow": {
+    "startsAtUtc": "2026-09-24T14:00:00Z",
+    "expiresAtUtc": "2026-09-24T14:30:00Z",
+    "status": "PROPOSED_NOT_AUTHORIZED",
+    "durationMinutes": 30,
+    "lateApprovalPolicy": "EXPIRE_AND_REPLAN_NO_AUTOMATIC_ROLLOVER",
+    "historicalWindowReusable": false
+  },
+  "approval": {
+    "exactPhrase": "Approve one synthetic-only ReversR CAD Auth evidence collection attempt for cad-auth-live-evidence-v1, source dc7d733cff6d94841725e721cc8e7b0da7be4cff, 2026-09-24T14:00:00Z through 2026-09-24T14:30:00Z, only after the exact provider adapter, collection deployment, cohort and instrumentation receipts are reviewed and bound; no setup changes, upload-session issuance, upload bodies, conversion, Sandbox, private CAD, real users, external messages or retry.",
+    "receipt": null,
+    "approved": false,
+    "executionAuthorized": false,
+    "phraseAloneSufficient": false,
+    "bindFinalPacketCommitAndSha256": true
+  },
+  "bounds": {
+    "maxRunAttempts": 1,
+    "maxRetries": 0,
+    "maxCandidateOperations": 256,
+    "maxProviderReadCalls": 2048,
+    "maxActualRouteRequests": 8,
+    "maxConcurrentOperations": 2,
+    "operationDeadlineMs": 800,
+    "schedulerToleranceMs": 100,
+    "maxRunMinutes": 30,
+    "loginCreations": 0,
+    "stateMutations": 0,
+    "uploadSessionsIssued": 0,
+    "uploadPayloadBytesSent": 0,
+    "uploadBodyBytesRead": 0,
+    "gatewayDispatches": 0,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "newSpendUsd": 0,
+    "liveCollectorIncluded": false
+  },
+  "cohort": {
+    "technicalKey": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "collectionAlias": "cad-auth-evidence-synthetic-v1",
+    "historicalCohortApprovalReusable": false,
+    "syntheticOnly": true,
+    "realUserCount": 0,
+    "owner": "RRb Integration Captain",
+    "identities": [
+      "A: member of shop-X",
+      "B: different user, member of shop-X"
+    ],
+    "logins": [
+      "A1: first login",
+      "A2: simultaneous independent login",
+      "A3: replacement fixture",
+      "B1: different user login"
+    ],
+    "shops": [
+      "shop-X: allowed synthetic shop",
+      "shop-Y: nonmember synthetic shop"
+    ],
+    "fixtureSlots": [
+      "owner-absent",
+      "session-deleted",
+      "owner-mismatch",
+      "membership-removed",
+      "permission-removed",
+      "expired",
+      "revoked"
+    ],
+    "liveIdentityMappingReceipt": null,
+    "preexistingFixtureReceipt": null,
+    "setupPolicy": "NO_CREATE_LOGIN_LOGOUT_REVOKE_DELETE_OR_MEMBERSHIP_WRITES; SEPARATE_SETUP_APPROVAL_REQUIRED",
+    "refreshBinding": "IN_MEMORY_SYNTHETIC_SESSION_REFERENCE_ONLY_NEVER_ISSUED_OR_STORED",
+    "credentialHandling": "REVIEWED_REQUEST_LOCAL_AUTH_CONTEXT_ONLY; NO_SECRET_FILE_ENV_OR_CREDENTIAL_EXPORT"
+  },
+  "prerequisites": [
+    {
+      "requirement": "Reviewed concrete provider adapter and immutable provider deployment, verified issuer/audience/algorithms and auth-method mapping; source-only librarySession development password mapping is insufficient.",
+      "status": "BLOCKED",
+      "receipt": null
+    },
+    {
+      "requirement": "Separately reviewed collector with immutable commit/digest, bounded calls, cancellation, zero writes/issuance and allowlisted evidence output; no executable collector exists in this packet.",
+      "status": "BLOCKED",
+      "receipt": null
+    },
+    {
+      "requirement": "Existing authorized synthetic cohort and fixture/lifecycle receipts; no real-user IDs and no new login/setup mutations during collection.",
+      "status": "BLOCKED",
+      "receipt": null
+    },
+    {
+      "requirement": "Separately approved actual-route instrumentation deployment, exact entrypoint/proxy/middleware hashes and stop switch; candidate is currently unmounted.",
+      "status": "BLOCKED",
+      "receipt": null
+    },
+    {
+      "requirement": "Named custodian/reviewer, restricted sanitized evidence destination and redaction review receipt.",
+      "status": "BLOCKED",
+      "receipt": null
+    },
+    {
+      "requirement": "Final packet commit/digest, exact source/deployment/collector/cohort receipts and fresh explicit approval before proposed window; unchanged blockers mean no-go.",
+      "status": "BLOCKED",
+      "receipt": null
+    }
+  ],
+  "routePlan": {
+    "method": "POST",
+    "path": "/api/cad/user-import",
+    "chain": [
+      "vercel.json",
+      "api/[...path].js",
+      "server/index.js",
+      "server/cadUserUploadRouter.js",
+      "server/uploadSession.js"
+    ],
+    "separateServiceEnvelopePath": "/cad/upload-session-gateway",
+    "candidateBoundary": "LOGIN_BEARER_IN_OFFLINE_CANDIDATE; UPLOAD_ROUTE_EXPECTS_UPLOAD_SESSION_CREDENTIAL",
+    "probes": [
+      "ingress raw/normalized header counts",
+      "middleware entry/exit sequence",
+      "req.body getter",
+      "req.read/resume/pipe",
+      "data/readable listeners",
+      "async iterator",
+      "JSON/raw/parser invocation",
+      "application upload bytes consumed",
+      "verification/admission decision",
+      "issuer/gateway/conversion/Sandbox invocation"
+    ],
+    "safety": "Passive counters or fail-before-delegation traps; never attach data listeners or consume bytes to measure zero. No payload sent.",
+    "positiveRouteProof": "BLOCKED_SEPARATE_COMPOSITION; OFFLINE_VALID_TEST_SESSION_IS_SYNTHETIC_ONLY",
+    "emptyRequestLimit": "Zero-byte request alone cannot prove absence of reads for nonempty payloads; instrument attempts and retain body-admission gate.",
+    "actualRouteInstrumented": false,
+    "observedBodyBytes": null,
+    "requiredBodyBytes": 0
+  },
+  "cases": [
+    {
+      "category": "provider",
+      "id": "verified-user-context",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "A1 resolves and refreshes in provider-verified context.",
+      "expected": "Exact A/A1/shop-X identity and minimum expiry; candidate configured remains false.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "provider",
+      "id": "service-credential-is-not-login",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Inspect adapter trust boundary; use only a synthetic non-login service-shaped value.",
+      "expected": "No login grant; never use a real service secret as a test input.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "provider",
+      "id": "sdk-issuer-audience-algorithms",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "SANITIZED_RECEIPT_INSPECTION",
+      "stimulus": "Inspect reviewed build metadata and sanitized provider policy references.",
+      "expected": "Concrete adapter/SDK digests and issuer/audience/algorithm policy match; source pins alone are insufficient.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "identity",
+      "id": "missing-owner",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Present pre-staged synthetic session whose owner is absent.",
+      "expected": "No grant after fresh owner read.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "identity",
+      "id": "deleted-session",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Present credential for pre-staged deleted synthetic session.",
+      "expected": "No grant after fresh session read.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "identity",
+      "id": "owner-mismatch",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Use isolated pre-staged owner/session mismatch.",
+      "expected": "No grant; no caller-supplied identity fallback.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "identity",
+      "id": "supplied-principal",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Add synthetic user/principal fields to resolve context or refresh binding.",
+      "expected": "AUTH_UNAVAILABLE before authority can be supplied by caller.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "identity",
+      "id": "opaque-login-reference",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Add opaque loginSessionRef to resolve input.",
+      "expected": "AUTH_UNAVAILABLE; refresh does not accept this extra field either.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "exactLogin",
+      "id": "two-same-user-logins",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Resolve A1 and A2 independently and refresh each exact in-memory binding.",
+      "expected": "Both identify A but preserve distinct A1/A2 session IDs; no upload session is issued.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "exactLogin",
+      "id": "cross-login-refresh",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Refresh A1 binding using A2 provider context.",
+      "expected": "No grant despite same owner and shop.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "exactLogin",
+      "id": "cross-user-refresh",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Refresh A1 binding using B1 provider context.",
+      "expected": "No grant despite shared shop membership.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "exactLogin",
+      "id": "method-substitution",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Change authMethod on in-memory exact binding to a different supported method.",
+      "expected": "No grant; method must come from verified provider semantics.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "exactLogin",
+      "id": "concurrent-credential-isolation",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Resolve A1 and A2 concurrently once, then inspect paired request traces.",
+      "expected": "Each result matches its own request; no shared client credential crossover.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "authorization",
+      "id": "selected-shop-membership",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use A1 for shop-X and select unowned shop-Y.",
+      "expected": "X grants only with fresh permission; Y produces no grant.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "authorization",
+      "id": "removed-membership",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Observe pre-staged membership-removal lifecycle receipt and current denied state.",
+      "expected": "Resolve/refresh cannot retain prior permission; before/after transition proof is separately required.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "authorization",
+      "id": "permission-loss",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Observe pre-staged permission-loss receipt and current denied state.",
+      "expected": "Resolve returns null; refresh may return cadUploadAllowed:false, which must never be consumed as authority.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "authorization",
+      "id": "shop-substitution",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Change shop on exact binding/context to shop-Y.",
+      "expected": "No authority for Y; caller selection is not membership.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "authorization",
+      "id": "fresh-resolve-and-refresh",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Compare provider read markers for one resolve and one refresh.",
+      "expected": "Independent fresh session/owner/membership/permission reads; cached success is insufficient.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "exact-expiry",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Use isolated test clock at session/grant expiry equality.",
+      "expected": "No grant at equality; never change a host or provider clock.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "expiry-during-read",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Delay isolated reader completion beyond its expiry.",
+      "expected": "No grant after read completion.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "minimum-expiry",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Compare session/grant deadlines from reviewed synthetic fixture.",
+      "expected": "Result expiry equals their minimum and is still future at completion.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "invalid-timestamp",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Inject invalid timestamp in isolated reader fault harness.",
+      "expected": "AUTH_UNAVAILABLE; never corrupt provider records.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "clock-rollback",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Move isolated candidate clock backwards during a read.",
+      "expected": "AUTH_UNAVAILABLE; no machine clock changes.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "expiry",
+      "id": "cached-query-liveness",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Inspect provider freshness/invalidation receipt and compare two read markers.",
+      "expected": "Cache cannot extend expired/revoked authority; missing provider proof remains BLOCKED.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "lifecycle",
+      "id": "logout",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Review before/after synthetic logout receipt and old-credential denial.",
+      "expected": "Old credential gives no resolve/refresh authority; no logout mutation in this read-only collection.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "lifecycle",
+      "id": "revocation",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Review before/after synthetic revocation receipt and old-credential denial.",
+      "expected": "Revoked login gives no authority; no revocation mutation in this collection.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "lifecycle",
+      "id": "session-deletion",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Review before/after synthetic deletion receipt and old-credential denial.",
+      "expected": "Deleted login gives no authority; no table delete in this collection.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "lifecycle",
+      "id": "replacement-login",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Compare pre-staged replacement A3 with A1 binding.",
+      "expected": "A3 cannot inherit A1 authority; no replacement login is created in collection.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "lifecycle",
+      "id": "provider-cache-invalidation",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_SEPARATE_FIXTURE_OR_TRANSITION_RECEIPT",
+      "stimulus": "Review provider invalidation semantics and sanitized transition timing.",
+      "expected": "Old cached result cannot grant after invalidation; missing transition receipt blocks acceptance.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "forged-signature",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic invalid signature fixture.",
+      "expected": "No grant; cryptographic rejection observed.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "unsigned-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic unsigned credential fixture.",
+      "expected": "No grant; algorithm none rejected.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "disallowed-algorithm",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic credential with an unapproved algorithm.",
+      "expected": "No grant under the exact reviewed algorithm allowlist.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "wrong-issuer",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic fixture naming a wrong issuer.",
+      "expected": "No grant; trusted issuer cannot be taken from caller.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "wrong-audience",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic fixture naming a wrong audience.",
+      "expected": "No grant; audience policy enforced.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "expired-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use pre-staged expired synthetic credential.",
+      "expected": "No grant at provider verification.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "not-yet-valid-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic future-validity fixture.",
+      "expected": "No grant before validity; no clock changes.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "malformed-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use one reviewed truncated synthetic credential.",
+      "expected": "No grant and no credential/error payload in evidence.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "oversized-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use synthetic header above the binding 8192-character limit.",
+      "expected": "No provider reads and no grant; transport/header limit outcome separately recorded.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "missing-token",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Omit authorization.",
+      "expected": "No provider reads and no grant.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "duplicate-authorization",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use one raw request with duplicate/conflicting Authorization headers.",
+      "expected": "Rejected before provider reads; record duplicate count only, never values.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "tokens",
+      "id": "unavailable-verification",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Inject unavailable verifier/key source only in isolated fault harness.",
+      "expected": "AUTH_UNAVAILABLE; no provider outage or key/config mutation.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "abort-before-read",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Abort candidate operation before invoking a reader.",
+      "expected": "No provider read and no grant.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "abort-between-reads",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Abort after session read, before authorization.",
+      "expected": "No authorization read and no grant.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "abort-during-authorization",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Abort pending authorization read.",
+      "expected": "Bounded denial; AbortSignal propagated.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "hung-reader",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Use isolated nonblocking unresolved reader.",
+      "expected": "No grant; operation settles within 800 ms budget plus reviewed scheduler tolerance.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "late-result",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Release isolated delayed reader after timeout.",
+      "expected": "No late grant or follow-on read.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "cancellation",
+      "id": "no-late-side-effects",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Observe request/read completion and side-effect counters after cancellation.",
+      "expected": "All issuance/body/conversion counters zero; injected dependency behavior is not provider proof.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "transport",
+      "id": "actual-router-bearer-normalization",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Inspect exact deployed ingress rawHeaders and normalized header count via sanitized probes.",
+      "expected": "One unambiguous bearer only at candidate boundary; current upload bearer is a different upload-session credential.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "transport",
+      "id": "cookie-rejected",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Present synthetic cookie-only transport to isolated candidate boundary.",
+      "expected": "No grant; candidate has no approved cookie mode.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "transport",
+      "id": "mixed-transport-rejected",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Present synthetic cookie plus bearer to isolated candidate boundary.",
+      "expected": "No grant before provider reads.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "transport",
+      "id": "middleware-order",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Inspect exact deployment routing and instrumentation chain.",
+      "expected": "Upload route ends before generic parser; login candidate remains unmounted until separate reviewed composition.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "body",
+      "id": "denied-zero-bytes",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Plan bodyless denied request through instrumented actual upload route.",
+      "expected": "Zero body getter/read/parser/stream-consumer calls and zero application upload bytes.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "body",
+      "id": "malformed-zero-bytes",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Plan malformed synthetic header through instrumented actual route with no body.",
+      "expected": "Denial before all body access; no upload payload is sent.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "body",
+      "id": "cancelled-zero-bytes",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Plan request cancellation in separately instrumented exact route.",
+      "expected": "Zero body access and zero late work; candidate double is not actual-route proof.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "body",
+      "id": "timed-out-zero-bytes",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "BLOCKED_ACTUAL_ROUTE_INSTRUMENTATION",
+      "stimulus": "Plan timeout in separately instrumented exact route.",
+      "expected": "Zero body access and zero late work.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "body",
+      "id": "closed-after-valid-verifier",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "SYNTHETIC_FAULT_ONLY_PROVIDER_PROOF_STILL_REQUIRED",
+      "stimulus": "Compare candidate positive result with isolated actual-router closure test.",
+      "expected": "503 USER_UPLOADS_DISABLED after valid test session; no live upload session may be minted to obtain this observation.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "isolation",
+      "id": "request-local-credentials",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Review sanitized A1/A2 request traces.",
+      "expected": "Each credential is confined to its request-local adapter closure.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "isolation",
+      "id": "no-envelope-credentials",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Audit allowlisted envelope field names only.",
+      "expected": "No login headers/credentials serialized into gateway envelopes; no gateway dispatch here.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "isolation",
+      "id": "no-binding-credentials",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Audit in-memory binding field names.",
+      "expected": "Only user/shop/login/method/synthetic session reference; no credential persistence.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "isolation",
+      "id": "no-log-or-evidence-credentials",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Validate allowlisted sanitized event records before writing.",
+      "expected": "No tokens/cookies/raw IDs/PII/private errors or raw provider responses.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "isolation",
+      "id": "sanitized-provider-failure",
+      "paths": [
+        "resolve",
+        "refresh"
+      ],
+      "evidenceClass": "PLANNED_PROVIDER_OBSERVATION",
+      "stimulus": "Use isolated failure sentinel and inspect output schema.",
+      "expected": "Only AUTH_UNAVAILABLE or documented no-grant; no exception details.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "review",
+      "id": "exact-candidate-deployment-test-version",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "SANITIZED_RECEIPT_INSPECTION",
+      "stimulus": "Review immutable source/build/deployment and collector digests.",
+      "expected": "All match approved packet; current app deployment alone cannot attest provider adapter.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "review",
+      "id": "sanitized-digest-reference",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "SANITIZED_RECEIPT_INSPECTION",
+      "stimulus": "Hash only sanitized receipt bytes after schema validation.",
+      "expected": "SHA-256 and opaque custody reference resolve to same reviewed bytes.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "review",
+      "id": "utc-execution-time",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "SANITIZED_RECEIPT_INSPECTION",
+      "stimulus": "Compare start/end timestamps with approved window.",
+      "expected": "Start within window, stop by expiry; no rollover or retry.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    },
+    {
+      "category": "review",
+      "id": "reviewer-disposition",
+      "paths": [
+        "inspection"
+      ],
+      "evidenceClass": "SANITIZED_RECEIPT_INSPECTION",
+      "stimulus": "Independent captain reviews every case receipt.",
+      "expected": "PASS/FAIL/BLOCKED per case; any missing provider/route proof blocks acceptance.",
+      "status": "NOT_COLLECTED",
+      "observed": null,
+      "receipt": null
+    }
+  ],
+  "receiptTemplate": {
+    "schemaVersion": 1,
+    "runRef": null,
+    "category": null,
+    "caseId": null,
+    "path": null,
+    "evidenceClass": null,
+    "candidateCommit": null,
+    "providerAdapterCommit": null,
+    "deploymentRef": null,
+    "collectorCommit": null,
+    "collectorSha256": null,
+    "approvedPacketCommit": null,
+    "approvedPacketSha256": null,
+    "cohortReceiptRef": null,
+    "identityAlias": null,
+    "loginAlias": null,
+    "shopAlias": null,
+    "startedAtUtc": null,
+    "endedAtUtc": null,
+    "expectedCode": null,
+    "observedCode": null,
+    "providerReadCount": null,
+    "bodyAccessAttemptCount": null,
+    "uploadBodyBytes": null,
+    "uploadSessionsIssued": null,
+    "sideEffects": null,
+    "elapsedMs": null,
+    "deadlineMs": null,
+    "evidenceRef": null,
+    "evidenceSha256": null,
+    "reviewer": null,
+    "disposition": "NOT_COLLECTED"
+  },
+  "custody": {
+    "custodian": "RRb Integration Captain",
+    "reviewer": null,
+    "destinationReceipt": null,
+    "rawCaptureAllowed": false,
+    "publicReceiptPublicationAllowed": false,
+    "projection": "ALLOWLIST_ENUMS_ALIASES_COUNTS_TIMES_AND_SOURCE_REFS_ONLY",
+    "forbidden": [
+      "tokens",
+      "cookies",
+      "secret/env values",
+      "raw provider replies",
+      "raw headers",
+      "raw user/session/shop IDs",
+      "PII",
+      "CAD",
+      "private exceptions",
+      "credential hashes"
+    ],
+    "digest": "SHA256_OF_SANITIZED_BYTES_ONLY",
+    "retention": "Review within 7 days; retain sanitized summary/digests, delete temporary sanitized detail after review under approved custody policy; never persist raw data.",
+    "completedReceipts": "SEPARATE_RESTRICTED_ARTIFACT; NEVER_FILL_PENDING_PR383_PR384_OR_THIS_PLAN"
+  },
+  "stopConditions": [
+    "missing or drifted source/deployment/approval/cohort/instrumentation receipt",
+    "window expiry, wall-clock rollback, budget/call/deadline overrun",
+    "unexpected credential/user, real-user exposure or unsanitized evidence",
+    "any mutation, upload-session issuance, body-access attempt, body byte, gateway/conversion/Sandbox dispatch",
+    "provider failure, unclassified outcome, grant after cancellation, blocked prerequisite or failed case"
+  ],
+  "stopProcedure": [
+    "Stop dispatch immediately and abort in-flight reads; do not retry or complete remaining cases.",
+    "Discard request-local credentials and in-memory bindings; record sanitized stop code and partial counts only.",
+    "Keep runtime and body gates closed; do not flip env flags, revoke sessions, deploy or change provider settings as rollback.",
+    "If separately approved instrumentation was installed, only its separately approved custodian rollback may restore it; attach that receipt or mark BLOCKED.",
+    "Captain review required before any new proposal; no implicit second run."
+  ],
+  "sourceBindings": {
+    "offline/cad-convex/productionVerifierCandidate.js": "d762441f63b735b66e92bfe776d1900e532bccd45008757488c5010bea2cac24",
+    "docs/cad-production-auth-verifier-acceptance.json": "31d1368957f770c423c903644decbc8043ac076a0dd8d76edfc3105a9643176f",
+    "docs/cad-production-verifier-evidence-template.json": "8735d780c6b5ba3b95de77ce74a67691b4a50595334ee6f59c49898c9b2d6dfb",
+    "scripts/cad-production-verifier-evidence-checker.js": "7ec0e005d724554636ca126fe06721ac7bbc8e699a54babf888c1191f73f990e",
+    "server/cadProductionSessionVerifierBinding.js": "b76fccd7e1d4984e04ea062d5ae6cec5c91e23b90b7a53499582ee712ff6a020",
+    "server/cadExactSessionBridge.js": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee",
+    "server/cadUploadSessionGatewayService.js": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07",
+    "server/uploadSessionStore.js": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516",
+    "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "server/index.js": "e09d48b87f86163fe325a38d1b99cf3c00f8624691f8d7aa08953d926d969f1a",
+    "api/[...path].js": "a6d1b11010f141e43ced43c304692e90d79d78d40f5c064c964e4b55ccc39d7c",
+    "vercel.json": "3bda7784136889e0e9247802ba4e62130ea9e26dcf3a8c6cc67ceceea2ae0014",
+    "convex/librarySession.ts": "a36e8d17d4a509498cfbef226487be1b00c90f1f721ac4c907bd799d667df042",
+    "convex/auth.ts": "4852c956f4354e1eb2fda5fb29d08ebc69c5c587d11c1f6672fa14de0f908ec0",
+    "convex/auth.config.ts": "53b4f76eb85dd8b65a7b13f8d54815911cd26b06defd154914f051a805b16dce",
+    "convex/http.ts": "4a2531474c64836e487c277358fa03d465806aaaf5ff97d706594e5044b0b85c",
+    "convex/cadUploadSessionGateway.ts": "60472cb959917ac42e698839efa526156519323086a02e1d3766115c68a889e5",
+    "package.json": "c064226d1132e869c2ecb30d5c9da882a134a39a1693d08aa694dfd6ecd101b5",
+    "package-lock.json": "3fe8025bf3dad56fd1636935f4bbaccbed665b6301f1cbcd88c02fb5aec509d6",
+    "docs/cad-auth-live-evidence-packet.md": "6d73495bfb223e21c8ba6a98a2eb4dd692044b553da5495e5861002be6dd2a58",
+    "scripts/cad-auth-live-evidence-packet-checker.js": "8de7df7169a07e4dead88628ca007b6274efc841fab71aa7d508497d1d0653ae",
+    "scripts/cad-auth-live-evidence-packet.test.js": "fd02a924fdf9b9e8ff3cda838bc6c30a0d14683051670ef534bdce9176d35d89"
+  }
+}

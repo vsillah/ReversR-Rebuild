@@ -8,7 +8,13 @@ assert.equal(require('./cad-production-auth-verifier-acceptance-checker').checkA
   JSON.parse(read('docs/cad-production-auth-verifier-acceptance.json'))).ok, true);
 assert.equal(require('./cad-production-verifier-evidence-checker').checkEvidence(
   JSON.parse(read('docs/cad-production-verifier-evidence-template.json'))).ok, true);
+assert.equal(require('./cad-auth-live-evidence-packet-checker').checkPacket(
+  JSON.parse(read('docs/cad-auth-live-evidence-packet.json'))).ok, true);
 const files = [
+  'docs/cad-auth-live-evidence-packet.json',
+  'docs/cad-auth-live-evidence-packet.md',
+  'scripts/cad-auth-live-evidence-packet-checker.js',
+  'scripts/cad-auth-live-evidence-packet.test.js',
   'offline/cad-convex/productionVerifierCandidate.js',
   'scripts/cad-production-verifier-candidate.test.js',
   'scripts/cad-production-verifier-evidence-checker.js',
