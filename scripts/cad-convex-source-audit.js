@@ -12,7 +12,20 @@ assert.equal(require('./cad-auth-live-evidence-plan-checker').checkPlan(
   JSON.parse(read('docs/cad-auth-live-evidence-plan.json'))).ok, true);
 assert.equal(require('./cad-auth-sealed-evidence-card-checker').checkCard(
   JSON.parse(read('docs/cad-auth-sealed-evidence-card.json'))).ok, true);
+assert.equal(require('./cad-auth-sealed-setup-checker').checkSetup(
+  JSON.parse(read('docs/cad-auth-sealed-setup.json'))).ok, true);
 const files = [
+  'docs/cad-auth-sealed-setup.md',
+  'docs/cad-auth-sealed-setup-stop-runbook.md',
+  'docs/cad-auth-sealed-setup.json',
+  'offline/cad-auth-sealed-setup/binding-manifests.json',
+  'offline/cad-auth-sealed-setup/providerAdapter.js',
+  'offline/cad-auth-sealed-setup/providerAdapter.d.ts',
+  'offline/cad-auth-sealed-setup/receiptCollector.js',
+  'offline/cad-auth-sealed-setup/routeInstrumentation.js',
+  'scripts/cad-auth-sealed-setup-checker.js',
+  'scripts/cad-auth-sealed-setup.test.js',
+
   'docs/cad-auth-sealed-evidence-card.md',
   'docs/cad-auth-sealed-evidence-card.json',
   'scripts/cad-auth-sealed-evidence-card-checker.js',
