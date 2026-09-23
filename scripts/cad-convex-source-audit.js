@@ -6,7 +6,15 @@ const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 assert.equal(require('./cad-production-auth-verifier-acceptance-checker').checkAcceptance(
   JSON.parse(read('docs/cad-production-auth-verifier-acceptance.json'))).ok, true);
+assert.equal(require('./cad-production-verifier-evidence-checker').checkEvidence(
+  JSON.parse(read('docs/cad-production-verifier-evidence-template.json'))).ok, true);
 const files = [
+  'offline/cad-convex/productionVerifierCandidate.js',
+  'scripts/cad-production-verifier-candidate.test.js',
+  'scripts/cad-production-verifier-evidence-checker.js',
+  'scripts/cad-production-verifier-evidence.test.js',
+  'docs/cad-production-verifier-evidence-template.json',
+  'docs/cad-production-verifier-candidate-harness.md',
   'docs/cad-production-auth-verifier-acceptance.md',
   'docs/cad-production-auth-verifier-acceptance.json',
   'scripts/cad-production-auth-verifier-acceptance-checker.js',
