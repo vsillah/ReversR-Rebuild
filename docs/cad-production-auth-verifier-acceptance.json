@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-production-auth-verifier-acceptance",
+  "baseCommit": "a2613c956ac6bd20637ffda6d020f128f065119b",
+  "sourceOnly": true,
+  "status": "PENDING_PRODUCTION_VERIFIER_EVIDENCE",
+  "claims": {
+    "productionVerifierAccepted": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeValuesInstalled": false,
+    "runtimeActivationAuthorized": false,
+    "liveProviderTestsAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "deploymentAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "candidate": {
+    "providerRef": null,
+    "verifierCommit": null,
+    "deploymentRef": null,
+    "reviewer": null,
+    "acceptanceReceipt": null
+  },
+  "transport": {
+    "bearer": "REQUIRES_PROVIDER_EVIDENCE",
+    "cookie": "REJECTED_SEPARATE_CSRF_ORIGIN_REVIEW_REQUIRED"
+  },
+  "activation": {
+    "separateApprovalRequired": true,
+    "historicalWindowReusable": false,
+    "historicalApprovalReusable": false,
+    "approvalRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null
+  },
+  "evidence": {
+    "provider": {
+      "required": "Identify the concrete verifier source commit, provider and SDK versions, trusted issuer/audience and allowed algorithms by sanitized references. Prove cryptographic verification in the authenticated user context; gateway service credentials and caller claims cannot supply login authority. Development-only password assumptions are not production evidence.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "identity": {
+      "required": "Derive user and exact login session IDs from the provider-verified context, point-read the live session and existing owner, and prove ownership matches. Reject missing/deleted owners, missing sessions, cross-user substitutions, supplied principals and opaque loginSessionRef mappings.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "exactLogin": {
+      "required": "Use two simultaneous logins for one user. Resolve each independently, then attempt to refresh login A binding using login B: deny despite matching user/shop. Also reject cross-user and auth-method substitution and concurrent request credential crossover.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "authorization": {
+      "required": "Freshly read current selected-shop membership and CAD permission on resolve and every refresh. Match user, login session, auth method and shop; shop selection is not authority. Membership removal, shop substitution and permission loss must deny new grants and invalidate refresh authority without stale cached success.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "expiry": {
+      "required": "Deny expired login or authorization grants before and after asynchronous reads, including exact expiry boundaries and expiry during a read. Use the minimum expiry; reject invalid timestamps and clock rollback. Cached query results must not extend liveness.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "lifecycle": {
+      "required": "After logout, revocation, session deletion or replacement, repeat resolve and refresh with the old credential and deny. A replacement login cannot inherit an old upload-session binding. Record sanitized before/after observations and provider invalidation semantics, including token/session cache behavior.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "tokens": {
+      "required": "Reject forged signatures, unsigned/disallowed algorithms, wrong issuer/audience, expired or not-yet-valid tokens, malformed/truncated/oversized credentials, missing credentials, duplicate or conflicting Authorization headers, and unavailable provider/key verification. Return only sanitized denial; no credential or private exception logging.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "cancellation": {
+      "required": "Prove bounded completion with an explicit operation deadline and propagated AbortSignal: abort before reads, between reads, during authorization, and after delayed completion. Hung or cancellation-ignoring dependencies must never yield late authority or side effects. The binding alone supplies no timer; direct callers need a reviewed deadline owner and service composition needs bounded-operation evidence.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "transport": {
+      "required": "Accept only an unambiguous bearer header on the reviewed request path. Reject cookies and mixed cookie/bearer headers. Inspect the actual router/header normalization and middleware order, not only a fabricated request. Cookie support remains rejected pending separate origin, CSRF, SameSite and credential-scope review; a caller transport label cannot authorize cookies.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "body": {
+      "required": "Instrument the actual user-upload route and middleware for getters, stream listeners, parsing and byte reads. Denied, malformed, cancelled and timed-out requests must read zero upload-body bytes before session acceptance. This packet keeps body admission closed even after a valid verifier result; separate body-admission approval is still required. Service-envelope JSON is not proof of upload-body admission.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "isolation": {
+      "required": "Prove credentials stay request-local and never enter gateway envelopes, stored bindings, evidence artifacts or logs. Provider failures produce fail-closed sanitized errors; no fallback to client profiles, development verifier assumptions or service-envelope refreshAuthorization as login proof.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    },
+    "review": {
+      "required": "For every case provide sanitized expected/observed outcome, exact candidate commit/deployment, test version, UTC execution time, evidence digest/reference and reviewer disposition in a separately authorized evidence packet. Synthetic doubles and historical smoke establish source behavior only. No live collection is authorized here.",
+      "status": "NOT_COLLECTED",
+      "accepted": false,
+      "receipt": null
+    }
+  },
+  "sourceBindings": {
+    "server/cadProductionSessionVerifierBinding.js": "b76fccd7e1d4984e04ea062d5ae6cec5c91e23b90b7a53499582ee712ff6a020",
+    "server/cadExactSessionBridge.js": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee",
+    "server/cadUploadSessionGatewayService.js": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07",
+    "server/uploadSessionStore.js": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "convex/librarySession.ts": "a36e8d17d4a509498cfbef226487be1b00c90f1f721ac4c907bd799d667df042",
+    "convex/cadUploadSessionGateway.ts": "60472cb959917ac42e698839efa526156519323086a02e1d3766115c68a889e5"
+  }
+}
