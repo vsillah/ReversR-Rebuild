@@ -4,6 +4,11 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-live-evidence-prereq-completion.md',
+  'docs/cad-auth-live-evidence-prereq-completion.json',
+  'scripts/cad-auth-live-evidence-prereq-completion-checker.js',
+  'scripts/cad-auth-live-evidence-prereq-completion.test.js',
+
   'docs/cad-auth-live-evidence-prerequisites.md',
   'docs/cad-auth-live-evidence-prerequisites.json',
   'scripts/cad-auth-live-evidence-prereq-checker.js',
