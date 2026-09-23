@@ -1,5 +1,7 @@
 # CAD Internal Admission Candidate Opening Bundle
 
+Current source-review binding after PR #380: [current-commit rebind](cad-internal-admission-current-commit-rebind.md). Commit references, observations and proposed windows below remain historical; the rebind does not renew approval.
+
 Status: candidate ready for separate human review; uploads remain disabled  
 Base commit: `0c8f676d9eeedb188db94223f6b46c52167c1295`
 

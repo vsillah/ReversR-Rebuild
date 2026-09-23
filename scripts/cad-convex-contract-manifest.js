@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-internal-admission-current-commit-rebind.md',
+  'docs/cad-internal-admission-current-commit-rebind.json',
+  'scripts/cad-internal-admission-current-commit-rebind-checker.js',
+  'scripts/cad-internal-admission-current-commit-rebind.test.js',
+  'scripts/cad-internal-admission-opening-bundle-checker.js',
+
   'docs/cad-fresh-replacement-restricted-evidence.md',
   'docs/cad-fresh-replacement-restricted-evidence.json',
   'offline/cad-convex/freshReplacementRestrictedEvidence.js',

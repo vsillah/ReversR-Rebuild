@@ -1,5 +1,7 @@
 # CAD Gateway Exact-Session Bridge
 
+Current source-review binding after PR #380: [current-commit rebind](cad-internal-admission-current-commit-rebind.md). Commit references, observations and proposed windows below remain historical; the rebind does not renew approval.
+
 Status: source-only bridge implementation; production issuance remains blocked by default.
 
 This packet implements a reviewed request-session/principal bridge for the

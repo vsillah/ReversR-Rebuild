@@ -212,6 +212,13 @@ function checkOpeningBundle(bundle, { root = DEFAULT_ROOT } = {}) {
 
 function main(argv = process.argv.slice(2)) {
   const command = argv[0] || 'template';
+  if (command === 'check-current') {
+    const { checkRebind, PACKET } = require('./cad-internal-admission-current-commit-rebind-checker');
+    const result = checkRebind(readJson(process.cwd(), PACKET), { root: process.cwd(), expectedCommit: argv[1] });
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    process.exitCode = result.ok ? 0 : 1;
+    return;
+  }
   if (command === 'template') {
     process.stdout.write(`${JSON.stringify(buildOpeningBundleTemplate(), null, 2)}\n`);
     return;

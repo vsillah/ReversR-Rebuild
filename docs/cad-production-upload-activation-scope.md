@@ -1,5 +1,7 @@
 # CAD Production Upload Activation Scope
 
+Current source-review binding after PR #380: [current-commit rebind](cad-internal-admission-current-commit-rebind.md). Commit references, observations and proposed windows below remain historical; the rebind does not renew approval.
+
 Status: source-only scope ready  
 Base commit: `a2f514c2de5a080f6b13fb8aba9b3328aeb88a0e`
 

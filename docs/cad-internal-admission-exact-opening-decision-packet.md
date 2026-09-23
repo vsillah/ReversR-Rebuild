@@ -1,5 +1,7 @@
 # CAD Internal Admission Exact Opening Decision Packet
 
+Current source-review binding after PR #380: [current-commit rebind](cad-internal-admission-current-commit-rebind.md). Commit references, observations and proposed windows below remain historical; the rebind does not renew approval.
+
 Status: exact opening decision drafted; uploads remain disabled  
 Base commit: `92db313ed4c3452e98c72ac16bf1bf16e84159f7`
 

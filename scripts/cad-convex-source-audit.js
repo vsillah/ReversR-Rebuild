@@ -5,6 +5,12 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 const files = [
+  'docs/cad-internal-admission-current-commit-rebind.md',
+  'docs/cad-internal-admission-current-commit-rebind.json',
+  'scripts/cad-internal-admission-current-commit-rebind-checker.js',
+  'scripts/cad-internal-admission-current-commit-rebind.test.js',
+  'scripts/cad-internal-admission-opening-bundle-checker.js',
+
   'docs/cad-fresh-replacement-restricted-evidence.md',
   'docs/cad-fresh-replacement-restricted-evidence.json',
   'offline/cad-convex/freshReplacementRestrictedEvidence.js',
@@ -454,6 +460,10 @@ assert.equal(principalBoundary.nextGate.requiredBeforeLiveDispatch, true);
 assert.equal(principalBoundary.nextGate.sourceOnlyBridgePacket, 'docs/cad-gateway-exact-session-bridge.json');
 assert.equal(principalBoundary.guardrails.productionUploadActivationAllowed, false);
 assert.match(read('docs/cad-convex-gateway-principal-boundary.md'), /live dispatch remains blocked/i);
+const currentOpeningReview = require('./cad-internal-admission-current-commit-rebind-checker').checkRebind(
+  JSON.parse(read('docs/cad-internal-admission-current-commit-rebind.json')),
+  { expectedCommit: '046ff00368caa98f13c9a105fa30ec7036bdc57f', root });
+assert.equal(currentOpeningReview.ok, true, currentOpeningReview.problems.join('; '));
 const exactSessionBridge = JSON.parse(read('docs/cad-gateway-exact-session-bridge.json'));
 assert.equal(exactSessionBridge.status, 'IMPLEMENTED_SOURCE_ONLY_INJECTION_DEFAULT_CLOSED');
 assert.equal(exactSessionBridge.runtimeBehavior.defaultGatewayIssuanceEnabled, false);

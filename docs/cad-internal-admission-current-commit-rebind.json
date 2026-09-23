@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-internal-admission-current-commit-rebind",
+  "status": "SOURCE_ONLY_REBOUND_FRESH_WINDOW_AND_APPROVAL_REQUIRED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "baseCommit": "046ff00368caa98f13c9a105fa30ec7036bdc57f",
+  "sourcePr": "https://github.com/vsillah/ReversR-Rebuild/pull/380",
+  "historicalEvidencePolicy": "Predecessor packets and their observed timestamps, smoke receipts and human QA remain historical. This overlay supersedes their commit bindings for source review only; it does not transfer approval or renew their proposed window.",
+  "sourceBindings": {
+    "docs/cad-internal-admission-candidate-opening-bundle.json": {
+      "sha256": "5df822d683f3f6e92ba7a68555344c5064b952b6112f13a927e880a1c2e5d59e"
+    },
+    "docs/cad-internal-admission-exact-opening-decision-packet.json": {
+      "sha256": "6c42e659f97e6c71324e41a19469401cef6b4ab1e828b79a63aa6864648f9d50"
+    },
+    "docs/cad-production-upload-activation-scope.json": {
+      "sha256": "eea069a1233d661392836f93340bec80b141adf070e96f7471fe130d59a09fb1"
+    },
+    "docs/cad-gateway-exact-session-bridge.json": {
+      "sha256": "875098ec6fc0da9e86f60e8e9cbfdfa065c79664fbc251125f1c57f9030004c0"
+    },
+    "offline/cad-convex/userUploadActivationReadiness.json": {
+      "sha256": "828e6a38edcaf8291a7a9092cea7877ff570bb704ba68c919219c407f1c29a49"
+    },
+    "server/cadExactSessionBridge.js": {
+      "sha256": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee"
+    },
+    "server/cadUploadSessionGatewayService.js": {
+      "sha256": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07"
+    },
+    "server/uploadSessionStore.js": {
+      "sha256": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516"
+    },
+    "server/cadUserUploadRouter.js": {
+      "sha256": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad"
+    }
+  },
+  "effectiveOpeningEvidence": {
+    "exactRuntimeCommit": "046ff00368caa98f13c9a105fa30ec7036bdc57f",
+    "route": "POST /api/cad/user-import",
+    "productionUrl": "https://reversr.vercel.app",
+    "bridgePacket": "docs/cad-gateway-exact-session-bridge.json",
+    "bridgeIncludedInMerge": "046ff00368caa98f13c9a105fa30ec7036bdc57f",
+    "productionIssuerBound": false,
+    "humanQaAcceptedForRebind": false,
+    "activationApprovalAccepted": false,
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "freshWindowRequired": true,
+    "historicalWindowReusable": false
+  },
+  "productionFailClosedSmoke": {
+    "commit": "046ff00368caa98f13c9a105fa30ec7036bdc57f",
+    "cacheBuster": "qa=046ff00",
+    "source": "captain-supplied sanitized PR #380 receipt; not rerun by this lane",
+    "sourceTask": "019eb769-b20d-7cb0-9602-f588a7fcb78c",
+    "deploymentId": "6605428703",
+    "deploymentState": "success",
+    "deploymentUpdatedAtUtc": "2026-09-23T03:03:31Z",
+    "deploymentUrl": "https://reversr-1yoaqh61m-vsillahs-projects.vercel.app",
+    "canonicalTarget": "https://reversr.vercel.app",
+    "scope": "bounded empty-JSON unauthenticated fail-closed probes; no authenticated upload or body-admission proof",
+    "results": [
+      {
+        "route": "GET /",
+        "status": 200,
+        "responseBytes": 1423
+      },
+      {
+        "route": "GET /api/cad/capabilities",
+        "status": 200,
+        "responseBytes": 1977
+      },
+      {
+        "route": "POST /api/cad/user-import {}",
+        "status": 401,
+        "code": "USER_SESSION_REQUIRED"
+      },
+      {
+        "route": "POST /api/cad/import {}",
+        "status": 401,
+        "code": "UNAUTHORIZED"
+      },
+      {
+        "route": "GET /api/cad/import-source-record",
+        "status": 404
+      }
+    ]
+  },
+  "authorizes": {
+    "merge": false,
+    "deployment": false,
+    "productionSmoke": false,
+    "uploadSessionIssuance": false,
+    "requestBodyRead": false,
+    "productionUploadActivation": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "providerEnvResourceBillingChanges": false,
+    "secrets": false,
+    "privateCad": false,
+    "realUsers": false,
+    "externalMessages": false,
+    "secondRunOrRetry": false,
+    "commercialReadinessClaim": false
+  },
+  "nextGate": "Captain reviews this source-only rebind. Before any opening, separately review an exact deployment, fresh UTC window, live session verifier, transport, revocation, retention, lockout and cost evidence and obtain exact activation approval. All readiness gates remain unapproved."
+}
