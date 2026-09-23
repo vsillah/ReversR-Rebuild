@@ -78,9 +78,9 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
-    "docs/cad-auth-live-evidence-sealed-card-prep.md": "33e3ad2ff56eb6cf3c649d71fe1a47768de11f01a95d9f1c9b07b135f2371e78",
-    "docs/cad-auth-live-evidence-sealed-card-prep.json": "5940f8c928548054130cf4b49a383e2674af8a6356d9c4aaff3739a19079650f",
-    "scripts/cad-auth-live-evidence-sealed-card-prep-checker.js": "8c21b79857bc85e68358334b98b18ecc53458348f946f9f4e5c34be0eda1efa0",
+    "docs/cad-auth-live-evidence-sealed-card-prep.md": "fbbeecee91aafaa800b75baa3515dc7482476e38496a368f3ac6bd8dae63cd73",
+    "docs/cad-auth-live-evidence-sealed-card-prep.json": "a2da2203e1637d76288767970181aa0a4dcf732b2a8a28d2f1958482ce6e723e",
+    "scripts/cad-auth-live-evidence-sealed-card-prep-checker.js": "5a66d8b36375794e93e2ce4697d3dda58edbe6d3ae32cb42f77ed07915292c14",
     "scripts/cad-auth-live-evidence-sealed-card-prep.test.js": "657736f4767171a7996a1c961df56f2b4b1104ccf9f841923c2a2890b72a1b50",
     "docs/cad-auth-live-evidence-acceptance.md": "70abbfc6a31db2065305485bf768c7d105adb474e525e24ed0ecc13a8b6e2afb",
     "docs/cad-auth-live-evidence-acceptance.json": "826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba",
