@@ -22,6 +22,11 @@ With no gateway env, partial env, or invalid env, the route behaves as before: u
 
 This gate wires verification support only. The session issuer still returns no authorization grant, so production cannot mint upload sessions from this code path. A later explicit approval must define and enable the authenticated issuer before Mark or an internal tester can receive a production upload-session credential.
 
+The follow-on source-only exact-session bridge in
+`docs/cad-gateway-exact-session-bridge.md` can be injected by reviewed code or
+tests, but it is not selected by environment values. Default production service
+construction still has no issuer and still cannot mint upload sessions.
+
 Body admission remains off. Even if a separately configured gateway can verify a pre-existing session, `/api/cad/user-import` remains behind the disabled body-admission gate until a separate production upload activation approval changes that behavior.
 
 ## Guardrails

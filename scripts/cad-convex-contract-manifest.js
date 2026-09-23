@@ -472,6 +472,11 @@ const files = [
   'docs/cad-convex-gateway-principal-boundary.md',
   'docs/cad-convex-gateway-principal-boundary.json',
   'scripts/cad-convex-gateway-principal-boundary.test.js',
+  'server/cadExactSessionBridge.js',
+  'server/cadUploadSessionGatewayService.js',
+  'docs/cad-gateway-exact-session-bridge.md',
+  'docs/cad-gateway-exact-session-bridge.json',
+  'scripts/cad-gateway-exact-session-bridge.test.js',
 
   'offline/cad-convex/previewRuntime.js',
   'offline/cad-convex/previewRuntime.d.ts',

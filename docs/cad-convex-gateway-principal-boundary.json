@@ -45,7 +45,8 @@
   },
   "nextGate": {
     "requiredBeforeLiveDispatch": true,
-    "summary": "Choose and review an exact request-session bridge or an equivalent server-owned session-verification design before Convex gateway dispatch can call internal CAD upload-session functions.",
+    "summary": "The source-only exact-session bridge is implemented in docs/cad-gateway-exact-session-bridge.md, but production request-session binding and live dispatch remain blocked until a separate runtime approval.",
+    "sourceOnlyBridgePacket": "docs/cad-gateway-exact-session-bridge.json",
     "mustDefine": [
       "how the production request proves the same authenticated user and login session to Convex",
       "how refresh/read/revoke avoid caller-supplied principal claims",

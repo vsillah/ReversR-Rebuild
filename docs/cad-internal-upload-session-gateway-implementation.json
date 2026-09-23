@@ -35,6 +35,8 @@
     "bodyAdmissionAuthorized": false,
     "requestBodyReadAuthorized": false,
     "uploadSessionIssuanceEnabled": false,
+    "exactSessionBridgeEnvSelectable": false,
+    "sourceOnlyExactSessionBridge": "docs/cad-gateway-exact-session-bridge.json",
     "lookupCanUseGatewayWhenSeparatelyConfigured": true,
     "credentialOrSecretEchoAllowed": false,
     "retryPolicy": "no-automatic-retry"
