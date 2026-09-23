@@ -32,3 +32,7 @@ No production upload activation, request body reads, conversion dispatch, Sandbo
 ## Next Recommended Gate
 
 Prepare a sanitized candidate opening bundle for human approval review only. Execution remains blocked until a separate explicit production upload activation approval is granted.
+
+## Current Commit Review
+
+Historical `check` completeness does not establish freshness. Use `check-current <full-reviewed-merge-commit>` for the [PR #380 current-commit rebind](cad-internal-admission-current-commit-rebind.md). It checks source digests, smoke and bridge bindings and keeps activation readiness false.
