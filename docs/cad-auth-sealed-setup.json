@@ -1,0 +1,1387 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-sealed-setup-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_IMPLEMENTED_LIVE_BINDINGS_BLOCKED",
+  "parentCardSha256": "103a3c44df0baa77b1df7f195ae8b1e764232eb5a6c2e95103266eb1709cc123",
+  "card": {
+    "id": "cad-auth-sealed-evidence-card-v1",
+    "sealed": false,
+    "sha256": null,
+    "executable": false,
+    "exactCommandLine": null,
+    "dryRunCommandLine": null,
+    "liveApprovalPhrase": null,
+    "liveApprovalPhraseActionable": false
+  },
+  "implementation": {
+    "providerAdapterInterface": "offline/cad-auth-sealed-setup/providerAdapter.d.ts",
+    "disabledProviderAdapter": "offline/cad-auth-sealed-setup/providerAdapter.js",
+    "syntheticCollectorAndReceiptValidator": "offline/cad-auth-sealed-setup/receiptCollector.js",
+    "unmountedInstrumentation": "offline/cad-auth-sealed-setup/routeInstrumentation.js",
+    "manifests": "offline/cad-auth-sealed-setup/binding-manifests.json",
+    "stopRunbook": "docs/cad-auth-sealed-setup-stop-runbook.md",
+    "generator": "scripts/cad-auth-sealed-setup-checker.js"
+  },
+  "bindings": {
+    "schemaVersion": 1,
+    "sourceOnly": true,
+    "status": "UNBOUND_NO_LIVE_AUTHORITY",
+    "provider": {
+      "sourceCommit": null,
+      "deployedVersionRef": null,
+      "sdkPolicyDigest": null,
+      "issuerAudienceAlgorithmPolicy": null,
+      "authSdkVersion": null,
+      "authCoreVersion": null,
+      "providerPolicyRef": null,
+      "cacheInvalidationPolicyRef": null
+    },
+    "collector": {
+      "collectorCommit": null,
+      "receiptValidatorCommit": null,
+      "caseScheduleSha256": "30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066",
+      "limitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+      "liveTransportBound": false,
+      "durableRunLedgerRef": null
+    },
+    "immutableTarget": {
+      "deploymentUrl": null,
+      "deploymentCommit": null,
+      "deploymentProviderRef": null,
+      "sourceMapDigest": null,
+      "mutableAliasAllowed": false,
+      "historicalDeploymentReusable": false
+    },
+    "syntheticCohort": {
+      "cohortRef": null,
+      "aliasMapRef": null,
+      "lifecycleSetupReceiptRef": null,
+      "noRealUserReceiptRef": null,
+      "aliases": [
+        "U1/L1",
+        "U1/L2",
+        "U2/L3"
+      ],
+      "creationAuthorized": false
+    },
+    "custodyReviewer": {
+      "custodianRef": null,
+      "reviewerRef": null,
+      "restrictedStoreRef": null,
+      "retentionDeletionRef": null,
+      "retentionDays": 7,
+      "publicationAllowed": false,
+      "rawCredentialsAllowed": false,
+      "independentReviewRequired": true
+    },
+    "instrumentation": {
+      "instrumentationCommit": null,
+      "entrypointRef": null,
+      "bodyAccessCounterRef": null,
+      "platformBufferingReviewRef": null,
+      "installed": false
+    },
+    "rollback": {
+      "stopRunbookRef": "docs/cad-auth-sealed-setup-stop-runbook.md",
+      "lateGrantObserverRef": null,
+      "partialEvidencePolicyRef": null,
+      "remediationEscalationRef": null,
+      "reviewed": false
+    },
+    "approval": {
+      "startsAtUtc": null,
+      "expiresAtUtc": null,
+      "exactApprovalReceiptRef": null,
+      "sealedCardSha256": null,
+      "historicalApprovalReusable": false
+    }
+  },
+  "proposedSchedule": {
+    "caseCount": 65,
+    "slotCount": 150,
+    "scheduleSha256": "30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066",
+    "limitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+    "reviewed": false,
+    "executable": false,
+    "slots": [
+      {
+        "caseId": "verified-user-context",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve and refresh return only the exact live U1/L1/S1 permission grant; configured remains false.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "verified-user-context",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve and refresh return only the exact live U1/L1/S1 permission grant; configured remains false.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "service-credential-is-not-login",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "A service credential yields no user grant; no fallback to gateway authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "service-credential-is-not-login",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "A service credential yields no user grant; no fallback to gateway authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sdk-issuer-audience-algorithms",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Review pinned deployed SDK and issuer/audience/algorithm policy references; compare package-lock, never publish values.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sdk-issuer-audience-algorithms",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Review pinned deployed SDK and issuer/audience/algorithm policy references; compare package-lock, never publish values.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "missing-owner",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed missing owner yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "missing-owner",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed missing owner yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "missing-owner",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed missing owner yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "missing-owner",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed missing owner yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "deleted-session",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed deleted exact session yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "deleted-session",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed deleted exact session yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "deleted-session",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed deleted exact session yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "deleted-session",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed deleted exact session yields no grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "owner-mismatch",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Session owner differs from verified subject: no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "owner-mismatch",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Session owner differs from verified subject: no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "supplied-principal",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Caller-supplied user/principal fields never provide authority; invalid issue context is rejected.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "supplied-principal",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Caller-supplied user/principal fields never provide authority; invalid issue context is rejected.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "opaque-login-reference",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve rejects opaque loginSessionRef; refresh accepts only provider-derived exact binding fields.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "opaque-login-reference",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve rejects opaque loginSessionRef; refresh accepts only provider-derived exact binding fields.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "two-same-user-logins",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "U1/L1 and U1/L2 resolve independently; matching refresh succeeds without merging login identity.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "two-same-user-logins",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "U1/L1 and U1/L2 resolve independently; matching refresh succeeds without merging login identity.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cross-login-refresh",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "L2 refresh of L1 binding yields no grant; matching-user comparison is insufficient.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cross-login-refresh",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "L2 refresh of L1 binding yields no grant; matching-user comparison is insufficient.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cross-user-refresh",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "U2 credential refresh of U1 binding yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cross-user-refresh",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "U2 credential refresh of U1 binding yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "method-substitution",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential verified method mismatching the exact refresh binding yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "method-substitution",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential verified method mismatching the exact refresh binding yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "concurrent-credential-isolation",
+        "path": "resolve",
+        "phase": "pair-u1",
+        "observationType": "PROVIDER_READ",
+        "expected": "One paired U1/L1 and U2/L3 observation preserves each request identity without crossover.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "concurrent-credential-isolation",
+        "path": "resolve",
+        "phase": "pair-u2",
+        "observationType": "PROVIDER_READ",
+        "expected": "One paired U1/L1 and U2/L3 observation preserves each request identity without crossover.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "concurrent-credential-isolation",
+        "path": "refresh",
+        "phase": "pair-u1",
+        "observationType": "PROVIDER_READ",
+        "expected": "One paired U1/L1 and U2/L3 observation preserves each request identity without crossover.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "concurrent-credential-isolation",
+        "path": "refresh",
+        "phase": "pair-u2",
+        "observationType": "PROVIDER_READ",
+        "expected": "One paired U1/L1 and U2/L3 observation preserves each request identity without crossover.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "selected-shop-membership",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "S1 is granted only from fresh member permission; client selection alone grants nothing.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "selected-shop-membership",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "S1 is granted only from fresh member permission; client selection alone grants nothing.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "removed-membership",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed removed S1 membership yields no resolve or usable refresh grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "removed-membership",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed removed S1 membership yields no resolve or usable refresh grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "removed-membership",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed removed S1 membership yields no resolve or usable refresh grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "removed-membership",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Provider-confirmed removed S1 membership yields no resolve or usable refresh grant.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "permission-loss",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve denies; refresh may return cadUploadAllowed=false, which the downstream verifier must deny.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "permission-loss",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve denies; refresh may return cadUploadAllowed=false, which the downstream verifier must deny.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "permission-loss",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve denies; refresh may return cadUploadAllowed=false, which the downstream verifier must deny.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "permission-loss",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Resolve denies; refresh may return cadUploadAllowed=false, which the downstream verifier must deny.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "shop-substitution",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "S2 selection with no matching membership yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "shop-substitution",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "S2 selection with no matching membership yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "fresh-resolve-and-refresh",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Both paths freshly read exact session/owner and membership; cache receipts cannot substitute for reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "fresh-resolve-and-refresh",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Both paths freshly read exact session/owner and membership; cache receipts cannot substitute for reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "exact-expiry",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "At the exact expiry boundary neither path yields a grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "exact-expiry",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "At the exact expiry boundary neither path yields a grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "expiry-during-read",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Expiry between session and permission reads yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "expiry-during-read",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Expiry between session and permission reads yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "minimum-expiry",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Successful grant expires at min(session expiry, permission expiry).",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "minimum-expiry",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Successful grant expires at min(session expiry, permission expiry).",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "invalid-timestamp",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Noninteger, negative or invalid provider timestamps yield no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "invalid-timestamp",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Noninteger, negative or invalid provider timestamps yield no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "clock-rollback",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Rollback during operation yields AUTH_UNAVAILABLE; no late grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "clock-rollback",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Rollback during operation yields AUTH_UNAVAILABLE; no late grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cached-query-liveness",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Previously valid cached token/query cannot extend dead session authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cached-query-liveness",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Previously valid cached token/query cannot extend dead session authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "logout",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-logout live and post-logout denied observations on both paths; no logout mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "logout",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-logout live and post-logout denied observations on both paths; no logout mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "logout",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-logout live and post-logout denied observations on both paths; no logout mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "logout",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-logout live and post-logout denied observations on both paths; no logout mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "revocation",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-revocation live and post-revocation denied observations; no revocation mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "revocation",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-revocation live and post-revocation denied observations; no revocation mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "revocation",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-revocation live and post-revocation denied observations; no revocation mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "revocation",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-revocation live and post-revocation denied observations; no revocation mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "session-deletion",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-deletion live and post-deletion denied observations; no deletion mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "session-deletion",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-deletion live and post-deletion denied observations; no deletion mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "session-deletion",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-deletion live and post-deletion denied observations; no deletion mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "session-deletion",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Correlated pre-deletion live and post-deletion denied observations; no deletion mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "replacement-login",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Replacement login cannot refresh old binding; no replacement mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "replacement-login",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Replacement login cannot refresh old binding; no replacement mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "replacement-login",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "PROVIDER_READ",
+        "expected": "Replacement login cannot refresh old binding; no replacement mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "replacement-login",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "PROVIDER_READ",
+        "expected": "Replacement login cannot refresh old binding; no replacement mutation in this collection.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "provider-cache-invalidation",
+        "path": "resolve",
+        "phase": "before",
+        "observationType": "INSPECTION",
+        "expected": "Review provider invalidation/cache semantics plus before/after denial receipts; signed stale token alone fails.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "provider-cache-invalidation",
+        "path": "resolve",
+        "phase": "after",
+        "observationType": "INSPECTION",
+        "expected": "Review provider invalidation/cache semantics plus before/after denial receipts; signed stale token alone fails.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "provider-cache-invalidation",
+        "path": "refresh",
+        "phase": "before",
+        "observationType": "INSPECTION",
+        "expected": "Review provider invalidation/cache semantics plus before/after denial receipts; signed stale token alone fails.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "provider-cache-invalidation",
+        "path": "refresh",
+        "phase": "after",
+        "observationType": "INSPECTION",
+        "expected": "Review provider invalidation/cache semantics plus before/after denial receipts; signed stale token alone fails.",
+        "lifecycleReceiptRequired": true
+      },
+      {
+        "caseId": "forged-signature",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Invalid signature yields no grant and no provider payload logging.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "forged-signature",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Invalid signature yields no grant and no provider payload logging.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "unsigned-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Unsigned credential yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "unsigned-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Unsigned credential yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "disallowed-algorithm",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential with unapproved algorithm yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "disallowed-algorithm",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential with unapproved algorithm yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "wrong-issuer",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential from unapproved issuer yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "wrong-issuer",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential from unapproved issuer yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "wrong-audience",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential for unapproved audience yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "wrong-audience",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential for unapproved audience yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "expired-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Expired credential yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "expired-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Expired credential yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "not-yet-valid-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential before its valid-from time yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "not-yet-valid-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Credential before its valid-from time yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "malformed-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Malformed or truncated bearer yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "malformed-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Malformed or truncated bearer yields no grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "oversized-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Authorization over 8192 characters is rejected before provider reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "oversized-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Authorization over 8192 characters is rejected before provider reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "missing-token",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Missing bearer yields no grant before provider reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "missing-token",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Missing bearer yields no grant before provider reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "duplicate-authorization",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Duplicate/conflicting raw Authorization headers yield no grant; capture actual normalization evidence.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "duplicate-authorization",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Duplicate/conflicting raw Authorization headers yield no grant; capture actual normalization evidence.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "unavailable-verification",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Isolated verification failure yields only sanitized denial; no fallback or provider outage injection.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "unavailable-verification",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Isolated verification failure yields only sanitized denial; no fallback or provider outage injection.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-before-read",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Already aborted signal yields AUTH_UNAVAILABLE before reader invocation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-before-read",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Already aborted signal yields AUTH_UNAVAILABLE before reader invocation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-between-reads",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Abort after session read prevents authorization read and any grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-between-reads",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Abort after session read prevents authorization read and any grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-during-authorization",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Abort during authorization yields AUTH_UNAVAILABLE and propagated cancellation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "abort-during-authorization",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Abort during authorization yields AUTH_UNAVAILABLE and propagated cancellation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "hung-reader",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Isolated nonblocking stalled reader loses authority within 800 ms budget; remote provider is not disrupted.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "hung-reader",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Isolated nonblocking stalled reader loses authority within 800 ms budget; remote provider is not disrupted.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "late-result",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Result after abort/deadline yields no late grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "late-result",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Result after abort/deadline yields no late grant.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-late-side-effects",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Read-only provider audit and settled observer show no write or late grant after terminal cancellation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-late-side-effects",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Read-only provider audit and settled observer show no write or late grant after terminal cancellation.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "actual-router-bearer-normalization",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Inspect actual entrypoint header normalization; login candidate and upload-session route remain distinct.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "actual-router-bearer-normalization",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Inspect actual entrypoint header normalization; login candidate and upload-session route remain distinct.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cookie-rejected",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Candidate cookie-only request yields no grant; cookie support remains unapproved.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cookie-rejected",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Candidate cookie-only request yields no grant; cookie support remains unapproved.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "mixed-transport-rejected",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Candidate cookie plus bearer yields no grant regardless of transport label.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "mixed-transport-rejected",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Candidate cookie plus bearer yields no grant regardless of transport label.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "middleware-order",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Earliest entrypoint instrumentation precedes parser and verifier; hosted pre-handler buffering is accounted for separately.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "middleware-order",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Earliest entrypoint instrumentation precedes parser and verifier; hosted pre-handler buffering is accounted for separately.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "denied-zero-bytes",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Denied actual-route request has zero application upload-body reads and no parser/getter/stream-read attempts.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "denied-zero-bytes",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Denied actual-route request has zero application upload-body reads and no parser/getter/stream-read attempts.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "malformed-zero-bytes",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Malformed actual-route credential is denied with zero application upload-body reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "malformed-zero-bytes",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Malformed actual-route credential is denied with zero application upload-body reads.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cancelled-zero-bytes",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Cancelled actual-route request has zero application upload-body reads and no late work.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "cancelled-zero-bytes",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Cancelled actual-route request has zero application upload-body reads and no late work.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "timed-out-zero-bytes",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Timed-out actual-route request has zero application upload-body reads and no late work.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "timed-out-zero-bytes",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Timed-out actual-route request has zero application upload-body reads and no late work.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "closed-after-valid-verifier",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Even valid verifier authority leaves BODY_ADMISSION_AUTHORIZED=false; actual upload-route positive path is blocked without separate session authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "closed-after-valid-verifier",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ACTUAL_ROUTE_OR_ENTRYPOINT",
+        "expected": "Even valid verifier authority leaves BODY_ADMISSION_AUTHORIZED=false; actual upload-route positive path is blocked without separate session authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "request-local-credentials",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Each request retains bearer only in its ephemeral closure; no shared credential cache.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "request-local-credentials",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "PROVIDER_READ",
+        "expected": "Each request retains bearer only in its ephemeral closure; no shared credential cache.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-envelope-credentials",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Gateway envelopes contain no login credentials; no live gateway issue/refresh dispatch is needed.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-envelope-credentials",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Gateway envelopes contain no login credentials; no live gateway issue/refresh dispatch is needed.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-binding-credentials",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Synthetic exact-binding object contains identity aliases in evidence, never login credentials.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-binding-credentials",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Synthetic exact-binding object contains identity aliases in evidence, never login credentials.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-log-or-evidence-credentials",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Allowlisted evidence and reviewed logging exclude credentials, raw headers and provider account records.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "no-log-or-evidence-credentials",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Allowlisted evidence and reviewed logging exclude credentials, raw headers and provider account records.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sanitized-provider-failure",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Reader exception becomes AUTH_UNAVAILABLE with no exception payload captured.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sanitized-provider-failure",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "ISOLATED_FAULT_WITH_PROVIDER_PROOF_SEPARATE",
+        "expected": "Reader exception becomes AUTH_UNAVAILABLE with no exception payload captured.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "exact-candidate-deployment-test-version",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Each future receipt binds candidate, provider adapter, collector, instrumentation and exact immutable deployment refs.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "exact-candidate-deployment-test-version",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Each future receipt binds candidate, provider adapter, collector, instrumentation and exact immutable deployment refs.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sanitized-digest-reference",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Restricted sanitized artifact reference and SHA-256 digest verified before any public projection.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "sanitized-digest-reference",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Restricted sanitized artifact reference and SHA-256 digest verified before any public projection.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "utc-execution-time",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Each future receipt timestamp falls within separately approved fresh window, including before/after phases.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "utc-execution-time",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Each future receipt timestamp falls within separately approved fresh window, including before/after phases.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "reviewer-disposition",
+        "path": "resolve",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Independent reviewer disposition remains separate from observation and cannot enable runtime authority.",
+        "lifecycleReceiptRequired": false
+      },
+      {
+        "caseId": "reviewer-disposition",
+        "path": "refresh",
+        "phase": "single",
+        "observationType": "INSPECTION",
+        "expected": "Independent reviewer disposition remains separate from observation and cannot enable runtime authority.",
+        "lifecycleReceiptRequired": false
+      }
+    ]
+  },
+  "limits": {
+    "maxRuns": 1,
+    "maxAttemptsPerCasePathPhase": 1,
+    "retries": 0,
+    "maxOperationBudgetMs": 800,
+    "concurrentCasePairs": 1,
+    "maxLogicalOperations": 160,
+    "maxReaderInvocations": 320,
+    "maxProviderHttpRequests": 640,
+    "sdkRetries": 0,
+    "providerWrites": 0,
+    "setupChanges": 0,
+    "uploadSessionIssuances": 0,
+    "applicationUploadBodyReads": 0,
+    "conversionDispatches": 0,
+    "sandboxDispatches": 0,
+    "privateCadFiles": 0,
+    "realUsers": 0,
+    "externalMessages": 0,
+    "purchases": 0
+  },
+  "stopConditions": [
+    "MISSING_PREREQUISITE",
+    "WINDOW_EXPIRED_OR_NOT_STARTED",
+    "SOURCE_OR_TARGET_DRIFT",
+    "IDENTITY_OUTSIDE_COHORT",
+    "CREDENTIAL_OR_ACCOUNT_LEAK",
+    "ANY_BODY_ACCESS_OR_PARSER_INVOCATION",
+    "ISSUANCE_OR_WRITE_ATTEMPT",
+    "UNEXPECTED_AUTHORITY",
+    "DEADLINE_OR_CANCELLATION_FAILURE",
+    "UNKNOWN_OUTCOME_OR_INTERRUPTION",
+    "CASE_FAILURE",
+    "RETRY_REQUEST"
+  ],
+  "claims": {
+    "sealedCommandCardReady": false,
+    "concreteProviderAdapterBound": false,
+    "collectorAndReceiptValidatorBound": false,
+    "routeInstrumentationBound": false,
+    "immutableCollectionTargetBound": false,
+    "syntheticCohortMappingBound": false,
+    "custodyReviewerBound": false,
+    "freshWindowBound": false,
+    "liveProviderTestsAuthorized": false,
+    "liveCollectionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false
+  },
+  "remainingGates": [
+    "CONCRETE_PROVIDER_IMPLEMENTATION_AND_POLICY_REVIEW",
+    "LIVE_COLLECTOR_TRANSPORT_AND_RECEIPT_REVIEW",
+    "ACTUAL_ROUTE_INSTRUMENTATION_REVIEW",
+    "IMMUTABLE_TARGET_BINDING",
+    "RESTRICTED_COHORT_LIFECYCLE_MAPPING",
+    "CUSTODIAN_AND_INDEPENDENT_REVIEWER",
+    "REVIEWED_STOP_AND_LATE_GRANT_OBSERVER",
+    "SEALED_CARD_AND_FRESH_EXPLICIT_WINDOW"
+  ],
+  "sourceBindings": {
+    "docs/cad-auth-sealed-evidence-card.json": "103a3c44df0baa77b1df7f195ae8b1e764232eb5a6c2e95103266eb1709cc123",
+    "offline/cad-auth-sealed-setup/binding-manifests.json": "4c08c5de8ede1416b75d44239580ba66492992ef3e0408ca3b09fbf5c10c22c1",
+    "docs/cad-auth-sealed-setup.md": "3aa6dd222ba7c1970fd546a185a35a6186aad69b600aa46672b702d7a5600e14",
+    "docs/cad-auth-sealed-setup-stop-runbook.md": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1",
+    "offline/cad-auth-sealed-setup/providerAdapter.js": "101386b4a1ece8c2bcd5f41edc44cacd32b1f5a1b1b20055d538d163218ad2fc",
+    "offline/cad-auth-sealed-setup/providerAdapter.d.ts": "5ee5fdeea7467c4f64a2ba90a08c5459ee7c4ae1f10502fc1c121c1efe28b390",
+    "offline/cad-auth-sealed-setup/receiptCollector.js": "dcd78ea1e31703c427bb0202a3747d9d80669f8da5a26227ed511268bc616724",
+    "offline/cad-auth-sealed-setup/routeInstrumentation.js": "c9761773d6f225e758c5f004cb130d8d2b2431570495bba949d3e9d65693551c",
+    "scripts/cad-auth-sealed-setup-checker.js": "0dc268d4ef540ca4cfe6559c0516135e0b0534af4aa73c9774d78e04aa5ef717",
+    "scripts/cad-auth-sealed-setup.test.js": "52fa289a921bbc53994a8f5602659c00c22b05a5f0692fc7e849eb3f8d78cfa0"
+  }
+}

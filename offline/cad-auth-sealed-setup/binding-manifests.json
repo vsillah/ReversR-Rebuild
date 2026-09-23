@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "status": "UNBOUND_NO_LIVE_AUTHORITY",
+  "provider": {
+    "sourceCommit": null,
+    "deployedVersionRef": null,
+    "sdkPolicyDigest": null,
+    "issuerAudienceAlgorithmPolicy": null,
+    "authSdkVersion": null,
+    "authCoreVersion": null,
+    "providerPolicyRef": null,
+    "cacheInvalidationPolicyRef": null
+  },
+  "collector": {
+    "collectorCommit": null,
+    "receiptValidatorCommit": null,
+    "caseScheduleSha256": "30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066",
+    "limitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+    "liveTransportBound": false,
+    "durableRunLedgerRef": null
+  },
+  "immutableTarget": {
+    "deploymentUrl": null,
+    "deploymentCommit": null,
+    "deploymentProviderRef": null,
+    "sourceMapDigest": null,
+    "mutableAliasAllowed": false,
+    "historicalDeploymentReusable": false
+  },
+  "syntheticCohort": {
+    "cohortRef": null,
+    "aliasMapRef": null,
+    "lifecycleSetupReceiptRef": null,
+    "noRealUserReceiptRef": null,
+    "aliases": [
+      "U1/L1",
+      "U1/L2",
+      "U2/L3"
+    ],
+    "creationAuthorized": false
+  },
+  "custodyReviewer": {
+    "custodianRef": null,
+    "reviewerRef": null,
+    "restrictedStoreRef": null,
+    "retentionDeletionRef": null,
+    "retentionDays": 7,
+    "publicationAllowed": false,
+    "rawCredentialsAllowed": false,
+    "independentReviewRequired": true
+  },
+  "instrumentation": {
+    "instrumentationCommit": null,
+    "entrypointRef": null,
+    "bodyAccessCounterRef": null,
+    "platformBufferingReviewRef": null,
+    "installed": false
+  },
+  "rollback": {
+    "stopRunbookRef": "docs/cad-auth-sealed-setup-stop-runbook.md",
+    "lateGrantObserverRef": null,
+    "partialEvidencePolicyRef": null,
+    "remediationEscalationRef": null,
+    "reviewed": false
+  },
+  "approval": {
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "exactApprovalReceiptRef": null,
+    "sealedCardSha256": null,
+    "historicalApprovalReusable": false
+  }
+}
