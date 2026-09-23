@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-convex-http-gateway-scaffold",
+  "mode": "source-only-convex-http-gateway-scaffold",
+  "status": "IMPLEMENTED_FAIL_CLOSED_PENDING_ENV_AND_DISPATCH_GATE",
+  "sourceOnly": true,
+  "route": "POST /cad/upload-session-gateway",
+  "cohort": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+  "sourceBindings": {
+    "httpAction": "convex/cadUploadSessionGateway.ts",
+    "routeMount": "convex/http.ts",
+    "serverGatewayClient": "server/cadUploadSessionGatewayService.js",
+    "internalCadFunctions": "convex/cad.ts",
+    "tests": "scripts/cad-convex-http-gateway-scaffold.test.js"
+  },
+  "envManifest": {
+    "requiredTogether": [
+      "CAD_UPLOAD_SESSION_GATEWAY_AUDIENCE",
+      "CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN_SHA256"
+    ],
+    "authorizedValuesInThisGate": {
+      "CAD_UPLOAD_SESSION_GATEWAY_AUDIENCE": "rrb-ref:cad-upload-internal-mark-test-cohort-v1"
+    },
+    "valuesInstalledByThisGate": false,
+    "secretValuesStoredByThisGate": false,
+    "providerSettingsChangedByThisGate": false,
+    "tokenStorageMode": "sha256_digest_only"
+  },
+  "runtimeBehavior": {
+    "missingEnv": "AUTH_UNAVAILABLE",
+    "partialEnv": "AUTH_UNAVAILABLE",
+    "invalidEnv": "AUTH_UNAVAILABLE",
+    "invalidBearer": "AUTH_UNAVAILABLE",
+    "requestBodyReadBeforeServiceAuth": false,
+    "dispatchEnabled": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "retryPolicy": "no-automatic-retry"
+  },
+  "guardrails": {
+    "productionUploadActivationAllowed": false,
+    "requestBodyAdmissionAllowed": false,
+    "uploadSessionIssuanceAllowed": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUserCommercializationAllowed": false,
+    "externalMessagesAllowed": false,
+    "providerEnvResourceBillingChangesAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  },
+  "nextGate": {
+    "requiredBeforeLiveUse": true,
+    "summary": "Install exact Convex env values and approve authenticated dispatch/principal derivation before this route can call internal CAD upload-session functions."
+  }
+}

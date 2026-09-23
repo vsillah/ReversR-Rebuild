@@ -403,8 +403,12 @@ const files = [
   'scripts/cad-convex-live-readiness.js', 'scripts/cad-convex-live-readiness.test.js',
   'docs/cad-convex-live-auth-readiness.md', 'offline/cad-convex/passwordPolicy.ts', 'scripts/cad-convex-password-boundary.test.js',
   'docs/cad-convex-password-auth-boundary.md', 'docs/cad-convex-live-wiring-packet.md', 'docs/cad-live-convex-auth-setup-packet.md', 'convex/auth.ts', 'convex/auth.config.ts', 'convex/http.ts',
+  'convex/cadUploadSessionGateway.ts',
   'offline/cad-convex/librarySessionHarness.js', 'scripts/cad-convex-auth-assembly.test.js',
   'docs/cad-convex-auth-assembly-review.md',
+  'docs/cad-convex-http-gateway-scaffold.md',
+  'docs/cad-convex-http-gateway-scaffold.json',
+  'scripts/cad-convex-http-gateway-scaffold.test.js',
   'offline/cad-convex/previewRuntime.js', 'offline/cad-convex/previewRuntime.d.ts',
   'scripts/cad-convex-preview-runtime.test.js', 'docs/cad-convex-preview-setup.md', 'scripts/cad-convex-codegen.js', 'package.json', 'package-lock.json',
   ...fs.readdirSync(path.join(root, 'convex/_generated')).map(n => 'convex/_generated/' + n),
@@ -424,6 +428,19 @@ assert.match(read('convex/developmentAuth.ts'), /developmentAuthReviewed: boolea
 assert.match(read('convex/developmentAuth.ts'), /return developmentAuthReviewed \? developmentCohort : \[\]/);
 assert.match(read('convex/auth.ts'), /developmentPassword\(developmentPasswordCohort\(\)\)/);
 assert.ok(!/fetch\s*\(|process\.env/.test(read('offline/cad-convex/developmentService.js')));
+const httpGatewayScaffold = JSON.parse(read('docs/cad-convex-http-gateway-scaffold.json'));
+assert.equal(httpGatewayScaffold.status, 'IMPLEMENTED_FAIL_CLOSED_PENDING_ENV_AND_DISPATCH_GATE');
+assert.equal(httpGatewayScaffold.runtimeBehavior.dispatchEnabled, false);
+assert.equal(httpGatewayScaffold.runtimeBehavior.requestBodyReadBeforeServiceAuth, false);
+assert.equal(httpGatewayScaffold.guardrails.requestBodyAdmissionAllowed, false);
+assert.equal(httpGatewayScaffold.envManifest.secretValuesStoredByThisGate, false);
+const httpGatewaySource = read('convex/cadUploadSessionGateway.ts');
+assert.match(httpGatewaySource, /CAD_UPLOAD_SESSION_GATEWAY_SERVICE_TOKEN_SHA256/);
+assert.match(httpGatewaySource, /crypto\.subtle\.digest/);
+assert.match(httpGatewaySource, /FORBIDDEN_PAYLOAD_KEYS/);
+assert.ok(!/ctx\.run(Query|Mutation|Action)|internal\./.test(httpGatewaySource));
+assert.ok(!/process\.env|fetch\s*\(|node:fs|node:http|node:https|convex\/browser/.test(httpGatewaySource));
+assert.match(read('convex/http.ts'), /CAD_UPLOAD_SESSION_GATEWAY_PATH/);
 const costCustodyWindow = JSON.parse(read('docs/cad-dev-cost-custody-rollback-window-evidence.json'));
 assert.equal(costCustodyWindow.convexSpendingDecision.teamSpendingDisableThresholdUsdPerMonth, 50);
 assert.equal(costCustodyWindow.custodyDecision.backupCustodian, 'Amina');

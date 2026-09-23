@@ -463,8 +463,12 @@ const files = [
   'scripts/cad-convex-live-readiness.js', 'scripts/cad-convex-live-readiness.test.js',
   'docs/cad-convex-live-auth-readiness.md', 'offline/cad-convex/passwordPolicy.ts', 'scripts/cad-convex-password-boundary.test.js',
   'docs/cad-convex-password-auth-boundary.md', 'docs/cad-convex-live-wiring-packet.md', 'docs/cad-live-convex-auth-setup-packet.md', 'convex/auth.ts', 'convex/auth.config.ts', 'convex/http.ts',
+  'convex/cadUploadSessionGateway.ts',
   'offline/cad-convex/librarySessionHarness.js', 'scripts/cad-convex-auth-assembly.test.js',
   'docs/cad-convex-auth-assembly-review.md',
+  'docs/cad-convex-http-gateway-scaffold.md',
+  'docs/cad-convex-http-gateway-scaffold.json',
+  'scripts/cad-convex-http-gateway-scaffold.test.js',
 
   'offline/cad-convex/previewRuntime.js',
   'offline/cad-convex/previewRuntime.d.ts',
@@ -500,7 +504,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 55, mode: 'offline-source-unqualified',
+const manifest = { version: 56, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

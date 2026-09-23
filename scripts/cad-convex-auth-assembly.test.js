@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const { webcrypto } = require('node:crypto');
 const ts = require('typescript');
 const { createLibrarySessionReaderForTests } = require('../offline/cad-convex/librarySessionHarness');
 const { loadSource } = require('./helpers/cad-convex-source-loader');
@@ -19,8 +20,8 @@ function setup() {
   return { rows, reads, ctx, reader, set: v => { evidence = v; }, time: n => { tick = n; },
     read: (id = principal.loginSessionId) => reader(ctx, id) };
 }
-test('assembly registers library exports, no login providers or trusted JWT issuers, no CAD HTTP handler', () => {
-  const cache = {}, calls = [], router = {};
+test('assembly registers library exports, no login providers, and the single fail-closed CAD HTTP scaffold', () => {
+  const cache = {}, calls = [], router = { routes: [], route(value) { this.routes.push(value); } };
   const auth = { addHttpRoutes: value => { assert.equal(value, router); calls.push('library-routes'); } };
   function load(name) {
     if (cache[name]) return cache[name];
@@ -33,15 +34,29 @@ test('assembly registers library exports, no login providers or trusted JWT issu
         return { auth, signIn: {}, signOut: {}, store: {}, isAuthenticated: {} };
       } };
       if (dependency === 'convex/server') return { httpRouter: () => router };
+      if (dependency === './_generated/server') return {
+        env: {},
+        httpAction: handler => ({ kind: 'httpAction', handler }),
+      };
       if (dependency === './auth') return load('auth');
+      if (dependency === './cadUploadSessionGateway') return load('cadUploadSessionGateway');
       if (dependency === './developmentAuth') return { developmentConfiguration: () => null };
       throw Error('UNEXPECTED_DEPENDENCY');
-    } }); // No process/env/network capability in this assembly test.
+      },
+      Response,
+      TextEncoder,
+      crypto: webcrypto,
+    }); // No process/env/network capability in this assembly test.
     return exports;
   }
   assert.equal(JSON.stringify(load('auth.config').default), '{"providers":[]}');
   assert.deepEqual(Object.keys(load('auth')).sort(), ['auth', 'isAuthenticated', 'signIn', 'signOut', 'store']);
   assert.equal(load('http').default, router); assert.deepEqual(calls, ['library-routes']);
+  assert.deepEqual(router.routes.map(({ path, method, handler }) => ({ path, method, handlerKind: handler.kind })), [{
+    path: '/cad/upload-session-gateway',
+    method: 'POST',
+    handlerKind: 'httpAction',
+  }]);
 });
 test('synthetic reader requires explicit harness and fresh verified exact-login evidence before DB access', async () => {
   assert.throws(() => createLibrarySessionReaderForTests(), /TEST_SESSION_OPT_IN_REQUIRED/);
