@@ -11,7 +11,8 @@
     "routeMount": "convex/http.ts",
     "serverGatewayClient": "server/cadUploadSessionGatewayService.js",
     "internalCadFunctions": "convex/cad.ts",
-    "tests": "scripts/cad-convex-http-gateway-scaffold.test.js"
+    "tests": "scripts/cad-convex-http-gateway-scaffold.test.js",
+    "principalBoundary": "docs/cad-convex-gateway-principal-boundary.json"
   },
   "envManifest": {
     "requiredTogether": [
@@ -52,6 +53,7 @@
   },
   "nextGate": {
     "requiredBeforeLiveUse": true,
-    "summary": "Install exact Convex env values and approve authenticated dispatch/principal derivation before this route can call internal CAD upload-session functions."
+    "summary": "Install exact Convex env values and approve authenticated dispatch/principal derivation before this route can call internal CAD upload-session functions.",
+    "principalBoundaryPacket": "docs/cad-convex-gateway-principal-boundary.json"
   }
 }

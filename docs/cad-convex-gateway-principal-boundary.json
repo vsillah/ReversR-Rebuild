@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-convex-gateway-principal-boundary",
+  "mode": "source-only-principal-dispatch-boundary",
+  "status": "SOURCE_BOUNDARY_READY_DISPATCH_BLOCKED",
+  "sourceOnly": true,
+  "runtimeRouteChanged": false,
+  "route": "POST /cad/upload-session-gateway",
+  "cohort": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+  "baseCommit": "4f1f18d7d4e25d62e54bdd3e4541348bf2ee067a",
+  "sourceBindings": {
+    "convexGateway": "convex/cadUploadSessionGateway.ts",
+    "librarySessionBoundary": "convex/librarySession.ts",
+    "cadInternalFunctions": "convex/cad.ts",
+    "serverGatewayService": "server/cadUploadSessionGatewayService.js",
+    "offlineDispatcherModel": "offline/cad-convex/sessionAdapter.js",
+    "tests": "scripts/cad-convex-gateway-principal-boundary.test.js"
+  },
+  "currentRuntimeBehavior": {
+    "serviceEnvelopeAuthenticationImplemented": true,
+    "serviceEnvelopeDispatchImplemented": false,
+    "livePrincipalDerivationImplemented": false,
+    "convexUserAuthContextPreservedAcrossServiceTokenCall": false,
+    "uploadSessionIssuanceEnabled": false,
+    "requestBodyAdmissionEnabled": false,
+    "conversionOrSandboxDispatchEnabled": false
+  },
+  "boundaryDecision": {
+    "serviceTokenIsNotUserPrincipal": true,
+    "payloadPrincipalOverrideAllowed": false,
+    "storedRecordMayNotBypassExactSessionReview": true,
+    "policyMutationExcludedFromGateway": true,
+    "dispatchMustRemainBlockedUntilExactBridgeAccepted": true
+  },
+  "acceptedSourceModel": {
+    "fixedOperationMapExistsOffline": true,
+    "fixedOperationMapSource": "offline/cad-convex/sessionAdapter.js#FUNCTIONS",
+    "allowedGatewayOperations": [
+      "insertIfAbsent",
+      "read",
+      "revoke",
+      "refreshAuthorization"
+    ],
+    "excludedOperation": "changeAuthority"
+  },
+  "nextGate": {
+    "requiredBeforeLiveDispatch": true,
+    "summary": "Choose and review an exact request-session bridge or an equivalent server-owned session-verification design before Convex gateway dispatch can call internal CAD upload-session functions.",
+    "mustDefine": [
+      "how the production request proves the same authenticated user and login session to Convex",
+      "how refresh/read/revoke avoid caller-supplied principal claims",
+      "how concurrent logout, session revocation, membership loss and CAD permission loss fence the upload session",
+      "how rollback revokes or expires any issued upload-session credentials",
+      "how evidence proves no request body is read before the accepted activation window"
+    ]
+  },
+  "guardrails": {
+    "providerEnvResourceBillingChangesAllowed": false,
+    "secretValuesStoredByThisGate": false,
+    "uploadSessionIssuanceAllowed": false,
+    "productionUploadActivationAllowed": false,
+    "requestBodyReadAllowed": false,
+    "conversionAllowed": false,
+    "sandboxDispatchAllowed": false,
+    "privateCadAllowed": false,
+    "realUserCommercializationAllowed": false,
+    "externalMessagesAllowed": false,
+    "commercialReadinessClaimAllowed": false
+  }
+}
