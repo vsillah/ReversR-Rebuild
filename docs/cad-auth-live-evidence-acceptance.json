@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-evidence-acceptance-v1",
+  "sourceOnly": true,
+  "status": "ACCEPTANCE_REQUIREMENTS_BOUND_LIVE_REVIEW_PENDING",
+  "parent": {
+    "packet": "cad-auth-live-evidence-prereq-completion-v1",
+    "mergeCommit": "b826e3c7572c914235e552dee2d76623ed107d13",
+    "sha256": "1c5a3ab4f0f411a09c81eea6ceab0214ae3974f53a8b9c8a799894d0c6db6b60"
+  },
+  "claims": {
+    "sealedCommandCardReady": false,
+    "concreteProviderAdapterBound": false,
+    "collectorAndReceiptValidatorBound": false,
+    "routeInstrumentationBound": false,
+    "immutableCollectionTargetBound": false,
+    "syntheticCohortMappingBound": false,
+    "custodyReviewerBound": false,
+    "freshWindowBound": false,
+    "liveProviderTestsAuthorized": false,
+    "liveCollectionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "providerEnvResourceBillingChanges": false,
+    "secretReads": false,
+    "externalMessagesAuthorized": false,
+    "secondRunOrRetryAuthorized": false,
+    "commercialReadinessClaim": false,
+    "providerPolicyAccepted": false,
+    "actualRouteProven": false,
+    "commercialReadiness": false,
+    "livePrerequisitesSatisfied": false,
+    "executableCommandCardIssued": false,
+    "evidenceAccepted": false
+  },
+  "card": {
+    "sealed": false,
+    "executable": false,
+    "commandLine": null,
+    "dryRunCommandLine": null,
+    "approvalPhrase": null,
+    "approvalReceiptRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null
+  },
+  "categories": {
+    "providerPolicy": {
+      "requiredEvidence": [
+        "Review concrete readAuthenticatedSession/readAuthorization implementation and deployed SDK versions; disabled adapters and local doubles are not provider evidence.",
+        "Bind cryptographic issuer, audience, algorithm, signing-key rotation and cache invalidation policies; signed token validity alone cannot prove exact live login.",
+        "Use request-local bearer only; reject cookies, mixed transport, service credentials and caller identity fallback.",
+        "Read fresh exact session owner/method and shop membership/permission on resolve and refresh; preserve permission-loss refresh denial downstream.",
+        "Prove nonblocking I/O, cancellation and an operation deadline no greater than 800 ms; reserve every HTTP request including discovery/key metadata; disable SDK retries."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "routeBodyInstallation": {
+      "requiredEvidence": [
+        "Review installed earliest-boundary instrumentation across api/[...path].js, server/index.js and POST /api/cad/user-import before middleware/provider calls.",
+        "Observe body getter, read/resume/pipe/iterator, data/readable subscription and parser attempts without consuming the stream; stop before the original operation.",
+        "Require zero attempted body access, parser calls and application bytes on denied/malformed/cancelled/timed-out paths; null means unobserved, never zero.",
+        "Independently review platform pre-handler buffering; unknown hosting boundary blocks that claim. Bodyless requests do not establish nonempty-stream safety.",
+        "Keep BODY_ADMISSION_AUTHORIZED false. Login bearer candidate tests do not prove the upload-session route positive path; missing integration remains blocked without issuance."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "immutableTarget": {
+      "requiredEvidence": [
+        "Independently bind immutable deployment ID/URL, candidate commit, provider deployment reference and exact adapter/collector/validator/instrumentation source digests.",
+        "Compare installed versions and source map against reviewed sources; mutable aliases and historical success receipts cannot substitute.",
+        "Any target/source drift invalidates review and requires a new packet, sealed card and fresh approval."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "syntheticCohort": {
+      "requiredEvidence": [
+        "Use only restricted internal cohort mapping U1/L1, U1/L2, U2/L3 with S1 permitted and S2 unauthorized; verify synthetic ownership without public account identifiers.",
+        "Require separately authorized setup receipts, same-login correlated before/after revocation, expiry/deletion and permission-loss observations on resolve and refresh.",
+        "Deny same-user different-login and different-user substitution. A preprovisioned dead credential proves current denial only.",
+        "Pre-review teardown plan and separate authority; post-run teardown/deletion receipts remain post-run acceptance requirements, not impossible pre-run evidence.",
+        "No account creation, sign-in, revocation, membership change, teardown or real-user enrollment is authorized by collection approval."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "custodyReviewer": {
+      "requiredEvidence": [
+        "Assign distinct custodian and independent reviewer and a restricted user-owned store; approve seven-day retention and separately authorized deletion disposition.",
+        "Sanitize at capture; bind case/path/phase, evidence type, expected and observed result, source/deployment, UTC timing, monotonic duration and sanitized digest.",
+        "Keep lifecycle mapping and permitted restricted references outside repository; never capture tokens, cookies, raw headers, secrets, request bodies, private CAD or raw exceptions.",
+        "Label local replay, injected fault, inspection and provider observation distinctly. Source success cannot fill live receipts.",
+        "Review every production verifier acceptance category separately. Missing, failed or unknown observations block acceptance; no automatic public projection."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "lateGrantObserver": {
+      "requiredEvidence": [
+        "Review installed observer and durable consumed-run ledger before collection; reserve the single attempt before dispatch.",
+        "On stop invalidate unused authority, cancel pending reads and prevent further dispatch/grant publication; observe pending settlement within reviewed schedule and budget.",
+        "Record sanitized partial receipts separately from independent disposition. Unverified settlement is UNKNOWN and consumes the run.",
+        "No post-stop diagnostics, resumed attempt, second run or retries; local zero counters do not prove provider cancellation or absence of side effects."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "stopRollback": {
+      "requiredEvidence": [
+        "Stop on missing prerequisite, source/target drift, expired or unopened window, cohort mismatch, sensitive capture, body access, parser attempt, issuance/write or unexpected authority.",
+        "Stop on deadline/cancellation failure, case failure, interruption, unknown outcome, budget exhaustion or retry request; mark run consumed.",
+        "Rollback means stop and discard ephemeral collector bindings; retain only sanitized partial evidence in approved custody.",
+        "Provider mutation, environment toggles, credential remediation, deployment rollback, external reporting and resource/billing changes require separate authority."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    },
+    "collectionGate": {
+      "requiredEvidence": [
+        "Review concrete provider, collector and receipt validator, installed route/observer, immutable target, restricted cohort and custody bindings before presenting a sealed card.",
+        "Bind exact schedule and limits digests: at most 160 logical operations, 320 reader invocations, 640 provider HTTP requests and zero retries; these are ceilings, not permission for unscheduled calls.",
+        "Bind a fresh explicit UTC window and exact human approval receipt to the sealed card digest; placeholders, old phrases and generic proceed cannot authorize execution.",
+        "Keep setup approval, collection approval, evidence acceptance, runtime activation and upload-body admission separate; this source checker has no accepted or executable mode."
+      ],
+      "status": "NOT_COLLECTED",
+      "implementationRef": null,
+      "observationRef": null,
+      "sanitizedEvidenceSha256": null,
+      "reviewerRef": null,
+      "dispositionRef": null,
+      "accepted": false
+    }
+  },
+  "reviewSequence": [
+    "SOURCE_REQUIREMENTS_REVIEW",
+    "SEPARATE_IMPLEMENTATION_AND_SETUP_REVIEW",
+    "PRE_COLLECTION_BINDINGS_REVIEW",
+    "FRESH_SEALED_CARD_AND_EXACT_HUMAN_APPROVAL",
+    "SEPARATELY_AUTHORIZED_COLLECTION",
+    "POST_COLLECTION_INDEPENDENT_ACCEPTANCE",
+    "SEPARATE_RUNTIME_AND_BODY_ADMISSION_GATES"
+  ],
+  "schedule": {
+    "sourceScheduleSha256": "30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066",
+    "sourceLimitsSha256": "ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4",
+    "logicalOperationCeiling": 160,
+    "readerInvocationCeiling": 320,
+    "providerHttpCeiling": 640,
+    "requestBodyBytesToSend": 0,
+    "authorizedRuns": 0,
+    "retriesAllowed": false,
+    "reviewed": false
+  },
+  "futureApproval": {
+    "template": "Approve one read-only synthetic CAD Auth evidence collection for acceptance packet cad-auth-live-evidence-acceptance-v1, reviewed packet SHA-256 <packetSha256>, sealed card SHA-256 <sealedCardSha256>, candidate <candidateCommit>, immutable deployment <deploymentId>, schedule SHA-256 <scheduleSha256>, restricted cohort <cohortRef>, custodian <custodianRef>, independent reviewer <reviewerRef>, during <startsAtUtc> through <expiresAtUtc>. Only the sealed observations and ceilings are authorized. No setup changes, upload sessions, request-body reads, activation, retries or second run.",
+    "actionable": false,
+    "packetSha256": null,
+    "sealedCardSha256": null,
+    "candidateCommit": null,
+    "deploymentId": null,
+    "scheduleSha256": null,
+    "cohortRef": null,
+    "custodianRef": null,
+    "reviewerRef": null,
+    "startsAtUtc": null,
+    "expiresAtUtc": null,
+    "exactApprovalReceiptRef": null,
+    "historicalApprovalReusable": false
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-evidence-prereq-completion.json": "1c5a3ab4f0f411a09c81eea6ceab0214ae3974f53a8b9c8a799894d0c6db6b60",
+    "docs/cad-auth-live-evidence-acceptance.md": "70abbfc6a31db2065305485bf768c7d105adb474e525e24ed0ecc13a8b6e2afb",
+    "scripts/cad-auth-live-evidence-acceptance-checker.js": "eaed79e52ab965ed7bd4de049a49bc86fbf49ce89fecd49fd742676d2eda4298",
+    "scripts/cad-auth-live-evidence-acceptance.test.js": "062a7ad086a56371e8196d59a1beb855fc48c7774c9b27e422facf3e210f5d7c",
+    "docs/cad-auth-live-evidence-plan.json": "869e07bddbc0e8f713bf847739b4cf333424a1cab1a223ee23004d2e0252168a",
+    "docs/cad-auth-sealed-setup.json": "5bef96a44ec2e180b9b22aaa1901ef596bcd056def4eed07979c7cd2ca281fe5",
+    "docs/cad-auth-sealed-evidence-card.json": "103a3c44df0baa77b1df7f195ae8b1e764232eb5a6c2e95103266eb1709cc123",
+    "docs/cad-production-auth-verifier-acceptance.json": "31d1368957f770c423c903644decbc8043ac076a0dd8d76edfc3105a9643176f",
+    "docs/cad-auth-sealed-setup-stop-runbook.md": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1"
+  }
+}

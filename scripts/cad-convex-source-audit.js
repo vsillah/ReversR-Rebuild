@@ -18,7 +18,14 @@ assert.equal(require('./cad-auth-live-evidence-prereq-checker').checkPrerequisit
   JSON.parse(read('docs/cad-auth-live-evidence-prerequisites.json'))).ok, true);
 assert.equal(require('./cad-auth-live-evidence-prereq-completion-checker').checkCompletion(
   JSON.parse(read('docs/cad-auth-live-evidence-prereq-completion.json'))).ok, true);
+assert.equal(require('./cad-auth-live-evidence-acceptance-checker').checkAcceptance(
+  JSON.parse(read('docs/cad-auth-live-evidence-acceptance.json'))).ok, true);
 const files = [
+  'docs/cad-auth-live-evidence-acceptance.md',
+  'docs/cad-auth-live-evidence-acceptance.json',
+  'scripts/cad-auth-live-evidence-acceptance-checker.js',
+  'scripts/cad-auth-live-evidence-acceptance.test.js',
+
   'docs/cad-auth-live-evidence-prereq-completion.md',
   'docs/cad-auth-live-evidence-prereq-completion.json',
   'scripts/cad-auth-live-evidence-prereq-completion-checker.js',
