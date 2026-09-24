@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-command-card-source-v1",
+  "sourceOnly": true,
+  "status": "DISABLED_COMMAND_CARD_RECEIPT_STRUCTURE_BOUND_EXECUTION_BLOCKED",
+  "parent": {
+    "packet": "cad-auth-live-collector-binding-v1",
+    "mergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+    "sha256": "59ed70062de06287a7ff42965d7f561addb771a02b97e3517ff870fe566fb84a",
+    "consumedStopCode": "MISSING_PREREQUISITE",
+    "priorApprovalReusable": false
+  },
+  "preparation": {
+    "executable": false,
+    "executableCommandCardIssued": false,
+    "liveCollectorCommandLine": null,
+    "liveCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "retryOrSecondRunAuthorized": false,
+    "evidenceAccepted": false,
+    "commercialReadinessClaimed": false,
+    "authorizedRuns": 0,
+    "futureHumanGate": {
+      "required": true,
+      "approvalReceiptRef": null,
+      "exactPhrase": null,
+      "previousWindowReusable": false,
+      "automaticallyPromotable": false
+    },
+    "runtimeBindingReceipts": {
+      "concreteProviderRuntimeBinding": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "adapterSourceSha256": null,
+          "installedRuntimeReceiptRef": null,
+          "providerBindingReceiptRef": null
+        }
+      },
+      "executableCollectorCommand": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "reviewedCollectorSourceSha256": null,
+          "disabledCardDigest": null,
+          "commandReviewReceiptRef": null
+        }
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "restrictedCohortReceiptRef": null,
+          "syntheticOwnershipReceiptRef": null
+        }
+      },
+      "custodyReviewerReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "custodianReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "restrictedStoreReceiptRef": null
+        }
+      },
+      "durableConsumedRunLedger": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "ledgerReceiptRef": null,
+          "atomicConsumeReceiptRef": null,
+          "stopAndUnknownConsumeReceiptRef": null
+        }
+      },
+      "installedRouteBodyObserver": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "installedObserverReceiptRef": null,
+          "earliestBoundaryReceiptRef": null,
+          "platformBufferingReceiptRef": null
+        }
+      },
+      "lateGrantObserver": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "installedObserverReceiptRef": null,
+          "lateGrantDenialReceiptRef": null
+        }
+      },
+      "immutableTargetRecheckReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "candidateCommit": null,
+          "immutableDeploymentRef": null,
+          "sourceDigestReceiptRef": null,
+          "recheckedAtUtc": null
+        }
+      }
+    }
+  },
+  "disabledCommandCardSource": {
+    "source": "offline/cad-auth-command-card-source/preparation.js",
+    "checker": "scripts/cad-auth-command-card-source-checker.js",
+    "commandLine": null,
+    "dryRunCommandLine": null,
+    "executableCommandCardIssued": false,
+    "liveCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "bodyAdmissionAuthorized": false,
+    "retryOrSecondRunAuthorized": false
+  },
+  "futureSealingGate": {
+    "status": "RECEIPTS_AND_EXECUTABLE_CARD_STILL_REQUIRED",
+    "exactApprovalPhraseReady": false,
+    "reason": "The executable command-card phrase cannot be exact until receipt refs and digests are reviewed.",
+    "template": "Approve one read-only synthetic CAD Auth evidence collection for acceptance packet cad-auth-live-evidence-acceptance-v1, reviewed packet SHA-256 [reviewed packet], sealed card SHA-256 [sealed card], command-card packet SHA-256 [command card packet], receipt bundle SHA-256 [receipt bundle], candidate [commit], immutable deployment [deployment], restricted cohort [cohort], custodian [custodian], independent reviewer [reviewer], during [UTC start] through [UTC expiry]. Only the sealed observations and ceilings are authorized. No setup changes, upload sessions, request-body reads, activation, retries or second run.",
+    "nextSourceOnlyWork": {
+      "restrictedReceiptBundle": "produce restricted receipt bundle structure outside public source values",
+      "providerRuntimeAdapter": "bind concrete provider runtime adapter receipt without secret values",
+      "routeBodyObserver": "bind installed route/body observer receipt before any upload body read",
+      "consumedRunLedger": "bind durable consumed-run ledger and late-grant observer receipts",
+      "immutableTarget": "bind immutable target recheck receipt for a fresh deployment"
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-collector-binding.json": "59ed70062de06287a7ff42965d7f561addb771a02b97e3517ff870fe566fb84a",
+    "docs/cad-auth-command-card-source.md": "b6e4d054097f34cc9b79105bea09265c229441e56ac75b7747b9f4290c42e2bb",
+    "offline/cad-auth-command-card-source/preparation.js": "403145b1426153e551bded627bb240322104598822aeb62b080f9da70a86c40e",
+    "scripts/cad-auth-command-card-source-checker.js": "49cd27b1b411cc29ffaad3a287f3ccdb0b7baec3d8e1de8ab6066bf3f6727e7a",
+    "scripts/cad-auth-command-card-source.test.js": "cbb8512512ef934c4acd86a2814cebbd363de87681caddf3747175afbeeb07d5",
+    "docs/cad-auth-live-collector-binding.md": "716a16202c9cf9c5906d980ec499eb94d498f7f4264acfd4cc182cdc188c18f3",
+    "offline/cad-auth-live-collector-binding/guardedCollector.js": "0a40f6b8c38708d62836b6c0eaab75eda165ee0d1b42594734952d38e63010ca",
+    "docs/cad-auth-sealed-setup-stop-runbook.md": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1"
+  }
+}
