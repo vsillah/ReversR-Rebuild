@@ -24,7 +24,15 @@ assert.equal(require('./cad-auth-live-evidence-sealed-card-prep-checker').checkP
   JSON.parse(read('docs/cad-auth-live-evidence-sealed-card-prep.json'))).ok, true);
 assert.equal(require('./cad-auth-live-collector-binding-checker').checkBinding(
   JSON.parse(read('docs/cad-auth-live-collector-binding.json'))).ok, true);
+assert.equal(require('./cad-auth-command-card-source-checker').checkPreparation(
+  JSON.parse(read('docs/cad-auth-command-card-source.json'))).ok, true);
 const files = [
+  'docs/cad-auth-command-card-source.md',
+  'docs/cad-auth-command-card-source.json',
+  'offline/cad-auth-command-card-source/preparation.js',
+  'scripts/cad-auth-command-card-source-checker.js',
+  'scripts/cad-auth-command-card-source.test.js',
+
   'docs/cad-auth-live-evidence-sealed-card-prep.md',
   'docs/cad-auth-live-evidence-sealed-card-prep.json',
   'scripts/cad-auth-live-evidence-sealed-card-prep-checker.js',
@@ -516,6 +524,8 @@ const patterns = [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, /(?:sk_live_|ghp_|github
 let hits = 0;
 for (const name of files) for (const pattern of patterns) if (pattern.test(read(name))) hits++;
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-auth-command-card-source/preparation.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-auth-live-collector-binding/guardedCollector.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|require\(['"](?:convex|node:https|node:http)['"]\)/.test(read('offline/cad-convex/previewRuntime.js')));
