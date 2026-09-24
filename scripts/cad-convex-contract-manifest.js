@@ -16,6 +16,12 @@ const files = [
   'scripts/cad-auth-restricted-source-intake-checker.js',
   'scripts/cad-auth-restricted-source-intake.test.js',
 
+  'docs/cad-auth-restricted-candidate-discovery.md',
+  'docs/cad-auth-restricted-candidate-discovery.json',
+  'offline/cad-auth-restricted-candidate-discovery/preparation.js',
+  'scripts/cad-auth-restricted-candidate-discovery-checker.js',
+  'scripts/cad-auth-restricted-candidate-discovery.test.js',
+
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
   'offline/cad-auth-receipt-intake-review-disposition/preparation.js',

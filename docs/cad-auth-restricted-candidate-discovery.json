@@ -1,0 +1,4014 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-candidate-discovery-v1",
+  "sourceOnly": true,
+  "status": "CANDIDATE_DISCOVERY_INCOMPLETE_RESTRICTED_BUNDLE_ABSENT",
+  "parent": {
+    "packet": "cad-auth-restricted-source-intake-v1",
+    "sha256": "c0bc4fc5249d72bd922fe3bf51abe73a2973b799901598b7afad9af37e2af871",
+    "sourceMergeCommit": "f1d9c198d4d0df5233724f0d41e59b2b28e9bfbb",
+    "status": "APPROVED_PRIVATE_SOURCE_READ_STOPPED_INSUFFICIENT",
+    "matchesApprovedSourceIntakePacket": true
+  },
+  "preparation": {
+    "approvalScope": {
+      "approvedCandidateDiscoveryRead": true,
+      "reviewedSourceIntakePacket": {
+        "packet": "cad-auth-restricted-source-intake-v1",
+        "sha256": "c0bc4fc5249d72bd922fe3bf51abe73a2973b799901598b7afad9af37e2af871",
+        "boundMainCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3"
+      },
+      "publicRepositoryMayStorePrivateValues": false,
+      "sanitizedOpaqueRefsAndDigestsOnly": true,
+      "runtimeActivationAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false
+    },
+    "discoveryScope": {
+      "roots": {
+        "root1": "rrb-local:cad-convex",
+        "root2": "rrb-local:cad-auth-live-evidence-runs"
+      },
+      "nameMatch": "receipt|register|custody|observer|cohort|ledger|runtime|command|immutable|target|evidence",
+      "privatePayloadValuesCommitted": false,
+      "localPathsCommitted": false,
+      "topLevelKeysCommitted": false
+    },
+    "discoveryResult": {
+      "candidateCount": 78,
+      "validJsonCandidateCount": 78,
+      "invalidJsonCandidateCount": 0,
+      "categoryUnionComplete": false,
+      "categoriesCoveredCount": 1,
+      "categoriesMissingCount": 7,
+      "coveredCategories": {
+        "concreteProviderRuntimeBinding": true
+      },
+      "missingCategories": {
+        "executableCollectorCommand": true,
+        "restrictedSyntheticCohortReceipt": true,
+        "custodyReviewerReceipt": true,
+        "durableConsumedRunLedger": true,
+        "installedRouteBodyObserver": true,
+        "lateGrantObserver": true,
+        "immutableTargetRecheckReceipt": true
+      },
+      "candidateRecords": {
+        "rrb-local:cad-auth-candidate-discovery-001": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-001",
+          "sha256": "15fc914116f6a693c45be19f2bf3c6159ac8fd0152f549db331ee3edd45b3005",
+          "byteLength": 2510,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-002": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-002",
+          "sha256": "55e0c54f6e385a5faf622f6c601437bb7044f5c4b0916b3c61cbf3fd3b77dddd",
+          "byteLength": 3623,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-003": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-003",
+          "sha256": "678ee8a908b227954cd6a80a112cafcd95ba2bd100ca1e66e8105a9d124d71fd",
+          "byteLength": 3345,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-004": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-004",
+          "sha256": "3f1f56199597d332cc68883122e2d705f50d74bf4813ae416264256a69ff54d7",
+          "byteLength": 2015,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-005": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-005",
+          "sha256": "43f095fd42f7e7716a8aea37b7fcf61667af4d2a4e00a948606801205c548f52",
+          "byteLength": 1684,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-006": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-006",
+          "sha256": "f94c91c3e56abe272ab1c11a114af37d84c3b756bcf36033f76438277b1f491e",
+          "byteLength": 1075,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-007": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-007",
+          "sha256": "25006f0f0a79bd5ccd156c7f87c670c024b64f9745ea398d7ff5a64a768fc199",
+          "byteLength": 841,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-008": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-008",
+          "sha256": "03f0ea53fc3edee18a83257f4e42b1c3fc79798b7b6017688395ed2dd0366d0d",
+          "byteLength": 2114,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-009": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-009",
+          "sha256": "d3cd83ceb740beefbb73f25be86b03db019241d8a3d39886084d03d64690af69",
+          "byteLength": 1934,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-010": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-010",
+          "sha256": "7e2711629dc9fa634d4ce232df671f077b0d2aa5f39a4868947f4d27747ec824",
+          "byteLength": 2107,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-011": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-011",
+          "sha256": "d464a2fa2fa31d4b7cd25255007ea3e8bf5444a69547d724804dab67d0d4d254",
+          "byteLength": 1822,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-012": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-012",
+          "sha256": "dc012906278484427a078fc5af5b610333be035ce93881e2aa8a092c9854308f",
+          "byteLength": 1952,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-013": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-013",
+          "sha256": "7e1c27f9f752e32d1f7bcab808b4d1c179d1e7ff97a8bc9d7be42a0db86e3b50",
+          "byteLength": 1667,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-014": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-014",
+          "sha256": "99d7f9b680138ab7ad3780d64ccdf03201e0e97c8aeca37e999d584b3e7a71be",
+          "byteLength": 239,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-015": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-015",
+          "sha256": "8d045a45bd42c7c7e1af7ad7633100a57027303dd48b1c234b9443cce2f96002",
+          "byteLength": 283,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-016": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-016",
+          "sha256": "99a417e602f54f91fe3ff6b0486621218505c358e6179708ee602b4f4971aa0b",
+          "byteLength": 1382,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-017": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-017",
+          "sha256": "152a190f1a4cfb3e57f5ef24e6ec7b94a55cccd548efe35ade298a895e7d476d",
+          "byteLength": 992,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-018": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-018",
+          "sha256": "59ea9f48ae4c1fd2d0d1eca51d0a29b7bfc6fe1a56603fc500842ff74cfd1fb9",
+          "byteLength": 315,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-019": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-019",
+          "sha256": "f301f6d513e40468653eb0c0e3e0814bdceb119ebd91be13a5e9eaadf4c7e09e",
+          "byteLength": 468,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": true,
+              "fieldsPresentCount": 1,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-020": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-020",
+          "sha256": "bc1df3f9e7f602c1ed4e827594ea4e448b234549ff0d5de703bc3b799d0e31df",
+          "byteLength": 1183,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-021": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-021",
+          "sha256": "394be079dd41f16f3b8948d7841aa1c8cc9e8dad285e0b4503d0a45706a34092",
+          "byteLength": 382,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-022": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-022",
+          "sha256": "d07a276f8967d57230077d76dd7e8f82e10cb9c5bb2bb3e8861051fec03b189a",
+          "byteLength": 239,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-023": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-023",
+          "sha256": "db132c280e9ff1f3f70a243b6a2f3ba05938df6f169d453ec7740f0bf8225978",
+          "byteLength": 283,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-024": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-024",
+          "sha256": "ac5fd76db667463fd462ca7556063d4b9bbab914fdb4c946e623a9e2653a6c4c",
+          "byteLength": 1391,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-025": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-025",
+          "sha256": "603603d780f123d7c10e21a4b9697878dbb709937cfb09df06c3f749c83bef81",
+          "byteLength": 992,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-026": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-026",
+          "sha256": "86bd1f307336125b13f290a4f5337bc2118b43f2f10cf6873fe78c67198a1946",
+          "byteLength": 315,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-027": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-027",
+          "sha256": "ac05a8b41592a5cb4b467c4eab91caf13a59021508c94cb4432775659a53b77f",
+          "byteLength": 468,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": true,
+              "fieldsPresentCount": 1,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-028": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-028",
+          "sha256": "c15e07a0260249407169bb37879d1944af8db1645bb28afed7a63208eb6b5d82",
+          "byteLength": 2930,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-029": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-029",
+          "sha256": "d2ba8e4f362f5c0aa5f5b9c6d936ac4d5d4f7e7635a587d43794b22989124f42",
+          "byteLength": 4052,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-030": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-030",
+          "sha256": "9ae02fe3dcbdbf7c45cdf8efb21fa1c1cf5706b067db54eef02a20e4b651de6a",
+          "byteLength": 2762,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-031": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-031",
+          "sha256": "9fbce1f0c4909d62abfd207c329171349e7a2692b3a01282528bd658ac5e3538",
+          "byteLength": 870,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-032": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-032",
+          "sha256": "77b714d03fbb365eb6e28de1456f64da817762afa6a82d0d2e8715886d4727d5",
+          "byteLength": 815,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-033": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-033",
+          "sha256": "09e620c0bbe927acdac87e8c2538769638b45ca5e83124951971d52696f095fb",
+          "byteLength": 892,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-034": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-034",
+          "sha256": "898bf16b7078730123aa9f1416d21dcfd1e5f07a2272ac15024563a6dbb498e8",
+          "byteLength": 2133,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-035": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-035",
+          "sha256": "e1a74e5b4ea72c55b6b72845a1e924c4659f11eebd8ef216c3104f2a3abd51ee",
+          "byteLength": 1487,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-036": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-036",
+          "sha256": "d2018ce44048a32a495a0c6095c4fafdffe375766dd0f9a4aafc5806e6ebb237",
+          "byteLength": 109131,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-037": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-037",
+          "sha256": "1dbdf153921a1676c8870827fd619706e1a6bd143835a6cb623be13590dae566",
+          "byteLength": 32304,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-038": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-038",
+          "sha256": "6d34096ad5c81ff2d32d1ddd1a82132706bc969d8b4ab30e0aefa5485f1a698a",
+          "byteLength": 2939,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-039": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-039",
+          "sha256": "9170213b22b3945dd448670de615c71e3aad948dfd120fcc9b3ed3c42301d142",
+          "byteLength": 3932,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-040": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-040",
+          "sha256": "6fe4f001be2ce981db267902cab28586053be8c8deafbd4fd6257c178a5d1721",
+          "byteLength": 1256,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-041": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-041",
+          "sha256": "c212af3f7c4054446799d925ae7e24fad0d4729bf30cf5200c8fe23c917280dc",
+          "byteLength": 135787,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-042": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-042",
+          "sha256": "8cfdb4f8b6fdce4a6de3b494c060f518130707cccd2e514295773a226c5e5fbd",
+          "byteLength": 40928,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-043": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-043",
+          "sha256": "ce1fe2c92cd1564392d0896b970d491753b25086ecde5329cc44a8f056d589bc",
+          "byteLength": 3241,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-044": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-044",
+          "sha256": "baed074cd7cc150cd5e05a346e4b648cf66ee84369299220455167005ea1e771",
+          "byteLength": 2856,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-045": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-045",
+          "sha256": "6f8de5ff724ea1e19ee198fd5ba6793e6712e6684923cb7bd0c0a3e51387d23c",
+          "byteLength": 3849,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-046": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-046",
+          "sha256": "437638883c5d957ba475baaea482202bf93dceb535f307c984208241922469e9",
+          "byteLength": 1256,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-047": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-047",
+          "sha256": "a90baf643b5fa07c5c86dcb5844d0e8f89fd742b284730abca487b26809df9c2",
+          "byteLength": 135603,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-048": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-048",
+          "sha256": "6c0289bd0d59aeb2393112291341e49c5751f0fd8c74c0a1e218cf314a57bb61",
+          "byteLength": 40744,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-049": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-049",
+          "sha256": "bf72d4ac551874ae9e6ade45bb21ec00e22d1baeb671c2365c269b943b540fc5",
+          "byteLength": 3138,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-050": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-050",
+          "sha256": "f23ea674691184328faaa09c095b7d526a0f7a7754667bb5449e86af65d6813d",
+          "byteLength": 2276,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-051": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-051",
+          "sha256": "a6e137e0fade35979e62e022bc2a66985dc92dc7b655f6da26ae580f73e875c8",
+          "byteLength": 4433,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-052": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-052",
+          "sha256": "f50d63d4737412d77fd2ee06ef65829ece3b8a72a317cf198016033a7f83f4be",
+          "byteLength": 5797,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-053": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-053",
+          "sha256": "53d2b93105acbfd5fb1e1e03ea49a7cdfaf6f0e4df10e3d8cd40c5d216b0ed65",
+          "byteLength": 106791,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-054": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-054",
+          "sha256": "30ec8f84dbf7a9eb7bcd9c22270afa398d92c39a68083d901445869752f29fa8",
+          "byteLength": 39214,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-055": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-055",
+          "sha256": "29be0ace835239dcaa46ebdb71b247a850b360e072a7043f446b0a418c7e4a8f",
+          "byteLength": 1414,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-056": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-056",
+          "sha256": "298f25e13ca43aee29432954853bd4cc13924b2c39c3767a70552575f313e847",
+          "byteLength": 672,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-057": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-057",
+          "sha256": "1e37b105c5adfd26ed4319bf0fed628d1b26b4cabd815dfe3f091c517cce9de6",
+          "byteLength": 2545,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-058": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-058",
+          "sha256": "1375b54ee2df2305138ee775f8906db81d94a45aa15d6cd12f7f62b991bbb3a2",
+          "byteLength": 981,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-059": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-059",
+          "sha256": "d5d561c9dbb69fd8c398e46290e960a9078f74c3966671dd88bef71c318ca604",
+          "byteLength": 1338,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-060": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-060",
+          "sha256": "90840cf2af29203e17ec2234ef99d662abd77518f012b3b9bbe4be74bd465b84",
+          "byteLength": 715,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-061": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-061",
+          "sha256": "78d5817a5d886b1b0646356bfa5c1fe53d6de9584f93e27e2c6ceb21dfc6064b",
+          "byteLength": 1210,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-062": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-062",
+          "sha256": "0d8f48293e6fab39727b7cfb10985480352c06e9e46f534fd6f2c3c02bc32968",
+          "byteLength": 786,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-063": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-063",
+          "sha256": "a4e4fdeea9e874c295b63a61da9ab2b88c2cf4aaa2a06ed980000ed785436b75",
+          "byteLength": 1281,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-064": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-064",
+          "sha256": "915cc8dd609d3e55ca94146459f2b47940dadf888204b40534449ea658117e7a",
+          "byteLength": 687,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-065": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-065",
+          "sha256": "cb4619a7b0c34731047f6493a4c74d5e1ffb3cf598c1a7a6117e0525318f9ffd",
+          "byteLength": 1293,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-066": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-066",
+          "sha256": "176440f7c579ff709dcd8ca30ea3dad41200d7c01658a10064ccfeafc66024b4",
+          "byteLength": 663,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-067": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-067",
+          "sha256": "757e99107654db5cc355131b7fe94e46048cc464db6239e1518e0360c2e49ad3",
+          "byteLength": 1175,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-068": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-068",
+          "sha256": "7a466d0af3d96bb1d40b78ed075d4ce735aee9d7a0b05f5b0962b49fd3cfeaac",
+          "byteLength": 611,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-069": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-069",
+          "sha256": "732797a9e0dd8f6799b728dba9123f13ec75da72a1da881b5f3c7edf5eb102a2",
+          "byteLength": 2124,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-070": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-070",
+          "sha256": "d248ad6da41b60f0c5967150b6eb300c3dbaf147093d8be1e3ed447a578d579a",
+          "byteLength": 595,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-071": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-071",
+          "sha256": "a491d8ac48374942ecb2662b88e148cf4d42e45bac048cfdc92e50c3eb262dce",
+          "byteLength": 1612,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-072": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-072",
+          "sha256": "d6a09751cece8326d6a242686ca310fa9b4a3abace455dcbd23e739b9223f930",
+          "byteLength": 847,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-073": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-073",
+          "sha256": "0dbdedbc727fed0e5f87dfa636b638a1cf9a5780df5c004d81643ac2089a6a74",
+          "byteLength": 1634,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-074": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-074",
+          "sha256": "e5a38f6164daca7dd474823e99b3c49571359794d7833ece49cddc17ce7d7d56",
+          "byteLength": 847,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-075": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-075",
+          "sha256": "fbfba940d28e565a89d43535c83a0f647e2197dea3c1a5fcd9df8f5c9427200f",
+          "byteLength": 1362,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-076": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-076",
+          "sha256": "de8c962603a1ccace7f899b8b00a6771ade6acd63a7c4437b761ab90feca17dc",
+          "byteLength": 847,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-077": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-077",
+          "sha256": "e5c7113e47d9d7bda63ea95cbf69577a9bedbc70d8f87d075b31353d8dbb4866",
+          "byteLength": 1460,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        },
+        "rrb-local:cad-auth-candidate-discovery-078": {
+          "candidateRef": "rrb-local:cad-auth-candidate-discovery-078",
+          "sha256": "ff03025c824c928f962e88a67487aefd86c608d094032972f739064a0e5bb825",
+          "byteLength": 520,
+          "validJson": true,
+          "categoryCoverage": {
+            "concreteProviderRuntimeBinding": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "executableCollectorCommand": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "restrictedSyntheticCohortReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "custodyReviewerReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "durableConsumedRunLedger": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "installedRouteBodyObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 3
+            },
+            "lateGrantObserver": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 2
+            },
+            "immutableTargetRecheckReceipt": {
+              "present": false,
+              "fieldsPresentCount": 0,
+              "fieldsRequired": 4
+            }
+          }
+        }
+      },
+      "categorySummary": {
+        "concreteProviderRuntimeBinding": {
+          "required": {
+            "category": "concreteProviderRuntimeBinding",
+            "requiredFields": {
+              "adapterSourceSha256": "REQUIRED",
+              "installedRuntimeReceiptRef": "REQUIRED",
+              "providerBindingReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": true,
+          "candidateRefs": {
+            "candidate1": "rrb-local:cad-auth-candidate-discovery-019",
+            "candidate2": "rrb-local:cad-auth-candidate-discovery-027"
+          },
+          "acceptedForBundle": false,
+          "blocker": "PARTIAL_SINGLE_FIELD_COVERAGE_ONLY"
+        },
+        "executableCollectorCommand": {
+          "required": {
+            "category": "executableCollectorCommand",
+            "requiredFields": {
+              "reviewedCollectorSourceSha256": "REQUIRED",
+              "disabledCardDigest": "REQUIRED",
+              "commandReviewReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "restrictedSyntheticCohortReceipt": {
+          "required": {
+            "category": "restrictedSyntheticCohortReceipt",
+            "requiredFields": {
+              "restrictedCohortReceiptRef": "REQUIRED",
+              "syntheticOwnershipReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "custodyReviewerReceipt": {
+          "required": {
+            "category": "custodyReviewerReceipt",
+            "requiredFields": {
+              "custodianReceiptRef": "REQUIRED",
+              "independentReviewerReceiptRef": "REQUIRED",
+              "restrictedStoreReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "durableConsumedRunLedger": {
+          "required": {
+            "category": "durableConsumedRunLedger",
+            "requiredFields": {
+              "ledgerReceiptRef": "REQUIRED",
+              "atomicConsumeReceiptRef": "REQUIRED",
+              "stopAndUnknownConsumeReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "installedRouteBodyObserver": {
+          "required": {
+            "category": "installedRouteBodyObserver",
+            "requiredFields": {
+              "installedObserverReceiptRef": "REQUIRED",
+              "earliestBoundaryReceiptRef": "REQUIRED",
+              "platformBufferingReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "lateGrantObserver": {
+          "required": {
+            "category": "lateGrantObserver",
+            "requiredFields": {
+              "installedObserverReceiptRef": "REQUIRED",
+              "lateGrantDenialReceiptRef": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        },
+        "immutableTargetRecheckReceipt": {
+          "required": {
+            "category": "immutableTargetRecheckReceipt",
+            "requiredFields": {
+              "candidateCommit": "REQUIRED",
+              "immutableDeploymentRef": "REQUIRED",
+              "sourceDigestReceiptRef": "REQUIRED",
+              "recheckedAtUtc": "REQUIRED"
+            },
+            "digestRequired": true,
+            "localDigestRecomputationRequired": true,
+            "opaqueRefRequired": true
+          },
+          "coveredByDiscovery": false,
+          "candidateRefs": {},
+          "acceptedForBundle": false,
+          "blocker": "NO_CANDIDATE_COVERAGE"
+        }
+      }
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectorCommandLine": null,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0
+    },
+    "nextGate": {
+      "status": "FULL_EIGHT_CATEGORY_RESTRICTED_RECEIPT_BUNDLE_STILL_REQUIRED",
+      "stopBeforeReadingAnotherPrivateSource": true,
+      "nonExecutableSealedCardMayBePrepared": false,
+      "executableCommandCardMayBeIssued": false,
+      "liveCollectionMayRun": false,
+      "requiredMissingCategories": {
+        "item1": "executableCollectorCommand",
+        "item2": "restrictedSyntheticCohortReceipt",
+        "item3": "custodyReviewerReceipt",
+        "item4": "durableConsumedRunLedger",
+        "item5": "installedRouteBodyObserver",
+        "item6": "lateGrantObserver",
+        "item7": "immutableTargetRecheckReceipt"
+      },
+      "nextRequiredInput": "A separately approved coherent private source set that contains all eight category refs and exact SHA-256 digests."
+    }
+  },
+  "discoverySummary": {
+    "candidateCount": 78,
+    "validJsonCount": 78,
+    "refsSha256": "560c949442943a042666a697442b666bc07461a9cbac8935848ae04233d00a31",
+    "recordSetSha256": "d801fca34bfb7bcb1eda50fb5f5646c81bb51ce93667dc62c6963abed982d54a",
+    "coverageRefs": {
+      "concreteProviderRuntimeBinding": {
+        "candidate1": "rrb-local:cad-auth-candidate-discovery-019",
+        "candidate2": "rrb-local:cad-auth-candidate-discovery-027"
+      },
+      "executableCollectorCommand": {},
+      "restrictedSyntheticCohortReceipt": {},
+      "custodyReviewerReceipt": {},
+      "durableConsumedRunLedger": {},
+      "installedRouteBodyObserver": {},
+      "lateGrantObserver": {},
+      "immutableTargetRecheckReceipt": {}
+    }
+  },
+  "futureHumanGate": {
+    "status": "COHERENT_EIGHT_CATEGORY_PRIVATE_SOURCE_SET_REQUIRED",
+    "required": true,
+    "automaticallyPromotable": false,
+    "exactPhrase": null,
+    "nextStep": "Provide or authorize one coherent private source set that contains all eight CAD Auth restricted receipt categories.",
+    "blockedUntilAllEightCategoryRefsPresent": true,
+    "blockedUntilDigestRecomputationComplete": true,
+    "blockedUntilCustodyReviewerSeparationAccepted": true,
+    "blockedUntilRetentionDispositionSettled": true,
+    "blockedUntilImmutableTargetRechecked": true
+  },
+  "sourceBindings": {
+    "docs/cad-auth-restricted-source-intake.json": "c0bc4fc5249d72bd922fe3bf51abe73a2973b799901598b7afad9af37e2af871",
+    "docs/cad-auth-restricted-candidate-discovery.md": "e9af7e7786962464726db959724ac06a61ab9f36891804ff5a06b3cf031180a9",
+    "offline/cad-auth-restricted-candidate-discovery/preparation.js": "93ea821fad37625781a4b2aa4987778e055173c6c6fa25dbfca65ae9ccabc6c6",
+    "scripts/cad-auth-restricted-candidate-discovery-checker.js": "4dc8826dfb39348720d855763ccb65a60d720e7997199e003ea7d49164ab6b76",
+    "scripts/cad-auth-restricted-candidate-discovery.test.js": "e5241b0b14ace7cbd9d4d752acf2caf8b031b35446940be78a4c3a3751945e6d"
+  },
+  "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3"
+}
