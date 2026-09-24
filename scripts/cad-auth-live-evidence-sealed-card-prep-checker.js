@@ -68,7 +68,7 @@ function expectedPacket(readSource = read) {
       independentReviewerVerified: false, retentionDays: 7,
       publicAccountIdentifiersAllowed: false
     },
-    window: { startsAtUtc: '2026-09-24T06:00:00Z', expiresAtUtc: '2026-09-24T06:30:00Z',
+    window: { startsAtUtc: '2026-09-24T13:00:00Z', expiresAtUtc: '2026-09-24T13:30:00Z',
       status: 'PROPOSED_NOT_APPROVED', durationMinutes: 30,
       automaticRolloverAllowed: false, freshApprovalRequired: true },
     stopRollback: { runbookRef: 'docs/cad-auth-sealed-setup-stop-runbook.md',
