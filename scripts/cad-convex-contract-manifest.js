@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const files = [
   'docs/cad-auth-sealed-card-custody-rebind.md',
   'docs/cad-auth-sealed-card-custody-rebind.json',
+  'offline/cad-auth-sealed-card-custody-rebind/preparation.js',
   'scripts/cad-auth-sealed-card-custody-rebind-checker.js',
   'scripts/cad-auth-sealed-card-custody-rebind.test.js',
 

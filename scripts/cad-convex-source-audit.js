@@ -35,6 +35,7 @@ assert.equal(require('./cad-auth-sealed-card-custody-rebind-checker').checkRebin
 const files = [
   'docs/cad-auth-sealed-card-custody-rebind.md',
   'docs/cad-auth-sealed-card-custody-rebind.json',
+  'offline/cad-auth-sealed-card-custody-rebind/preparation.js',
   'scripts/cad-auth-sealed-card-custody-rebind-checker.js',
   'scripts/cad-auth-sealed-card-custody-rebind.test.js',
 
@@ -548,6 +549,8 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex
   .test(read('offline/cad-auth-restricted-receipt-bundle/preparation.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-auth-receipt-custody-binding/preparation.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-auth-sealed-card-custody-rebind/preparation.js')));
 let hits = 0;
 for (const name of files) for (const pattern of patterns) if (pattern.test(read(name))) hits++;
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
