@@ -12,7 +12,7 @@ metadata snapshot; it does not prove installed Auth or instrumentation behavior.
 The historic verifier candidate remains transitively bound by the unchanged parent
 packets; this preparation candidate identifies the newer full source snapshot.
 
-The proposed September 23, 2026 window is 22:30–23:00 UTC. Expiry never rolls over
+The proposed September 24, 2026 window is 06:00–06:30 UTC. Expiry never rolls over
 automatically. Recheck the target and window at Captain review and immediately
 before any separately approved collection. Drift or an expired window requires a
 new packet, digest, review and approval. The offline checker intentionally remains
