@@ -34,7 +34,15 @@ assert.equal(require('./cad-auth-sealed-card-custody-rebind-checker').checkRebin
   JSON.parse(read('docs/cad-auth-sealed-card-custody-rebind.json'))).ok, true);
 assert.equal(require('./cad-auth-receipt-intake-template-checker').checkIntake(
   JSON.parse(read('docs/cad-auth-receipt-intake-template.json'))).ok, true);
+assert.equal(require('./cad-auth-receipt-intake-review-disposition-checker').checkDisposition(
+  JSON.parse(read('docs/cad-auth-receipt-intake-review-disposition.json'))).ok, true);
 const files = [
+  'docs/cad-auth-receipt-intake-review-disposition.md',
+  'docs/cad-auth-receipt-intake-review-disposition.json',
+  'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
+  'scripts/cad-auth-receipt-intake-review-disposition-checker.js',
+  'scripts/cad-auth-receipt-intake-review-disposition.test.js',
+
   'docs/cad-auth-receipt-intake-template.md',
   'docs/cad-auth-receipt-intake-template.json',
   'offline/cad-auth-receipt-intake-template/preparation.js',

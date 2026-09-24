@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-receipt-intake-review-disposition.md',
+  'docs/cad-auth-receipt-intake-review-disposition.json',
+  'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
+  'scripts/cad-auth-receipt-intake-review-disposition-checker.js',
+  'scripts/cad-auth-receipt-intake-review-disposition.test.js',
+
   'docs/cad-auth-receipt-intake-template.md',
   'docs/cad-auth-receipt-intake-template.json',
   'offline/cad-auth-receipt-intake-template/preparation.js',
