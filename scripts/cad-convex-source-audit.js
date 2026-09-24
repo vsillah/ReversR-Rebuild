@@ -32,7 +32,23 @@ assert.equal(require('./cad-auth-receipt-custody-binding-checker').checkBinding(
   JSON.parse(read('docs/cad-auth-receipt-custody-binding.json'))).ok, true);
 assert.equal(require('./cad-auth-sealed-card-custody-rebind-checker').checkRebind(
   JSON.parse(read('docs/cad-auth-sealed-card-custody-rebind.json'))).ok, true);
+assert.equal(require('./cad-auth-receipt-intake-template-checker').checkIntake(
+  JSON.parse(read('docs/cad-auth-receipt-intake-template.json'))).ok, true);
+assert.equal(require('./cad-auth-receipt-intake-review-disposition-checker').checkDisposition(
+  JSON.parse(read('docs/cad-auth-receipt-intake-review-disposition.json'))).ok, true);
 const files = [
+  'docs/cad-auth-receipt-intake-review-disposition.md',
+  'docs/cad-auth-receipt-intake-review-disposition.json',
+  'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
+  'scripts/cad-auth-receipt-intake-review-disposition-checker.js',
+  'scripts/cad-auth-receipt-intake-review-disposition.test.js',
+
+  'docs/cad-auth-receipt-intake-template.md',
+  'docs/cad-auth-receipt-intake-template.json',
+  'offline/cad-auth-receipt-intake-template/preparation.js',
+  'scripts/cad-auth-receipt-intake-template-checker.js',
+  'scripts/cad-auth-receipt-intake-template.test.js',
+
   'docs/cad-auth-sealed-card-custody-rebind.md',
   'docs/cad-auth-sealed-card-custody-rebind.json',
   'offline/cad-auth-sealed-card-custody-rebind/preparation.js',
@@ -551,6 +567,8 @@ assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex
   .test(read('offline/cad-auth-receipt-custody-binding/preparation.js')));
 assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
   .test(read('offline/cad-auth-sealed-card-custody-rebind/preparation.js')));
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-auth-receipt-intake-template/preparation.js')));
 let hits = 0;
 for (const name of files) for (const pattern of patterns) if (pattern.test(read(name))) hits++;
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
