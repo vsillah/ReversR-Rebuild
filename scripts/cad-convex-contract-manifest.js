@@ -10,6 +10,12 @@ const files = [
   'scripts/cad-auth-restricted-receipt-review-checker.js',
   'scripts/cad-auth-restricted-receipt-review.test.js',
 
+  'docs/cad-auth-restricted-source-intake.md',
+  'docs/cad-auth-restricted-source-intake.json',
+  'offline/cad-auth-restricted-source-intake/preparation.js',
+  'scripts/cad-auth-restricted-source-intake-checker.js',
+  'scripts/cad-auth-restricted-source-intake.test.js',
+
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
   'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
