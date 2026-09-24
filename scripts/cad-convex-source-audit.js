@@ -26,7 +26,15 @@ assert.equal(require('./cad-auth-live-collector-binding-checker').checkBinding(
   JSON.parse(read('docs/cad-auth-live-collector-binding.json'))).ok, true);
 assert.equal(require('./cad-auth-command-card-source-checker').checkPreparation(
   JSON.parse(read('docs/cad-auth-command-card-source.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-receipt-bundle-checker').checkBundle(
+  JSON.parse(read('docs/cad-auth-restricted-receipt-bundle.json'))).ok, true);
 const files = [
+  'docs/cad-auth-restricted-receipt-bundle.md',
+  'docs/cad-auth-restricted-receipt-bundle.json',
+  'offline/cad-auth-restricted-receipt-bundle/preparation.js',
+  'scripts/cad-auth-restricted-receipt-bundle-checker.js',
+  'scripts/cad-auth-restricted-receipt-bundle.test.js',
+
   'docs/cad-auth-command-card-source.md',
   'docs/cad-auth-command-card-source.json',
   'offline/cad-auth-command-card-source/preparation.js',
@@ -521,6 +529,8 @@ const patterns = [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, /(?:sk_live_|ghp_|github
   /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/,
   /us1\.[A-Za-z0-9_-]{43}/, /\/Users\/[^\s'"`]+/, /[A-Za-z0-9+/]{256,}={0,2}/,
   /^.{72}[SGDPT] *\d+\s*$/m];
+assert.ok(!/process\.env|fetch\s*\(|https?\.request|node:fs|child_process|convex\/browser|console\./
+  .test(read('offline/cad-auth-restricted-receipt-bundle/preparation.js')));
 let hits = 0;
 for (const name of files) for (const pattern of patterns) if (pattern.test(read(name))) hits++;
 assert.equal(hits, 0, 'Source packet leak pattern detected (content withheld)');
