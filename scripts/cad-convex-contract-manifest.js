@@ -8,6 +8,11 @@ const files = [
   'docs/cad-auth-live-evidence-sealed-card-prep.json',
   'scripts/cad-auth-live-evidence-sealed-card-prep-checker.js',
   'scripts/cad-auth-live-evidence-sealed-card-prep.test.js',
+  'docs/cad-auth-live-collector-binding.md',
+  'docs/cad-auth-live-collector-binding.json',
+  'offline/cad-auth-live-collector-binding/guardedCollector.js',
+  'scripts/cad-auth-live-collector-binding-checker.js',
+  'scripts/cad-auth-live-collector-binding.test.js',
 
   'docs/cad-auth-live-evidence-acceptance.md',
   'docs/cad-auth-live-evidence-acceptance.json',
