@@ -63,8 +63,8 @@
       "publicAccountIdentifiersAllowed": false
     },
     "window": {
-      "startsAtUtc": "2026-09-23T22:30:00Z",
-      "expiresAtUtc": "2026-09-23T23:00:00Z",
+      "startsAtUtc": "2026-09-24T06:00:00Z",
+      "expiresAtUtc": "2026-09-24T06:30:00Z",
       "status": "PROPOSED_NOT_APPROVED",
       "durationMinutes": 30,
       "automaticRolloverAllowed": false,
@@ -132,8 +132,8 @@
     ],
     "sourceBindings": {
       "docs/cad-auth-live-evidence-acceptance.json": "826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba",
-      "docs/cad-auth-live-evidence-sealed-card-prep.md": "fbbeecee91aafaa800b75baa3515dc7482476e38496a368f3ac6bd8dae63cd73",
-      "scripts/cad-auth-live-evidence-sealed-card-prep-checker.js": "5a66d8b36375794e93e2ce4697d3dda58edbe6d3ae32cb42f77ed07915292c14",
+      "docs/cad-auth-live-evidence-sealed-card-prep.md": "280ff7a2a1bed7e33f9c66f1fe680523d3a9df8f57b61eb44f8fefaf86cb5f40",
+      "scripts/cad-auth-live-evidence-sealed-card-prep-checker.js": "24922587107ade94cd4d053abbbafcefa8af518f41a04f80adb25e78f0ca99cf",
       "scripts/cad-auth-live-evidence-sealed-card-prep.test.js": "657736f4767171a7996a1c961df56f2b4b1104ccf9f841923c2a2890b72a1b50",
       "docs/cad-auth-sealed-setup-stop-runbook.md": "abdc9ab7c2ed88d1c293e026d654a187971ecda5b343c515d0b74ef48e3850b1"
     }
@@ -142,12 +142,12 @@
     "algorithm": "SHA-256",
     "encoding": "RECURSIVE_SORTED_JSON_UTF8_NO_NEWLINE",
     "scope": "payload only; excludes seal and futureApproval to avoid circular hashing",
-    "sha256": "ad7a95f65d1857b1c6a0819511a78e452e38db6536c4297340baf1a7bc2aecca",
+    "sha256": "6c49c12c5fdb229b8d5e9b14c95244062e78e5748779613c371ca77ae2d9dc75",
     "executable": false,
     "executableCommandCardIssued": false
   },
   "futureApproval": {
-    "exactPhrase": "Approve one read-only synthetic CAD Auth evidence collection for acceptance packet cad-auth-live-evidence-acceptance-v1, reviewed packet SHA-256 826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba, sealed card SHA-256 ad7a95f65d1857b1c6a0819511a78e452e38db6536c4297340baf1a7bc2aecca, candidate 0d5ae30935f399c7f3e08b7fd05b8f12dc10489d, immutable deployment dpl_S2p5mUfjMnCHy9etD23Un4gNT4iy, schedule SHA-256 30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066, restricted cohort rrb-ref:cad-auth-synthetic-cohort-v1-proposed, custodian rrb-ref:cad-auth-evidence-custodian-captain-proposed, independent reviewer rrb-ref:cad-auth-evidence-independent-reviewer-proposed, during 2026-09-23T22:30:00Z through 2026-09-23T23:00:00Z. Only the sealed observations and ceilings are authorized. No setup changes, upload sessions, request-body reads, activation, retries or second run. Limits SHA-256 ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4.",
+    "exactPhrase": "Approve one read-only synthetic CAD Auth evidence collection for acceptance packet cad-auth-live-evidence-acceptance-v1, reviewed packet SHA-256 826ed6507787f3173643d281ad868e50175327fc067b56cb11c2c8cdf89052ba, sealed card SHA-256 6c49c12c5fdb229b8d5e9b14c95244062e78e5748779613c371ca77ae2d9dc75, candidate 0d5ae30935f399c7f3e08b7fd05b8f12dc10489d, immutable deployment dpl_S2p5mUfjMnCHy9etD23Un4gNT4iy, schedule SHA-256 30e28bf2b79861cd2dd686a3cb0c1f9523f21dc6346b87ef6387b0abbf051066, restricted cohort rrb-ref:cad-auth-synthetic-cohort-v1-proposed, custodian rrb-ref:cad-auth-evidence-custodian-captain-proposed, independent reviewer rrb-ref:cad-auth-evidence-independent-reviewer-proposed, during 2026-09-24T06:00:00Z through 2026-09-24T06:30:00Z. Only the sealed observations and ceilings are authorized. No setup changes, upload sessions, request-body reads, activation, retries or second run. Limits SHA-256 ee1e5288f47391fa58df7d737d5ae7fe0ec0bfa681efa0c79c5bc2aed2d699b4.",
     "phraseActionableNow": false,
     "captainReviewed": false,
     "userApproved": false,
