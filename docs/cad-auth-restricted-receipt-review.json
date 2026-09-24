@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-receipt-review-v1",
+  "sourceOnly": true,
+  "status": "RESTRICTED_RECEIPT_VALUES_UNAVAILABLE_REVIEW_BLOCKED",
+  "approvedGate": {
+    "mainCommit": "48e1773240dac51ebea6f49b979323fca6e40d3e",
+    "reviewDispositionPacket": "cad-auth-receipt-intake-review-disposition-v1",
+    "reviewDispositionSha256": "f84b9726cebac74c801542d2f4c7fe78124d589f1172b29bf3c09d78c1d4cee7",
+    "intakeTemplateSha256": "2c66e9daf2d495bdc214b7b34e7ba36d300681173024019e9ee7ed6ad86902dd",
+    "restrictedReceiptBundleSha256": "78ed084f7380c58bb40b5dc5c38745a73d671a2de50d79986b712748f301baa3",
+    "sealedCardCustodyRebindSha256": "db3a02b43845f58fb88e320c7c87a3f38c599e06d2d62dd331a8e6b92ba430fb"
+  },
+  "parents": {
+    "reviewDisposition": {
+      "packet": "cad-auth-receipt-intake-review-disposition-v1",
+      "sha256": "f84b9726cebac74c801542d2f4c7fe78124d589f1172b29bf3c09d78c1d4cee7",
+      "restrictedValuesReviewed": false
+    },
+    "restrictedReceiptBundle": {
+      "packet": "cad-auth-restricted-receipt-bundle-v1",
+      "sha256": "78ed084f7380c58bb40b5dc5c38745a73d671a2de50d79986b712748f301baa3",
+      "restrictedValuesLoaded": false
+    },
+    "sealedCardCustodyRebind": {
+      "packet": "cad-auth-sealed-card-custody-rebind-v1",
+      "sha256": "db3a02b43845f58fb88e320c7c87a3f38c599e06d2d62dd331a8e6b92ba430fb",
+      "executableCommandCardIssued": false
+    }
+  },
+  "preparation": {
+    "approvalScope": {
+      "approved": true,
+      "boundedToMainCommit": "48e1773240dac51ebea6f49b979323fca6e40d3e",
+      "restrictedReceiptValueHandlingAuthorized": true,
+      "publicRepositoryMayStoreRestrictedValues": false,
+      "sanitizedPublicProjectionOnly": true
+    },
+    "execution": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectorCommandLine": null,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0
+    },
+    "restrictedReceiptSource": {
+      "configured": false,
+      "sourceRef": null,
+      "storeOpened": false,
+      "restrictedValuesCreated": false,
+      "restrictedValuesCollected": false,
+      "restrictedValuesInstalled": false,
+      "restrictedValuesUsed": false,
+      "secretReads": false,
+      "providerEnvResourceBillingChanges": false,
+      "stopCode": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED"
+    },
+    "review": {
+      "status": "BLOCKED_NO_PRIVATE_RECEIPT_SOURCE",
+      "allEightCategoriesPresent": false,
+      "allCategoryDigestPairsBound": false,
+      "allCategoryDigestsRecomputed": false,
+      "allCategoryProvenanceMatched": false,
+      "custodyReviewerSeparationVerified": false,
+      "retentionDispositionSettled": false,
+      "immutableTargetRechecked": false,
+      "acceptedForSealedCardPreparation": false,
+      "reviewReceiptRef": null,
+      "reviewReceiptSha256": null,
+      "categoryReviews": {
+        "concreteProviderRuntimeBinding": {
+          "category": "concreteProviderRuntimeBinding",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "adapterSourceSha256": "REQUIRED",
+            "installedRuntimeReceiptRef": "REQUIRED",
+            "providerBindingReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "executableCollectorCommand": {
+          "category": "executableCollectorCommand",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "reviewedCollectorSourceSha256": "REQUIRED",
+            "disabledCardDigest": "REQUIRED",
+            "commandReviewReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "restrictedSyntheticCohortReceipt": {
+          "category": "restrictedSyntheticCohortReceipt",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "restrictedCohortReceiptRef": "REQUIRED",
+            "syntheticOwnershipReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "custodyReviewerReceipt": {
+          "category": "custodyReviewerReceipt",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "custodianReceiptRef": "REQUIRED",
+            "independentReviewerReceiptRef": "REQUIRED",
+            "restrictedStoreReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "durableConsumedRunLedger": {
+          "category": "durableConsumedRunLedger",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "ledgerReceiptRef": "REQUIRED",
+            "atomicConsumeReceiptRef": "REQUIRED",
+            "stopAndUnknownConsumeReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "installedRouteBodyObserver": {
+          "category": "installedRouteBodyObserver",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "installedObserverReceiptRef": "REQUIRED",
+            "earliestBoundaryReceiptRef": "REQUIRED",
+            "platformBufferingReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "lateGrantObserver": {
+          "category": "lateGrantObserver",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "installedObserverReceiptRef": "REQUIRED",
+            "lateGrantDenialReceiptRef": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        },
+        "immutableTargetRecheckReceipt": {
+          "category": "immutableTargetRecheckReceipt",
+          "status": "RESTRICTED_RECEIPT_SOURCE_NOT_CONFIGURED",
+          "requiredFields": {
+            "candidateCommit": "REQUIRED",
+            "immutableDeploymentRef": "REQUIRED",
+            "sourceDigestReceiptRef": "REQUIRED",
+            "recheckedAtUtc": "REQUIRED"
+          },
+          "restrictedReceiptRef": null,
+          "restrictedReceiptSha256": null,
+          "restrictedReceiptDigestRecomputed": false,
+          "restrictedReceiptProvenanceMatched": false,
+          "custodyReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "retentionDispositionReceiptRef": null,
+          "immutableTargetRecheckReceiptRef": null,
+          "accepted": false,
+          "rejectionReason": "NO_PRIVATE_RECEIPT_SOURCE_SUPPLIED",
+          "publicProjection": "ABSENT_VALUE_FREE_ONLY"
+        }
+      }
+    },
+    "nextGate": {
+      "status": "PRIVATE_RECEIPT_SOURCE_REQUIRED",
+      "nonExecutableSealedCardMayBePrepared": false,
+      "executableCommandCardMayBeIssued": false,
+      "exactLiveCollectionPhraseMayBeRequested": false,
+      "nextRequiredInput": "A separately supplied private restricted receipt source with refs and exact SHA-256 digests for all eight categories.",
+      "nextRequiredApproval": "Approve reading one named private restricted receipt bundle path or store reference, recomputing digests locally, committing only sanitized opaque refs/digests/disposition, and stopping before live collection."
+    }
+  },
+  "futureHumanGate": {
+    "status": "PRIVATE_RESTRICTED_RECEIPT_SOURCE_REQUIRED",
+    "required": true,
+    "automaticallyPromotable": false,
+    "approvalReceiptRef": null,
+    "exactPhrase": null,
+    "priorApprovalReusableWithoutPrivateSource": false,
+    "nextStep": "Supply or authorize one private restricted receipt source; commit only sanitized refs, digests and disposition after independent review.",
+    "blockedUntilAllEightCategoryRefsPresent": true,
+    "blockedUntilDigestRecomputationComplete": true,
+    "blockedUntilCustodyReviewerSeparationAccepted": true,
+    "blockedUntilRetentionDispositionSettled": true,
+    "blockedUntilImmutableTargetRechecked": true
+  },
+  "sourceBindings": {
+    "docs/cad-auth-receipt-intake-review-disposition.json": "f84b9726cebac74c801542d2f4c7fe78124d589f1172b29bf3c09d78c1d4cee7",
+    "docs/cad-auth-restricted-receipt-bundle.json": "78ed084f7380c58bb40b5dc5c38745a73d671a2de50d79986b712748f301baa3",
+    "docs/cad-auth-sealed-card-custody-rebind.json": "db3a02b43845f58fb88e320c7c87a3f38c599e06d2d62dd331a8e6b92ba430fb",
+    "docs/cad-auth-restricted-receipt-review.md": "cfe5bf8e03b27da1a04db2400babb3eeae330edf19f8a86d252f069f259308c6",
+    "offline/cad-auth-restricted-receipt-review/preparation.js": "a101ac77968494fd166e274cd58628bdece96f2b19ec9e7fa5d6ba25e71eba0d",
+    "scripts/cad-auth-restricted-receipt-review-checker.js": "5d6eca3de74d673e88d5b36f60e9ecd720efcb1b4215b69f40fab6bbfe002991",
+    "scripts/cad-auth-restricted-receipt-review.test.js": "f805359e278772dc42f4753a0540aae278ef203dd0a2c0860eb43e63e0157deb",
+    "scripts/cad-auth-receipt-intake-review-disposition-checker.js": "1c4491c38c18052bc5041cf1f1d41405b3400d3c38f37fe633a8c1b15709e98f",
+    "offline/cad-auth-receipt-intake-review-disposition/preparation.js": "9fca479e061b51f423b4f3dfc6359ae45fda4e7f7a74c0107091e5fa2c4746dc",
+    "scripts/cad-auth-restricted-receipt-bundle-checker.js": "8098aae5b30ff76408221310f09f6d029216ef72daa5fec801351f1a6bd04e07",
+    "scripts/cad-auth-sealed-card-custody-rebind-checker.js": "f99c820ae4afb3383d6f8e5d06558018ea42afb1695f65fdcd1229f2bd4f0046"
+  },
+  "sourceMergeCommit": "48e1773240dac51ebea6f49b979323fca6e40d3e"
+}
