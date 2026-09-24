@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-receipt-bundle-v1",
+  "sourceOnly": true,
+  "status": "RESTRICTED_RECEIPT_STRUCTURE_ONLY_EXECUTION_BLOCKED",
+  "parent": {
+    "packet": "cad-auth-command-card-source-v1",
+    "mergeCommit": "b3812cca0a1f67126fd8e6867b8fb77c0748a86f",
+    "sha256": "b4abccb63173379b3c9011a7216b5225c1dbb338cdf466208baf72e751916145",
+    "consumedStopCode": "MISSING_PREREQUISITE",
+    "priorApprovalReusable": false
+  },
+  "preparation": {
+    "executable": false,
+    "executableCommandCardIssued": false,
+    "liveCollectorCommandLine": null,
+    "liveCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "bodyAdmissionAuthorized": false,
+    "uploadSessionIssuanceEnabled": false,
+    "retryOrSecondRunAuthorized": false,
+    "evidenceAccepted": false,
+    "commercialReadinessClaimed": false,
+    "authorizedRuns": 0,
+    "futureHumanGate": {
+      "required": true,
+      "approvalReceiptRef": null,
+      "exactPhrase": null,
+      "previousWindowReusable": false,
+      "automaticallyPromotable": false
+    },
+    "runtimeBindingReceipts": {
+      "concreteProviderRuntimeBinding": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "adapterSourceSha256": null,
+          "installedRuntimeReceiptRef": null,
+          "providerBindingReceiptRef": null
+        }
+      },
+      "executableCollectorCommand": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "reviewedCollectorSourceSha256": null,
+          "disabledCardDigest": null,
+          "commandReviewReceiptRef": null
+        }
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "restrictedCohortReceiptRef": null,
+          "syntheticOwnershipReceiptRef": null
+        }
+      },
+      "custodyReviewerReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "custodianReceiptRef": null,
+          "independentReviewerReceiptRef": null,
+          "restrictedStoreReceiptRef": null
+        }
+      },
+      "durableConsumedRunLedger": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "ledgerReceiptRef": null,
+          "atomicConsumeReceiptRef": null,
+          "stopAndUnknownConsumeReceiptRef": null
+        }
+      },
+      "installedRouteBodyObserver": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "installedObserverReceiptRef": null,
+          "earliestBoundaryReceiptRef": null,
+          "platformBufferingReceiptRef": null
+        }
+      },
+      "lateGrantObserver": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "installedObserverReceiptRef": null,
+          "lateGrantDenialReceiptRef": null
+        }
+      },
+      "immutableTargetRecheckReceipt": {
+        "status": "MISSING_PREREQUISITE",
+        "reviewed": false,
+        "accepted": false,
+        "receiptRef": null,
+        "receiptSha256": null,
+        "boundMergeCommit": "8c69d2c845dd2dd5d733280ef983b6c4a9248213",
+        "evidence": {
+          "candidateCommit": null,
+          "immutableDeploymentRef": null,
+          "sourceDigestReceiptRef": null,
+          "recheckedAtUtc": null
+        }
+      }
+    },
+    "bundleReceiptRef": null,
+    "bundleReceiptSha256": null,
+    "restrictedValuesLoaded": false,
+    "custody": {
+      "restrictedStoreReceiptRef": null,
+      "custodianReceiptRef": null,
+      "independentReviewerReceiptRef": null,
+      "distinctReviewerVerified": false,
+      "retentionPolicyReceiptRef": null,
+      "deletionDispositionReceiptRef": null,
+      "repositoryStorageAuthorized": false,
+      "publicProjectionAuthorized": false
+    },
+    "review": {
+      "status": "MISSING_PREREQUISITE",
+      "complete": false,
+      "reviewReceiptRef": null,
+      "reviewReceiptSha256": null,
+      "targetRechecked": false,
+      "exactApprovalPhraseReady": false
+    }
+  },
+  "futureHumanGate": {
+    "status": "RESTRICTED_RECEIPTS_AND_SEPARATE_REVIEW_REQUIRED",
+    "required": true,
+    "automaticallyPromotable": false,
+    "approvalReceiptRef": null,
+    "exactPhrase": null,
+    "executableCommandCardIssued": false,
+    "nextStep": "Review this source-only structure; separately scope restricted receipt binding and custody before providing any values.",
+    "receiptReview": "Require all eight categories with refs, digests, provenance and independent review in a restricted user-owned store outside Git.",
+    "sourceReview": "Recheck exact source hashes and immutable target; a source digest is not an installed runtime receipt.",
+    "subsequentGate": "A reviewed restricted bundle still needs a separately reviewed sealed card and fresh exact approval before any collection."
+  },
+  "sourceBindings": {
+    "docs/cad-auth-command-card-source.json": "b4abccb63173379b3c9011a7216b5225c1dbb338cdf466208baf72e751916145",
+    "docs/cad-auth-restricted-receipt-bundle.md": "3d8db377d992907edb63ec8cfcbe427cf16bbcfc360ed29d8e71a89fd5e98d75",
+    "offline/cad-auth-restricted-receipt-bundle/preparation.js": "89d2a20fd4f151eecd15b25b3d1fb776e2e15e62e59f762fdb15b84fb05b2158",
+    "scripts/cad-auth-restricted-receipt-bundle-checker.js": "8098aae5b30ff76408221310f09f6d029216ef72daa5fec801351f1a6bd04e07",
+    "scripts/cad-auth-restricted-receipt-bundle.test.js": "ffcb77c33262e96525df51e6bea83fea646cb86f8b8996a941819bcc06148ef5",
+    "scripts/cad-auth-command-card-source-checker.js": "49cd27b1b411cc29ffaad3a287f3ccdb0b7baec3d8e1de8ab6066bf3f6727e7a",
+    "offline/cad-auth-command-card-source/preparation.js": "403145b1426153e551bded627bb240322104598822aeb62b080f9da70a86c40e"
+  }
+}
