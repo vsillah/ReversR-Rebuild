@@ -30,7 +30,14 @@ assert.equal(require('./cad-auth-restricted-receipt-bundle-checker').checkBundle
   JSON.parse(read('docs/cad-auth-restricted-receipt-bundle.json'))).ok, true);
 assert.equal(require('./cad-auth-receipt-custody-binding-checker').checkBinding(
   JSON.parse(read('docs/cad-auth-receipt-custody-binding.json'))).ok, true);
+assert.equal(require('./cad-auth-sealed-card-custody-rebind-checker').checkRebind(
+  JSON.parse(read('docs/cad-auth-sealed-card-custody-rebind.json'))).ok, true);
 const files = [
+  'docs/cad-auth-sealed-card-custody-rebind.md',
+  'docs/cad-auth-sealed-card-custody-rebind.json',
+  'scripts/cad-auth-sealed-card-custody-rebind-checker.js',
+  'scripts/cad-auth-sealed-card-custody-rebind.test.js',
+
   'docs/cad-auth-receipt-custody-binding.md',
   'docs/cad-auth-receipt-custody-binding.json',
   'offline/cad-auth-receipt-custody-binding/preparation.js',
