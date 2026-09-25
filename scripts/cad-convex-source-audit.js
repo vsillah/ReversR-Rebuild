@@ -56,7 +56,15 @@ assert.equal(require('./cad-auth-receipt-provenance-gap-recovery-checker').check
   JSON.parse(read('docs/cad-auth-receipt-provenance-gap-recovery.json'))).ok, true);
 assert.equal(require('./cad-auth-accepted-provenance-projection-checker').checkProjectionPacket(
   JSON.parse(read('docs/cad-auth-accepted-provenance-projection.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-source-set-projection-checker').checkSourceSetProjectionPacket(
+  JSON.parse(read('docs/cad-auth-restricted-source-set-projection.json'))).ok, true);
 const files = [
+  'docs/cad-auth-restricted-source-set-projection.md',
+  'docs/cad-auth-restricted-source-set-projection.json',
+  'offline/cad-auth-restricted-source-set-projection/preparation.js',
+  'scripts/cad-auth-restricted-source-set-projection-checker.js',
+  'scripts/cad-auth-restricted-source-set-projection.test.js',
+
   'docs/cad-auth-accepted-provenance-projection.md',
   'docs/cad-auth-accepted-provenance-projection.json',
   'offline/cad-auth-accepted-provenance-projection/preparation.js',
