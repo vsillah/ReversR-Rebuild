@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-restricted-source-set-projection.md',
+  'docs/cad-auth-restricted-source-set-projection.json',
+  'offline/cad-auth-restricted-source-set-projection/preparation.js',
+  'scripts/cad-auth-restricted-source-set-projection-checker.js',
+  'scripts/cad-auth-restricted-source-set-projection.test.js',
+
   'docs/cad-auth-accepted-provenance-projection.md',
   'docs/cad-auth-accepted-provenance-projection.json',
   'offline/cad-auth-accepted-provenance-projection/preparation.js',
