@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-source-set-contract-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_CONTRACT_NO_PRIVATE_RECEIPTS_LOADED",
+  "parent": {
+    "packet": "cad-auth-restricted-candidate-discovery-v1",
+    "sha256": "5c84a87e524a61613356cb616ede1049f95687f775007876c4ebe8361d5f0641",
+    "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3",
+    "status": "CANDIDATE_DISCOVERY_INCOMPLETE_RESTRICTED_BUNDLE_ABSENT",
+    "confirmsCandidateSetIncomplete": true
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "contract": "cad-auth-coherent-restricted-source-set-contract-v1",
+    "sourceOnly": true,
+    "purpose": "Define the exact acceptance shape for a future private eight-category CAD Auth restricted receipt source set.",
+    "requiredCategories": {
+      "concreteProviderRuntimeBinding": {
+        "category": "concreteProviderRuntimeBinding",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "adapterSourceSha256": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "installedRuntimeReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "providerBindingReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "executableCollectorCommand": {
+        "category": "executableCollectorCommand",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "reviewedCollectorSourceSha256": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "disabledCardDigest": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "commandReviewReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "restrictedCohortReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "syntheticOwnershipReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "custodyReviewerReceipt": {
+        "category": "custodyReviewerReceipt",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "custodianReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "independentReviewerReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "restrictedStoreReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "durableConsumedRunLedger": {
+        "category": "durableConsumedRunLedger",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "ledgerReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "atomicConsumeReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "stopAndUnknownConsumeReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "installedRouteBodyObserver": {
+        "category": "installedRouteBodyObserver",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "installedObserverReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "earliestBoundaryReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "platformBufferingReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "lateGrantObserver": {
+        "category": "lateGrantObserver",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "installedObserverReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "lateGrantDenialReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      },
+      "immutableTargetRecheckReceipt": {
+        "category": "immutableTargetRecheckReceipt",
+        "requiredReceiptRef": true,
+        "requiredReceiptSha256": "lowercase-hex-64",
+        "requiredByteLength": "positive-integer",
+        "requiredFieldPresence": {
+          "candidateCommit": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "immutableDeploymentRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "sourceDigestReceiptRef": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          },
+          "recheckedAtUtc": {
+            "requiredInRestrictedSource": true,
+            "publicValueCommitted": false
+          }
+        },
+        "restrictedValuePolicy": {
+          "rawReceiptValuesStayPrivate": true,
+          "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+          "localDigestRecomputationRequired": true
+        }
+      }
+    },
+    "coherenceRules": {
+      "eitherSingleBundleOrDeclaredCoherentSet": true,
+      "everyCategoryRequiredExactlyOnce": true,
+      "duplicateCategoryRefsRejected": true,
+      "refsMustBeOpaqueAndNonPath": true,
+      "localPathsCommitted": false,
+      "topLevelKeysCommitted": false,
+      "privatePayloadValuesCommitted": false,
+      "allDigestsRecomputedFromExactStoredReceiptBytes": true,
+      "digestAlgorithm": "SHA-256",
+      "digestEncoding": "lowercase-hex-64",
+      "candidateCommitMustMatchCurrentReviewedTarget": true,
+      "immutableDeploymentMustMatchCurrentReviewedTarget": true,
+      "restrictedCohortMustMatchApprovedSyntheticCohort": true,
+      "custodianAndReviewerMustBeDistinctRefs": true,
+      "durableConsumedRunLedgerRequiredBeforeAnyExecutableCard": true,
+      "routeBodyObserverMustProveZeroBodyReadBeforeAdmission": true,
+      "lateGrantObserverMustProveDenialAfterGrantChange": true,
+      "retentionAndDeletionDispositionMustBeBoundBeforePublicProjection": true
+    },
+    "reviewDisposition": {
+      "status": "AWAITING_COHERENT_EIGHT_CATEGORY_PRIVATE_SOURCE_SET",
+      "publicPacketCanAdvanceSealedCard": false,
+      "privateReadStillRequiresNamedSourceApproval": true,
+      "exactApprovalPhraseReady": false,
+      "nextRequiredInput": "One named private bundle path or coherent source-set reference that contains all eight category receipts.",
+      "stopIfNoSingleSourceOrCoherentSetContainsAllEight": true
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectorCommandLine": null,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0,
+      "liveEvidenceCollected": false,
+      "uploadSessionsIssued": 0,
+      "requestBodyReads": 0,
+      "providerEnvResourceBillingChanges": 0,
+      "secretReads": 0,
+      "activationPerformed": false,
+      "retryOrSecondRunPerformed": false,
+      "privateCadUsed": false,
+      "externalMessagesSent": false
+    }
+  },
+  "categoryFieldCounts": {
+    "concreteProviderRuntimeBinding": 3,
+    "executableCollectorCommand": 3,
+    "restrictedSyntheticCohortReceipt": 2,
+    "custodyReviewerReceipt": 3,
+    "durableConsumedRunLedger": 3,
+    "installedRouteBodyObserver": 3,
+    "lateGrantObserver": 2,
+    "immutableTargetRecheckReceipt": 4
+  },
+  "acceptanceBoundary": {
+    "currentSourceSetAccepted": false,
+    "noCoherentPrivateSourceSetPresent": true,
+    "nextGateRequiresNamedPrivateSource": true,
+    "nextGateMayCommitOnlySanitizedProjection": true,
+    "nextGateStillNotExecutable": true,
+    "stopCondition": "STOP_IF_NO_SINGLE_SOURCE_OR_COHERENT_SOURCE_SET_CONTAINS_ALL_EIGHT_CATEGORIES"
+  },
+  "sourceBindings": {
+    "docs/cad-auth-restricted-candidate-discovery.json": "5c84a87e524a61613356cb616ede1049f95687f775007876c4ebe8361d5f0641",
+    "docs/cad-auth-restricted-source-set-contract.md": "3db6c7e0e90f3dcecd8d7cab79d84e8349912c5c77f4fa5c4813e6563af0f5a2",
+    "offline/cad-auth-restricted-source-set-contract/preparation.js": "f3c09711b704bca53c923564b0dd88c7e9bdfb877a6df74c2e305156d173a140",
+    "scripts/cad-auth-restricted-source-set-contract-checker.js": "5c6878b0d9c8ab9a8ca0f06d9c89873e717cb1b230f26f80b0b347183debd708",
+    "scripts/cad-auth-restricted-source-set-contract.test.js": "bc46e0614a23d466978e16bcae16b9d66f665332aeef5cd6e832d19456e5e0af"
+  },
+  "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3"
+}
