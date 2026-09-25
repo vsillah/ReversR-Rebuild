@@ -54,7 +54,15 @@ assert.equal(require('./cad-auth-eight-artifact-supply-gate-checker').checkSuppl
   JSON.parse(read('docs/cad-auth-eight-artifact-supply-gate.json'))).ok, true);
 assert.equal(require('./cad-auth-receipt-provenance-gap-recovery-checker').checkRecoveryPacket(
   JSON.parse(read('docs/cad-auth-receipt-provenance-gap-recovery.json'))).ok, true);
+assert.equal(require('./cad-auth-accepted-provenance-projection-checker').checkProjectionPacket(
+  JSON.parse(read('docs/cad-auth-accepted-provenance-projection.json'))).ok, true);
 const files = [
+  'docs/cad-auth-accepted-provenance-projection.md',
+  'docs/cad-auth-accepted-provenance-projection.json',
+  'offline/cad-auth-accepted-provenance-projection/preparation.js',
+  'scripts/cad-auth-accepted-provenance-projection-checker.js',
+  'scripts/cad-auth-accepted-provenance-projection.test.js',
+
   'docs/cad-auth-receipt-provenance-gap-recovery.md',
   'docs/cad-auth-receipt-provenance-gap-recovery.json',
   'offline/cad-auth-receipt-provenance-gap-recovery/preparation.js',

@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-accepted-provenance-projection.md',
+  'docs/cad-auth-accepted-provenance-projection.json',
+  'offline/cad-auth-accepted-provenance-projection/preparation.js',
+  'scripts/cad-auth-accepted-provenance-projection-checker.js',
+  'scripts/cad-auth-accepted-provenance-projection.test.js',
+
   'docs/cad-auth-receipt-provenance-gap-recovery.md',
   'docs/cad-auth-receipt-provenance-gap-recovery.json',
   'offline/cad-auth-receipt-provenance-gap-recovery/preparation.js',
