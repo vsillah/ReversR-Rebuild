@@ -46,6 +46,8 @@ assert.equal(require('./cad-auth-restricted-source-set-contract-checker').checkC
   JSON.parse(read('docs/cad-auth-restricted-source-set-contract.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-source-set-generator-checker').checkGeneratorPacket(
   JSON.parse(read('docs/cad-auth-restricted-source-set-generator.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-receipt-gap-closure-checker').checkGapClosurePacket(
+  JSON.parse(read('docs/cad-auth-restricted-receipt-gap-closure.json'))).ok, true);
 const files = [
   'docs/cad-auth-restricted-receipt-review.md',
   'docs/cad-auth-restricted-receipt-review.json',
@@ -77,6 +79,12 @@ const files = [
   'scripts/cad-auth-restricted-source-set-generator.js',
   'scripts/cad-auth-restricted-source-set-generator-checker.js',
   'scripts/cad-auth-restricted-source-set-generator.test.js',
+
+  'docs/cad-auth-restricted-receipt-gap-closure.md',
+  'docs/cad-auth-restricted-receipt-gap-closure.json',
+  'offline/cad-auth-restricted-receipt-gap-closure/preparation.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure-checker.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure.test.js',
 
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',

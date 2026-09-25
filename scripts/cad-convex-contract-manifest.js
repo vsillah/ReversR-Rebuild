@@ -35,6 +35,12 @@ const files = [
   'scripts/cad-auth-restricted-source-set-generator-checker.js',
   'scripts/cad-auth-restricted-source-set-generator.test.js',
 
+  'docs/cad-auth-restricted-receipt-gap-closure.md',
+  'docs/cad-auth-restricted-receipt-gap-closure.json',
+  'offline/cad-auth-restricted-receipt-gap-closure/preparation.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure-checker.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure.test.js',
+
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
   'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
