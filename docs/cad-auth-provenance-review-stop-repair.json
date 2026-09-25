@@ -1,0 +1,881 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-provenance-review-stop-repair-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_STOPPED_REVIEW_REPAIR_CONTRACT_NO_PRIVATE_READS",
+  "parent": {
+    "packet": "cad-auth-receipt-provenance-gap-recovery-v1",
+    "sha256": "8ddc3d58566bcd8ee906aeeae12c9c305e87f7f4ae11b781a2c3a2a3aa5eeb91",
+    "sourceMergeCommit": "9fbb305deaf662da006fad8940403845c6c9d993",
+    "status": "SOURCE_ONLY_PROVENANCE_GAP_RECOVERY_STOP_PRESERVED"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "plan": "cad-auth-provenance-review-stop-repair-v1",
+    "sourceOnly": true,
+    "sourceMergeCommit": "9fbb305deaf662da006fad8940403845c6c9d993",
+    "stoppedReview": {
+      "ref": "rrb-ref:cad-auth-private-evidence-provenance-review-20260925T170602Z",
+      "sha256": "b580a7ee7368f98dedeea2f5251752bbae7751bea544a0f94d7ef7305dff2747",
+      "receiptSha256": "f9398433f67e097c6de36453db3b6d348cf616056e7844a4bc6c7d83de81606b",
+      "status": "STOPPED_SOURCE_ARTIFACT_MISMATCH",
+      "scheduleRef": "rrb-ref:cad-auth-private-evidence-provenance-schedule-20260925T170602Z",
+      "scheduleSha256": "421394b9d45264001041f22d7af674cec171e94c7c96a212588ad7afa73c0b31",
+      "privateReviewBytesRead": false,
+      "privateReviewReceiptBytesRead": false,
+      "privateScheduleBytesRead": false,
+      "stoppedDispositionBoundByOpaqueRefAndDigestOnly": true,
+      "previousReviewReusable": false,
+      "secondPrivateReviewAuthorized": false
+    },
+    "parentRecovery": {
+      "packet": "cad-auth-receipt-provenance-gap-recovery-v1",
+      "unsupportedFields": 22,
+      "supportedPresenceOnlyField": "concreteProviderRuntimeBinding.adapterSourceSha256",
+      "supportedPresenceOnlyFieldAccepted": false
+    },
+    "reviewStopDisposition": {
+      "status": "STOPPED_SOURCE_ARTIFACT_MISMATCH",
+      "fieldToArtifactProvenanceComplete": false,
+      "fieldsMissingFieldToArtifactProvenance": {
+        "durableConsumedRunLedger.atomicConsumeReceiptRef": true,
+        "installedRouteBodyObserver.platformBufferingReceiptRef": true
+      },
+      "allFieldsMissingPriorEvidenceApprovalReceipts": true,
+      "allFieldsMissingIndependentReviewReceipts": true,
+      "acceptedFields": 0,
+      "acceptedCategories": 0,
+      "stopPreserved": true
+    },
+    "scheduleRepairContract": {
+      "repairedScheduleRequired": true,
+      "repairedScheduleRef": null,
+      "repairedScheduleSha256": null,
+      "repairedScheduleMustBind": {
+        "stoppedReviewRef": "rrb-ref:cad-auth-private-evidence-provenance-review-20260925T170602Z",
+        "stoppedReviewSha256": "b580a7ee7368f98dedeea2f5251752bbae7751bea544a0f94d7ef7305dff2747",
+        "stoppedReviewReceiptSha256": "f9398433f67e097c6de36453db3b6d348cf616056e7844a4bc6c7d83de81606b",
+        "originalScheduleRef": "rrb-ref:cad-auth-private-evidence-provenance-schedule-20260925T170602Z",
+        "originalScheduleSha256": "421394b9d45264001041f22d7af674cec171e94c7c96a212588ad7afa73c0b31",
+        "sourceRepairPacketSha256": null,
+        "reviewedSourceCommit": null
+      },
+      "exactFieldCount": 22,
+      "repairFields": {
+        "durableConsumedRunLedger.atomicConsumeReceiptRef": true,
+        "installedRouteBodyObserver.platformBufferingReceiptRef": true
+      },
+      "allUnsupportedFieldsRequirePriorEvidenceApproval": true,
+      "allUnsupportedFieldsRequireIndependentReviewReceipt": true,
+      "scheduleRepairIsNotEvidenceAcceptance": true,
+      "scheduleRepairIsNotReceiptSupply": true,
+      "scheduleRepairIsNotSecondPrivateReview": true
+    },
+    "fieldRequirements": {
+      "concreteProviderRuntimeBinding.installedRuntimeReceiptRef": {
+        "category": "concreteProviderRuntimeBinding",
+        "field": "installedRuntimeReceiptRef",
+        "receiptFile": "concreteProviderRuntimeBinding.json",
+        "sourceSystem": "Provider/runtime installation records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Approved runtime installation receipt binding the installed adapter digest, immutable development target and installation timestamp.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Approved runtime installation receipt binding the installed adapter digest, immutable development target and installation timestamp."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "concreteProviderRuntimeBinding.providerBindingReceiptRef": {
+        "category": "concreteProviderRuntimeBinding",
+        "field": "providerBindingReceiptRef",
+        "receiptFile": "concreteProviderRuntimeBinding.json",
+        "sourceSystem": "Provider/runtime installation records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Approved provider-to-runtime binding receipt for that same installed adapter and immutable development target; secret-free attestation only.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Approved provider-to-runtime binding receipt for that same installed adapter and immutable development target; secret-free attestation only."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "executableCollectorCommand.reviewedCollectorSourceSha256": {
+        "category": "executableCollectorCommand",
+        "field": "reviewedCollectorSourceSha256",
+        "receiptFile": "executableCollectorCommand.json",
+        "sourceSystem": "Disabled collector source review records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Collector source review record containing the SHA-256 of the exact reviewed collector source bytes and reviewer attestation.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Collector source review record containing the SHA-256 of the exact reviewed collector source bytes and reviewer attestation."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "executableCollectorCommand.disabledCardDigest": {
+        "category": "executableCollectorCommand",
+        "field": "disabledCardDigest",
+        "receiptFile": "executableCollectorCommand.json",
+        "sourceSystem": "Disabled collector source review records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Disabled command-card review record containing the SHA-256 of the reviewed disabled card bytes and explicit no-issuance status.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Disabled command-card review record containing the SHA-256 of the reviewed disabled card bytes and explicit no-issuance status."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "executableCollectorCommand.commandReviewReceiptRef": {
+        "category": "executableCollectorCommand",
+        "field": "commandReviewReceiptRef",
+        "receiptFile": "executableCollectorCommand.json",
+        "sourceSystem": "Disabled collector source review records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Independent command safety review receipt binding that collector source digest and disabled card digest to the approved scope.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Independent command safety review receipt binding that collector source digest and disabled card digest to the approved scope."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "restrictedSyntheticCohortReceipt.restrictedCohortReceiptRef": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "field": "restrictedCohortReceiptRef",
+        "receiptFile": "restrictedSyntheticCohortReceipt.json",
+        "sourceSystem": "Synthetic cohort ownership register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Restricted synthetic cohort registration receipt attesting the bounded synthetic-only cohort and its approved scope; identities stay private.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Restricted synthetic cohort registration receipt attesting the bounded synthetic-only cohort and its approved scope; identities stay private."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "restrictedSyntheticCohortReceipt.syntheticOwnershipReceiptRef": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "field": "syntheticOwnershipReceiptRef",
+        "receiptFile": "restrictedSyntheticCohortReceipt.json",
+        "sourceSystem": "Synthetic cohort ownership register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Synthetic cohort ownership attestation binding the same cohort to its accountable owner and permitted use.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Synthetic cohort ownership attestation binding the same cohort to its accountable owner and permitted use."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "custodyReviewerReceipt.custodianReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "custodianReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "sourceSystem": "Restricted evidence custody register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Custody assignment attestation for the exact evidence set, assigning an accountable custodian and restricted access scope.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Custody assignment attestation for the exact evidence set, assigning an accountable custodian and restricted access scope."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "custodyReviewerReceipt.independentReviewerReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "independentReviewerReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "sourceSystem": "Restricted evidence custody register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Reviewer assignment and independence attestation for that same evidence set, naming a reviewer distinct from the custodian.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Reviewer assignment and independence attestation for that same evidence set, naming a reviewer distinct from the custodian."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "custodyReviewerReceipt.restrictedStoreReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "restrictedStoreReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "sourceSystem": "Restricted evidence custody register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Restricted evidence-store attestation binding the evidence set to access controls, retention deadline and deletion owner.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Restricted evidence-store attestation binding the evidence set to access controls, retention deadline and deletion owner."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "durableConsumedRunLedger.ledgerReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "ledgerReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "sourceSystem": "Durable run-ledger qualification records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior durable run-ledger qualification receipt binding ledger identity, immutable development target and reviewed ledger implementation.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Prior durable run-ledger qualification receipt binding ledger identity, immutable development target and reviewed ledger implementation."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "durableConsumedRunLedger.atomicConsumeReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "atomicConsumeReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "sourceSystem": "Durable run-ledger qualification records",
+        "status": "SCHEDULE_MAPPING_REPAIR_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior atomic-consumption qualification receipt proving single-consumption semantics for that exact ledger implementation and target.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": true,
+          "currentReviewProblem": "MISSING_FIELD_TO_ARTIFACT_PROVENANCE",
+          "repairedSourceArtifactKind": "durable-run-ledger-atomic-consumption-qualification-receipt",
+          "repairedRequiredSourceArtifact": "Approved atomic-consumption qualification receipt for the durable consumed-run ledger, binding ledger identity, immutable target, reviewed ledger implementation, single-consumption behavior, reviewer receipt and approval receipt."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "durableConsumedRunLedger.stopAndUnknownConsumeReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "stopAndUnknownConsumeReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "sourceSystem": "Durable run-ledger qualification records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior stop-and-unknown-outcome qualification receipt proving consumed status cannot reopen for stop or unknown outcomes on that ledger.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Prior stop-and-unknown-outcome qualification receipt proving consumed status cannot reopen for stop or unknown outcomes on that ledger."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "installedRouteBodyObserver.installedObserverReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "installedObserverReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "sourceSystem": "Route observer installation and boundary review records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Route-body observer installation receipt binding observer digest, exact installed route and immutable development deployment.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Route-body observer installation receipt binding observer digest, exact installed route and immutable development deployment."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "installedRouteBodyObserver.earliestBoundaryReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "earliestBoundaryReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "sourceSystem": "Route observer installation and boundary review records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Route-boundary qualification receipt proving the installed observer covers the earliest request-body admission/read boundary on that route.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Route-boundary qualification receipt proving the installed observer covers the earliest request-body admission/read boundary on that route."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "installedRouteBodyObserver.platformBufferingReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "platformBufferingReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "sourceSystem": "Route observer installation and boundary review records",
+        "status": "SCHEDULE_MAPPING_REPAIR_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Platform buffering review receipt attesting coverage of buffering before application handlers for that exact installed route and deployment.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": true,
+          "currentReviewProblem": "MISSING_FIELD_TO_ARTIFACT_PROVENANCE",
+          "repairedSourceArtifactKind": "installed-route-body-observer-platform-buffering-review-receipt",
+          "repairedRequiredSourceArtifact": "Approved platform-buffering review receipt for the installed route-body observer, binding exact route, immutable deployment, pre-handler buffering coverage, reviewer receipt and approval receipt."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "lateGrantObserver.installedObserverReceiptRef": {
+        "category": "lateGrantObserver",
+        "field": "installedObserverReceiptRef",
+        "receiptFile": "lateGrantObserver.json",
+        "sourceSystem": "Late-grant observer qualification records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Late-grant observer installation receipt binding observer digest, grant boundary and immutable development deployment.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Late-grant observer installation receipt binding observer digest, grant boundary and immutable development deployment."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "lateGrantObserver.lateGrantDenialReceiptRef": {
+        "category": "lateGrantObserver",
+        "field": "lateGrantDenialReceiptRef",
+        "receiptFile": "lateGrantObserver.json",
+        "sourceSystem": "Late-grant observer qualification records",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior late-grant denial qualification receipt proving denial after the closed boundary for that exact installed observer and target.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Prior late-grant denial qualification receipt proving denial after the closed boundary for that exact installed observer and target."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "immutableTargetRecheckReceipt.candidateCommit": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "candidateCommit",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "sourceSystem": "Immutable deployment provenance register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior approved immutable-target recheck record containing the full candidate Git commit used for the same deployment and source digest binding.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Prior approved immutable-target recheck record containing the full candidate Git commit used for the same deployment and source digest binding."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "immutableTargetRecheckReceipt.immutableDeploymentRef": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "immutableDeploymentRef",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "sourceSystem": "Immutable deployment provenance register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Prior approved immutable-target recheck record referencing the provider-issued immutable development deployment identity; a mutable slug is insufficient.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Prior approved immutable-target recheck record referencing the provider-issued immutable development deployment identity; a mutable slug is insufficient."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "immutableTargetRecheckReceipt.sourceDigestReceiptRef": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "sourceDigestReceiptRef",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "sourceSystem": "Immutable deployment provenance register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Source-to-deployment provenance receipt referenced by that recheck, binding reviewed source digest and candidate commit to the immutable deployment.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Source-to-deployment provenance receipt referenced by that recheck, binding reviewed source digest and candidate commit to the immutable deployment."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      },
+      "immutableTargetRecheckReceipt.recheckedAtUtc": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "recheckedAtUtc",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "sourceSystem": "Immutable deployment provenance register",
+        "status": "PRIOR_APPROVAL_AND_REVIEW_RECEIPTS_REQUIRED",
+        "priorRequiredSourceArtifactDescription": "Recorded UTC recheck timestamp in that same approved immutable-target recheck record, within its approved evidence freshness window.",
+        "scheduledSourceArtifactMapping": {
+          "repairRequired": false,
+          "currentReviewProblem": null,
+          "repairedSourceArtifactKind": null,
+          "repairedRequiredSourceArtifact": "Recorded UTC recheck timestamp in that same approved immutable-target recheck record, within its approved evidence freshness window."
+        },
+        "requiredReceipts": {
+          "priorEvidenceApprovalReceiptRef": null,
+          "independentReviewReceiptRef": null,
+          "sourceArtifactSha256": null,
+          "sourceArtifactByteCount": null,
+          "targetSourceTimeCoherenceReceiptRef": null,
+          "reviewerIndependenceReceiptRef": null
+        },
+        "acceptanceRequirements": {
+          "fieldAppearsExactlyOnceInRepairedSchedule": true,
+          "sourceArtifactRefMustBeOpaque": true,
+          "sourceArtifactDigestMustBeSha256": true,
+          "priorEvidenceApprovalMustPredateReview": true,
+          "independentReviewMustBindFieldAndSourceArtifactDigest": true,
+          "reviewerMustBeDistinctFromCustodian": true,
+          "targetSourceAndTimeMustAgree": true,
+          "privateValuesPathsAndKeyListingsRemainExcluded": true,
+          "unresolvedRequirementStopsWholeReview": true
+        },
+        "accepted": false
+      }
+    },
+    "futureApprovalGate": {
+      "authorized": false,
+      "exactPhraseTemplate": "I approve one bounded private CAD Auth provenance schedule repair for ReversR-Rebuild, bound to source-only repair packet <repairPacketSha256> at source commit <reviewedSourceCommit>, stopped review rrb-ref:cad-auth-private-evidence-provenance-review-20260925T170602Z, review SHA-256 b580a7ee7368f98dedeea2f5251752bbae7751bea544a0f94d7ef7305dff2747, review receipt SHA-256 f9398433f67e097c6de36453db3b6d348cf616056e7844a4bc6c7d83de81606b, stopped status STOPPED_SOURCE_ARTIFACT_MISMATCH, original schedule rrb-ref:cad-auth-private-evidence-provenance-schedule-20260925T170602Z, and original schedule SHA-256 421394b9d45264001041f22d7af674cec171e94c7c96a212588ad7afa73c0b31. Scope: read only the named original private schedule and previously approved secret-free source artifacts named by that schedule, repair only the scheduled source-artifact mappings for durableConsumedRunLedger.atomicConsumeReceiptRef and installedRouteBodyObserver.platformBufferingReceiptRef, bind prior-evidence approval receipts and independent-review receipts for all 22 unsupported fields, write the repaired private schedule to <repairedScheduleRef> with digest <repairedScheduleSha256>, and return the next exact private evidence-provenance review approval phrase. Stop if any field lacks field-to-artifact provenance, prior-evidence approval, independent-review receipt, target/source/time coherence, reviewer independence, retention/deletion disposition, or any need for runtime credentials/provider configuration. No private receipt reads or discovery, secrets or secret reads, private values or paths, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second private review, real-user commercialization, or commercial-readiness claim.",
+      "phraseFields": {
+        "repairPacketSha256": null,
+        "reviewedSourceCommit": null,
+        "repairedScheduleRef": null,
+        "repairedScheduleSha256": null
+      },
+      "outputMustBePrivateIgnoredScheduleOnly": true,
+      "publicProjectionReleaseRequiresSeparateApproval": true,
+      "futurePrivateEvidenceReviewRequiresSeparateApproval": true,
+      "unresolvedPlaceholdersAreNotApproval": true
+    },
+    "stopConditions": {
+      "sourceArtifactMappingStillMissing": true,
+      "priorEvidenceApprovalMissing": true,
+      "independentReviewReceiptMissing": true,
+      "reviewerNotIndependent": true,
+      "staleOrMismatchedEvidence": true,
+      "unknownOutcome": true,
+      "failingCheck": true,
+      "runtimeCredentialsOrProviderConfigurationNeeded": true,
+      "secretOrPrivateValueWouldBeReadOutsideApprovedScheduleRepair": true
+    },
+    "controls": {
+      "privateReceiptReadAuthorized": false,
+      "privateReceiptDiscoveryAuthorized": false,
+      "secretReadAuthorized": false,
+      "receiptCreationAuthorized": false,
+      "receiptSupplyAuthorized": false,
+      "sourceSetGenerationAuthorized": false,
+      "publicProjectionReleaseAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondPrivateReviewAuthorized": false,
+      "evidenceAccepted": false,
+      "commercialReadinessClaimed": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-receipt-provenance-gap-recovery.json": "8ddc3d58566bcd8ee906aeeae12c9c305e87f7f4ae11b781a2c3a2a3aa5eeb91",
+    "docs/cad-auth-provenance-review-stop-repair.md": "19c85ebac1535e336546234c32a7b2bd217822f8c33ca9e1e51565c182fd810e",
+    "offline/cad-auth-provenance-review-stop-repair/preparation.js": "d822573efe5f64c42fc0ff9f858ee68d2bf70e226cfffa206493f4e5c45362b1",
+    "scripts/cad-auth-provenance-review-stop-repair-checker.js": "d60f579d7b3806b84d33f7234d9619f73f345351e49c0361d539a958245e2147",
+    "scripts/cad-auth-provenance-review-stop-repair.test.js": "8facf5bcfb6862381eab98ef319b117f19ec661885ce9ceddd1304e5b9bea45c"
+  },
+  "sourceMergeCommit": "9fbb305deaf662da006fad8940403845c6c9d993"
+}
