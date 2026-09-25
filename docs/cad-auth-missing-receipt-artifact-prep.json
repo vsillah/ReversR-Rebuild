@@ -1,0 +1,598 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-missing-receipt-artifact-prep-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_ARTIFACT_PREPARATION_NO_PRIVATE_RECEIPTS_LOADED",
+  "parent": {
+    "packet": "cad-auth-restricted-receipt-gap-closure-v1",
+    "sha256": "501768785c79236cd89df5a70bf31efb7afbca20d8388b5923868c897d4519c1",
+    "sourceMergeCommit": "db8baa46aeaf8fb2005cc5fe240d51389f86abc5",
+    "status": "SOURCE_ONLY_GAP_CLOSURE_PLAN_NO_PRIVATE_RECEIPTS_LOADED"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "plan": "cad-auth-missing-receipt-artifact-prep-v1",
+    "sourceOnly": true,
+    "parentContract": "cad-auth-restricted-receipt-gap-closure-plan-v1",
+    "sourceMergeCommit": "db8baa46aeaf8fb2005cc5fe240d51389f86abc5",
+    "requiredCategories": {
+      "concreteProviderRuntimeBinding": {
+        "category": "concreteProviderRuntimeBinding",
+        "requiredReceiptFile": "concreteProviderRuntimeBinding.json",
+        "requiredFields": {
+          "adapterSourceSha256": true,
+          "installedRuntimeReceiptRef": true,
+          "providerBindingReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Provider/runtime installation records",
+        "custodian": "Runtime records custodian",
+        "reviewer": "Independent runtime binding reviewer",
+        "allowedEvidenceSource": "Previously approved installation and provider-binding receipts plus reviewed adapter source digest",
+        "creationOrSupplyPlan": "Supply a dedicated receipt linking the existing installation and provider binding to the reviewed adapter. Source code alone cannot attest installation.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category concreteProviderRuntimeBinding from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "concreteProviderRuntimeBinding",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "executableCollectorCommand": {
+        "category": "executableCollectorCommand",
+        "requiredReceiptFile": "executableCollectorCommand.json",
+        "requiredFields": {
+          "reviewedCollectorSourceSha256": true,
+          "disabledCardDigest": true,
+          "commandReviewReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Disabled collector source review records",
+        "custodian": "Collector source custodian",
+        "reviewer": "Independent command safety reviewer",
+        "allowedEvidenceSource": "Reviewed collector source digest, disabled card digest and existing command review receipt",
+        "creationOrSupplyPlan": "Supply the disabled-card review receipt; record review provenance without issuing or embedding an executable command card.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category executableCollectorCommand from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "executableCollectorCommand",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "requiredReceiptFile": "restrictedSyntheticCohortReceipt.json",
+        "requiredFields": {
+          "restrictedCohortReceiptRef": true,
+          "syntheticOwnershipReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Synthetic cohort ownership register",
+        "custodian": "Synthetic cohort custodian",
+        "reviewer": "Independent synthetic ownership reviewer",
+        "allowedEvidenceSource": "Existing restricted synthetic cohort and ownership attestations",
+        "creationOrSupplyPlan": "Supply a dedicated cohort receipt linking synthetic scope and ownership attestations; exclude identities and cohort values from public output.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category restrictedSyntheticCohortReceipt from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "restrictedSyntheticCohortReceipt",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "custodyReviewerReceipt": {
+        "category": "custodyReviewerReceipt",
+        "requiredReceiptFile": "custodyReviewerReceipt.json",
+        "requiredFields": {
+          "custodianReceiptRef": true,
+          "independentReviewerReceiptRef": true,
+          "restrictedStoreReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Restricted evidence custody register",
+        "custodian": "Restricted evidence custodian",
+        "reviewer": "Independent custody reviewer distinct from custodian",
+        "allowedEvidenceSource": "Existing custodian, independent reviewer and restricted-store attestations",
+        "creationOrSupplyPlan": "Prepare a dedicated custody receipt from approved role assignments and store attestations; unresolved assignments remain missing.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category custodyReviewerReceipt from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "custodyReviewerReceipt",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "durableConsumedRunLedger": {
+        "category": "durableConsumedRunLedger",
+        "requiredReceiptFile": "durableConsumedRunLedger.json",
+        "requiredFields": {
+          "ledgerReceiptRef": true,
+          "atomicConsumeReceiptRef": true,
+          "stopAndUnknownConsumeReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Durable run-ledger qualification records",
+        "custodian": "Run-ledger records custodian",
+        "reviewer": "Independent ledger semantics reviewer",
+        "allowedEvidenceSource": "Existing ledger, atomic consume and stop-or-unknown consume qualification receipts",
+        "creationOrSupplyPlan": "Supply prior qualification receipts for atomic consumption and stop/unknown outcomes; do not create or consume a run to fill this gap.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category durableConsumedRunLedger from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "durableConsumedRunLedger",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "installedRouteBodyObserver": {
+        "category": "installedRouteBodyObserver",
+        "requiredReceiptFile": "installedRouteBodyObserver.json",
+        "requiredFields": {
+          "installedObserverReceiptRef": true,
+          "earliestBoundaryReceiptRef": true,
+          "platformBufferingReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Route observer installation and boundary review records",
+        "custodian": "Route observer records custodian",
+        "reviewer": "Independent request-boundary reviewer",
+        "allowedEvidenceSource": "Existing installed observer, earliest boundary and platform buffering receipts",
+        "creationOrSupplyPlan": "Supply existing installation and boundary attestations including platform buffering coverage; source fixtures alone cannot prove installed behavior.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category installedRouteBodyObserver from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "installedRouteBodyObserver",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "lateGrantObserver": {
+        "category": "lateGrantObserver",
+        "requiredReceiptFile": "lateGrantObserver.json",
+        "requiredFields": {
+          "installedObserverReceiptRef": true,
+          "lateGrantDenialReceiptRef": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Late-grant observer qualification records",
+        "custodian": "Late-grant observer records custodian",
+        "reviewer": "Independent grant-denial reviewer",
+        "allowedEvidenceSource": "Existing installed observer and late-grant denial receipts",
+        "creationOrSupplyPlan": "Supply existing installed-observer and late-grant denial attestations; do not issue sessions or exercise a live grant to manufacture evidence.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category lateGrantObserver from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "lateGrantObserver",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      },
+      "immutableTargetRecheckReceipt": {
+        "category": "immutableTargetRecheckReceipt",
+        "requiredReceiptFile": "immutableTargetRecheckReceipt.json",
+        "requiredFields": {
+          "candidateCommit": true,
+          "immutableDeploymentRef": true,
+          "sourceDigestReceiptRef": true,
+          "recheckedAtUtc": true
+        },
+        "requiredArtifactContract": {
+          "dedicatedJsonReceipt": true,
+          "publicFieldPresenceOnly": true,
+          "opaqueRefsOnly": true,
+          "digestAndByteCountOnlyAfterPrivateReadApproval": true,
+          "localPathDisclosureAllowed": false,
+          "privateValueDisclosureAllowed": false,
+          "topLevelKeyListingAllowed": false
+        },
+        "sourceSystem": "Immutable deployment provenance register",
+        "custodian": "Deployment provenance custodian",
+        "reviewer": "Independent target provenance reviewer",
+        "allowedEvidenceSource": "Existing approved candidate commit, immutable deployment reference, source digest receipt and recheck timestamp",
+        "creationOrSupplyPlan": "Supply the prior target recheck receipt binding the same candidate and immutable deployment to its source digest and timestamp; stale or mismatched evidence stops review.",
+        "status": "MISSING_NOT_CREATED_OR_SUPPLIED",
+        "assignmentStatus": "ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING",
+        "retentionBoundary": "Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.",
+        "supplyMethod": "After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.",
+        "categoryStopConditions": {
+          "missingNamedPrivateReceiptSource": true,
+          "missingRequiredFieldPresence": true,
+          "missingCustodianOrReviewer": true,
+          "custodianIsReviewer": true,
+          "sourceSystemMismatch": true,
+          "retentionBoundaryViolation": true,
+          "evidenceNotPreviouslyApproved": true,
+          "privateValueWouldBeDisclosed": true,
+          "localPathWouldBeDisclosed": true,
+          "secretOrRuntimeCredentialNeeded": true,
+          "providerEnvResourceBillingChangeNeeded": true,
+          "uploadSessionIssuanceOrActivationNeeded": true,
+          "requestBodyAdmissionOrReadNeeded": true,
+          "executableCommandCardNeeded": true,
+          "liveEvidenceCollectionNeeded": true,
+          "retryOrSecondRunNeeded": true,
+          "privateCadOrCommercializationNeeded": true
+        },
+        "futurePrivateReadApprovalPhrase": "Approve one CAD Auth restricted receipt artifact private read for category immutableTargetRecheckReceipt from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit> using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>. Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence, and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status. No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages, runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.",
+        "approvalFields": {
+          "sourceSystem": null,
+          "custodian": null,
+          "reviewer": null,
+          "category": "immutableTargetRecheckReceipt",
+          "allowedEvidenceSource": null,
+          "retentionBoundary": null
+        },
+        "accepted": false
+      }
+    },
+    "sourceAndProvenanceBoundary": {
+      "allowedFutureInputs": {
+        "namedIgnoredPrivateFolder": "one named ignored private folder containing the eight exact receipt files",
+        "approvedSanitizedProjectionRead": "one separately approved sanitized ignored projection read"
+      },
+      "disallowedSourceActions": {
+        "automaticPrivateSearch": true,
+        "broadDirectoryDiscoveryWithoutGate": true,
+        "localPathPublication": true,
+        "privateReceiptValuePublication": true,
+        "topLevelKeyListingPublication": true,
+        "providerRuntimeValuePublication": true,
+        "requestBodyPublication": true,
+        "privateCadPayloadUse": true
+      },
+      "publicCommitBoundary": {
+        "docsTestsCheckersManifestsOnly": true,
+        "publicFieldNamesAllowed": true,
+        "opaqueRefsDigestsByteCountsAllowedOnlyAfterPrivateReadGate": true
+      }
+    },
+    "stopConditions": {
+      "anyMissingCategoryReceipt": true,
+      "anyMissingRequiredField": true,
+      "duplicateCategorySourceDigest": true,
+      "malformedJson": true,
+      "symlinkedReceipt": true,
+      "providerOrRuntimeCredentialNeeded": true,
+      "liveCollectionNeeded": true,
+      "requestBodyReadNeeded": true,
+      "privateValueWouldBeDisclosed": true,
+      "missingNamedAssignmentOrRetention": true,
+      "custodianIsReviewer": true,
+      "evidenceNotPreviouslyApproved": true,
+      "staleOrMismatchedTarget": true,
+      "sourceFixtureClaimedAsInstalledEvidence": true,
+      "executableCommandCardNeeded": true,
+      "providerEnvResourceBillingChangeNeeded": true,
+      "uploadSessionIssuanceOrActivationNeeded": true,
+      "conversionOrSandboxDispatchNeeded": true,
+      "externalMessageNeeded": true,
+      "retryOrSecondRunNeeded": true,
+      "privateCadOrCommercializationNeeded": true,
+      "unresolvedApprovalPlaceholder": true
+    },
+    "futureApprovalGates": {
+      "artifactSupply": {
+        "authorized": false,
+        "exactPhraseTemplate": "Approve CAD Auth receipt artifact supply for category <category> from <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>, using only <allowedEvidenceSource>, retained under <retentionBoundary>. Existing approved evidence only; no live collection or runtime changes.",
+        "mustName": {
+          "sourceSystem": true,
+          "custodian": true,
+          "reviewer": true,
+          "category": true,
+          "allowedEvidenceSource": true,
+          "retentionBoundary": true
+        }
+      },
+      "privateRead": {
+        "authorized": false,
+        "exactPhraseTemplate": "Approve one CAD Auth restricted source-set private read from <exactSourceFolder> to <exactOutputFile> for run <runId>, bound to <candidateCommit> and preparation packet <packetSha256>, custodian <custodian>, independent reviewer <reviewer>, retained under <retentionBoundary>. Eight approved receipt files only; no discovery, live collection, retry, second run, runtime activation or public projection release.",
+        "phraseFields": {
+          "exactSourceFolder": null,
+          "exactOutputFile": null,
+          "runId": null,
+          "candidateCommit": null,
+          "packetSha256": null,
+          "custodian": null,
+          "reviewer": null,
+          "retentionBoundary": null
+        },
+        "requiresAllEightArtifactsSuppliedAndReviewed": true,
+        "unresolvedPlaceholdersAreNotApproval": true,
+        "templateIsNotExecutableOrAuthorization": true,
+        "previousApprovalReusable": false
+      },
+      "sanitizedProjectionReview": {
+        "requiredBefore": "committing opaque refs, digests, byte counts or disposition derived from a private projection",
+        "mustName": {
+          "exactProjectionPath": true,
+          "projectionSha256": true,
+          "candidateCommit": true
+        }
+      },
+      "liveEvidenceCollection": {
+        "requiredBefore": "any executable command card, provider/Auth test, upload-session issuance or production activation",
+        "mustName": {
+          "sealedCommandCardDigest": true,
+          "utcWindow": true,
+          "limitsDigest": true,
+          "rollbackControls": true
+        }
+      }
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0,
+      "liveEvidenceCollected": false,
+      "uploadSessionsIssued": 0,
+      "requestBodyReads": 0,
+      "providerEnvResourceBillingChanges": 0,
+      "secretReads": 0,
+      "activationPerformed": false,
+      "retryOrSecondRunPerformed": false,
+      "privateCadUsed": false,
+      "externalMessagesSent": false,
+      "privateReadAuthorized": false,
+      "artifactCreationOrSupplyAuthorized": false,
+      "privateReceiptsLoaded": false,
+      "artifactsCreatedOrSupplied": 0,
+      "realUserCommercializationAuthorized": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-restricted-receipt-gap-closure.json": "501768785c79236cd89df5a70bf31efb7afbca20d8388b5923868c897d4519c1",
+    "docs/cad-auth-missing-receipt-artifact-prep.md": "ebb18c82fc6a2a1a97df0dd06c3e0c8a691f28bf368be14449a6bec7f6835a0b",
+    "offline/cad-auth-missing-receipt-artifact-prep/preparation.js": "920188c46684ec2a843b60da993b86edc6a470d657f721142a6434bf70b5b36c",
+    "scripts/cad-auth-missing-receipt-artifact-prep-checker.js": "f2d6b951d2dd7567cefdd246a2d1a210308dcdf423c6d0455128aa75d336c30b",
+    "scripts/cad-auth-missing-receipt-artifact-prep.test.js": "f927ee9236c0d449f8f2d495033ed476dc0ada39ea8414224e8b9319055d4a6a"
+  },
+  "sourceMergeCommit": "db8baa46aeaf8fb2005cc5fe240d51389f86abc5"
+}

@@ -48,7 +48,15 @@ assert.equal(require('./cad-auth-restricted-source-set-generator-checker').check
   JSON.parse(read('docs/cad-auth-restricted-source-set-generator.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-receipt-gap-closure-checker').checkGapClosurePacket(
   JSON.parse(read('docs/cad-auth-restricted-receipt-gap-closure.json'))).ok, true);
+assert.equal(require('./cad-auth-missing-receipt-artifact-prep-checker').checkArtifactPacket(
+  JSON.parse(read('docs/cad-auth-missing-receipt-artifact-prep.json'))).ok, true);
 const files = [
+  'docs/cad-auth-missing-receipt-artifact-prep.md',
+  'docs/cad-auth-missing-receipt-artifact-prep.json',
+  'offline/cad-auth-missing-receipt-artifact-prep/preparation.js',
+  'scripts/cad-auth-missing-receipt-artifact-prep-checker.js',
+  'scripts/cad-auth-missing-receipt-artifact-prep.test.js',
+
   'docs/cad-auth-restricted-receipt-review.md',
   'docs/cad-auth-restricted-receipt-review.json',
   'offline/cad-auth-restricted-receipt-review/preparation.js',
