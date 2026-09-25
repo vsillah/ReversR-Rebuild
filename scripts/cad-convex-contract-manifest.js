@@ -28,6 +28,13 @@ const files = [
   'scripts/cad-auth-restricted-source-set-contract-checker.js',
   'scripts/cad-auth-restricted-source-set-contract.test.js',
 
+  'docs/cad-auth-restricted-source-set-generator.md',
+  'docs/cad-auth-restricted-source-set-generator.json',
+  'offline/cad-auth-restricted-source-set-generator/preparation.js',
+  'scripts/cad-auth-restricted-source-set-generator.js',
+  'scripts/cad-auth-restricted-source-set-generator-checker.js',
+  'scripts/cad-auth-restricted-source-set-generator.test.js',
+
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
   'offline/cad-auth-receipt-intake-review-disposition/preparation.js',

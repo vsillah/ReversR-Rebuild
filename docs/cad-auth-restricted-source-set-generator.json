@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-source-set-generator-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_GENERATOR_CONTRACT_NO_PRIVATE_RECEIPTS_LOADED",
+  "parent": {
+    "packet": "cad-auth-restricted-source-set-contract-v1",
+    "sha256": "1a465e49cd6d1351a1b173ab5140323153fd7349124d5fe7a63b6a593f5c8bc4",
+    "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3",
+    "status": "SOURCE_ONLY_CONTRACT_NO_PRIVATE_RECEIPTS_LOADED"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "contract": "cad-auth-restricted-source-set-generator-v1",
+    "sourceOnly": true,
+    "purpose": "Generate a local ignored sanitized source-set projection from an explicit private receipt folder.",
+    "parentContract": "cad-auth-coherent-restricted-source-set-contract-v1",
+    "privateReadPolicy": {
+      "namedSourceDirRequired": true,
+      "automaticSearchOrDirectoryDiscoveryAllowed": false,
+      "expectedReceiptFiles": {
+        "concreteProviderRuntimeBinding": "concreteProviderRuntimeBinding.json",
+        "executableCollectorCommand": "executableCollectorCommand.json",
+        "restrictedSyntheticCohortReceipt": "restrictedSyntheticCohortReceipt.json",
+        "custodyReviewerReceipt": "custodyReviewerReceipt.json",
+        "durableConsumedRunLedger": "durableConsumedRunLedger.json",
+        "installedRouteBodyObserver": "installedRouteBodyObserver.json",
+        "lateGrantObserver": "lateGrantObserver.json",
+        "immutableTargetRecheckReceipt": "immutableTargetRecheckReceipt.json"
+      },
+      "recursiveReadAllowed": false,
+      "symlinkReadAllowed": false,
+      "privateValuesMayBeCommitted": false,
+      "topLevelKeysMayBeCommitted": false,
+      "localPathsMayBeCommitted": false
+    },
+    "projectionPolicy": {
+      "outputRootRef": ".local/cad-auth-restricted-source-sets",
+      "outputFileName": "restricted-source-set.json",
+      "committedProjectionAllowed": false,
+      "allowedPublicFields": {
+        "opaqueReceiptRef": true,
+        "receiptSha256": "lowercase-hex-64",
+        "byteLength": "positive-integer",
+        "requiredFieldPresence": true,
+        "categoryCoverageDisposition": true
+      },
+      "digestAlgorithm": "SHA-256",
+      "digestByteScope": "exact receipt file bytes"
+    },
+    "requiredCategories": {
+      "concreteProviderRuntimeBinding": {
+        "requiredFields": {
+          "adapterSourceSha256": true,
+          "installedRuntimeReceiptRef": true,
+          "providerBindingReceiptRef": true
+        }
+      },
+      "executableCollectorCommand": {
+        "requiredFields": {
+          "reviewedCollectorSourceSha256": true,
+          "disabledCardDigest": true,
+          "commandReviewReceiptRef": true
+        }
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "requiredFields": {
+          "restrictedCohortReceiptRef": true,
+          "syntheticOwnershipReceiptRef": true
+        }
+      },
+      "custodyReviewerReceipt": {
+        "requiredFields": {
+          "custodianReceiptRef": true,
+          "independentReviewerReceiptRef": true,
+          "restrictedStoreReceiptRef": true
+        }
+      },
+      "durableConsumedRunLedger": {
+        "requiredFields": {
+          "ledgerReceiptRef": true,
+          "atomicConsumeReceiptRef": true,
+          "stopAndUnknownConsumeReceiptRef": true
+        }
+      },
+      "installedRouteBodyObserver": {
+        "requiredFields": {
+          "installedObserverReceiptRef": true,
+          "earliestBoundaryReceiptRef": true,
+          "platformBufferingReceiptRef": true
+        }
+      },
+      "lateGrantObserver": {
+        "requiredFields": {
+          "installedObserverReceiptRef": true,
+          "lateGrantDenialReceiptRef": true
+        }
+      },
+      "immutableTargetRecheckReceipt": {
+        "requiredFields": {
+          "candidateCommit": true,
+          "immutableDeploymentRef": true,
+          "sourceDigestReceiptRef": true,
+          "recheckedAtUtc": true
+        }
+      }
+    },
+    "stopConditions": {
+      "missingCategoryFile": true,
+      "malformedJson": true,
+      "missingRequiredField": true,
+      "outputOutsideIgnoredSourceSetRoot": true,
+      "placeholderPromotionAttempt": true
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectorCommandLine": null,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0,
+      "liveEvidenceCollected": false,
+      "uploadSessionsIssued": 0,
+      "requestBodyReads": 0,
+      "providerEnvResourceBillingChanges": 0,
+      "secretReads": 0,
+      "activationPerformed": false,
+      "retryOrSecondRunPerformed": false,
+      "privateCadUsed": false,
+      "externalMessagesSent": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-restricted-source-set-contract.json": "1a465e49cd6d1351a1b173ab5140323153fd7349124d5fe7a63b6a593f5c8bc4",
+    "docs/cad-auth-restricted-source-set-generator.md": "e2fc17fb4b28b828dccc313ee3f49b8e19372f595ea27727a50a08af0c69b092",
+    "offline/cad-auth-restricted-source-set-generator/preparation.js": "12ddb00f235c295759217674cfd33b6bcea5942b83417c213fe94da81f549805",
+    "scripts/cad-auth-restricted-source-set-generator.js": "a55d4b09e3419a9e935fcb53e8ae4bcad5ad7f84ad046bdee9673fc66661b51b",
+    "scripts/cad-auth-restricted-source-set-generator-checker.js": "3a7daac2a14f2f138b37c70361e433bdc3cb6edafaf9858485cfd5c2a93fca00",
+    "scripts/cad-auth-restricted-source-set-generator.test.js": "78cfc141dc2edfebc9518ca23e3390111dae78dd59875245d64689ff9ec4981e"
+  },
+  "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3"
+}
