@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-accepted-provenance-review-projection-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_ACCEPTED_PROVENANCE_PROJECTION_NO_PRIVATE_READS",
+  "parent": {
+    "packet": "cad-auth-provenance-review-stop-repair-v1",
+    "sha256": "3b15ae6fab934c52808f179f01a462890f343bd6e98013780963a9d447e57bac",
+    "sourceMergeCommit": "5690e016163d916096a40a9a09204c57c5a541c5",
+    "status": "SOURCE_ONLY_STOPPED_REVIEW_REPAIR_CONTRACT_NO_PRIVATE_READS"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "projection": "cad-auth-accepted-provenance-review-projection-v1",
+    "sourceOnly": true,
+    "sourceMergeCommit": "5690e016163d916096a40a9a09204c57c5a541c5",
+    "privateReviewProjection": {
+      "ref": "rrb-ref:cad-auth-private-evidence-provenance-review-20260925T175957Z",
+      "sha256": "b82710710dad2560c098e9e207af3b5beff5c9bb0223020ebf371b169abe2088",
+      "receiptSha256": "e3687b11ea4d55f64d21b183c3abf46f88d8c56291b5ce93e4905ffec6d29fbd",
+      "disposition": "ACCEPTED_PRIVATE_PROVENANCE_REVIEW",
+      "privateReviewBytesReadByThisPacket": false,
+      "privateReviewReceiptBytesReadByThisPacket": false,
+      "repairedScheduleBytesReadByThisPacket": false,
+      "dispositionProjectedByOpaqueRefAndDigestOnly": true,
+      "privateValuesProjected": false,
+      "privatePathsProjected": false,
+      "keyListingsProjected": false
+    },
+    "repairedScheduleProjection": {
+      "ref": "rrb-ref:cad-auth-provenance-repaired-schedule-20260925T175957Z",
+      "sha256": "fc8611568aaf7eaf48a132b274d748d931ebba81acf05ee2b7088376701f7bcb",
+      "repairedMappingsVerified": 2,
+      "repairedMappingsRequired": 2,
+      "repairedMappingVerificationStatus": "VERIFIED_2_OF_2",
+      "durableConsumedRunLedgerAtomicConsumeReceiptRefRepaired": true,
+      "installedRouteBodyObserverPlatformBufferingReceiptRefRepaired": true,
+      "staleScheduleMappingAccepted": false
+    },
+    "provenanceCoverage": {
+      "requiredFieldCount": 22,
+      "acceptedFieldCount": 22,
+      "rejectedFieldCount": 0,
+      "unknownFieldCount": 0,
+      "acceptedFieldRatio": "22/22",
+      "acceptedStatus": "ACCEPTED_22_OF_22",
+      "provenanceReviewComplete": true,
+      "provenanceReviewReusableWithoutSeparateReceiptSupplyApproval": false
+    },
+    "closedControlStatus": {
+      "allRuntimeControlsClosed": true,
+      "uploadControlsRemainClosed": true,
+      "requestBodyAdmissionReadRemainsClosed": true,
+      "runtimeActivationRemainsClosed": true,
+      "receiptSupplyRemainsUnapproved": true,
+      "sourceSetGenerationRemainsUnapproved": true,
+      "commercialReadinessRemainsUnclaimed": true
+    },
+    "retentionDeletionDisposition": {
+      "restrictedStoreRef": "rrb-ref:cad-auth-provenance-review-store-20260925T170602Z",
+      "retentionDuration": "P7D",
+      "expiresAtUtc": "2026-10-02T17:06:02Z",
+      "custodianRef": "rrb-ref:cad-auth-evidence-custodian-captain-20260925T170602Z",
+      "independentReviewerRef": "rrb-ref:cad-auth-evidence-independent-reviewer-20260925T170602Z",
+      "deletionOwnerRef": "rrb-ref:cad-auth-evidence-custodian-captain-20260925T170602Z",
+      "workingCopiesAndDerivativesRetainedInRestrictedStore": true,
+      "publicPacketContainsOnlyOpaqueRefsDigestsCountsAndStatuses": true,
+      "deletionRequiresSeparateRestrictedStoreDisposition": true
+    },
+    "nextReceiptSupplyGate": {
+      "authorized": false,
+      "exactPhraseTemplate": "I approve one bounded private CAD Auth eight-artifact receipt supply from the accepted provenance review for ReversR-Rebuild, bound to source-only accepted provenance projection packet <projectionPacketSha256> at source commit <reviewedSourceCommit>, private review rrb-ref:cad-auth-private-evidence-provenance-review-20260925T175957Z with review SHA-256 b82710710dad2560c098e9e207af3b5beff5c9bb0223020ebf371b169abe2088, review receipt SHA-256 e3687b11ea4d55f64d21b183c3abf46f88d8c56291b5ce93e4905ffec6d29fbd, repaired schedule rrb-ref:cad-auth-provenance-repaired-schedule-20260925T175957Z, and repaired schedule SHA-256 fc8611568aaf7eaf48a132b274d748d931ebba81acf05ee2b7088376701f7bcb. Scope: read only the accepted private provenance review, its review receipt, and the repaired schedule named above; create only if supportable from that accepted provenance the eight dedicated JSON receipt artifacts with required public field names into ignored private receipt source folder <receiptSourceFolder>, run id <receiptRunId>; use only opaque refs, SHA-256 digests, byte counts, coverage counts, provenance/status markers, and retention/deletion disposition values for receipt fields; compute per-file SHA-256 digests, byte counts, and coverage status; and stop without substitution if any category or required field lacks accepted provenance, prior approval, independent review, target/source/time coherence, reviewer independence, or retention/deletion disposition. No discovery beyond the named accepted review, receipt, and repaired schedule; no secrets or secret reads; no private values or paths or key listings in public output; no provider/env/resource/billing changes; no source-set generation; no public projection release; no upload-session issuance; no production upload activation; no request-body admission/read; no conversion; no Sandbox dispatch; no private CAD payload use; no live evidence collection; no runtime activation; no executable command-card issuance; no external messages; no retry or additional review run; no real-user commercialization; and no commercial-readiness claim.",
+      "phraseFields": {
+        "projectionPacketSha256": null,
+        "reviewedSourceCommit": null,
+        "receiptSourceFolder": null,
+        "receiptRunId": null
+      },
+      "receiptSupplyRequiresSeparatePrivateReadApproval": true,
+      "sourceSetGenerationRequiresSeparateApproval": true,
+      "productionUploadActivationRequiresSeparateApproval": true,
+      "unresolvedPlaceholdersAreNotApproval": true
+    },
+    "stopConditions": {
+      "acceptedReviewRefDigestMismatch": true,
+      "reviewReceiptDigestMismatch": true,
+      "repairedScheduleDigestMismatch": true,
+      "acceptedFieldCountNot22": true,
+      "repairedMappingVerificationNot2Of2": true,
+      "controlsNotClosed": true,
+      "retentionDeletionDispositionMissing": true,
+      "unknownOutcome": true,
+      "failingCheck": true,
+      "runtimeCredentialsOrProviderConfigurationNeeded": true,
+      "secretOrPrivateValueWouldBeRead": true
+    },
+    "controls": {
+      "privateReceiptReadAuthorized": false,
+      "privateReceiptDiscoveryAuthorized": false,
+      "secretReadAuthorized": false,
+      "privateValueDisclosureAuthorized": false,
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "receiptCreationAuthorized": false,
+      "receiptSupplyAuthorized": false,
+      "sourceSetGenerationAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "additionalReviewRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-provenance-review-stop-repair.json": "3b15ae6fab934c52808f179f01a462890f343bd6e98013780963a9d447e57bac",
+    "docs/cad-auth-accepted-provenance-projection.md": "c00d6c86fb824c52a009c11b0b01bbce7e9b92ec61c7f8a6dce367ff3c4a0c9a",
+    "offline/cad-auth-accepted-provenance-projection/preparation.js": "a54bec74930771de3a842b08b2193a90fca73ae0c4203b88ab3d9c5e6916de25",
+    "scripts/cad-auth-accepted-provenance-projection-checker.js": "cd136ebd2fafede2fcf220e86a79bcc7702ea481f40222b46eede088188f2681",
+    "scripts/cad-auth-accepted-provenance-projection.test.js": "07c5ed33a5f759c21ebe1cf86290e566fa813c9aedb4025bd582f2d43cd25547"
+  },
+  "sourceMergeCommit": "5690e016163d916096a40a9a09204c57c5a541c5"
+}
