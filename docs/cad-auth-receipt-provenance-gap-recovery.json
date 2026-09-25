@@ -1,0 +1,1012 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-receipt-provenance-gap-recovery-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_PROVENANCE_GAP_RECOVERY_STOP_PRESERVED",
+  "parent": {
+    "packet": "cad-auth-eight-artifact-supply-gate-v1",
+    "sha256": "6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac",
+    "sourceMergeCommit": "cdfe042852eaa5393656aeec87aac630eaf47f47",
+    "status": "SOURCE_ONLY_BUNDLED_SUPPLY_GATE_NO_PRIVATE_RECEIPTS_LOADED"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "plan": "cad-auth-receipt-provenance-gap-recovery-v1",
+    "sourceOnly": true,
+    "anchors": {
+      "mainCommit": "cdfe042852eaa5393656aeec87aac630eaf47f47",
+      "supplyPacketSha256": "6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac",
+      "stopDispositionSha256": "6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157",
+      "supplyAttemptDispositionSha256": "c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d",
+      "artifactCreationAttemptDispositionSha256": "3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e"
+    },
+    "dispositionBinding": {
+      "source": "Exact SHA-256 anchors supplied in the implementation brief; private disposition bytes were not read or independently rehashed.",
+      "privateDispositionContentsVerified": false,
+      "currentDisposition": "STOP_PRESERVED_NO_PRIVATE_EVIDENCE_RECOVERY_EXECUTED",
+      "previousApprovalReusable": false,
+      "retryAllowed": false,
+      "secondRunAllowed": false
+    },
+    "coverage": {
+      "requiredFields": 23,
+      "supportedFields": 1,
+      "unsupportedFields": 22,
+      "acceptedCategories": 0
+    },
+    "supportedField": {
+      "category": "concreteProviderRuntimeBinding",
+      "field": "adapterSourceSha256",
+      "status": "PRIOR_SOURCE_RECORD_FIELD_PRESENCE_ONLY",
+      "source": "offline/cad-auth-restricted-receipt-gap-closure/preparation.js#OBSERVED_GAP.concreteProviderRuntimeBindingPartial.presentFields.adapterSourceSha256",
+      "recordedPresent": true,
+      "privateValue": null,
+      "privateValueRead": false,
+      "independentlyReverifiedNow": false,
+      "installedRuntimeProven": false,
+      "receiptAccepted": false
+    },
+    "missingFields": {
+      "concreteProviderRuntimeBinding.installedRuntimeReceiptRef": {
+        "category": "concreteProviderRuntimeBinding",
+        "field": "installedRuntimeReceiptRef",
+        "receiptFile": "concreteProviderRuntimeBinding.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Provider/runtime installation records",
+        "requiredSourceArtifact": {
+          "contractId": "concreteProviderRuntimeBinding.installedRuntimeReceiptRef",
+          "description": "Approved runtime installation receipt binding the installed adapter digest, immutable development target and installation timestamp.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Runtime records custodian",
+        "independentReviewerRole": "Independent runtime binding reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "concreteProviderRuntimeBinding.providerBindingReceiptRef": {
+        "category": "concreteProviderRuntimeBinding",
+        "field": "providerBindingReceiptRef",
+        "receiptFile": "concreteProviderRuntimeBinding.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Provider/runtime installation records",
+        "requiredSourceArtifact": {
+          "contractId": "concreteProviderRuntimeBinding.providerBindingReceiptRef",
+          "description": "Approved provider-to-runtime binding receipt for that same installed adapter and immutable development target; secret-free attestation only.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Runtime records custodian",
+        "independentReviewerRole": "Independent runtime binding reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "executableCollectorCommand.reviewedCollectorSourceSha256": {
+        "category": "executableCollectorCommand",
+        "field": "reviewedCollectorSourceSha256",
+        "receiptFile": "executableCollectorCommand.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Disabled collector source review records",
+        "requiredSourceArtifact": {
+          "contractId": "executableCollectorCommand.reviewedCollectorSourceSha256",
+          "description": "Collector source review record containing the SHA-256 of the exact reviewed collector source bytes and reviewer attestation.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Collector source custodian",
+        "independentReviewerRole": "Independent command safety reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "executableCollectorCommand.disabledCardDigest": {
+        "category": "executableCollectorCommand",
+        "field": "disabledCardDigest",
+        "receiptFile": "executableCollectorCommand.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Disabled collector source review records",
+        "requiredSourceArtifact": {
+          "contractId": "executableCollectorCommand.disabledCardDigest",
+          "description": "Disabled command-card review record containing the SHA-256 of the reviewed disabled card bytes and explicit no-issuance status.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Collector source custodian",
+        "independentReviewerRole": "Independent command safety reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "executableCollectorCommand.commandReviewReceiptRef": {
+        "category": "executableCollectorCommand",
+        "field": "commandReviewReceiptRef",
+        "receiptFile": "executableCollectorCommand.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Disabled collector source review records",
+        "requiredSourceArtifact": {
+          "contractId": "executableCollectorCommand.commandReviewReceiptRef",
+          "description": "Independent command safety review receipt binding that collector source digest and disabled card digest to the approved scope.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Collector source custodian",
+        "independentReviewerRole": "Independent command safety reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "restrictedSyntheticCohortReceipt.restrictedCohortReceiptRef": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "field": "restrictedCohortReceiptRef",
+        "receiptFile": "restrictedSyntheticCohortReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Synthetic cohort ownership register",
+        "requiredSourceArtifact": {
+          "contractId": "restrictedSyntheticCohortReceipt.restrictedCohortReceiptRef",
+          "description": "Restricted synthetic cohort registration receipt attesting the bounded synthetic-only cohort and its approved scope; identities stay private.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Synthetic cohort custodian",
+        "independentReviewerRole": "Independent synthetic ownership reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "restrictedSyntheticCohortReceipt.syntheticOwnershipReceiptRef": {
+        "category": "restrictedSyntheticCohortReceipt",
+        "field": "syntheticOwnershipReceiptRef",
+        "receiptFile": "restrictedSyntheticCohortReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Synthetic cohort ownership register",
+        "requiredSourceArtifact": {
+          "contractId": "restrictedSyntheticCohortReceipt.syntheticOwnershipReceiptRef",
+          "description": "Synthetic cohort ownership attestation binding the same cohort to its accountable owner and permitted use.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Synthetic cohort custodian",
+        "independentReviewerRole": "Independent synthetic ownership reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "custodyReviewerReceipt.custodianReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "custodianReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Restricted evidence custody register",
+        "requiredSourceArtifact": {
+          "contractId": "custodyReviewerReceipt.custodianReceiptRef",
+          "description": "Custody assignment attestation for the exact evidence set, assigning an accountable custodian and restricted access scope.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Restricted evidence custodian",
+        "independentReviewerRole": "Independent custody reviewer distinct from custodian",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "custodyReviewerReceipt.independentReviewerReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "independentReviewerReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Restricted evidence custody register",
+        "requiredSourceArtifact": {
+          "contractId": "custodyReviewerReceipt.independentReviewerReceiptRef",
+          "description": "Reviewer assignment and independence attestation for that same evidence set, naming a reviewer distinct from the custodian.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Restricted evidence custodian",
+        "independentReviewerRole": "Independent custody reviewer distinct from custodian",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "custodyReviewerReceipt.restrictedStoreReceiptRef": {
+        "category": "custodyReviewerReceipt",
+        "field": "restrictedStoreReceiptRef",
+        "receiptFile": "custodyReviewerReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Restricted evidence custody register",
+        "requiredSourceArtifact": {
+          "contractId": "custodyReviewerReceipt.restrictedStoreReceiptRef",
+          "description": "Restricted evidence-store attestation binding the evidence set to access controls, retention deadline and deletion owner.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Restricted evidence custodian",
+        "independentReviewerRole": "Independent custody reviewer distinct from custodian",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "durableConsumedRunLedger.ledgerReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "ledgerReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Durable run-ledger qualification records",
+        "requiredSourceArtifact": {
+          "contractId": "durableConsumedRunLedger.ledgerReceiptRef",
+          "description": "Prior durable run-ledger qualification receipt binding ledger identity, immutable development target and reviewed ledger implementation.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Run-ledger records custodian",
+        "independentReviewerRole": "Independent ledger semantics reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "durableConsumedRunLedger.atomicConsumeReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "atomicConsumeReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Durable run-ledger qualification records",
+        "requiredSourceArtifact": {
+          "contractId": "durableConsumedRunLedger.atomicConsumeReceiptRef",
+          "description": "Prior atomic-consumption qualification receipt proving single-consumption semantics for that exact ledger implementation and target.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Run-ledger records custodian",
+        "independentReviewerRole": "Independent ledger semantics reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "durableConsumedRunLedger.stopAndUnknownConsumeReceiptRef": {
+        "category": "durableConsumedRunLedger",
+        "field": "stopAndUnknownConsumeReceiptRef",
+        "receiptFile": "durableConsumedRunLedger.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Durable run-ledger qualification records",
+        "requiredSourceArtifact": {
+          "contractId": "durableConsumedRunLedger.stopAndUnknownConsumeReceiptRef",
+          "description": "Prior stop-and-unknown-outcome qualification receipt proving consumed status cannot reopen for stop or unknown outcomes on that ledger.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Run-ledger records custodian",
+        "independentReviewerRole": "Independent ledger semantics reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "installedRouteBodyObserver.installedObserverReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "installedObserverReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Route observer installation and boundary review records",
+        "requiredSourceArtifact": {
+          "contractId": "installedRouteBodyObserver.installedObserverReceiptRef",
+          "description": "Route-body observer installation receipt binding observer digest, exact installed route and immutable development deployment.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Route observer records custodian",
+        "independentReviewerRole": "Independent request-boundary reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "installedRouteBodyObserver.earliestBoundaryReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "earliestBoundaryReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Route observer installation and boundary review records",
+        "requiredSourceArtifact": {
+          "contractId": "installedRouteBodyObserver.earliestBoundaryReceiptRef",
+          "description": "Route-boundary qualification receipt proving the installed observer covers the earliest request-body admission/read boundary on that route.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Route observer records custodian",
+        "independentReviewerRole": "Independent request-boundary reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "installedRouteBodyObserver.platformBufferingReceiptRef": {
+        "category": "installedRouteBodyObserver",
+        "field": "platformBufferingReceiptRef",
+        "receiptFile": "installedRouteBodyObserver.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Route observer installation and boundary review records",
+        "requiredSourceArtifact": {
+          "contractId": "installedRouteBodyObserver.platformBufferingReceiptRef",
+          "description": "Platform buffering review receipt attesting coverage of buffering before application handlers for that exact installed route and deployment.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Route observer records custodian",
+        "independentReviewerRole": "Independent request-boundary reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "lateGrantObserver.installedObserverReceiptRef": {
+        "category": "lateGrantObserver",
+        "field": "installedObserverReceiptRef",
+        "receiptFile": "lateGrantObserver.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Late-grant observer qualification records",
+        "requiredSourceArtifact": {
+          "contractId": "lateGrantObserver.installedObserverReceiptRef",
+          "description": "Late-grant observer installation receipt binding observer digest, grant boundary and immutable development deployment.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Late-grant observer records custodian",
+        "independentReviewerRole": "Independent grant-denial reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "lateGrantObserver.lateGrantDenialReceiptRef": {
+        "category": "lateGrantObserver",
+        "field": "lateGrantDenialReceiptRef",
+        "receiptFile": "lateGrantObserver.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Late-grant observer qualification records",
+        "requiredSourceArtifact": {
+          "contractId": "lateGrantObserver.lateGrantDenialReceiptRef",
+          "description": "Prior late-grant denial qualification receipt proving denial after the closed boundary for that exact installed observer and target.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Late-grant observer records custodian",
+        "independentReviewerRole": "Independent grant-denial reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "immutableTargetRecheckReceipt.candidateCommit": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "candidateCommit",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Immutable deployment provenance register",
+        "requiredSourceArtifact": {
+          "contractId": "immutableTargetRecheckReceipt.candidateCommit",
+          "description": "Prior approved immutable-target recheck record containing the full candidate Git commit used for the same deployment and source digest binding.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Deployment provenance custodian",
+        "independentReviewerRole": "Independent target provenance reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "immutableTargetRecheckReceipt.immutableDeploymentRef": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "immutableDeploymentRef",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Immutable deployment provenance register",
+        "requiredSourceArtifact": {
+          "contractId": "immutableTargetRecheckReceipt.immutableDeploymentRef",
+          "description": "Prior approved immutable-target recheck record referencing the provider-issued immutable development deployment identity; a mutable slug is insufficient.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Deployment provenance custodian",
+        "independentReviewerRole": "Independent target provenance reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "immutableTargetRecheckReceipt.sourceDigestReceiptRef": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "sourceDigestReceiptRef",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Immutable deployment provenance register",
+        "requiredSourceArtifact": {
+          "contractId": "immutableTargetRecheckReceipt.sourceDigestReceiptRef",
+          "description": "Source-to-deployment provenance receipt referenced by that recheck, binding reviewed source digest and candidate commit to the immutable deployment.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Deployment provenance custodian",
+        "independentReviewerRole": "Independent target provenance reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      },
+      "immutableTargetRecheckReceipt.recheckedAtUtc": {
+        "category": "immutableTargetRecheckReceipt",
+        "field": "recheckedAtUtc",
+        "receiptFile": "immutableTargetRecheckReceipt.json",
+        "status": "UNSUPPORTED_PROVENANCE_REQUIRED",
+        "accepted": false,
+        "sourceSystem": "Immutable deployment provenance register",
+        "requiredSourceArtifact": {
+          "contractId": "immutableTargetRecheckReceipt.recheckedAtUtc",
+          "description": "Recorded UTC recheck timestamp in that same approved immutable-target recheck record, within its approved evidence freshness window.",
+          "exactPrivateArtifactRef": null,
+          "sourceArtifactSha256": null,
+          "priorEvidenceApprovalRef": null,
+          "existenceVerified": false
+        },
+        "custodianRole": "Deployment provenance custodian",
+        "independentReviewerRole": "Independent target provenance reviewer",
+        "custodian": null,
+        "independentReviewer": null,
+        "reviewRequirements": {
+          "reviewerDistinctFromCustodian": true,
+          "priorApprovalRequired": true,
+          "targetSourceAndTimeMustAgree": true,
+          "fixtureOrSourcePresenceIsNotInstalledEvidence": true,
+          "unresolvedReferenceStopsWholeReview": true
+        },
+        "retention": {
+          "restrictedStoreRef": null,
+          "retentionDuration": null,
+          "expiresAtUtc": null,
+          "deletionOwner": null,
+          "deletionVerificationReceiptRef": null,
+          "appliesTo": "Approved working copies, provenance schedule, review notes and all private derivatives; original source-system retention remains separately governed.",
+          "boundary": "Named ignored restricted store only, with least-privilege access for the named custodian and independent reviewer. Fix duration and UTC expiry before use; stop at expiry. Delete approved working copies and derivatives by that deadline, with deletion owner and verification recorded privately. No public projection release without separate approval; no deletion of original source-system records under this gate."
+        },
+        "futureApprovalPhrase": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+        "futureApprovalRequiresThisFieldInCompleteSchedule": true
+      }
+    },
+    "futureApprovalGate": {
+      "authorized": false,
+      "exactPhraseTemplate": "Approve one CAD Auth private evidence-provenance review for the 22 unsupported required receipt fields in recovery packet <recoveryPacketSha256> at source commit <reviewedSourceCommit>, bound to main cdfe042852eaa5393656aeec87aac630eaf47f47, supply packet 6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac, stop disposition 6fbdb713768b16563a6bd0bf6557c79c4fc10217f809330bab49982f95f17157, supply-attempt disposition c3356c5457988de9926b11d663cb77a059104c757dce30c2633d6cb2fe98731d, and artifact-creation-attempt disposition 3ef1c42261cfbcdc2982bd30fa39273f6e3d037513af8575401fc04717c7d62e. Read only existing previously approved secret-free source artifacts explicitly named in complete provenance schedule <provenanceScheduleRef> with digest <provenanceScheduleSha256>, coordinated by custodian <custodian> and independent reviewer <reviewer>, within <approvalWindowUtc>. Record a private provenance review in <restrictedStoreRef>, retain working copies and derivatives for <retentionDuration> until <expiresAtUtc>, with deletion owner <deletionOwner>. Verify field-to-artifact provenance, prior evidence approval, target/source/time coherence and independent review for every field; stop the whole review on any missing, stale, mismatched, unapproved or unknown evidence, failing check or need for runtime credentials/provider configuration. The existing adapterSourceSha256 presence record grants no installation or runtime acceptance. No discovery, secrets or secret reads, private values or paths or key listings in public output, provider/env/resource/billing changes, receipt creation or supply, source-set generation, public projection release, upload-session issuance, production upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, live evidence collection, runtime activation, executable command-card issuance, external messages, retry, second run, real-user commercialization, or commercial-readiness claim.",
+      "phraseFields": {
+        "recoveryPacketSha256": null,
+        "reviewedSourceCommit": null,
+        "provenanceScheduleRef": null,
+        "provenanceScheduleSha256": null,
+        "custodian": null,
+        "reviewer": null,
+        "approvalWindowUtc": null,
+        "restrictedStoreRef": null,
+        "retentionDuration": null,
+        "expiresAtUtc": null,
+        "deletionOwner": null
+      },
+      "scheduleRequirements": {
+        "exactFieldCount": 22,
+        "everyMissingFieldExactlyOnce": true,
+        "exactSecretFreeArtifactReferencesRequired": true,
+        "sourceArtifactDigestsRequired": true,
+        "priorEvidenceApprovalsRequired": true,
+        "namedRolesRequiredPerField": true,
+        "reviewerDistinctFromCustodianPerFieldAndBundle": true,
+        "retentionAndDeletionRequiredPerField": true,
+        "fixedUtcWindowAndFreshnessCriteriaRequired": true,
+        "completeScheduleDigestBoundToPacketAndSourceCommit": true,
+        "schedulePreparationCannotDiscoverOrReadPrivateSourcesWithoutSeparateApproval": true,
+        "sameSourceArtifactMaySupportMultipleFieldsOnlyWithExplicitFieldMapping": true
+      },
+      "unresolvedPlaceholdersAreNotApproval": true,
+      "templateIsNotExecutableOrAuthorization": true,
+      "approvalParserImplemented": false,
+      "privateReaderImplemented": false,
+      "priorSupplyOrCreationApprovalReusable": false,
+      "missingEvidenceRequiresSeparateProposal": true,
+      "receiptSupplyAndSourceSetReadRequireSeparateGates": true,
+      "publicProjectionReleaseRequiresSeparateApproval": true
+    },
+    "stopConditions": {
+      "anyMissingCategoryReceipt": true,
+      "anyMissingRequiredField": true,
+      "duplicateCategorySourceDigest": true,
+      "malformedJson": true,
+      "symlinkedReceipt": true,
+      "providerOrRuntimeCredentialNeeded": true,
+      "liveCollectionNeeded": true,
+      "requestBodyReadNeeded": true,
+      "privateValueWouldBeDisclosed": true,
+      "missingNamedAssignmentOrRetention": true,
+      "custodianIsReviewer": true,
+      "evidenceNotPreviouslyApproved": true,
+      "staleOrMismatchedTarget": true,
+      "sourceFixtureClaimedAsInstalledEvidence": true,
+      "executableCommandCardNeeded": true,
+      "providerEnvResourceBillingChangeNeeded": true,
+      "uploadSessionIssuanceOrActivationNeeded": true,
+      "conversionOrSandboxDispatchNeeded": true,
+      "externalMessageNeeded": true,
+      "retryOrSecondRunNeeded": true,
+      "privateCadOrCommercializationNeeded": true,
+      "unresolvedApprovalPlaceholder": true,
+      "partialOrAdditionalCategorySchedule": true,
+      "missingOrUnapprovedSupplySchedule": true,
+      "scheduleDigestOrPacketDigestMismatch": true,
+      "expiredApprovalWindow": true,
+      "privateReadOrDiscoveryNeeded": true,
+      "priorApprovalReused": true,
+      "anyUnsupportedFieldUnmapped": true,
+      "missingExactSourceArtifactOrPriorApproval": true,
+      "failingCheck": true,
+      "unknownOutcome": true,
+      "runtimeCredentialsOrProviderConfigurationNeeded": true,
+      "secretContainingArtifact": true,
+      "originalSourceDeletionNeeded": true
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0,
+      "liveEvidenceCollected": false,
+      "uploadSessionsIssued": 0,
+      "requestBodyReads": 0,
+      "providerEnvResourceBillingChanges": 0,
+      "secretReads": 0,
+      "activationPerformed": false,
+      "retryOrSecondRunPerformed": false,
+      "privateCadUsed": false,
+      "externalMessagesSent": false,
+      "privateReadAuthorized": false,
+      "artifactCreationOrSupplyAuthorized": false,
+      "privateReceiptsLoaded": false,
+      "artifactsCreatedOrSupplied": 0,
+      "realUserCommercializationAuthorized": false,
+      "bundledSupplyAuthorized": false,
+      "privateReviewAuthorized": false,
+      "privateDiscoveryAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "providerEnvResourceBillingChangesAuthorized": false,
+      "publicProjectionReleaseAuthorized": false,
+      "privateEvidenceProvenanceReviewAuthorized": false,
+      "secretsRead": false,
+      "evidenceAccepted": false,
+      "privateEvidenceProvenanceRecovered": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-eight-artifact-supply-gate.json": "6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac",
+    "offline/cad-auth-restricted-receipt-gap-closure/preparation.js": "e870554cc2d7af96e915d8aa93e43faa3c7bd37e0ad43daa007da483f385e792",
+    "docs/cad-auth-receipt-provenance-gap-recovery.md": "f72d3178eb962836d561a77cdfd97a9df490a9a219bf8a31c5d7d2ad5b9056ac",
+    "offline/cad-auth-receipt-provenance-gap-recovery/preparation.js": "3a0615a4305a25c53abc15ee1b42167535ea34a4b3129873d48056f2583d486f",
+    "scripts/cad-auth-receipt-provenance-gap-recovery-checker.js": "4ddbb696eb996fe62ba06d22ba2cd0a88484ab861ec77d58bf771fb8492a1fa1",
+    "scripts/cad-auth-receipt-provenance-gap-recovery.test.js": "169d7e5f1fbe88331757a7b81295ff0ccd6a4a3e2342d6e7415de5b5e8887315"
+  },
+  "sourceMergeCommit": "cdfe042852eaa5393656aeec87aac630eaf47f47"
+}
