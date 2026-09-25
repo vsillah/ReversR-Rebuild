@@ -44,6 +44,8 @@ assert.equal(require('./cad-auth-restricted-candidate-discovery-checker').checkD
   JSON.parse(read('docs/cad-auth-restricted-candidate-discovery.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-source-set-contract-checker').checkContract(
   JSON.parse(read('docs/cad-auth-restricted-source-set-contract.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-source-set-generator-checker').checkGeneratorPacket(
+  JSON.parse(read('docs/cad-auth-restricted-source-set-generator.json'))).ok, true);
 const files = [
   'docs/cad-auth-restricted-receipt-review.md',
   'docs/cad-auth-restricted-receipt-review.json',
@@ -68,6 +70,13 @@ const files = [
   'offline/cad-auth-restricted-source-set-contract/preparation.js',
   'scripts/cad-auth-restricted-source-set-contract-checker.js',
   'scripts/cad-auth-restricted-source-set-contract.test.js',
+
+  'docs/cad-auth-restricted-source-set-generator.md',
+  'docs/cad-auth-restricted-source-set-generator.json',
+  'offline/cad-auth-restricted-source-set-generator/preparation.js',
+  'scripts/cad-auth-restricted-source-set-generator.js',
+  'scripts/cad-auth-restricted-source-set-generator-checker.js',
+  'scripts/cad-auth-restricted-source-set-generator.test.js',
 
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
