@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-upload-admission-readiness-rollup.md',
+  'docs/cad-auth-upload-admission-readiness-rollup.json',
+  'offline/cad-auth-upload-admission-readiness-rollup/preparation.js',
+  'scripts/cad-auth-upload-admission-readiness-rollup-checker.js',
+  'scripts/cad-auth-upload-admission-readiness-rollup.test.js',
+
   'docs/cad-auth-restricted-source-set-projection.md',
   'docs/cad-auth-restricted-source-set-projection.json',
   'offline/cad-auth-restricted-source-set-projection/preparation.js',
