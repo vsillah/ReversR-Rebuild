@@ -22,6 +22,12 @@ const files = [
   'scripts/cad-auth-restricted-candidate-discovery-checker.js',
   'scripts/cad-auth-restricted-candidate-discovery.test.js',
 
+  'docs/cad-auth-restricted-source-set-contract.md',
+  'docs/cad-auth-restricted-source-set-contract.json',
+  'offline/cad-auth-restricted-source-set-contract/preparation.js',
+  'scripts/cad-auth-restricted-source-set-contract-checker.js',
+  'scripts/cad-auth-restricted-source-set-contract.test.js',
+
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
   'offline/cad-auth-receipt-intake-review-disposition/preparation.js',
