@@ -4,6 +4,12 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'docs/cad-auth-eight-artifact-supply-gate.md',
+  'docs/cad-auth-eight-artifact-supply-gate.json',
+  'offline/cad-auth-eight-artifact-supply-gate/preparation.js',
+  'scripts/cad-auth-eight-artifact-supply-gate-checker.js',
+  'scripts/cad-auth-eight-artifact-supply-gate.test.js',
+
   'docs/cad-auth-missing-receipt-artifact-prep.md',
   'docs/cad-auth-missing-receipt-artifact-prep.json',
   'offline/cad-auth-missing-receipt-artifact-prep/preparation.js',
@@ -657,7 +663,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 69, mode: 'offline-source-unqualified',
+const manifest = { version: 70, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
