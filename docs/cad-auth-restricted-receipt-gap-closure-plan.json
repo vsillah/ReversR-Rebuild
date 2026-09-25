@@ -1,0 +1,776 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-restricted-receipt-gap-closure-plan-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_GAP_CLOSURE_PLAN_NO_PRIVATE_RECEIPTS_LOADED",
+  "parent": {
+    "packet": "cad-auth-restricted-source-set-generator-v1",
+    "sha256": "7c2bb5d5f87f5c4016aaf9b4db2faccf3f545af5fff247874a11c05640975172",
+    "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3",
+    "status": "SOURCE_ONLY_GENERATOR_CONTRACT_NO_PRIVATE_RECEIPTS_LOADED"
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "sourceOnly": true,
+    "status": "AWAITING_SEPARATE_RECEIPT_PROVENANCE_APPROVAL",
+    "baseline": {
+      "provenance": "SANITIZED_CAPTAIN_HANDOFF_NOT_RECOLLECTED",
+      "fullCategoryMatches": 0,
+      "requiredCategories": 8,
+      "partialFieldCoverage": {
+        "concreteProviderRuntimeBinding": {
+          "adapterSourceSha256": true
+        }
+      },
+      "partialCoverageIsReceiptAcceptance": false,
+      "privateSourcesReadByThisGate": 0
+    },
+    "categories": {
+      "concreteProviderRuntimeBinding": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Reviewed adapter source plus installed-runtime and provider-binding receipts for the same immutable target.",
+        "requiredPublicFieldNames": {
+          "adapterSourceSha256": {
+            "required": true,
+            "value": null
+          },
+          "installedRuntimeReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "providerBindingReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "concreteProviderRuntimeBinding",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "adapterSourceSha256": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "installedRuntimeReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "providerBindingReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "executableCollectorCommand": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Independent source review and disabled-card digest binding; no command bytes or executable card.",
+        "requiredPublicFieldNames": {
+          "reviewedCollectorSourceSha256": {
+            "required": true,
+            "value": null
+          },
+          "disabledCardDigest": {
+            "required": true,
+            "value": null
+          },
+          "commandReviewReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "executableCollectorCommand",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "reviewedCollectorSourceSha256": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "disabledCardDigest": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "commandReviewReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "restrictedSyntheticCohortReceipt": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Restricted synthetic cohort membership and ownership receipts; no private CAD or real-user cohort.",
+        "requiredPublicFieldNames": {
+          "restrictedCohortReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "syntheticOwnershipReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "restrictedSyntheticCohortReceipt",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "restrictedCohortReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "syntheticOwnershipReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "custodyReviewerReceipt": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Distinct custodian and independent reviewer receipts bound to a restricted store and retention/deletion disposition.",
+        "requiredPublicFieldNames": {
+          "custodianReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "independentReviewerReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "restrictedStoreReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "custodyReviewerReceipt",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "custodianReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "independentReviewerReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "restrictedStoreReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "durableConsumedRunLedger": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Durable ledger receipt proving atomic consumption and consumption on stop or unknown outcome.",
+        "requiredPublicFieldNames": {
+          "ledgerReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "atomicConsumeReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "stopAndUnknownConsumeReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "durableConsumedRunLedger",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "ledgerReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "atomicConsumeReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "stopAndUnknownConsumeReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "installedRouteBodyObserver": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Installed observer receipt proving earliest-boundary ordering and platform buffering behavior with zero pre-admission body reads.",
+        "requiredPublicFieldNames": {
+          "installedObserverReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "earliestBoundaryReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "platformBufferingReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "installedRouteBodyObserver",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "installedObserverReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "earliestBoundaryReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "platformBufferingReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "lateGrantObserver": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Installed observer receipt proving denial after grant change on the same reviewed target.",
+        "requiredPublicFieldNames": {
+          "installedObserverReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "lateGrantDenialReceiptRef": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "lateGrantObserver",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "installedObserverReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "lateGrantDenialReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      },
+      "immutableTargetRecheckReceipt": {
+        "status": "MISSING_COMPLETE_RECEIPT",
+        "missingArtifactContract": "Fresh candidate commit, immutable deployment, source digest and UTC recheck receipt matching every category.",
+        "requiredPublicFieldNames": {
+          "candidateCommit": {
+            "required": true,
+            "value": null
+          },
+          "immutableDeploymentRef": {
+            "required": true,
+            "value": null
+          },
+          "sourceDigestReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "recheckedAtUtc": {
+            "required": true,
+            "value": null
+          }
+        },
+        "acceptanceContract": {
+          "category": "immutableTargetRecheckReceipt",
+          "requiredReceiptRef": true,
+          "requiredReceiptSha256": "lowercase-hex-64",
+          "requiredByteLength": "positive-integer",
+          "requiredFieldPresence": {
+            "candidateCommit": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "immutableDeploymentRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "sourceDigestReceiptRef": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            },
+            "recheckedAtUtc": {
+              "requiredInRestrictedSource": true,
+              "publicValueCommitted": false
+            }
+          },
+          "restrictedValuePolicy": {
+            "rawReceiptValuesStayPrivate": true,
+            "publicProjectionAllowed": "opaque-ref-sha256-byte-count-and-field-presence-only",
+            "localDigestRecomputationRequired": true
+          }
+        },
+        "producer": "SEPARATELY_APPROVED_RESTRICTED_EVIDENCE_OWNER",
+        "sourceOnlyPreparationCanProduceReceipt": false,
+        "nextGate": "receiptProvenance"
+      }
+    },
+    "provenance": {
+      "permittedInputs": "TRACKED_PUBLIC_SOURCE_CONTRACTS_AND_SANITIZED_HANDOFF_ONLY",
+      "rawValuesAllowed": false,
+      "localPrivatePathsAllowed": false,
+      "topLevelKeyListingsAllowed": false,
+      "secretsAllowed": false,
+      "syntheticFixturesAreLiveEvidence": false,
+      "fieldPresenceProvesSemantics": false,
+      "futureProjection": "OPAQUE_REF_SHA256_BYTE_COUNT_FIELD_PRESENCE_DISPOSITION_ONLY",
+      "coherenceRules": {
+        "eitherSingleBundleOrDeclaredCoherentSet": true,
+        "everyCategoryRequiredExactlyOnce": true,
+        "duplicateCategoryRefsRejected": true,
+        "refsMustBeOpaqueAndNonPath": true,
+        "localPathsCommitted": false,
+        "topLevelKeysCommitted": false,
+        "privatePayloadValuesCommitted": false,
+        "allDigestsRecomputedFromExactStoredReceiptBytes": true,
+        "digestAlgorithm": "SHA-256",
+        "digestEncoding": "lowercase-hex-64",
+        "candidateCommitMustMatchCurrentReviewedTarget": true,
+        "immutableDeploymentMustMatchCurrentReviewedTarget": true,
+        "restrictedCohortMustMatchApprovedSyntheticCohort": true,
+        "custodianAndReviewerMustBeDistinctRefs": true,
+        "durableConsumedRunLedgerRequiredBeforeAnyExecutableCard": true,
+        "routeBodyObserverMustProveZeroBodyReadBeforeAdmission": true,
+        "lateGrantObserverMustProveDenialAfterGrantChange": true,
+        "retentionAndDeletionDispositionMustBeBoundBeforePublicProjection": true
+      }
+    },
+    "futureGates": {
+      "receiptProvenance": {
+        "scope": "Approve a named receipt owner and artifact plan; any production or retrieval action needs an explicit separate scope.",
+        "approved": false,
+        "executable": false,
+        "automaticPromotion": false,
+        "requiredFields": {
+          "approvalReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "approverRef": {
+            "required": true,
+            "value": null
+          },
+          "exactScope": {
+            "required": true,
+            "value": null
+          },
+          "candidateCommit": {
+            "required": true,
+            "value": null
+          },
+          "immutableDeploymentRef": {
+            "required": true,
+            "value": null
+          },
+          "expiresAtUtc": {
+            "required": true,
+            "value": null
+          },
+          "categoryScope": {
+            "required": true,
+            "value": null
+          },
+          "producerReviewRef": {
+            "required": true,
+            "value": null
+          },
+          "artifactProvenanceRef": {
+            "required": true,
+            "value": null
+          },
+          "restrictedDestinationRef": {
+            "required": true,
+            "value": null
+          },
+          "custodianRef": {
+            "required": true,
+            "value": null
+          },
+          "independentReviewerRef": {
+            "required": true,
+            "value": null
+          },
+          "retentionDeletionDispositionRef": {
+            "required": true,
+            "value": null
+          },
+          "allowedActions": {
+            "required": true,
+            "value": null
+          },
+          "forbiddenActions": {
+            "required": true,
+            "value": null
+          }
+        }
+      },
+      "privateAssembly": {
+        "scope": "Approve one named coherent source set for one local assembly; stop on incomplete coverage.",
+        "approved": false,
+        "executable": false,
+        "automaticPromotion": false,
+        "requiredFields": {
+          "approvalReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "approverRef": {
+            "required": true,
+            "value": null
+          },
+          "exactScope": {
+            "required": true,
+            "value": null
+          },
+          "candidateCommit": {
+            "required": true,
+            "value": null
+          },
+          "immutableDeploymentRef": {
+            "required": true,
+            "value": null
+          },
+          "expiresAtUtc": {
+            "required": true,
+            "value": null
+          },
+          "namedSourceRef": {
+            "required": true,
+            "value": null
+          },
+          "eightCategoryInventoryRef": {
+            "required": true,
+            "value": null
+          },
+          "generatorSourceSha256": {
+            "required": true,
+            "value": null
+          },
+          "outputPolicyRef": {
+            "required": true,
+            "value": null
+          },
+          "oneAttemptLimit": {
+            "required": true,
+            "value": null
+          }
+        }
+      },
+      "sanitizedReview": {
+        "scope": "Approve reading one named projection and committing only sanitized metadata; no sealed or executable card.",
+        "approved": false,
+        "executable": false,
+        "automaticPromotion": false,
+        "requiredFields": {
+          "approvalReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "approverRef": {
+            "required": true,
+            "value": null
+          },
+          "exactScope": {
+            "required": true,
+            "value": null
+          },
+          "candidateCommit": {
+            "required": true,
+            "value": null
+          },
+          "immutableDeploymentRef": {
+            "required": true,
+            "value": null
+          },
+          "expiresAtUtc": {
+            "required": true,
+            "value": null
+          },
+          "namedProjectionRef": {
+            "required": true,
+            "value": null
+          },
+          "projectionSha256": {
+            "required": true,
+            "value": null
+          },
+          "independentReviewRef": {
+            "required": true,
+            "value": null
+          },
+          "publicProjectionAllowlistRef": {
+            "required": true,
+            "value": null
+          }
+        }
+      },
+      "liveProposal": {
+        "scope": "A separately reviewed future proposal must precede any live action; this plan grants none.",
+        "approved": false,
+        "executable": false,
+        "automaticPromotion": false,
+        "requiredFields": {
+          "approvalReceiptRef": {
+            "required": true,
+            "value": null
+          },
+          "approverRef": {
+            "required": true,
+            "value": null
+          },
+          "exactScope": {
+            "required": true,
+            "value": null
+          },
+          "candidateCommit": {
+            "required": true,
+            "value": null
+          },
+          "immutableDeploymentRef": {
+            "required": true,
+            "value": null
+          },
+          "expiresAtUtc": {
+            "required": true,
+            "value": null
+          },
+          "acceptedEightCategoryReceiptSetRef": {
+            "required": true,
+            "value": null
+          },
+          "reviewedDisabledCardDigest": {
+            "required": true,
+            "value": null
+          },
+          "durableLedgerRef": {
+            "required": true,
+            "value": null
+          },
+          "freshTargetRecheckRef": {
+            "required": true,
+            "value": null
+          },
+          "windowStartUtc": {
+            "required": true,
+            "value": null
+          },
+          "windowEndUtc": {
+            "required": true,
+            "value": null
+          },
+          "enforcedCostCapRef": {
+            "required": true,
+            "value": null
+          },
+          "stopRollbackRef": {
+            "required": true,
+            "value": null
+          },
+          "allowedActions": {
+            "required": true,
+            "value": null
+          },
+          "forbiddenActions": {
+            "required": true,
+            "value": null
+          },
+          "singleRunLimit": {
+            "required": true,
+            "value": null
+          },
+          "noRetryOrSecondRun": {
+            "required": true,
+            "value": null
+          }
+        }
+      }
+    },
+    "stopConditions": {
+      "missingOrAmbiguousApproval": {
+        "required": true,
+        "value": null
+      },
+      "missingCategoryOrRequiredField": {
+        "required": true,
+        "value": null
+      },
+      "partialCoverageOnly": {
+        "required": true,
+        "value": null
+      },
+      "duplicateCategoryOrPathLikeRef": {
+        "required": true,
+        "value": null
+      },
+      "digestMismatchOrSourceDrift": {
+        "required": true,
+        "value": null
+      },
+      "staleOrMixedTarget": {
+        "required": true,
+        "value": null
+      },
+      "sameCustodianAndReviewer": {
+        "required": true,
+        "value": null
+      },
+      "missingRetentionDeletionDisposition": {
+        "required": true,
+        "value": null
+      },
+      "missingDurableAtomicStopUnknownConsumption": {
+        "required": true,
+        "value": null
+      },
+      "missingEarliestBoundaryOrBufferingProof": {
+        "required": true,
+        "value": null
+      },
+      "missingLateGrantDenialProof": {
+        "required": true,
+        "value": null
+      },
+      "malformedOrSymlinkedSource": {
+        "required": true,
+        "value": null
+      },
+      "privateValueOrPathDisclosure": {
+        "required": true,
+        "value": null
+      },
+      "scopeExpansionOrExpiredWindow": {
+        "required": true,
+        "value": null
+      },
+      "stopOrUnknownOutcome": {
+        "required": true,
+        "value": null
+      }
+    },
+    "controls": {
+      "executable": false,
+      "executableCommandCardIssued": false,
+      "liveCollectorCommandLine": null,
+      "liveCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "bodyAdmissionAuthorized": false,
+      "uploadSessionIssuanceEnabled": false,
+      "requestBodyAdmissionRead": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "retryOrSecondRunAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "authorizedRuns": 0,
+      "liveEvidenceCollected": false,
+      "uploadSessionsIssued": 0,
+      "requestBodyReads": 0,
+      "providerEnvResourceBillingChanges": 0,
+      "secretReads": 0,
+      "activationPerformed": false,
+      "retryOrSecondRunPerformed": false,
+      "privateCadUsed": false,
+      "externalMessagesSent": false,
+      "privateReceiptReadAuthorized": false,
+      "providerEnvResourceBillingChangesAuthorized": false,
+      "secretsReadAuthorized": false,
+      "privateCadPayloadUseAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "evidenceAccepted": false,
+      "coherentPrivateSourceSetAccepted": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-restricted-source-set-generator.json": "7c2bb5d5f87f5c4016aaf9b4db2faccf3f545af5fff247874a11c05640975172",
+    "offline/cad-auth-command-card-source/preparation.js": "403145b1426153e551bded627bb240322104598822aeb62b080f9da70a86c40e",
+    "offline/cad-auth-restricted-source-set-contract/preparation.js": "f3c09711b704bca53c923564b0dd88c7e9bdfb877a6df74c2e305156d173a140",
+    "offline/cad-auth-live-collector-binding/guardedCollector.js": "0a40f6b8c38708d62836b6c0eaab75eda165ee0d1b42594734952d38e63010ca",
+    "docs/cad-auth-restricted-receipt-gap-closure-plan.md": "48fef7245056784006b9157faa69af8d0d7724a03bc4ebca17a4d165b8898b73",
+    "offline/cad-auth-restricted-receipt-gap-closure-plan/preparation.js": "b6e74d8b589df64e2011874097c05f9edb999ba97a70038852ac3ca25f29e386",
+    "scripts/cad-auth-restricted-receipt-gap-closure-plan-checker.js": "0ded2327e94ef8fbe0df5ba6d79192a47dd9c00e3243ed0c9e53ed96e9322bf2",
+    "scripts/cad-auth-restricted-receipt-gap-closure-plan.test.js": "e4a968d85acfcc5555d35d79f0690e0eeec9fcec99bf767eab0e6de4adba6024"
+  },
+  "sourceMergeCommit": "ab9201047d542bc2d1f778ead41a78072bca80b3"
+}

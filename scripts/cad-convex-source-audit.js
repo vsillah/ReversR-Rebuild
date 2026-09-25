@@ -46,7 +46,15 @@ assert.equal(require('./cad-auth-restricted-source-set-contract-checker').checkC
   JSON.parse(read('docs/cad-auth-restricted-source-set-contract.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-source-set-generator-checker').checkGeneratorPacket(
   JSON.parse(read('docs/cad-auth-restricted-source-set-generator.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-receipt-gap-closure-plan-checker').checkPlan(
+  JSON.parse(read('docs/cad-auth-restricted-receipt-gap-closure-plan.json'))).ok, true);
 const files = [
+  'docs/cad-auth-restricted-receipt-gap-closure-plan.md',
+  'docs/cad-auth-restricted-receipt-gap-closure-plan.json',
+  'offline/cad-auth-restricted-receipt-gap-closure-plan/preparation.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure-plan-checker.js',
+  'scripts/cad-auth-restricted-receipt-gap-closure-plan.test.js',
+
   'docs/cad-auth-restricted-receipt-review.md',
   'docs/cad-auth-restricted-receipt-review.json',
   'offline/cad-auth-restricted-receipt-review/preparation.js',
