@@ -58,7 +58,15 @@ assert.equal(require('./cad-auth-accepted-provenance-projection-checker').checkP
   JSON.parse(read('docs/cad-auth-accepted-provenance-projection.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-source-set-projection-checker').checkSourceSetProjectionPacket(
   JSON.parse(read('docs/cad-auth-restricted-source-set-projection.json'))).ok, true);
+assert.equal(require('./cad-auth-upload-admission-readiness-rollup-checker').checkReadinessRollupPacket(
+  JSON.parse(read('docs/cad-auth-upload-admission-readiness-rollup.json'))).ok, true);
 const files = [
+  'docs/cad-auth-upload-admission-readiness-rollup.md',
+  'docs/cad-auth-upload-admission-readiness-rollup.json',
+  'offline/cad-auth-upload-admission-readiness-rollup/preparation.js',
+  'scripts/cad-auth-upload-admission-readiness-rollup-checker.js',
+  'scripts/cad-auth-upload-admission-readiness-rollup.test.js',
+
   'docs/cad-auth-restricted-source-set-projection.md',
   'docs/cad-auth-restricted-source-set-projection.json',
   'offline/cad-auth-restricted-source-set-projection/preparation.js',
