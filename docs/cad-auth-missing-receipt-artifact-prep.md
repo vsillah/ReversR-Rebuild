@@ -10,8 +10,9 @@ its checker proves only that this public plan matches its source contract.
 Each category requires its own dedicated JSON receipt, named `<category>.json`.
 The JSON packet preserves the parent's required public field names and specifies
 source system, custodian role, independent reviewer role, allowed evidence
-source, creation or supply plan, retention boundary and pending approval fields
-for every category. Roles are requirements, not verified appointments.
+source, creation or supply plan, retention boundary, category stop conditions,
+and a category-specific future private-read approval phrase for every category.
+Roles are requirements, not verified appointments.
 
 | Category | Future supply requirement |
 | --- | --- |
@@ -42,7 +43,8 @@ for every category. Roles are requirements, not verified appointments.
 
 ## Future private-read phrase
 
-The canonical exact phrase template is
+Each category now carries its own `futurePrivateReadApprovalPhrase`. The shared
+source-set phrase template remains
 `futureApprovalGates.privateRead.exactPhraseTemplate` in the JSON packet:
 
 > Approve one CAD Auth restricted source-set private read from <exactSourceFolder> to <exactOutputFile> for run <runId>, bound to <candidateCommit> and preparation packet <packetSha256>, custodian <custodian>, independent reviewer <reviewer>, retained under <retentionBoundary>. Eight approved receipt files only; no discovery, live collection, retry, second run, runtime activation or public projection release.

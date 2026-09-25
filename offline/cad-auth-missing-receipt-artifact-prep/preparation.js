@@ -62,6 +62,42 @@ const CATEGORY_PLANS = {
 };
 const MERGE_COMMIT = 'db8baa46aeaf8fb2005cc5fe240d51389f86abc5';
 
+function categoryStopConditions() {
+  return {
+    missingNamedPrivateReceiptSource: true,
+    missingRequiredFieldPresence: true,
+    missingCustodianOrReviewer: true,
+    custodianIsReviewer: true,
+    sourceSystemMismatch: true,
+    retentionBoundaryViolation: true,
+    evidenceNotPreviouslyApproved: true,
+    privateValueWouldBeDisclosed: true,
+    localPathWouldBeDisclosed: true,
+    secretOrRuntimeCredentialNeeded: true,
+    providerEnvResourceBillingChangeNeeded: true,
+    uploadSessionIssuanceOrActivationNeeded: true,
+    requestBodyAdmissionOrReadNeeded: true,
+    executableCommandCardNeeded: true,
+    liveEvidenceCollectionNeeded: true,
+    retryOrSecondRunNeeded: true,
+    privateCadOrCommercializationNeeded: true,
+  };
+}
+
+function privateReadApprovalPhrase(category) {
+  return [
+    `Approve one CAD Auth restricted receipt artifact private read for category ${category}`,
+    'from <exactPrivateReceiptSource> into a sanitized ignored projection bound to <candidateCommit>',
+    'using source system <sourceSystem>, custodian <custodian>, independent reviewer <reviewer>,',
+    'allowed evidence source <allowedEvidenceSource>, and retention boundary <retentionBoundary>.',
+    'Read only that named receipt, recompute SHA-256 digest and byte count locally, inspect only required field presence,',
+    'and commit only sanitized opaque refs, digest, byte count, coverage/disposition status, and next-gate stop status.',
+    'No provider/env/resource/billing changes, secrets or secret-value disclosure, upload-session issuance, production upload activation,',
+    'request-body admission/read, conversion, Sandbox dispatch, private CAD payload use, real-user commercialization, external messages,',
+    'runtime activation, executable command-card issuance, live evidence collection, retry, second run, or commercial-readiness claim.'
+  ].join(' ');
+}
+
 function artifactPreparation() {
   const parent = gapClosurePlan();
   return {
@@ -78,6 +114,8 @@ function artifactPreparation() {
       assignmentStatus: 'ROLE_REQUIREMENTS_ONLY_NAMED_ASSIGNMENTS_PENDING',
       retentionBoundary: 'Future approved ignored restricted store only; name retention duration and deletion owner before supply. No public values, private paths, key listings or derived projection before separate approval.',
       supplyMethod: 'After separate artifact approval, custodian may assemble a dedicated JSON receipt from existing approved evidence. Independent reviewer must verify provenance and category fields in a separately approved private review. If evidence does not exist, stop for a separate proposal; never substitute synthetic fixtures for installed evidence.',
+      categoryStopConditions: categoryStopConditions(),
+      futurePrivateReadApprovalPhrase: privateReadApprovalPhrase(category),
       approvalFields: { sourceSystem: null, custodian: null, reviewer: null, category, allowedEvidenceSource: null, retentionBoundary: null },
       accepted: false,
     }])),

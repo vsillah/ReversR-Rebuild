@@ -114,13 +114,20 @@ test('every category supply field and approval boundary is mandatory and immutab
   const prep = packet().preparation;
   for (const category of REQUIRED_LIVE_BINDINGS) {
     const entry = prep.requiredCategories[category];
-    for (const field of ['sourceSystem', 'custodian', 'reviewer', 'category', 'allowedEvidenceSource', 'retentionBoundary', 'creationOrSupplyPlan', 'supplyMethod']) {
+    for (const field of ['sourceSystem', 'custodian', 'reviewer', 'category', 'allowedEvidenceSource', 'retentionBoundary', 'creationOrSupplyPlan', 'supplyMethod', 'futurePrivateReadApprovalPhrase']) {
       assert.equal(typeof entry[field], 'string');
       assert.ok(entry[field].length > 0);
       const altered = structuredClone(prep);
       delete altered.requiredCategories[category][field];
       assert.equal(checkArtifactPreparation(altered).ok, false);
     }
+    assert.match(entry.futurePrivateReadApprovalPhrase, new RegExp(`category ${category}`));
+    assert.match(entry.futurePrivateReadApprovalPhrase, /<exactPrivateReceiptSource>/);
+    assert.match(entry.futurePrivateReadApprovalPhrase, /No provider\/env\/resource\/billing changes/);
+    assert.equal(entry.categoryStopConditions.missingNamedPrivateReceiptSource, true);
+    assert.equal(entry.categoryStopConditions.liveEvidenceCollectionNeeded, true);
+    assert.equal(entry.categoryStopConditions.executableCommandCardNeeded, true);
+    assert.equal(entry.categoryStopConditions.requestBodyAdmissionOrReadNeeded, true);
     assert.equal(entry.accepted, false);
     assert.equal(entry.status, 'MISSING_NOT_CREATED_OR_SUPPLIED');
   }
