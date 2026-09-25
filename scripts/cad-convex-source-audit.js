@@ -40,6 +40,8 @@ assert.equal(require('./cad-auth-restricted-receipt-review-checker').checkReview
   JSON.parse(read('docs/cad-auth-restricted-receipt-review.json'))).ok, true);
 assert.equal(require('./cad-auth-restricted-source-intake-checker').checkIntake(
   JSON.parse(read('docs/cad-auth-restricted-source-intake.json'))).ok, true);
+assert.equal(require('./cad-auth-restricted-candidate-discovery-checker').checkDiscovery(
+  JSON.parse(read('docs/cad-auth-restricted-candidate-discovery.json'))).ok, true);
 const files = [
   'docs/cad-auth-restricted-receipt-review.md',
   'docs/cad-auth-restricted-receipt-review.json',
@@ -52,6 +54,12 @@ const files = [
   'offline/cad-auth-restricted-source-intake/preparation.js',
   'scripts/cad-auth-restricted-source-intake-checker.js',
   'scripts/cad-auth-restricted-source-intake.test.js',
+
+  'docs/cad-auth-restricted-candidate-discovery.md',
+  'docs/cad-auth-restricted-candidate-discovery.json',
+  'offline/cad-auth-restricted-candidate-discovery/preparation.js',
+  'scripts/cad-auth-restricted-candidate-discovery-checker.js',
+  'scripts/cad-auth-restricted-candidate-discovery.test.js',
 
   'docs/cad-auth-receipt-intake-review-disposition.md',
   'docs/cad-auth-receipt-intake-review-disposition.json',
