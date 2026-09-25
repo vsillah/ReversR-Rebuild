@@ -1,5 +1,5 @@
 {
-  "version": 69,
+  "version": 70,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -78,6 +78,11 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
+    "docs/cad-auth-eight-artifact-supply-gate.md": "0eed931844ab635f9c315ba5b0b43835ecbb4fc74008f4c9bea05ef5e0ec2bd0",
+    "docs/cad-auth-eight-artifact-supply-gate.json": "6c8078d324286af5560e99c5d0e632616d83867538cee65ca8645975e96cbdac",
+    "offline/cad-auth-eight-artifact-supply-gate/preparation.js": "eea6d917ee36288c56ab5ee4ed553fcb38e8ef014fb1213e17ab6fbb67499a7e",
+    "scripts/cad-auth-eight-artifact-supply-gate-checker.js": "5db2ed7dbe82b8f3509172f3c9d2455693372baeb72e1c5c4d7977e48eadc3bc",
+    "scripts/cad-auth-eight-artifact-supply-gate.test.js": "4c2ddea9c988baefe2f286c1f19d0cfa8535b86030ad5012601a5d89cca87c6a",
     "docs/cad-auth-missing-receipt-artifact-prep.md": "ebb18c82fc6a2a1a97df0dd06c3e0c8a691f28bf368be14449a6bec7f6835a0b",
     "docs/cad-auth-missing-receipt-artifact-prep.json": "dca8785d65532cbfef71024d971057bda820baa8ed16ece87e52d64098f36ec8",
     "offline/cad-auth-missing-receipt-artifact-prep/preparation.js": "920188c46684ec2a843b60da993b86edc6a470d657f721142a6434bf70b5b36c",
@@ -704,7 +709,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "fb43bbca3c3ac9da3cf006ddc1d4700097ad9ee6c8a1c418d671b8161ede127c",
     "scripts/helpers/cad-convex-source-loader.js": "1650d3a9b32701af891e8c9409c70c1e7120e815b71b7fbc75ea97436beb88d5",
-    "scripts/cad-convex-source-audit.js": "63f68bcbfca5272f46ebccd3ad0591b9fa59196666dd52c780a2dd1c55c400e5",
+    "scripts/cad-convex-source-audit.js": "6b58813583615fc9807797f40024573a05461aeb6166e8e14071f98ef8c1b474",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -718,6 +723,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "022df37b43e33697a870f3617005fa31de7ab3c3e8f1e7bfac6f0ec08afdfcf3"
+    "scripts/cad-convex-contract-manifest.js": "09392ed0684f69f964f7726bc7ee80fedccf7c66d8d9f3467bce3847f96a97e2"
   }
 }
