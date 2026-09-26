@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-production-executable-runner-source-v1",
+  "sourceOnly": true,
+  "sourceCommit": "702f7ef9559b59679846cb7c6e92971e81f7f645",
+  "openingPreparationSha256": "29a9687a2a53ffbc4bf34af8cf943f4eedefc7f7c202ab837f068ccadd1b5bd2",
+  "runnerPacketSha256": "815e4d35c7f7a6be8ed009d42baa283672492e06ee3001326f235d348944f0ad",
+  "parentStatus": {
+    "openingPreparation": "PREPARATION_ONLY_LIVE_GATE_REQUIRED",
+    "sourceRunnerCode": "SOURCE_ONLY_DISABLED",
+    "sourceRunnerLiveExecutionReady": false,
+    "sourceRunnerEffectsExecuted": 0
+  },
+  "sourceImplementationStatus": "EXECUTABLE_RUNNER_SOURCE_CONTRACT_READY_DISABLED_BY_DEFAULT",
+  "enabled": false,
+  "runtimeMounted": false,
+  "liveExecutionReady": false,
+  "liveExecutionAuthorized": false,
+  "uploadSessionIssuanceAuthorized": false,
+  "productionUploadActivationAuthorized": false,
+  "requestBodyAdmissionReadAuthorized": false,
+  "executableCommandCardIssuanceAuthorized": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "privateCadUseAuthorized": false,
+  "retryAuthorized": false,
+  "secondRunAuthorized": false,
+  "realUserCommercializationAuthorized": false,
+  "executableRunnerSource": {
+    "exactWindowValidationImplemented": true,
+    "adapterContractDefined": true,
+    "commandCardShapeDefined": true,
+    "rollbackContractDefined": true,
+    "failClosedSmokeContractDefined": true,
+    "defaultRuntimeAdapter": null,
+    "defaultEffectsExecuted": 0,
+    "processEnvReads": 0,
+    "networkCalls": 0,
+    "fileSystemWrites": 0,
+    "requestBodyReads": 0,
+    "uploadSessionsIssued": 0
+  },
+  "exactWindow": {
+    "startInclusive": true,
+    "expiryExclusive": true,
+    "maxDurationSecondsRequired": true,
+    "trustedClockRequired": true,
+    "recheckBeforeEveryEffect": true,
+    "staleApprovalRejected": true,
+    "replayedApprovalRejected": true
+  },
+  "commandCard": {
+    "schemaVersion": 1,
+    "card": "cad-auth-production-upload-admission-command-card-v1",
+    "executable": false,
+    "issued": false,
+    "issuer": null,
+    "requiredFields": [
+      "schemaVersion",
+      "card",
+      "sourceCommit",
+      "openingPreparationSha256",
+      "runnerPacketSha256",
+      "immutableTargetRef",
+      "productionRunRef",
+      "cohortRef",
+      "startUtc",
+      "expiresUtc",
+      "maxDurationSeconds",
+      "adapterContractSha256",
+      "rollbackContractSha256",
+      "preflightReceiptRef",
+      "reviewerRef",
+      "custodyRef"
+    ],
+    "unresolvedFields": [
+      "sourceCommit",
+      "openingPreparationSha256",
+      "runnerPacketSha256",
+      "immutableTargetRef",
+      "productionRunRef",
+      "cohortRef",
+      "startUtc",
+      "expiresUtc",
+      "maxDurationSeconds",
+      "adapterContractSha256",
+      "rollbackContractSha256",
+      "preflightReceiptRef",
+      "reviewerRef",
+      "custodyRef"
+    ],
+    "requiresSeparateLiveOpeningApproval": true,
+    "requiresSeparateSessionIssuanceApproval": true,
+    "requiresSeparateRuntimeActivationApproval": true,
+    "requiresSeparateBodyAdmissionApproval": true,
+    "forbidsConversion": true,
+    "forbidsSandboxDispatch": true,
+    "forbidsPrivateCad": true,
+    "forbidsRetryOrSecondRun": true
+  },
+  "effectContract": {
+    "interfaceOnly": true,
+    "defaultAdapter": null,
+    "injectedEffectsRequiredForLiveUse": true,
+    "providerEnvResourceBillingChangeRequired": false,
+    "secretReadRequired": false,
+    "effectNames": [
+      "verifyFreshApproval",
+      "verifyImmutableTarget",
+      "verifyClosedBaseline",
+      "verifyReceiptsAndSourceDigests",
+      "verifyObserverHealth",
+      "claimUniqueRun",
+      "armIndependentExpiryFence",
+      "verifyBoundedSession",
+      "openAdmissionFence",
+      "consumeAttemptBeforeBodyRead",
+      "closeAdmissionFence",
+      "revokeBoundedSessionAndLateGrants",
+      "preserveRunAndAttemptTombstones",
+      "runPostRollbackFailClosedSmoke",
+      "writeSanitizedCloseout"
+    ],
+    "requiredReturnShape": {
+      "ok": "boolean",
+      "code": "string",
+      "sanitizedRef": "string",
+      "sha256": "64 lowercase hex string",
+      "observerDeltas": "zero body/session/conversion/sandbox counters"
+    },
+    "stopOn": [
+      "missing adapter",
+      "unapproved command card",
+      "target drift",
+      "window not active",
+      "clock uncertainty",
+      "digest mismatch",
+      "unknown claim outcome",
+      "late grant",
+      "observer unavailable",
+      "nonzero body read",
+      "runtime credential or provider configuration needed"
+    ]
+  },
+  "rollback": {
+    "triggers": [
+      "completion",
+      "expiry",
+      "failing check",
+      "failing smoke",
+      "unknown outcome",
+      "digest or target drift",
+      "observer unavailable",
+      "late grant",
+      "clock uncertainty",
+      "unexpected body read",
+      "unapproved session or attempt",
+      "credential or provider change needed"
+    ],
+    "order": [
+      "close admission fence first",
+      "revoke bounded session and pending grants",
+      "preserve consumed run and attempt tombstones",
+      "verify target closure and late-grant denial",
+      "run post-rollback fail-closed smoke",
+      "publish sanitized status only"
+    ],
+    "independentExpiryRequired": true,
+    "processCrashMustFailClosed": true,
+    "idempotentClosureRequired": true,
+    "reopeningForSmokeForbidden": true,
+    "unknownClosureBlocksCleanup": true,
+    "retryOrSecondRunForbidden": true
+  },
+  "postRollbackSmoke": {
+    "liveRunAuthorizedNow": false,
+    "targetMustMatchApprovedDeployment": true,
+    "cases": [
+      {
+        "case": "missing invalid expired or revoked session",
+        "expected": "401 USER_SESSION_REQUIRED"
+      },
+      {
+        "case": "non-CAD principal",
+        "expected": "403 USER_UPLOAD_FORBIDDEN"
+      },
+      {
+        "case": "invalid origin or CSRF",
+        "expected": "403 ORIGIN_OR_CSRF_REJECTED"
+      },
+      {
+        "case": "valid permitted pre-existing synthetic session after closure",
+        "expected": "503 USER_UPLOADS_DISABLED"
+      },
+      {
+        "case": "late grant duplicate attempt or concurrent run",
+        "expected": "DENIED_BEFORE_BODY_READ"
+      }
+    ],
+    "requireExistingSeparatelyAuthorizedFixture": true,
+    "noSessionIssuanceForSmoke": true,
+    "observerDeltas": {
+      "bodyReads": 0,
+      "sessionsIssued": 0,
+      "conversions": 0,
+      "sandboxDispatches": 0
+    },
+    "responsesAloneProveClosure": false,
+    "missingFixtureOrObserverResult": "BLOCKED_NO_CLEANUP_NO_RETRY",
+    "evidence": "Sanitized target refs, digests, counts and statuses only; never bodies or credentials"
+  },
+  "nextGate": {
+    "authorized": false,
+    "requiredGate": "bounded-live-command-card-issuance-and-runtime-activation-review",
+    "exactApprovalPhraseNeeded": true,
+    "mustBindFreshCommandCardSha256": true,
+    "mustBindImmutableDeploymentAndRun": true,
+    "mustBindExistingAdapterEvidence": true,
+    "mustBindIndependentExpiryAndDurableLedgerEvidence": true,
+    "unresolvedPlaceholdersAreNotApproval": true
+  },
+  "sourceBindings": {
+    "docs/cad-auth-prod-runner.json": "815e4d35c7f7a6be8ed009d42baa283672492e06ee3001326f235d348944f0ad",
+    "docs/cad-auth-prod-opening-prep.json": "29a9687a2a53ffbc4bf34af8cf943f4eedefc7f7c202ab837f068ccadd1b5bd2",
+    "docs/cad-auth-upload-admission-readiness-rollup.json": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "server/cadInternalProductionAdmissionSwitch.js": "70b3ab68d9aa43aa33959a3d62c31013f09878a161790838d089543261338ba9",
+    "server/cadUploadAdmissionRuntimeBridge.js": "6e23ccf8310bc1b745927cf091ab69ce60a7f6619f34ea27b0013539c2485fc2",
+    "docs/cad-auth-prod-opening-prep.md": "0bc22e326c71fa8d4e37ffc26544a6b18d5a927c314256a6fc2a5f4605e7174a",
+    "offline/cad-auth-prod-opening-prep/preparation.js": "b2a8b8f89dc07336d6f1f8793cf72074807fffc6ba635f89aab8493f7c149e5b",
+    "scripts/cad-auth-prod-opening-prep-checker.js": "d334dc88cdf792654b9aff08a97b5dcd21d62db406710b4f16a042021f920338",
+    "scripts/cad-auth-prod-opening-prep.test.js": "885512b7388db0b359c4149dba1e2d2b6bea39674472f8d8441914422689025c",
+    "offline/cad-auth-prod-runner/runner.js": "f77a910a29adb648996652a61388bd8a5edc25ee0794b7b27c1f582b969b3512",
+    "docs/cad-auth-prod-runner.md": "08c79f5fca9685f091be729b9951b3b100c6582828624c351917b814a4516797",
+    "scripts/cad-auth-prod-runner-checker.js": "1b2e87999e81d5e8287a875970df04174a041b83ace83eee7a3e4e6f9b2352a0",
+    "scripts/cad-auth-prod-runner.test.js": "712130b1e84f162cb9117bdec9517058582f2fe8a36e34d2e4152ffc21d29bd9",
+    "offline/cad-auth-prod-executable-runner-source/preparation.js": "842c35381a1a2396997efeb3e5194ba8b0901068816be463e5ff47a2d1a6bdff",
+    "docs/cad-auth-prod-executable-runner-source.md": "2c5cd4fa9f8a08f85ea1e6cc6bc48e337f2cb2210cf066ac741944b8bd159ab3",
+    "scripts/cad-auth-prod-executable-runner-source-checker.js": "c1d77285b21853309840db36e2b59a05e1f1da5ec6950e96c33e4d36ad02e89f",
+    "scripts/cad-auth-prod-executable-runner-source.test.js": "a4d3c9f01dfae598f6c1d366b21b965df49bcfa0cd4c40f0f418fd00c2e938d4"
+  }
+}
