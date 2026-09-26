@@ -11,6 +11,12 @@ const files = [
   'scripts/cad-auth-prod-durable-runner-adapter-prep-checker.js',
   'scripts/cad-auth-prod-durable-runner-adapter-prep.test.js',
 
+  'docs/cad-auth-durable-adapter-evidence-command-card-review.md',
+  'docs/cad-auth-durable-adapter-evidence-command-card-review.json',
+  'offline/cad-auth-durable-adapter-evidence-command-card-review/preparation.js',
+  'scripts/cad-auth-durable-adapter-evidence-command-card-review-checker.js',
+  'scripts/cad-auth-durable-adapter-evidence-command-card-review.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
