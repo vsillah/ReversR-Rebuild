@@ -12,6 +12,11 @@ const {
   prepareDurableCommandCardDraft,
   validateDurableReceiptPlan,
 } = require('../offline/cad-auth-prod-durable-runner-adapter-prep/preparation');
+const {
+  initialDurableRecord,
+  proposeDurableTransition,
+  checkIndependentFence,
+} = require('../offline/cad-auth-prod-durable-runner-adapter-prep/transactionAdapter');
 const { PACKET, SOURCES, checkPacket } = require('./cad-auth-prod-durable-runner-adapter-prep-checker');
 
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -118,6 +123,107 @@ test('receipt plan requires every durable receipt and zero observer deltas', () 
   }
 });
 
+test('durable transition source enforces ordered one-session and one-attempt claims', () => {
+  const start = Date.parse(binding().startUtc);
+  const request = (operation, expectedRevision) => ({
+    operation,
+    expectedRevision,
+    nowMs: start,
+    clockTrusted: true,
+    ownerAlive: true,
+    ownerLeaseExpiresMs: start + 30000,
+    outcomeKnown: true,
+  });
+  let record = initialDurableRecord(binding());
+  assert.equal(record.revision, 0);
+  for (const operation of ['CLAIM_RUN', 'CLAIM_SESSION', 'CLAIM_ATTEMPT']) {
+    const result = proposeDurableTransition(binding(), record, request(operation, record.revision));
+    closed(result);
+    assert.equal(result.code, 'TRANSACTION_PREPARED');
+    assert.equal(result.mustClose, false);
+    assert.equal(result.admissionAllowed, false);
+    record = result.proposedRecord;
+  }
+  assert.equal(record.runClaimed, true);
+  assert.equal(record.sessionClaimed, true);
+  assert.equal(record.attemptClaimed, true);
+  const repeated = proposeDurableTransition(binding(), record, request('CLAIM_ATTEMPT', record.revision));
+  closed(repeated);
+  assert.equal(repeated.code, 'BLOCKED_NO_RETRY');
+  assert.equal(repeated.proposedRecord.closed, true);
+  assert.equal(repeated.proposedRecord.revoked, true);
+});
+
+test('durable transition source blocks stale revisions, unknown outcomes and expiry', () => {
+  const start = Date.parse(binding().startUtc);
+  const expires = Date.parse(binding().expiresUtc);
+  const base = {
+    operation: 'CLAIM_RUN',
+    expectedRevision: 0,
+    nowMs: start,
+    clockTrusted: true,
+    ownerAlive: true,
+    ownerLeaseExpiresMs: start + 30000,
+    outcomeKnown: true,
+  };
+  for (const mutate of [
+    r => { r.expectedRevision = 1; },
+    r => { r.outcomeKnown = false; },
+    r => { r.clockTrusted = false; },
+    r => { r.ownerAlive = false; },
+    r => { r.nowMs = expires; },
+    r => { r.ownerLeaseExpiresMs = expires + 1; },
+  ]) {
+    const request = { ...base };
+    mutate(request);
+    const result = proposeDurableTransition(binding(), null, request);
+    closed(result);
+    assert.equal(result.code, 'BLOCKED_NO_RETRY');
+    if (result.proposedRecord !== null) {
+      assert.equal(result.proposedRecord.closed, true);
+      assert.equal(result.proposedRecord.revoked, true);
+      assert.equal(result.mustClose, true);
+    }
+  }
+});
+
+test('rollback is idempotent and independent fence never grants admission', () => {
+  const start = Date.parse(binding().startUtc);
+  const request = {
+    operation: 'ROLLBACK',
+    expectedRevision: 0,
+    nowMs: start,
+    clockTrusted: true,
+    ownerAlive: true,
+    ownerLeaseExpiresMs: start + 30000,
+    outcomeKnown: true,
+  };
+  const first = proposeDurableTransition(binding(), null, request);
+  closed(first);
+  assert.equal(first.code, 'ROLLBACK_PREPARED');
+  const second = proposeDurableTransition(binding(), first.proposedRecord, { ...request, expectedRevision: first.proposedRecord.revision });
+  closed(second);
+  assert.equal(second.code, 'ROLLBACK_ALREADY_PREPARED');
+  assert.deepEqual(second.proposedRecord, first.proposedRecord);
+
+  const eligibleRecord = {
+    ...initialDurableRecord(binding()),
+    runClaimed: true,
+    sessionClaimed: true,
+    revision: 2,
+    lastNowMs: start,
+  };
+  const fence = checkIndependentFence(binding(), eligibleRecord, {
+    nowMs: start,
+    clockTrusted: true,
+    ownerAlive: true,
+    ownerLeaseExpiresMs: start + 30000,
+  });
+  closed(fence);
+  assert.equal(fence.simulatedEligible, true);
+  assert.equal(fence.admissionAllowed, false);
+});
+
 test('source packet is transitively bound and source drift fails closed', () => {
   const packet = JSON.parse(fs.readFileSync(PACKET));
   assert.equal(checkPacket(packet).ok, true);
@@ -138,6 +244,8 @@ test('CLI refuses live execution, authority options and arbitrary paths', () => 
 
 test('preparation source has no runtime IO or runtime importers', () => {
   assert.doesNotMatch(fs.readFileSync('offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js', 'utf8'),
+    /process\.env|fetch\s*\(|node:fs|child_process|https?\.request|setTimeout|\.listen\s*\(/);
+  assert.doesNotMatch(fs.readFileSync('offline/cad-auth-prod-durable-runner-adapter-prep/transactionAdapter.js', 'utf8'),
     /process\.env|fetch\s*\(|node:fs|child_process|https?\.request|setTimeout|\.listen\s*\(/);
   function walk(dir) {
     if (!fs.existsSync(dir)) return [];
