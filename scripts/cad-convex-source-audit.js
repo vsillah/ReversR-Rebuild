@@ -62,7 +62,15 @@ assert.equal(require('./cad-auth-upload-admission-readiness-rollup-checker').che
   JSON.parse(read('docs/cad-auth-upload-admission-readiness-rollup.json'))).ok, true);
 assert.equal(require('./cad-auth-prod-opening-prep-checker').checkPacket(
   JSON.parse(read('docs/cad-auth-prod-opening-prep.json'))).ok, true);
+assert.equal(require('./cad-auth-prod-runner-checker').checkPacket(
+  JSON.parse(read('docs/cad-auth-prod-runner.json'))).ok, true);
 const files = [
+  'docs/cad-auth-prod-runner.md',
+  'docs/cad-auth-prod-runner.json',
+  'offline/cad-auth-prod-runner/runner.js',
+  'scripts/cad-auth-prod-runner-checker.js',
+  'scripts/cad-auth-prod-runner.test.js',
+
   'docs/cad-auth-prod-opening-prep.md',
   'docs/cad-auth-prod-opening-prep.json',
   'offline/cad-auth-prod-opening-prep/preparation.js',
