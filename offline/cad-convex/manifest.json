@@ -79,8 +79,8 @@
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
     "docs/cad-auth-prod-runner.md": "08c79f5fca9685f091be729b9951b3b100c6582828624c351917b814a4516797",
-    "docs/cad-auth-prod-runner.json": "f9ee92fb4ede8f13047a0308cfe3c15f33334d0d158234b17030f0727fc4f620",
-    "offline/cad-auth-prod-runner/runner.js": "d611d1fb13de08263543fbb3b468e41cd340854ade32a59617edc321810dedff",
+    "docs/cad-auth-prod-runner.json": "815e4d35c7f7a6be8ed009d42baa283672492e06ee3001326f235d348944f0ad",
+    "offline/cad-auth-prod-runner/runner.js": "f77a910a29adb648996652a61388bd8a5edc25ee0794b7b27c1f582b969b3512",
     "scripts/cad-auth-prod-runner-checker.js": "1b2e87999e81d5e8287a875970df04174a041b83ace83eee7a3e4e6f9b2352a0",
     "scripts/cad-auth-prod-runner.test.js": "712130b1e84f162cb9117bdec9517058582f2fe8a36e34d2e4152ffc21d29bd9",
     "docs/cad-auth-upload-admission-readiness-rollup.md": "2b1d6f43136e95d740b5a8ad29e37b67306a6c8af5fafcb8017398160dc61ab3",

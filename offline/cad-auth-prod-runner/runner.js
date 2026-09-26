@@ -1,7 +1,9 @@
-// Offline state machine only. No runtime adapters or effect callbacks exist.
+// Offline state machine only. No runtime adapters, credentials or effect callbacks exist.
 const { isDeepStrictEqual } = require('node:util');
 const { plainContractData, preparation } = require('../cad-auth-prod-opening-prep/preparation');
 const ORDER = Object.freeze(['PREFLIGHT', 'CLAIM', 'SESSION', 'ATTEMPT', 'CLOSE', 'REVOKE', 'TOMBSTONES', 'SMOKE']);
+const PREPARATION_COMMIT = '07b57a96f3243826743f9ea3361056b7e7385eed';
+const PREPARATION_PACKET = 'cad-auth-production-opening-preparation-v1';
 const REQUIREMENTS = Object.freeze({
   PREFLIGHT: Object.freeze(['freshApproval', 'sourceDigests', 'rollupAndProvenance', 'eightReceiptCategories',
     'immutableDeploymentAndRoute', 'closedBaseline', 'durableAtomicLedger', 'oneSessionOneAttemptCounters',
@@ -18,7 +20,10 @@ const REQUIREMENTS = Object.freeze({
   SMOKE: Object.freeze(['existingSeparatelyAuthorizedFixture', 'observerHealthy', 'targetMatches', 'noReopening']),
 });
 function fixturePlan() {
-  return { mode: 'synthetic-dry-run', enabled: false, sourceCommit: 'a'.repeat(40), packetSha256: 'b'.repeat(64),
+  const prep = preparation();
+  return { mode: 'synthetic-dry-run', enabled: false,
+    sourceCommit: PREPARATION_COMMIT, packet: PREPARATION_PACKET,
+    openingPreparationStatus: prep.status, packetSha256: 'b'.repeat(64),
     approvalRef: 'synthetic-approval', targetRef: 'synthetic-deployment-route', cohortRef: 'synthetic-cohort',
     runRef: 'synthetic-fresh-run', sessionRef: 'synthetic-existing-session', reviewerRef: 'synthetic-reviewer',
     startUtc: '2030-01-01T00:00:00.000Z', expiresUtc: '2030-01-01T00:01:00.000Z', maxDurationSeconds: 60 };
@@ -27,7 +32,8 @@ function validPlan(plan) {
   if (!plainContractData(plan) || !plan || Array.isArray(plan)) return false;
   const shape = fixturePlan();
   if (!isDeepStrictEqual(Object.keys(plan).sort(), Object.keys(shape).sort())) return false;
-  if (plan.mode !== shape.mode || plan.enabled !== false || !/^[a-f0-9]{40}$/.test(plan.sourceCommit)
+  if (plan.mode !== shape.mode || plan.enabled !== false || plan.sourceCommit !== PREPARATION_COMMIT
+    || plan.packet !== PREPARATION_PACKET || plan.openingPreparationStatus !== preparation().status
     || !/^[a-f0-9]{64}$/.test(plan.packetSha256)) return false;
   for (const key of ['approvalRef', 'targetRef', 'cohortRef', 'runRef', 'sessionRef', 'reviewerRef']) {
     if (typeof plan[key] !== 'string' || !/^synthetic-[a-z0-9-]{1,64}$/.test(plan[key])) return false;
@@ -94,4 +100,13 @@ function dryRun() {
   for (const kind of ORDER) runner.step(expectedEvent(plan, kind, Date.parse(plan.startUtc)));
   return runner.status();
 }
-module.exports = { ORDER, REQUIREMENTS, fixturePlan, expectedEvent, createDryRunner, dryRun };
+module.exports = {
+  ORDER,
+  PREPARATION_COMMIT,
+  PREPARATION_PACKET,
+  REQUIREMENTS,
+  fixturePlan,
+  expectedEvent,
+  createDryRunner,
+  dryRun,
+};

@@ -145,7 +145,7 @@
     "offline/cad-auth-prod-opening-prep/preparation.js": "b2a8b8f89dc07336d6f1f8793cf72074807fffc6ba635f89aab8493f7c149e5b",
     "scripts/cad-auth-prod-opening-prep-checker.js": "d334dc88cdf792654b9aff08a97b5dcd21d62db406710b4f16a042021f920338",
     "scripts/cad-auth-prod-opening-prep.test.js": "885512b7388db0b359c4149dba1e2d2b6bea39674472f8d8441914422689025c",
-    "offline/cad-auth-prod-runner/runner.js": "d611d1fb13de08263543fbb3b468e41cd340854ade32a59617edc321810dedff",
+    "offline/cad-auth-prod-runner/runner.js": "f77a910a29adb648996652a61388bd8a5edc25ee0794b7b27c1f582b969b3512",
     "docs/cad-auth-prod-runner.md": "08c79f5fca9685f091be729b9951b3b100c6582828624c351917b814a4516797",
     "scripts/cad-auth-prod-runner-checker.js": "1b2e87999e81d5e8287a875970df04174a041b83ace83eee7a3e4e6f9b2352a0",
     "scripts/cad-auth-prod-runner.test.js": "712130b1e84f162cb9117bdec9517058582f2fe8a36e34d2e4152ffc21d29bd9"
