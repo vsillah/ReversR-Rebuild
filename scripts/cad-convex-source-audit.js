@@ -60,7 +60,14 @@ assert.equal(require('./cad-auth-restricted-source-set-projection-checker').chec
   JSON.parse(read('docs/cad-auth-restricted-source-set-projection.json'))).ok, true);
 assert.equal(require('./cad-auth-upload-admission-readiness-rollup-checker').checkReadinessRollupPacket(
   JSON.parse(read('docs/cad-auth-upload-admission-readiness-rollup.json'))).ok, true);
+assert.equal(require('./cad-auth-prod-opening-prep-checker').checkPacket(
+  JSON.parse(read('docs/cad-auth-prod-opening-prep.json'))).ok, true);
 const files = [
+  'docs/cad-auth-prod-opening-prep.md',
+  'docs/cad-auth-prod-opening-prep.json',
+  'offline/cad-auth-prod-opening-prep/preparation.js',
+  'scripts/cad-auth-prod-opening-prep-checker.js',
+  'scripts/cad-auth-prod-opening-prep.test.js',
   'docs/cad-auth-upload-admission-readiness-rollup.md',
   'docs/cad-auth-upload-admission-readiness-rollup.json',
   'offline/cad-auth-upload-admission-readiness-rollup/preparation.js',
