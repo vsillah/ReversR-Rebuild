@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-production-opening-preparation-v1",
+  "sourceOnly": true,
+  "status": "PREPARATION_ONLY_LIVE_GATE_REQUIRED",
+  "baseCommit": "4e3f2cd74ca20cddb9badc8203b5fb4fb3245120",
+  "rollupSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+  "target": {
+    "origin": "https://reversr.vercel.app",
+    "route": "POST /api/cad/user-import",
+    "internalTestCohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "routeBindingOnly": true,
+    "uploadAdmissionAuthorizedByThisRollup": false,
+    "requestBodyAdmissionReadAuthorizedByThisRollup": false,
+    "uploadSessionIssuanceAuthorizedByThisRollup": false
+  },
+  "controls": {
+    "liveEvidenceCollected": false,
+    "uploadSessionsIssued": 0,
+    "requestBodyReads": 0,
+    "providerEnvResourceBillingChanges": 0,
+    "secretReads": 0,
+    "activationPerformed": false,
+    "retryOrSecondRunPerformed": false,
+    "privateCadUsed": false,
+    "externalMessagesSent": false,
+    "commercialReadinessClaimed": false,
+    "sourceOnlyUploadAdmissionReadinessRollupAuthorized": false,
+    "privateReceiptReadAuthorized": false,
+    "privateReceiptDiscoveryAuthorized": false,
+    "secretReadAuthorized": false,
+    "privateValueDisclosureAuthorized": false,
+    "privatePathDisclosureAuthorized": false,
+    "keyListingDisclosureAuthorized": false,
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "receiptCreationAuthorized": false,
+    "receiptSupplyAuthorized": false,
+    "sourceSetGenerationAuthorized": false,
+    "publicSourceSetProjectionAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "retryAuthorized": false,
+    "secondRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "sourceOnlyOpeningPreparationAuthorized": true
+  },
+  "runnerDesign": {
+    "implemented": false,
+    "enabled": false,
+    "runtimeMounted": false,
+    "executableCommandCard": null,
+    "legacyDevelopmentRunnerIsAuthority": false,
+    "maxConcurrentSessions": 1,
+    "maxUploadAttempts": 1,
+    "maxRuns": 1,
+    "retries": 0,
+    "sequence": [
+      "VERIFY_FRESH_EXPLICIT_LIVE_GATE_AND_IMMUTABLE_TARGET",
+      "VERIFY_ALL_PREFLIGHT_RECEIPTS_AND_CLOSED_BASELINE",
+      "ARM_INDEPENDENT_EXPIRY_AND_ROLLBACK_FENCE",
+      "ATOMICALLY_CONSUME_UNIQUE_RUN_BEFORE_ANY_EFFECT",
+      "RECHECK_WINDOW_COHORT_SESSION_AND_ADMISSION_FENCE",
+      "ALLOW_ONLY_SEPARATELY_AUTHORIZED_SINGLE_ADMISSION",
+      "CLOSE_FENCE_REVOKE_SESSION_AND_PRESERVE_CONSUMED_RUN",
+      "VERIFY_POST_ROLLBACK_FAIL_CLOSED_SMOKE",
+      "SANITIZED_CLOSEOUT_OR_BLOCKED_UNKNOWN_NO_RETRY"
+    ],
+    "window": {
+      "startUtc": null,
+      "expiresUtc": null,
+      "maxDurationSeconds": null,
+      "startInclusive": true,
+      "expiryExclusive": true,
+      "trustedClockRequired": true,
+      "clockUncertaintyStops": true,
+      "recheckBeforeEveryEffect": true,
+      "rejectStaleOrReplayedApproval": true
+    },
+    "consumedRun": {
+      "durableAtomicCompareAndSetRequired": true,
+      "keyBindsApprovalTargetCohortWindowAndPacket": true,
+      "consumeBeforeSessionIssuanceOrOpening": true,
+      "unknownConsumeOutcomeStops": true,
+      "neverReleaseForRetry": true,
+      "freshProductionRunIdRequired": true
+    }
+  },
+  "preflight": {
+    "required": [
+      "Fresh explicit approval binds this packet digest and reviewed source commit",
+      "Revalidate rollup, provenance, eight receipt categories and all source digests",
+      "Bind immutable production deployment and exact route; reject changed target",
+      "Resolve finite UTC start, expiry and maximum duration; reject old development windows",
+      "Bind fresh production run id, cohort, reviewer and restricted custody by sanitized refs",
+      "Verify durable atomic consumed-run ledger and one-session one-attempt counters",
+      "Verify independently enforced expiry fence and rollback capability before opening",
+      "Verify installed body observer and late-grant observer are target-bound and healthy",
+      "Verify baseline denial with zero body reads, conversions and Sandbox dispatches",
+      "Verify provider/config readiness without changing configuration; stop if credentials are needed"
+    ],
+    "sessionAdmission": [
+      "Issuance requires separate explicit live authority; this packet never issues a session",
+      "Authenticate principal, bind user/shop/session to exact internal cohort and target",
+      "Require CAD permission, exact allowed origin and CSRF; reject revoked or expired sessions",
+      "Session expiry cannot exceed window expiry; no late or second grant",
+      "Atomic admission fence binds session, consumed run, target, window and one upload attempt",
+      "Consume attempt before body read; failed or unknown attempt is never reusable",
+      "Validate approved payload class and bounded size/type without conversion or Sandbox dispatch",
+      "Reject non-cohort, duplicate, concurrent, early and expired requests before body access"
+    ],
+    "allRequired": true,
+    "missingUnknownOrStaleStops": true
+  },
+  "rollback": {
+    "triggers": [
+      "completion",
+      "expiry",
+      "failing check",
+      "failing smoke",
+      "unknown outcome",
+      "digest or target drift",
+      "observer unavailable",
+      "late grant",
+      "clock uncertainty",
+      "unexpected body read",
+      "unapproved session or attempt",
+      "credential or provider change needed"
+    ],
+    "order": [
+      "close admission fence first",
+      "revoke bounded session and pending grants",
+      "preserve consumed run and attempt tombstones",
+      "verify target closure and late-grant denial",
+      "run post-rollback fail-closed smoke",
+      "publish sanitized status only"
+    ],
+    "independentExpiryRequired": true,
+    "processCrashMustFailClosed": true,
+    "idempotentClosureRequired": true,
+    "reopeningForSmokeForbidden": true,
+    "unknownClosureBlocksCleanup": true,
+    "retryOrSecondRunForbidden": true
+  },
+  "postRollbackSmoke": {
+    "liveRunAuthorizedNow": false,
+    "targetMustMatchApprovedDeployment": true,
+    "cases": [
+      {
+        "case": "missing invalid expired or revoked session",
+        "expected": "401 USER_SESSION_REQUIRED"
+      },
+      {
+        "case": "non-CAD principal",
+        "expected": "403 USER_UPLOAD_FORBIDDEN"
+      },
+      {
+        "case": "invalid origin or CSRF",
+        "expected": "403 ORIGIN_OR_CSRF_REJECTED"
+      },
+      {
+        "case": "valid permitted pre-existing synthetic session after closure",
+        "expected": "503 USER_UPLOADS_DISABLED"
+      },
+      {
+        "case": "late grant duplicate attempt or concurrent run",
+        "expected": "DENIED_BEFORE_BODY_READ"
+      }
+    ],
+    "requireExistingSeparatelyAuthorizedFixture": true,
+    "noSessionIssuanceForSmoke": true,
+    "observerDeltas": {
+      "bodyReads": 0,
+      "sessionsIssued": 0,
+      "conversions": 0,
+      "sandboxDispatches": 0
+    },
+    "responsesAloneProveClosure": false,
+    "missingFixtureOrObserverResult": "BLOCKED_NO_CLEANUP_NO_RETRY",
+    "evidence": "Sanitized target refs, digests, counts and statuses only; never bodies or credentials"
+  },
+  "futureGate": {
+    "authorized": false,
+    "commandCardIssuanceAuthorized": false,
+    "exactPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only upload-admission readiness rollup packet <rollupPacketSha256> at source commit <rollupSourceCommit>, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, and accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting <startUtc> and expiring <expiresUtc>; admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second run, retry, or commercial-readiness claim. Bind opening preparation <openingPacketSha256> at reviewed commit <openingSourceCommit>, immutable target <targetRef>, fresh production run <productionRunRef>, maximum duration <maxDurationSeconds> seconds, and rollback/smoke contract <rollbackContractSha256>. Session issuance, runtime activation, and request-body admission/read each require explicit separate authorization.",
+    "phraseFields": {
+      "rollupPacketSha256": null,
+      "rollupSourceCommit": null,
+      "startUtc": null,
+      "expiresUtc": null,
+      "openingPacketSha256": null,
+      "openingSourceCommit": null,
+      "targetRef": null,
+      "productionRunRef": null,
+      "maxDurationSeconds": null,
+      "rollbackContractSha256": null
+    },
+    "filledTemplateIsNotExecutionAuthority": true,
+    "freshHumanGateAndReviewedRuntimeImplementationRequired": true
+  },
+  "sourceBindings": {
+    "docs/cad-auth-upload-admission-readiness-rollup.json": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+    "server/cadUserUploadRouter.js": "a763ba4e7ec736b8aec56491fe5e66c9482383f4caaa62cfac8f5dde6a3887ad",
+    "server/cadInternalProductionAdmissionSwitch.js": "70b3ab68d9aa43aa33959a3d62c31013f09878a161790838d089543261338ba9",
+    "server/cadUploadAdmissionRuntimeBridge.js": "6e23ccf8310bc1b745927cf091ab69ce60a7f6619f34ea27b0013539c2485fc2",
+    "docs/cad-auth-prod-opening-prep.md": "0bc22e326c71fa8d4e37ffc26544a6b18d5a927c314256a6fc2a5f4605e7174a",
+    "offline/cad-auth-prod-opening-prep/preparation.js": "b2a8b8f89dc07336d6f1f8793cf72074807fffc6ba635f89aab8493f7c149e5b",
+    "scripts/cad-auth-prod-opening-prep-checker.js": "d334dc88cdf792654b9aff08a97b5dcd21d62db406710b4f16a042021f920338",
+    "scripts/cad-auth-prod-opening-prep.test.js": "885512b7388db0b359c4149dba1e2d2b6bea39674472f8d8441914422689025c"
+  }
+}
