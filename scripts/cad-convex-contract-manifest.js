@@ -10,6 +10,12 @@ const files = [
   'scripts/cad-auth-prod-runner-checker.js',
   'scripts/cad-auth-prod-runner.test.js',
 
+  'docs/cad-auth-prod-executable-runner-source.md',
+  'docs/cad-auth-prod-executable-runner-source.json',
+  'offline/cad-auth-prod-executable-runner-source/preparation.js',
+  'scripts/cad-auth-prod-executable-runner-source-checker.js',
+  'scripts/cad-auth-prod-executable-runner-source.test.js',
+
   'docs/cad-auth-upload-admission-readiness-rollup.md',
   'docs/cad-auth-upload-admission-readiness-rollup.json',
   'offline/cad-auth-upload-admission-readiness-rollup/preparation.js',
