@@ -30,6 +30,12 @@ It records the future fields and receipts that must be bound by a later gate.
 deltas. It does not authenticate private evidence and does not authorize cleanup,
 session issuance, activation or body admission.
 
+`transactionAdapter.js` adds a source-only transition proposal model for the
+future durable store. It can prepare ordered claim transitions for one run, one
+session and one attempt, then force close/revoke on unknown outcomes, stale
+revisions, repeated claims, expiry or rollback. Its independent fence checker can
+report simulated eligibility, but it always returns `admissionAllowed: false`.
+
 ## Validation
 
 Run:

@@ -18,6 +18,7 @@ const SOURCES = Object.freeze([
   parentSource.PACKET,
   ...parentSource.SOURCES,
   'offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js',
+  'offline/cad-auth-prod-durable-runner-adapter-prep/transactionAdapter.js',
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'scripts/cad-auth-prod-durable-runner-adapter-prep-checker.js',
   'scripts/cad-auth-prod-durable-runner-adapter-prep.test.js',

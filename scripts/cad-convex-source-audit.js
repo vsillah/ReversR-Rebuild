@@ -74,6 +74,7 @@ const files = [
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'docs/cad-auth-prod-durable-runner-adapter-prep.json',
   'offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js',
+  'offline/cad-auth-prod-durable-runner-adapter-prep/transactionAdapter.js',
   'scripts/cad-auth-prod-durable-runner-adapter-prep-checker.js',
   'scripts/cad-auth-prod-durable-runner-adapter-prep.test.js',
 
