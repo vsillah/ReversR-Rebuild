@@ -68,7 +68,15 @@ assert.equal(require('./cad-auth-prod-executable-runner-source-checker').checkPa
   JSON.parse(read('docs/cad-auth-prod-executable-runner-source.json'))).ok, true);
 assert.equal(require('./cad-auth-prod-executable-runner-checker').checkPacket(
   JSON.parse(read('docs/cad-auth-prod-executable-runner.json'))).ok, true);
+assert.equal(require('./cad-auth-prod-durable-runner-adapter-prep-checker').checkPacket(
+  JSON.parse(read('docs/cad-auth-prod-durable-runner-adapter-prep.json'))).ok, true);
 const files = [
+  'docs/cad-auth-prod-durable-runner-adapter-prep.md',
+  'docs/cad-auth-prod-durable-runner-adapter-prep.json',
+  'offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js',
+  'scripts/cad-auth-prod-durable-runner-adapter-prep-checker.js',
+  'scripts/cad-auth-prod-durable-runner-adapter-prep.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
