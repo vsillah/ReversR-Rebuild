@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { admissionErrors, validateRequestBody } = require('./cadUserUploadAdmission');
 const { createCadInternalProductionAdmissionSwitch } = require('./cadInternalProductionAdmissionSwitch');
+const { createCadLiveOpeningRuntimeMount } = require('./cadLiveOpeningRuntimeMount');
 // Source-closed gate: no environment, request or factory option can open it.
 const BODY_ADMISSION_AUTHORIZED = false;
 const { createUploadSessionVerifier } = require('./uploadSession');
@@ -25,11 +26,18 @@ function createCadUserUploadRouter({
   sessionService = uploadSessionService,
   allowedOrigins = [],
   corsOrigins = [],
-  admissionSwitch = createCadInternalProductionAdmissionSwitch(),
+  admissionSwitch: configuredAdmissionSwitch = createCadInternalProductionAdmissionSwitch(),
+  liveOpeningRuntimeMount,
 } = {}) {
   const router = express.Router();
   const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
   const send = (res, code) => res.status(errors[code][0]).json({ schemaVersion: 1, status: 'error', code, message: errors[code][1] });
+  const runtimeMount = liveOpeningRuntimeMount || createCadLiveOpeningRuntimeMount({
+    admissionSwitch: configuredAdmissionSwitch,
+  });
+  const admissionSwitch = runtimeMount && runtimeMount.admissionSwitch
+    ? runtimeMount.admissionSwitch
+    : configuredAdmissionSwitch;
   const corsMiddleware = cors({ origin: true, methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Upload-CSRF'] });
   router.all('/user-import', (req, res, next) => {

@@ -74,6 +74,8 @@ assert.equal(require('./cad-auth-durable-adapter-evidence-command-card-review-ch
   JSON.parse(read('docs/cad-auth-durable-adapter-evidence-command-card-review.json'))).ok, true);
 assert.equal(require('./cad-auth-live-opening-command-card-digest-prep-checker').checkDigestPrepPacket(
   JSON.parse(read('docs/cad-auth-live-opening-command-card-digest-prep.json'))).ok, true);
+assert.equal(require('./cad-auth-live-opening-runtime-mount-prep-checker').checkRuntimeMountPrepPacket(
+  JSON.parse(read('docs/cad-auth-live-opening-runtime-mount-prep.json'))).ok, true);
 const files = [
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'docs/cad-auth-prod-durable-runner-adapter-prep.json',
@@ -93,6 +95,14 @@ const files = [
   'offline/cad-auth-live-opening-command-card-digest-prep/preparation.js',
   'scripts/cad-auth-live-opening-command-card-digest-prep-checker.js',
   'scripts/cad-auth-live-opening-command-card-digest-prep.test.js',
+
+  'docs/cad-auth-live-opening-runtime-mount-prep.md',
+  'docs/cad-auth-live-opening-runtime-mount-prep.json',
+  'offline/cad-auth-live-opening-runtime-mount-prep/preparation.js',
+  'server/cadLiveOpeningRuntimeMount.js',
+  'server/cadUserUploadRouter.js',
+  'scripts/cad-auth-live-opening-runtime-mount-prep-checker.js',
+  'scripts/cad-auth-live-opening-runtime-mount-prep.test.js',
 
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
