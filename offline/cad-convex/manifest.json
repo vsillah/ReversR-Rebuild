@@ -101,6 +101,11 @@
     "server/cadUserUploadRouter.js": "ce2dc4edc91ebed1407e337a4ccb381bb1b0d6e33f1330674ec6718ff466aef5",
     "scripts/cad-auth-live-opening-runtime-mount-prep-checker.js": "795b345fcd8e8d4a202c5ac1f90476cb922c16badf5a86dc618564c911e99d6a",
     "scripts/cad-auth-live-opening-runtime-mount-prep.test.js": "1f74fee7f41e82dd7151b1d647a6c5dbe1d34c7b226d835372a427f41c3236da",
+    "docs/cad-auth-live-opening-current-deployment-rebind.md": "6289bbd990ec71ba23425f890c67cac71c1e80da43eab5e126266ddf985fd40d",
+    "docs/cad-auth-live-opening-current-deployment-rebind.json": "bda77a83edad143ddb3ec0fa393ba835153cda214364d7898b4528054b89cfe8",
+    "offline/cad-auth-live-opening-current-deployment-rebind/preparation.js": "b75a9f4e0886b32ed3638493486cd91608bc7317b34d53981202029215394c0f",
+    "scripts/cad-auth-live-opening-current-deployment-rebind-checker.js": "fd95b2b594d2a4adac1f9d63cb56ae2c4fef05d08a76d1fad33c4b20e3d8848d",
+    "scripts/cad-auth-live-opening-current-deployment-rebind.test.js": "77bccc923b07f6378469a6428c5d7fb1383034d6a70f87e9d2f6f14adf396336",
     "docs/cad-auth-prod-executable-runner.md": "61f0fc304c120643d2447abb9a6c786f5afb4815953537f02e484e6b49d0bd72",
     "docs/cad-auth-prod-executable-runner.json": "5d613e1c1064fecf3c14a7810dc4c3453a45be82905cc7060f8cf1ae1a67603b",
     "offline/cad-auth-prod-executable-runner/preparation.js": "5b63d898c00deebf2d7471329adbaacce8905a011ad5bcc4ceca2b0a86d6eb1d",
@@ -780,6 +785,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "a2271c107d36aa45a1d82918c88516b18184cc4efb082554188829cac5b304b3"
+    "scripts/cad-convex-contract-manifest.js": "5701fe86d905bd3e59724f3d15b72bbc39dcaba43596f5e748dd5576a1504508"
   }
 }

@@ -31,6 +31,12 @@ const files = [
   'scripts/cad-auth-live-opening-runtime-mount-prep-checker.js',
   'scripts/cad-auth-live-opening-runtime-mount-prep.test.js',
 
+  'docs/cad-auth-live-opening-current-deployment-rebind.md',
+  'docs/cad-auth-live-opening-current-deployment-rebind.json',
+  'offline/cad-auth-live-opening-current-deployment-rebind/preparation.js',
+  'scripts/cad-auth-live-opening-current-deployment-rebind-checker.js',
+  'scripts/cad-auth-live-opening-current-deployment-rebind.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
