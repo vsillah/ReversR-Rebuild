@@ -23,12 +23,12 @@ const {
   SOURCE_SET_RUN_ID,
 } = require('../cad-auth-restricted-source-set-projection/preparation');
 
-const SOURCE_COMMIT = '268257b527fe807be78bdbc0a0be35f74c8bbc9a';
+const SOURCE_COMMIT = 'aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2';
 const EVIDENCE_PACKET_SHA256 = 'c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce';
 const UPLOAD_READINESS_ROLLUP_PACKET_SHA256 =
   '9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b';
-const PROPOSED_START_UTC = '2026-09-26T21:00:00Z';
-const PROPOSED_EXPIRES_UTC = '2026-09-26T21:30:00Z';
+const PROPOSED_START_UTC = '2026-09-27T11:00:00Z';
+const PROPOSED_EXPIRES_UTC = '2026-09-27T11:30:00Z';
 const ZERO_ACTIONS = Object.freeze({
   providerEnvResourceBillingChangeAuthorized: false,
   secretReadAuthorized: false,

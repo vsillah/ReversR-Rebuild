@@ -15,7 +15,7 @@
     "packet": "cad-auth-live-opening-command-card-digest-prep-v1",
     "sourceOnly": true,
     "status": "SOURCE_ONLY_LIVE_OPENING_COMMAND_CARD_DIGEST_PREP_NO_ISSUANCE",
-    "sourceCommit": "268257b527fe807be78bdbc0a0be35f74c8bbc9a",
+    "sourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2",
     "parentPackets": {
       "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
       "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
@@ -33,8 +33,8 @@
       "sourceCommit": "22f3b8d72064c47de0a5afeb1043602671474dd0"
     },
     "proposedOpeningWindow": {
-      "startUtc": "2026-09-26T21:00:00Z",
-      "expiresUtc": "2026-09-26T21:30:00Z",
+      "startUtc": "2026-09-27T11:00:00Z",
+      "expiresUtc": "2026-09-27T11:30:00Z",
       "durationMinutes": 30,
       "startInclusiveExpiryExclusive": true,
       "currentGateDoesNotOpenWindow": true,
@@ -43,7 +43,7 @@
     "commandCardDigest": {
       "algorithm": "SHA-256",
       "canonicalEncoding": "JSON.stringify over cad-auth-live-opening-command-card-digest-draft-v1",
-      "sha256": "38b1da99fda16c014ffad3d8d8c2d551dc355c6f529b08a6277fb1167e12f209",
+      "sha256": "64d33875a54d03d951a59a976b6eb3f0b4c18aba94967e76d4a76f293b8c3a48",
       "draft": {
         "schemaVersion": 1,
         "artifact": "cad-auth-live-opening-command-card-digest-draft-v1",
@@ -54,7 +54,7 @@
         "productionUploadAdmissionActivated": false,
         "uploadSessionIssuanceEnabled": false,
         "requestBodyAdmissionReadAuthorized": false,
-        "sourceCommit": "268257b527fe807be78bdbc0a0be35f74c8bbc9a",
+        "sourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2",
         "evidencePacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
         "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
         "uploadReadinessRollupPacketSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
@@ -67,8 +67,8 @@
         "productionRoute": "POST /api/cad/user-import",
         "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
         "openingWindow": {
-          "startUtc": "2026-09-26T21:00:00Z",
-          "expiresUtc": "2026-09-26T21:30:00Z",
+          "startUtc": "2026-09-27T11:00:00Z",
+          "expiresUtc": "2026-09-27T11:30:00Z",
           "durationMinutes": 30,
           "startInclusiveExpiryExclusive": true,
           "currentGateDoesNotOpenWindow": true,
@@ -190,13 +190,13 @@
     },
     "nextLiveOpeningGate": {
       "authorized": false,
-      "exactPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only durable adapter evidence command-card review packet c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce at source commit 268257b527fe807be78bdbc0a0be35f74c8bbc9a, durable adapter packet 783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285, production deployment reference https://vercel.com/vsillahs-projects/reversr/4M1gc2XktVXbNYXwVfLsgbSaUGTG, source-only upload-admission readiness rollup packet 9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, and accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-26T21:00:00Z and expiring 2026-09-26T21:30:00Z; issue and use only one bounded executable command-card with SHA-256 38b1da99fda16c014ffad3d8d8c2d551dc355c6f529b08a6277fb1167e12f209 for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second run, retry, or commercial-readiness claim.",
+      "exactPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only durable adapter evidence command-card review packet c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce at source commit aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2, durable adapter packet 783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285, production deployment reference https://vercel.com/vsillahs-projects/reversr/4M1gc2XktVXbNYXwVfLsgbSaUGTG, source-only upload-admission readiness rollup packet 9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, and accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-27T11:00:00Z and expiring 2026-09-27T11:30:00Z; issue and use only one bounded executable command-card with SHA-256 64d33875a54d03d951a59a976b6eb3f0b4c18aba94967e76d4a76f293b8c3a48 for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second run, retry, or commercial-readiness claim.",
       "phraseFields": {
         "evidencePacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
-        "evidenceSourceCommit": "268257b527fe807be78bdbc0a0be35f74c8bbc9a",
-        "startUtc": "2026-09-26T21:00:00Z",
-        "expiresUtc": "2026-09-26T21:30:00Z",
-        "commandCardSha256": "38b1da99fda16c014ffad3d8d8c2d551dc355c6f529b08a6277fb1167e12f209"
+        "evidenceSourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2",
+        "startUtc": "2026-09-27T11:00:00Z",
+        "expiresUtc": "2026-09-27T11:30:00Z",
+        "commandCardSha256": "64d33875a54d03d951a59a976b6eb3f0b4c18aba94967e76d4a76f293b8c3a48"
       },
       "liveOpeningRequiresSeparateApproval": true,
       "executableCommandCardIssuanceRequiresSeparateApproval": true,
@@ -231,10 +231,10 @@
   },
   "sourceBindings": {
     "docs/cad-auth-durable-adapter-evidence-command-card-review.json": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
-    "docs/cad-auth-live-opening-command-card-digest-prep.md": "387d5f7ee03ee715e8a9e2e8793e6d3714fe538360f29f20e5cd519b75ff14c5",
-    "offline/cad-auth-live-opening-command-card-digest-prep/preparation.js": "0d20ea55461baf32c126ae831639840e2326421c42a5736df8f4532acbd54b39",
+    "docs/cad-auth-live-opening-command-card-digest-prep.md": "3e65c5afb1a652656acd59112c1a9400db19381c024e479e0e23a85fdd64a7a8",
+    "offline/cad-auth-live-opening-command-card-digest-prep/preparation.js": "2d22d1fecf990407e47bd56492770ce0e33145af5993310be55a6d6cf37e7be8",
     "scripts/cad-auth-live-opening-command-card-digest-prep-checker.js": "9cb08718ee5112b2d620d07d5e22fd293751fc84b51c1f0e514859b5b2957b89",
     "scripts/cad-auth-live-opening-command-card-digest-prep.test.js": "8e7d1231e6b564b026069734ecc45d9c3a63520679575b05cb5920471bb17b25"
   },
-  "sourceCommit": "268257b527fe807be78bdbc0a0be35f74c8bbc9a"
+  "sourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2"
 }
