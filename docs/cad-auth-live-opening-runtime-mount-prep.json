@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-opening-runtime-mount-prep-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_LIVE_OPENING_RUNTIME_MOUNT_PREP_NO_RUNTIME_EFFECTS",
+  "parent": {
+    "commandCardDigestPrep": {
+      "path": "docs/cad-auth-live-opening-command-card-digest-prep.json",
+      "sha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+      "status": "SOURCE_ONLY_LIVE_OPENING_COMMAND_CARD_DIGEST_PREP_NO_RUNTIME_EFFECTS"
+    }
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-live-opening-runtime-mount-prep-v1",
+    "sourceOnly": true,
+    "status": "SOURCE_ONLY_LIVE_OPENING_RUNTIME_MOUNT_PREP_DISABLED_BY_DEFAULT",
+    "sourceCommit": "430087d915b4282d524cb82afde90285b1853a33",
+    "parentPackets": {
+      "commandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+      "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce"
+    },
+    "parentCommandCardDigest": {
+      "sha256": "64d33875a54d03d951a59a976b6eb3f0b4c18aba94967e76d4a76f293b8c3a48",
+      "sourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2",
+      "productionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/4M1gc2XktVXbNYXwVfLsgbSaUGTG",
+      "proposedOpeningWindow": {
+        "startUtc": "2026-09-27T11:00:00Z",
+        "expiresUtc": "2026-09-27T11:30:00Z",
+        "durationMinutes": 30,
+        "startInclusiveExpiryExclusive": true,
+        "currentGateDoesNotOpenWindow": true,
+        "laterApprovalMustRepeatWindow": true
+      },
+      "currentGateDoesNotOpenWindow": true
+    },
+    "routeWiring": {
+      "routeSource": "server/cadUserUploadRouter.js",
+      "mountSource": "server/cadLiveOpeningRuntimeMount.js",
+      "routeMountedBeforeGeneralBodyParser": true,
+      "admissionSwitchConsultedBeforeRequestBodyValidation": true,
+      "literalBodyAdmissionGateRemainsFalse": true,
+      "defaultRuntimeMountEnabled": false,
+      "defaultDecisionAlwaysDisabled": true,
+      "unsafeAdapterGrantOverridden": true,
+      "baseAdmissionSwitchStillObserved": true
+    },
+    "bindingRequirements": {
+      "productionOrigin": "https://reversr.vercel.app",
+      "productionRoute": "POST /api/cad/user-import",
+      "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "requiredPrechecks": [
+        "freshApprovalReviewReceipt",
+        "immutableTargetReceipt",
+        "closedBaselineReceipt",
+        "adapterSourceReviewReceipt",
+        "independentExpiryReceipt",
+        "atomicLedgerReceipt",
+        "sessionAdmissionReceipt",
+        "rollbackSmokeReceipt"
+      ],
+      "effectOrder": [
+        "verifyFreshApproval",
+        "recheckImmutableCurrentDeployment",
+        "verifyClosedBaseline",
+        "verifyCommandCardDigest",
+        "claimAtomicRun",
+        "verifyBoundedSession",
+        "claimAtomicAttempt",
+        "openAdmissionFence",
+        "consumeAttemptBeforeBodyRead",
+        "closeAdmissionFence",
+        "revokeBoundedSessionAndLateGrants",
+        "runPostRollbackFailClosedSmoke"
+      ],
+      "exactCommandCardSha256Required": true,
+      "immutableCurrentDeploymentRecheckRequired": true,
+      "staleCommittedDeploymentReferenceStops": true,
+      "sourceCommittedDeploymentReferenceCannotGrantLiveUse": true,
+      "oneSessionOneAttemptDurableFenceRequired": true,
+      "independentExpiryCheckBeforeEveryEffectRequired": true,
+      "rollbackFirstControlsRequired": true,
+      "postRollbackFailClosedSmokeRequired": true,
+      "observerMustRemainZeroUntilAdmissionGate": true
+    },
+    "evidenceSummary": {
+      "runtimeMountSourcePrepared": true,
+      "routeImportPrepared": true,
+      "defaultFailClosed": true,
+      "bodyAdmissionStillSourceClosed": true,
+      "commandCardBindingReviewImplemented": true,
+      "currentDeploymentRecheckModeled": true,
+      "effectsExecuted": 0,
+      "privateValuesProjected": false,
+      "privatePathsProjected": false,
+      "keyListingsProjected": false
+    },
+    "stopConditions": {
+      "failingCheck": true,
+      "failingSmoke": true,
+      "unknownOutcome": true,
+      "missingDurableAdapterEvidence": true,
+      "staleDeploymentBinding": true,
+      "commandCardDigestMismatch": true,
+      "immutableTargetRecheckMissing": true,
+      "oneSessionOneAttemptFenceMissing": true,
+      "independentExpiryEvidenceMissing": true,
+      "rollbackSmokeEvidenceMissing": true,
+      "observerUnavailable": true,
+      "credentialOrProviderConfigurationNeeded": true,
+      "secretOrPrivateValueWouldBeRead": true
+    },
+    "nextGate": {
+      "authorized": false,
+      "gate": "bounded-live-opening-current-deployment-recheck-and-executable-command-card-issuance",
+      "exactApprovalPhraseNeeded": true,
+      "mustBindFreshCurrentProductionDeployment": true,
+      "mustBindCommandCardSha256": true,
+      "mustBindWindowInsideApprovalText": true,
+      "mustBindPostRollbackFailClosedSmokePlan": true,
+      "unresolvedPlaceholdersAreNotApproval": true
+    },
+    "controls": {
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "secretReadAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondLiveRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "effectsExecuted": 0,
+      "sourceOnlyRuntimeMountPreparationAuthorized": true,
+      "disabledRouteWiringAuthorized": true,
+      "cleanupAuthorized": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-opening-command-card-digest-prep.json": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+    "docs/cad-auth-live-opening-runtime-mount-prep.md": "8593f18df68d4f884719c39c5506a332c8d0f8d464a308f593993803b9fc28aa",
+    "offline/cad-auth-live-opening-runtime-mount-prep/preparation.js": "e5dc8e8a12f59a7ffad92f417182c2ec6bc5eadd079f45c6a568f8a2f5764eba",
+    "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
+    "server/cadUserUploadRouter.js": "ce2dc4edc91ebed1407e337a4ccb381bb1b0d6e33f1330674ec6718ff466aef5",
+    "scripts/cad-auth-live-opening-runtime-mount-prep-checker.js": "795b345fcd8e8d4a202c5ac1f90476cb922c16badf5a86dc618564c911e99d6a",
+    "scripts/cad-auth-live-opening-runtime-mount-prep.test.js": "1f74fee7f41e82dd7151b1d647a6c5dbe1d34c7b226d835372a427f41c3236da"
+  },
+  "sourceCommit": "430087d915b4282d524cb82afde90285b1853a33"
+}

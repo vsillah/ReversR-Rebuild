@@ -23,6 +23,14 @@ const files = [
   'scripts/cad-auth-live-opening-command-card-digest-prep-checker.js',
   'scripts/cad-auth-live-opening-command-card-digest-prep.test.js',
 
+  'docs/cad-auth-live-opening-runtime-mount-prep.md',
+  'docs/cad-auth-live-opening-runtime-mount-prep.json',
+  'offline/cad-auth-live-opening-runtime-mount-prep/preparation.js',
+  'server/cadLiveOpeningRuntimeMount.js',
+  'server/cadUserUploadRouter.js',
+  'scripts/cad-auth-live-opening-runtime-mount-prep-checker.js',
+  'scripts/cad-auth-live-opening-runtime-mount-prep.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',

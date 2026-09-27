@@ -95,9 +95,9 @@ test('actual route instrumentation preserves auth precedence and terminal disabl
   unavailable = true;
   assert.equal(await request('{SENTINEL'), 'USER_AUTH_UNAVAILABLE'); assert.equal(reads, 0);
   unavailable = false; grant = { ...grant, cadUploadAllowed: true };
-  assert.equal(await request('{SENTINEL'), 'UPLOAD_MALFORMED');
+  assert.equal(await request('{SENTINEL'), 'USER_UPLOADS_DISABLED');
   assert.equal(await request(JSON.stringify(payload())), 'USER_UPLOADS_DISABLED');
-  assert.equal(reads, 2);
+  assert.equal(reads, 0);
 });
 
 test('runtime has no enable option or executor and manifest keeps prerequisites closed', () => {
