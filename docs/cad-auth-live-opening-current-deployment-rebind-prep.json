@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "sourceOnly": true,
+  "preparation": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-live-opening-current-deployment-rebind-prep-v1",
+    "sourceOnly": true,
+    "status": "SOURCE_ONLY_CURRENT_DEPLOYMENT_REBIND_NO_RUNTIME_EFFECTS",
+    "sourceCommit": "e5e23453852720532b09fcfc1b5c603a1265c816",
+    "parentPackets": {
+      "runtimeMountPrepSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
+      "priorDigestPrepSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81"
+    },
+    "deploymentBinding": {
+      "reference": "https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL",
+      "provenance": "User-supplied target; matching successful GitHub Vercel commit status observed during preparation",
+      "productionAliasFreshnessProven": false,
+      "currentGatePerformsLiveEvidenceCollection": false,
+      "laterImmutableCurrentDeploymentRecheckRequired": true,
+      "mergeOrRedeployRequiresRebindIfTargetChanges": true
+    },
+    "proposedOpeningWindow": {
+      "startUtc": "2026-09-27T16:00:00Z",
+      "expiresUtc": "2026-09-27T16:30:00Z",
+      "durationMinutes": 30,
+      "startInclusiveExpiryExclusive": true,
+      "currentGateDoesNotOpenWindow": true,
+      "laterApprovalMustRepeatWindow": true
+    },
+    "commandCardDigest": {
+      "algorithm": "SHA-256",
+      "canonicalEncoding": "JSON.stringify over draft in insertion order, UTF-8, no trailing newline",
+      "sha256": "52d7383a1eea2144d77db072f386bc08209310cbf1abbe5ed3500b697f20e115",
+      "draft": {
+        "schemaVersion": 1,
+        "artifact": "cad-auth-live-opening-command-card-digest-draft-v1",
+        "sourceOnly": true,
+        "executable": false,
+        "issued": false,
+        "authorizedForLiveUse": false,
+        "productionUploadAdmissionActivated": false,
+        "uploadSessionIssuanceEnabled": false,
+        "requestBodyAdmissionReadAuthorized": false,
+        "sourceCommit": "e5e23453852720532b09fcfc1b5c603a1265c816",
+        "evidencePacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
+        "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
+        "uploadReadinessRollupPacketSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+        "coherentRestrictedSourceSetProjectionPacketSha256": "2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b",
+        "acceptedProvenanceProjectionPacketSha256": "03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec",
+        "privateRestrictedSourceSetSha256": "2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4",
+        "restrictedSourceSetRunId": "20260925t182340z",
+        "productionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL",
+        "productionOrigin": "https://reversr.vercel.app",
+        "productionRoute": "POST /api/cad/user-import",
+        "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+        "openingWindow": {
+          "startUtc": "2026-09-27T16:00:00Z",
+          "expiresUtc": "2026-09-27T16:30:00Z",
+          "durationMinutes": 30,
+          "startInclusiveExpiryExclusive": true,
+          "currentGateDoesNotOpenWindow": true,
+          "laterApprovalMustRepeatWindow": true
+        },
+        "ceilings": {
+          "concurrentSessions": 1,
+          "uploadAttempts": 1,
+          "retries": 0,
+          "secondLiveRuns": 0,
+          "cadPayloadBodyReadsAuthorizedByThisGate": 0,
+          "conversions": 0,
+          "sandboxDispatches": 0
+        },
+        "requiredPrechecks": [
+          "freshApprovalReviewReceipt",
+          "immutableTargetReceipt",
+          "closedBaselineReceipt",
+          "adapterSourceReviewReceipt",
+          "independentExpiryReceipt",
+          "atomicLedgerReceipt",
+          "sessionAdmissionReceipt",
+          "rollbackSmokeReceipt"
+        ],
+        "liveExecutionControls": {
+          "independentExpiryCheckBeforeEveryEffect": true,
+          "atomicDurableRunClaimRequired": true,
+          "atomicDurableAttemptClaimRequired": true,
+          "rollbackImmediatelyAfterWindow": true,
+          "postRollbackFailClosedSmokeRequired": true,
+          "unknownOutcomeStopsWithoutRetry": true,
+          "rollbackFirstControlsRequired": true,
+          "immutableCurrentDeploymentRecheckBeforeEveryEffect": true
+        },
+        "commandMaterial": {
+          "commandLine": null,
+          "dryRunCommandLine": null,
+          "executableCommandCard": null,
+          "runtimeCredentialSource": null,
+          "providerMutation": null,
+          "bodyRead": null
+        },
+        "runtimeMountPrepPacketSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
+        "priorCommandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81"
+      },
+      "executableBytesDigest": null,
+      "executableCardIssued": false
+    },
+    "bindingRequirements": {
+      "productionOrigin": "https://reversr.vercel.app",
+      "productionRoute": "POST /api/cad/user-import",
+      "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "requiredPrechecks": [
+        "freshApprovalReviewReceipt",
+        "immutableTargetReceipt",
+        "closedBaselineReceipt",
+        "adapterSourceReviewReceipt",
+        "independentExpiryReceipt",
+        "atomicLedgerReceipt",
+        "sessionAdmissionReceipt",
+        "rollbackSmokeReceipt"
+      ],
+      "effectOrder": [
+        "verifyFreshApproval",
+        "recheckImmutableCurrentDeployment",
+        "verifyClosedBaseline",
+        "verifyCommandCardDigest",
+        "claimAtomicRun",
+        "verifyBoundedSession",
+        "claimAtomicAttempt",
+        "openAdmissionFence",
+        "consumeAttemptBeforeBodyRead",
+        "closeAdmissionFence",
+        "revokeBoundedSessionAndLateGrants",
+        "runPostRollbackFailClosedSmoke"
+      ],
+      "exactCommandCardSha256Required": true,
+      "immutableCurrentDeploymentRecheckRequired": true,
+      "staleCommittedDeploymentReferenceStops": true,
+      "sourceCommittedDeploymentReferenceCannotGrantLiveUse": true,
+      "oneSessionOneAttemptDurableFenceRequired": true,
+      "independentExpiryCheckBeforeEveryEffectRequired": true,
+      "rollbackFirstControlsRequired": true,
+      "postRollbackFailClosedSmokeRequired": true,
+      "observerMustRemainZeroUntilAdmissionGate": true
+    },
+    "stopConditions": {
+      "failingCheck": true,
+      "failingSmoke": true,
+      "unknownOutcome": true,
+      "missingDurableAdapterEvidence": true,
+      "staleDeploymentBinding": true,
+      "commandCardDigestMismatch": true,
+      "immutableTargetRecheckMissing": true,
+      "oneSessionOneAttemptFenceMissing": true,
+      "independentExpiryEvidenceMissing": true,
+      "rollbackSmokeEvidenceMissing": true,
+      "observerUnavailable": true,
+      "credentialOrProviderConfigurationNeeded": true,
+      "secretOrPrivateValueWouldBeRead": true,
+      "expiredOrNotYetOpenWindow": true,
+      "executableDigestNotSeparatelyApproved": true
+    },
+    "rollbackPlan": {
+      "prepareBeforeOpening": true,
+      "closeOnExpiryOrAnyStopCondition": true,
+      "revokeSessionAndLateGrantsBeforeSmoke": true,
+      "smokeCases": [
+        "missing-session",
+        "invalid-session",
+        "revoked-session",
+        "expired-session",
+        "consumed-attempt"
+      ],
+      "requireAdmissionDenied": true,
+      "requiredObserverDeltas": {
+        "bodyReads": 0,
+        "conversions": 0,
+        "sandboxDispatches": 0
+      },
+      "failedOrUnknownSmokeBlocksCleanupAndRetry": true
+    },
+    "evidenceSummary": {
+      "sourceOnly": true,
+      "runtimeEvidenceCollected": false,
+      "durableAdapterLiveEvidenceVerified": false,
+      "effectsExecuted": 0
+    },
+    "nextLiveOpeningGate": {
+      "authorized": false,
+      "exactPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source commit e5e23453852720532b09fcfc1b5c603a1265c816, runtime mount preparation packet SHA-256 24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346, prior command-card digest preparation packet SHA-256 53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81, production deployment reference https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL, and non-executable command-card digest draft SHA-256 52d7383a1eea2144d77db072f386bc08209310cbf1abbe5ed3500b697f20e115. Scope: https://reversr.vercel.app POST /api/cad/user-import, cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-27T16:00:00Z and expiring 2026-09-27T16:30:00Z (start inclusive, expiry exclusive); one session and one upload attempt for public, synthetic, or explicitly authorized internal tester CAD only. Before any opening, independently recheck the immutable current production deployment, closed baseline, exact draft digest, fresh approval, durable adapter evidence, independent expiry, atomic durable run and attempt claims, session admission, and rollback smoke plan. This draft digest does not identify executable bytes: any later executable card requires its own exact byte digest and separate approval before issuance or use. Preserve the durable one-session/one-attempt fence across restarts, consume the attempt before body read, check expiry and deployment independently before every effect, and stop without retry on failing checks, failing smoke, unknown outcome, stale deployment, missing durable adapter evidence, or any need for runtime credentials or provider configuration. Prepare rollback before opening; close admission immediately on expiry or any stop condition, revoke the bounded session and late grants, then require post-rollback fail-closed smoke with zero body reads, conversion and Sandbox dispatch before cleanup. No provider/env/resource/billing changes, secrets or secret reads, conversion, Sandbox dispatch, private CAD payload use, external messages, retry, second live run, real-user commercialization, or commercial-readiness claim. Runtime activation, upload-session issuance and request-body admission/read remain separate implementation and approval gates; this phrase alone cannot enable them.",
+      "separateExecutableBytesDigestApprovalRequired": true
+    },
+    "controls": {
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "secretReadAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondLiveRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "effectsExecuted": 0,
+      "sourceOnlyRebindPreparationAuthorized": true,
+      "cleanupAuthorized": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-opening-runtime-mount-prep.json": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
+    "docs/cad-auth-live-opening-command-card-digest-prep.json": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+    "docs/cad-auth-live-opening-current-deployment-rebind-prep.md": "463d028558f053cfe942b809f91574c32248803db7dc263cb1781453270974ee",
+    "offline/cad-auth-live-opening-current-deployment-rebind-prep/preparation.js": "62a9242f01e527f2d753853394508d954938e062dce07b1a4425dc4eeac11447",
+    "offline/cad-auth-live-opening-command-card-digest-prep/preparation.js": "2d22d1fecf990407e47bd56492770ce0e33145af5993310be55a6d6cf37e7be8",
+    "scripts/cad-auth-live-opening-current-deployment-rebind-prep-checker.js": "466f80a52b4241a78a099e2c5ef566e408fe58ad8cd26cdf3e03b4d8f8dbbc30",
+    "scripts/cad-auth-live-opening-current-deployment-rebind-prep.test.js": "1cb44cd9546f8d67f5f5355ab0ff73f36ba99e8774c22c6a0ae51888f01208a7"
+  }
+}
