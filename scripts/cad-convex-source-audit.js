@@ -72,6 +72,8 @@ assert.equal(require('./cad-auth-prod-durable-runner-adapter-prep-checker').chec
   JSON.parse(read('docs/cad-auth-prod-durable-runner-adapter-prep.json'))).ok, true);
 assert.equal(require('./cad-auth-durable-adapter-evidence-command-card-review-checker').checkReviewPacket(
   JSON.parse(read('docs/cad-auth-durable-adapter-evidence-command-card-review.json'))).ok, true);
+assert.equal(require('./cad-auth-live-opening-command-card-digest-prep-checker').checkDigestPrepPacket(
+  JSON.parse(read('docs/cad-auth-live-opening-command-card-digest-prep.json'))).ok, true);
 const files = [
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'docs/cad-auth-prod-durable-runner-adapter-prep.json',
@@ -85,6 +87,12 @@ const files = [
   'offline/cad-auth-durable-adapter-evidence-command-card-review/preparation.js',
   'scripts/cad-auth-durable-adapter-evidence-command-card-review-checker.js',
   'scripts/cad-auth-durable-adapter-evidence-command-card-review.test.js',
+
+  'docs/cad-auth-live-opening-command-card-digest-prep.md',
+  'docs/cad-auth-live-opening-command-card-digest-prep.json',
+  'offline/cad-auth-live-opening-command-card-digest-prep/preparation.js',
+  'scripts/cad-auth-live-opening-command-card-digest-prep-checker.js',
+  'scripts/cad-auth-live-opening-command-card-digest-prep.test.js',
 
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
