@@ -21,8 +21,8 @@ The packet binds:
   `https://vercel.com/vsillahs-projects/reversr/HtpRhuWPbhBnaV7kejXrs4jDzHJp`;
 - production target `https://reversr.vercel.app POST /api/cad/user-import`;
 - cohort `rrb-ref:cad-upload-internal-mark-test-cohort-v1`; and
-- proposed UTC window `2026-09-26T21:00:00Z` through
-  `2026-09-26T21:30:00Z`.
+- proposed UTC window `2026-09-27T11:00:00Z` through
+  `2026-09-27T11:30:00Z`.
 
 ## Digest boundary
 
