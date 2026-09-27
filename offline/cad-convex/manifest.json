@@ -1,5 +1,5 @@
 {
-  "version": 72,
+  "version": 73,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -78,6 +78,11 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
+    "docs/cad-auth-live-opening-current-deployment-rebind-prep.md": "463d028558f053cfe942b809f91574c32248803db7dc263cb1781453270974ee",
+    "docs/cad-auth-live-opening-current-deployment-rebind-prep.json": "7858a2dfb58ba1d6fa64f7d805f0a03f96304af17f76d7778cff789b800d3570",
+    "offline/cad-auth-live-opening-current-deployment-rebind-prep/preparation.js": "62a9242f01e527f2d753853394508d954938e062dce07b1a4425dc4eeac11447",
+    "scripts/cad-auth-live-opening-current-deployment-rebind-prep-checker.js": "466f80a52b4241a78a099e2c5ef566e408fe58ad8cd26cdf3e03b4d8f8dbbc30",
+    "scripts/cad-auth-live-opening-current-deployment-rebind-prep.test.js": "1cb44cd9546f8d67f5f5355ab0ff73f36ba99e8774c22c6a0ae51888f01208a7",
     "docs/cad-auth-prod-durable-runner-adapter-prep.md": "2b8dccd796830b9eb5c3e9f3bac9b593b9e48694b8836970e1162778abf78325",
     "docs/cad-auth-prod-durable-runner-adapter-prep.json": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
     "offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js": "d16d0d7a63c865fbfe55e49038c6ce6f9ec81e93656b3bb3973cfc11d6475c76",
@@ -780,6 +785,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "a2271c107d36aa45a1d82918c88516b18184cc4efb082554188829cac5b304b3"
+    "scripts/cad-convex-contract-manifest.js": "8dc35fd691f37bd8fdc68f2dd9e42ce605affc680b4311334858a90a65c34c32"
   }
 }
