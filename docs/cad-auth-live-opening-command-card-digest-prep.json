@@ -233,7 +233,7 @@
     "docs/cad-auth-durable-adapter-evidence-command-card-review.json": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
     "docs/cad-auth-live-opening-command-card-digest-prep.md": "3e65c5afb1a652656acd59112c1a9400db19381c024e479e0e23a85fdd64a7a8",
     "offline/cad-auth-live-opening-command-card-digest-prep/preparation.js": "2d22d1fecf990407e47bd56492770ce0e33145af5993310be55a6d6cf37e7be8",
-    "scripts/cad-auth-live-opening-command-card-digest-prep-checker.js": "9cb08718ee5112b2d620d07d5e22fd293751fc84b51c1f0e514859b5b2957b89",
+    "scripts/cad-auth-live-opening-command-card-digest-prep-checker.js": "f596cf65985ff401ef33472adaaed15bc2d0194837b21fa06885b4ab3d5a8f84",
     "scripts/cad-auth-live-opening-command-card-digest-prep.test.js": "8e7d1231e6b564b026069734ecc45d9c3a63520679575b05cb5920471bb17b25"
   },
   "sourceCommit": "aaaa3b73440237f0cc4b2078ed0bd6a25188ecf2"

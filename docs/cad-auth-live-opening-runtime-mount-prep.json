@@ -6,7 +6,7 @@
   "parent": {
     "commandCardDigestPrep": {
       "path": "docs/cad-auth-live-opening-command-card-digest-prep.json",
-      "sha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+      "sha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
       "status": "SOURCE_ONLY_LIVE_OPENING_COMMAND_CARD_DIGEST_PREP_NO_RUNTIME_EFFECTS"
     }
   },
@@ -17,7 +17,7 @@
     "status": "SOURCE_ONLY_LIVE_OPENING_RUNTIME_MOUNT_PREP_DISABLED_BY_DEFAULT",
     "sourceCommit": "430087d915b4282d524cb82afde90285b1853a33",
     "parentPackets": {
-      "commandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+      "commandCardDigestPrepPacketSha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
       "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce"
     },
     "parentCommandCardDigest": {
@@ -144,9 +144,9 @@
     }
   },
   "sourceBindings": {
-    "docs/cad-auth-live-opening-command-card-digest-prep.json": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+    "docs/cad-auth-live-opening-command-card-digest-prep.json": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
     "docs/cad-auth-live-opening-runtime-mount-prep.md": "8593f18df68d4f884719c39c5506a332c8d0f8d464a308f593993803b9fc28aa",
-    "offline/cad-auth-live-opening-runtime-mount-prep/preparation.js": "e5dc8e8a12f59a7ffad92f417182c2ec6bc5eadd079f45c6a568f8a2f5764eba",
+    "offline/cad-auth-live-opening-runtime-mount-prep/preparation.js": "33e3401d860bb0faf34aac0f699595a86a7a2c47667dda082b8b125ae43e2b86",
     "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
     "server/cadUserUploadRouter.js": "ce2dc4edc91ebed1407e337a4ccb381bb1b0d6e33f1330674ec6718ff466aef5",
     "scripts/cad-auth-live-opening-runtime-mount-prep-checker.js": "795b345fcd8e8d4a202c5ac1f90476cb922c16badf5a86dc618564c911e99d6a",

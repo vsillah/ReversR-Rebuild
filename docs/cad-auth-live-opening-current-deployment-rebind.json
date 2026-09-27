@@ -6,7 +6,7 @@
   "parent": {
     "liveOpeningRuntimeMountPrep": {
       "path": "docs/cad-auth-live-opening-runtime-mount-prep.json",
-      "sha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
+      "sha256": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
       "status": "SOURCE_ONLY_LIVE_OPENING_RUNTIME_MOUNT_PREP_NO_RUNTIME_EFFECTS"
     }
   },
@@ -17,8 +17,8 @@
     "status": "SOURCE_ONLY_CURRENT_DEPLOYMENT_COMMAND_CARD_REBIND_NO_RUNTIME_EFFECTS",
     "sourceCommit": "e5e23453852720532b09fcfc1b5c603a1265c816",
     "parentPackets": {
-      "runtimeMountPrepPacketSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
-      "priorCommandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+      "runtimeMountPrepPacketSha256": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
+      "priorCommandCardDigestPrepPacketSha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
       "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
       "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
       "uploadReadinessRollupPacketSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
@@ -73,7 +73,7 @@
     "commandCardDigest": {
       "algorithm": "SHA-256",
       "canonicalEncoding": "JSON.stringify over cad-auth-live-opening-command-card-digest-draft-v1 with current deployment rebind",
-      "sha256": "d540af05f35b6c5dee0524255fe79c3323399594961d378bc8959495ddc975d4",
+      "sha256": "7bb30fd2e79101fceb3aa5c1399e26baaa6a2423c7cd141cb93f42d1ac64dda3",
       "draft": {
         "schemaVersion": 1,
         "artifact": "cad-auth-live-opening-command-card-digest-draft-v1",
@@ -139,15 +139,15 @@
           "providerMutation": null,
           "bodyRead": null
         },
-        "runtimeMountPrepPacketSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
-        "priorCommandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+        "runtimeMountPrepPacketSha256": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
+        "priorCommandCardDigestPrepPacketSha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
         "rebind": {
           "schemaVersion": 1,
           "kind": "current-production-deployment-command-card-rebind",
           "priorProductionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/4M1gc2XktVXbNYXwVfLsgbSaUGTG",
           "currentProductionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL",
-          "runtimeMountPrepPacketSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
-          "priorCommandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+          "runtimeMountPrepPacketSha256": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
+          "priorCommandCardDigestPrepPacketSha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
           "sourceCommit": "e5e23453852720532b09fcfc1b5c603a1265c816",
           "currentDeploymentFreshAtPreparationTime": true,
           "immutableCurrentDeploymentRecheckRequiredAtLiveGate": true,
@@ -165,7 +165,7 @@
       "bindingAccepted": true,
       "ok": false,
       "code": "LIVE_OPENING_RUNTIME_MOUNT_DISABLED",
-      "commandCardSha256": "d540af05f35b6c5dee0524255fe79c3323399594961d378bc8959495ddc975d4",
+      "commandCardSha256": "7bb30fd2e79101fceb3aa5c1399e26baaa6a2423c7cd141cb93f42d1ac64dda3",
       "currentDeploymentRechecked": true,
       "oneSessionOneAttemptFenceRequired": true,
       "independentExpiryBeforeEveryEffectRequired": true,
@@ -251,7 +251,7 @@
     },
     "nextLiveOpeningGate": {
       "authorized": false,
-      "exactPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only current-deployment command-card rebind packet <currentDeploymentRebindPacketSha256> at source commit <currentDeploymentRebindSourceCommit>, live-opening runtime mount prep packet 24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346, prior command-card digest prep packet 53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81, durable adapter evidence command-card review packet c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce, durable adapter packet 783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285, production deployment reference https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL, source-only upload-admission readiness rollup packet 9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, and accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-27T18:00:00Z and expiring 2026-09-27T18:30:00Z; issue and use only one bounded executable command-card with SHA-256 d540af05f35b6c5dee0524255fe79c3323399594961d378bc8959495ddc975d4 for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second run, retry, or commercial-readiness claim.",
+      "exactPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only current-deployment command-card rebind packet <currentDeploymentRebindPacketSha256> at source commit <currentDeploymentRebindSourceCommit>, live-opening runtime mount prep packet 89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c, prior command-card digest prep packet a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513, durable adapter evidence command-card review packet c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce, durable adapter packet 783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285, production deployment reference https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL, source-only upload-admission readiness rollup packet 9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, and accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-27T18:00:00Z and expiring 2026-09-27T18:30:00Z; issue and use only one bounded executable command-card with SHA-256 7bb30fd2e79101fceb3aa5c1399e26baaa6a2423c7cd141cb93f42d1ac64dda3 for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second run, retry, or commercial-readiness claim.",
       "unresolvedFields": [
         "currentDeploymentRebindPacketSha256",
         "currentDeploymentRebindSourceCommit"
@@ -259,13 +259,13 @@
       "phraseFields": {
         "currentDeploymentRebindPacketSha256": null,
         "currentDeploymentRebindSourceCommit": null,
-        "runtimeMountPrepPacketSha256": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
-        "priorCommandCardDigestPrepPacketSha256": "53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81",
+        "runtimeMountPrepPacketSha256": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
+        "priorCommandCardDigestPrepPacketSha256": "a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513",
         "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
         "currentProductionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL",
         "startUtc": "2026-09-27T18:00:00Z",
         "expiresUtc": "2026-09-27T18:30:00Z",
-        "commandCardSha256": "d540af05f35b6c5dee0524255fe79c3323399594961d378bc8959495ddc975d4"
+        "commandCardSha256": "7bb30fd2e79101fceb3aa5c1399e26baaa6a2423c7cd141cb93f42d1ac64dda3"
       },
       "liveOpeningRequiresSeparateApproval": true,
       "executableCommandCardIssuanceRequiresSeparateApproval": true,
@@ -299,9 +299,9 @@
     }
   },
   "sourceBindings": {
-    "docs/cad-auth-live-opening-runtime-mount-prep.json": "24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346",
-    "docs/cad-auth-live-opening-current-deployment-rebind.md": "6289bbd990ec71ba23425f890c67cac71c1e80da43eab5e126266ddf985fd40d",
-    "offline/cad-auth-live-opening-current-deployment-rebind/preparation.js": "b75a9f4e0886b32ed3638493486cd91608bc7317b34d53981202029215394c0f",
+    "docs/cad-auth-live-opening-runtime-mount-prep.json": "89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c",
+    "docs/cad-auth-live-opening-current-deployment-rebind.md": "6b3376355cfb9d78f82187ae861f0f2a6bdcb5a4957a7370ed154e90784882b6",
+    "offline/cad-auth-live-opening-current-deployment-rebind/preparation.js": "9a99d594aad82c8631ea39afc7f2e0dd83ac0dd21e9b704cd0d951512dc4fc90",
     "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
     "scripts/cad-auth-live-opening-current-deployment-rebind-checker.js": "fd95b2b594d2a4adac1f9d63cb56ae2c4fef05d08a76d1fad33c4b20e3d8848d",
     "scripts/cad-auth-live-opening-current-deployment-rebind.test.js": "77bccc923b07f6378469a6428c5d7fb1383034d6a70f87e9d2f6f14adf396336"
