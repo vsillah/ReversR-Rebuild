@@ -37,6 +37,20 @@ const files = [
   'scripts/cad-auth-live-opening-current-deployment-rebind-checker.js',
   'scripts/cad-auth-live-opening-current-deployment-rebind.test.js',
 
+  'docs/cad-auth-live-opening-runtime-activation.md',
+  'docs/cad-auth-live-opening-runtime-activation.json',
+  'server/cadLiveOpeningRuntimeActivation.js',
+  'scripts/cad-auth-live-opening-runtime-activation-checker.js',
+  'scripts/cad-auth-live-opening-runtime-activation.test.js',
+
+  'docs/cad-auth-live-opening-executable-runtime-wiring.md',
+  'docs/cad-auth-live-opening-executable-runtime-wiring.json',
+  'offline/cad-auth-live-opening-executable-runtime-wiring/preparation.js',
+  'server/cadLiveOpeningExecutableRuntimeBootstrap.js',
+  'server/cadLiveOpeningExecutableRuntimeWiring.js',
+  'scripts/cad-auth-live-opening-executable-runtime-wiring-checker.js',
+  'scripts/cad-auth-live-opening-executable-runtime-wiring.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
@@ -738,7 +752,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 72, mode: 'offline-source-unqualified',
+const manifest = { version: 73, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,
