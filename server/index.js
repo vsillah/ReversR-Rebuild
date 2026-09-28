@@ -3,6 +3,7 @@ const cors = require('cors');
 const { createCadDevAuthSessionIssuerRouter } = require('./cadDevAuthSessionIssuerRouter');
 const { createCadUploadSessionGatewayService } = require('./cadUploadSessionGatewayService');
 const { createCadUserUploadRouter } = require('./cadUserUploadRouter');
+const { createCadLiveOpeningExecutableRuntimeBootstrap } = require('./cadLiveOpeningExecutableRuntimeBootstrap');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
@@ -35,10 +36,14 @@ const cadUploadSessionRuntime = createCadUploadSessionGatewayService({ env: proc
 // CAD auth/session issuance is mounted but closed without explicit development adapters.
 // It must run before general body parsers and never opens upload admission.
 app.use('/api/cad', createCadDevAuthSessionIssuerRouter());
+// Reviewed executable bootstrap: no live inputs or environment switch in this gate.
+// A later explicit live gate must rebind deployment, card, session and durable evidence.
+const cadLiveOpeningRuntime = createCadLiveOpeningExecutableRuntimeBootstrap();
 // Handle user upload errors and preflight before general CORS and all body parsers.
 app.use('/api/cad', createCadUserUploadRouter({
   corsOrigins: configuredCorsOrigins,
   sessionService: cadUploadSessionRuntime.sessionService,
+  liveOpeningRuntimeMount: cadLiveOpeningRuntime,
 }));
 
 app.use(cors({

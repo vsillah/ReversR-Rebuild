@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-prod-runtime-mount-completion-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_RUNTIME_MOUNT_COMPLETE_PRODUCTION_CLOSED",
+  "baseMainCommit": "9197f09e3d9966672f362ae17dcbf6439e6e232a",
+  "parent": {
+    "path": "docs/cad-auth-executable-production-bootstrap-binding-repair.json",
+    "sha256": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
+    "validationMode": "historical-digest-only"
+  },
+  "sourceBindings": {
+    "docs/cad-auth-executable-production-bootstrap-binding-repair.json": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
+    "api/[...path].js": "a6d1b11010f141e43ced43c304692e90d79d78d40f5c064c964e4b55ccc39d7c",
+    "server/index.js": "260bf55fe0d0d10e8fa5bec623c258cb5c2b5a4f7c873637d332e19e3ec439bd",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
+    "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
+    "offline/cad-auth-prod-opening-prep/preparation.js": "b2a8b8f89dc07336d6f1f8793cf72074807fffc6ba635f89aab8493f7c149e5b",
+    "offline/cad-auth-executable-production-bootstrap-binding-repair/preparation.js": "2e9b240f7e94efbbde31bbcf87a06130cc688fbaad29f5cb72f62e0f23dfe49d",
+    "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
+    "scripts/cad-auth-prod-runtime-mount-completion.test.js": "87baf55377ef4a8a939e7827944138056c21a2c25650befafd8774b7b97316b0",
+    "scripts/cad-auth-prod-runtime-mount-completion-checker.js": "89a73477ae5fe7c79ef07cd50468eaa9fba6d24a5bd8d539b76ea61cad782177",
+    "docs/cad-auth-prod-runtime-mount-completion.md": "75164f33248f8127fb4f9dbd2e9cb6b7460fcd794146c8cd477111286f5de946"
+  },
+  "controls": {
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "retryAuthorized": false,
+    "secondLiveRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "commercialReadinessClaimed": false,
+    "effectsExecuted": 0
+  },
+  "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+  "durableEvidenceStatus": "NOT_COLLECTED_SYNTHETIC_RECEIPTS_ARE_NOT_LIVE_EVIDENCE",
+  "deploymentStatus": "FRESH_POST_MERGE_IMMUTABLE_REBIND_REQUIRED",
+  "exactSessionStatus": "UNRESOLVED_LIVE_GATE_MUST_BIND_EXACT_ID",
+  "nextLiveOpeningApprovalPhrase": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to runtime mount completion packet <runtimeMountPacketSha256> at source commit <runtimeMountSourceCommit>, fresh post-merge digest refresh <postMergeDigestRefreshSha256>, immutable current production deployment <currentProductionDeploymentReference>, exact executable command-card SHA-256 <executableCommandCardSha256>, durable adapter evidence SHA-256 <durableEvidenceSha256>, bounded session ref rrb-ref:cad-upload-internal-mark-test-session-v1 with exact session ID <exactSessionId>, cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, against https://reversr.vercel.app POST /api/cad/user-import from <startUtc> inclusive to <expiresUtc> exclusive (at most 30 minutes). Issue and use one bounded executable command card for admission-only body validation of public, synthetic, or explicitly authorized internal tester CAD; one session and one attempt; atomic durable run and attempt claims; independent expiry before every effect; rollback armed before opening; immediate rollback after the window; revoke session and late grants; post-rollback fail-closed smoke. Stop on failed checks, stale deployment, missing session or durable evidence, failed smoke, or unknown outcome. No session issuance, conversion, Sandbox dispatch, private CAD, external messages, provider/env/resource/billing changes, retry, second live run, real-user commercialization, or commercial-readiness claim."
+}
