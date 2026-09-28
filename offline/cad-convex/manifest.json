@@ -118,6 +118,11 @@
     "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
     "scripts/cad-auth-live-opening-executable-runtime-wiring-checker.js": "8b58039f5e1e6685136b5eff161085342ad232bef0083425b015343eaf06b7aa",
     "scripts/cad-auth-live-opening-executable-runtime-wiring.test.js": "5fe2d00bdcfd13f4c03e9165922b21091816fafdb40f57b86dbde2d58e456690",
+    "docs/cad-auth-live-opening-executable-command-card-rebind.md": "873218b1fd6a8fb9825dcedd1120c3a0f3929640aa7da6bbd31a224fc4d07836",
+    "docs/cad-auth-live-opening-executable-command-card-rebind.json": "8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1",
+    "offline/cad-auth-live-opening-executable-command-card-rebind/preparation.js": "f8377dc437cba1d4541fce9d5ac3890a892f69b93c43f6ba1c05cc919c53ebb1",
+    "scripts/cad-auth-live-opening-executable-command-card-rebind-checker.js": "1fafb78c5db159087fe26bc6e4e67dac458840340bd6181181b335d396dcad45",
+    "scripts/cad-auth-live-opening-executable-command-card-rebind.test.js": "aec9e29ff57070e9996094dfb0e1856e8610654081994d7781a1d87d122e0efe",
     "docs/cad-auth-prod-executable-runner.md": "61f0fc304c120643d2447abb9a6c786f5afb4815953537f02e484e6b49d0bd72",
     "docs/cad-auth-prod-executable-runner.json": "5d613e1c1064fecf3c14a7810dc4c3453a45be82905cc7060f8cf1ae1a67603b",
     "offline/cad-auth-prod-executable-runner/preparation.js": "5b63d898c00deebf2d7471329adbaacce8905a011ad5bcc4ceca2b0a86d6eb1d",
@@ -797,6 +802,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "d8b7a94eccf8a4fdc82070432af31ab37a98501c87698bfe5e12568ff7bbe550"
+    "scripts/cad-convex-contract-manifest.js": "64147471467adb2caf66133cab3c655fcd479adf940868e937347230b8d6b3eb"
   }
 }

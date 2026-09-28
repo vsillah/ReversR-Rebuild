@@ -51,6 +51,12 @@ const files = [
   'scripts/cad-auth-live-opening-executable-runtime-wiring-checker.js',
   'scripts/cad-auth-live-opening-executable-runtime-wiring.test.js',
 
+  'docs/cad-auth-live-opening-executable-command-card-rebind.md',
+  'docs/cad-auth-live-opening-executable-command-card-rebind.json',
+  'offline/cad-auth-live-opening-executable-command-card-rebind/preparation.js',
+  'scripts/cad-auth-live-opening-executable-command-card-rebind-checker.js',
+  'scripts/cad-auth-live-opening-executable-command-card-rebind.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
