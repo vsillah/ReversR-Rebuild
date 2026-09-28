@@ -57,6 +57,12 @@ const files = [
   'scripts/cad-auth-live-opening-executable-command-card-rebind-checker.js',
   'scripts/cad-auth-live-opening-executable-command-card-rebind.test.js',
 
+  'docs/cad-auth-executable-production-bootstrap-binding-repair.md',
+  'docs/cad-auth-executable-production-bootstrap-binding-repair.json',
+  'offline/cad-auth-executable-production-bootstrap-binding-repair/preparation.js',
+  'scripts/cad-auth-executable-production-bootstrap-binding-repair-checker.js',
+  'scripts/cad-auth-executable-production-bootstrap-binding-repair.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',
