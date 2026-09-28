@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-durable-service-reference-prep-v1",
+  "sourceOnly": true,
+  "status": "OPAQUE_REFERENCES_PREPARED_NO_PRIVATE_READS",
+  "runId": "20260928T161754Z",
+  "inspectedBaseCommit": "6b7d6aa8ed8e17f1943feefbefbae2ecaa7c289a",
+  "qualificationPlanPacketSha256": "74046ecfdbe962eac29bb55351cd38ca84b13838c3e543e6c2e803beac959378",
+  "executionGapClosurePacketSha256": "62052cae429117761a772c2c97b020cc1c2624d0a34d94e2086aa7e63142248d",
+  "durableServiceReference": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
+  "privateSourceEvidenceSetReference": "rrb-ref:cad-auth-durable-service-source-evidence-set-20260928T161754Z",
+  "referenceSemantics": {
+    "durableServiceReference": "Opaque label for exactly one later-designated durable service identity; not a URL, credential, callable capability, runtime binding, or proof that the service exists.",
+    "privateSourceEvidenceSetReference": "Opaque label for a later private custodian mapping to existing non-secret source/evidence bytes; not a local path, secret, provider value, or authorization to read private evidence."
+  },
+  "controls": {
+    "privateEvidenceRead": false,
+    "liveDurableServiceQualified": false,
+    "productionExecutionBinding": null,
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "publicPushAuthorized": false,
+    "prCreationAuthorized": false,
+    "mergeAuthorized": false,
+    "deploymentAuthorized": false,
+    "productionSmokeAuthorized": false,
+    "retryAuthorized": false,
+    "secondLiveRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "commercialReadinessClaimed": false,
+    "effectsExecuted": 0
+  },
+  "nextGate": {
+    "status": "PRIVATE_SOURCE_EVIDENCE_REVIEW_AWAITS_EXPLICIT_APPROVAL",
+    "remainingUserPlaceholders": [],
+    "sourceReferencePrepared": true,
+    "durableServiceReferencePrepared": true
+  },
+  "sourceBindings": {
+    "docs/cad-auth-durable-service-qualification-plan.json": "74046ecfdbe962eac29bb55351cd38ca84b13838c3e543e6c2e803beac959378",
+    "docs/cad-auth-durable-service-qualification-plan.md": "cd2f94466900cd88d1cfb1eaf607dc79a3cd5b14b5bbe2912e0e71385bd0d32f",
+    "docs/cad-auth-durable-service-reference-prep.md": "53f2e5ba7f143896035acac62b51bd42d7b7d9d23d502ef79de32a8c547dc653",
+    "scripts/cad-auth-durable-service-qualification-plan-checker.js": "d88f2fb773f7dfab8f82b49e394b36a41324177b8b91937ec642f6ef16c1453e",
+    "scripts/cad-auth-durable-service-reference-prep-checker.js": "dad82d3c6d8770f10d7b874d345c3269c318ef8d076a22c605b0c6ee71e63e64",
+    "scripts/cad-auth-durable-service-reference-prep.test.js": "64303b2a0fcf48191beb3684cf4f742798cbe8163115e56cf33042933dea50d1"
+  },
+  "nextPrivateReviewApprovalPhraseTemplate": "I approve one bounded private/source-only durable-service qualification evidence review for ReversR CAD Auth, bound to qualification plan packet 74046ecfdbe962eac29bb55351cd38ca84b13838c3e543e6c2e803beac959378, reference-prep packet <referencePrepPacketSha256>, inspected base commit 6b7d6aa8ed8e17f1943feefbefbae2ecaa7c289a, and execution-gap closure packet 62052cae429117761a772c2c97b020cc1c2624d0a34d94e2086aa7e63142248d. Review only existing non-secret source and evidence designated by rrb-ref:cad-auth-durable-service-source-evidence-set-20260928T161754Z for durable service rrb-ref:cad-auth-durable-service-20260928T161754Z. Stop on unresolved sources, missing evidence, digest drift, unknown outcome, failing checks, or any need for credentials or provider configuration. This approves source/evidence review only; liveDurableServiceQualified must remain false and productionExecutionBinding null. No provider/env/resource/billing changes, secret reads, upload-session issuance, upload activation, request-body admission/read, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime activation, executable command-card issuance for live execution, external messages, retry, second live run, commercialization, commercial-readiness claim, public push, PR creation, merge, deployment, or production smoke."
+}
