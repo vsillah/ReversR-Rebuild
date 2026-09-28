@@ -182,6 +182,37 @@ test('default production bootstrap is closed and never calls adapters', async ()
   assert.equal((await mount.routeBodyGate.authorizeBodyRead()).code, 'EXECUTABLE_RUNTIME_WIRING_DISABLED');
 });
 
+test('bootstrap binds explicit executable runtime inputs without opening defaults', async () => {
+  const h = harness();
+  const mount = createCadLiveOpeningExecutableRuntimeBootstrap({
+    executableRuntime: h.options,
+  });
+  assert.equal(mount.executableRuntimeWiringMounted, true);
+  assert.equal(mount.enabled, true);
+  assert.equal(mount.binding.bindingAccepted, true);
+
+  const admissionDecision = await mount.admissionSwitch.decide({
+    bodyAdmissionAuthorized: false,
+    principal: h.principal,
+  });
+  assert.equal(admissionDecision.bodyReadAuthorized, true);
+  assert.equal(admissionDecision.routeBodyGateAuthorized, false);
+
+  const gate = await mount.routeBodyGate.authorizeBodyRead({
+    bodyAdmissionAuthorized: false,
+    principal: h.principal,
+    admissionDecision,
+  });
+  assert.equal(gate.bodyReadAuthorized, true);
+  assert.equal(gate.routeBodyGateAuthorized, true);
+  assert.deepEqual(h.events.map(event => event.operation), FORWARD_EFFECTS);
+
+  const closeout = await mount.routeBodyGate.afterBodyAdmission({ bodyGateDecision: gate, admissionOk: true });
+  assert.equal(closeout.rollbackVerified, true);
+  assert.equal(closeout.bodyReadAuthorized, false);
+  assert.deepEqual(h.events.slice(-3).map(event => event.operation), CLEANUP_EFFECTS);
+});
+
 test('executable command-card binding requires exact bytes and current deployment', () => {
   const h = harness();
   const accepted = reviewExecutableCommandCardBinding({
@@ -366,22 +397,23 @@ test('route source keeps literal closed gate and body gate precedes validation',
   assert.match(route, /const BODY_ADMISSION_AUTHORIZED = false;/);
   assert.match(route, /createCadLiveOpeningRuntimeMount/);
   assert.match(route, /createCadLiveOpeningExecutableRuntimeBootstrap/);
+  assert.match(route, /liveOpeningExecutableRuntime/);
+  assert.match(route, /executableRuntime: liveOpeningExecutableRuntime/);
   assert.ok(route.indexOf('decision = await admissionSwitch.decide') < route.indexOf('bodyGateDecision = routeBodyGate'));
   assert.ok(route.indexOf('bodyGateDecision = routeBodyGate') < route.indexOf('validateRequestBody(req)'));
   assert.doesNotMatch(route, /BODY_ADMISSION_AUTHORIZED = true|process\.env\.[A-Z0-9_]*BODY_ADMISSION/);
   assert.doesNotMatch(wiring + bootstrap, /process\.env|node:fs|child_process|fetch\s*\(|https?\.request|\.listen\s*\(/);
 });
 
-test('source packet validates and rejects drift or hostile inputs', () => {
+test('source packet is historical after bootstrap repair and hostile inputs fail closed', () => {
   const packet = JSON.parse(fs.readFileSync(PACKET, 'utf8'));
-  assert.equal(checkPacket(packet).ok, true);
-  for (const source of SOURCES) {
-    assert.equal(checkPacket(packet, { readSource(file) {
-      return file === source
-        ? Buffer.concat([fs.readFileSync(path.join(root, file)), Buffer.from('\n')])
-        : fs.readFileSync(path.join(root, file));
-    } }).ok, false, source);
-  }
+  const current = checkPacket(packet);
+  assert.equal(current.ok, false);
+  assert.equal(current.code, 'EXECUTABLE_RUNTIME_WIRING_PACKET_BLOCKED');
+  closed(current);
+  assert.ok(SOURCES.includes('server/cadLiveOpeningExecutableRuntimeBootstrap.js'));
+  assert.notEqual(packet.sourceBindings['server/cadLiveOpeningExecutableRuntimeBootstrap.js'],
+    createHash('sha256').update(fs.readFileSync(path.join(root, 'server/cadLiveOpeningExecutableRuntimeBootstrap.js'))).digest('hex'));
   let calls = 0;
   const hook = () => { calls += 1; throw Error('PRIVATE_SENTINEL'); };
   const accessor = {};

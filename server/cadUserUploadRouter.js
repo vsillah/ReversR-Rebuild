@@ -29,12 +29,14 @@ function createCadUserUploadRouter({
   corsOrigins = [],
   admissionSwitch: configuredAdmissionSwitch = createCadInternalProductionAdmissionSwitch(),
   liveOpeningRuntimeMount,
+  liveOpeningExecutableRuntime,
 } = {}) {
   const router = express.Router();
   const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
   const send = (res, code) => res.status(errors[code][0]).json({ schemaVersion: 1, status: 'error', code, message: errors[code][1] });
   const runtimeMount = liveOpeningRuntimeMount || createCadLiveOpeningExecutableRuntimeBootstrap({
     baseRuntimeMount: createCadLiveOpeningRuntimeMount({ admissionSwitch: configuredAdmissionSwitch }),
+    executableRuntime: liveOpeningExecutableRuntime,
   });
   const admissionSwitch = runtimeMount && runtimeMount.admissionSwitch
     ? runtimeMount.admissionSwitch
