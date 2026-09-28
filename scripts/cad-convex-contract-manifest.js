@@ -63,6 +63,15 @@ const files = [
   'scripts/cad-auth-executable-production-bootstrap-binding-repair-checker.js',
   'scripts/cad-auth-executable-production-bootstrap-binding-repair.test.js',
 
+  'docs/cad-auth-prod-runtime-mount-completion.md',
+  'docs/cad-auth-prod-runtime-mount-completion.json',
+  'offline/cad-auth-prod-runtime-mount-completion/preparation.js',
+  'server/index.js',
+  'server/cadProductionExecutableRuntimeMountCompletion.js',
+  'scripts/cad-auth-prod-runtime-mount-fixture.js',
+  'scripts/cad-auth-prod-runtime-mount-completion-checker.js',
+  'scripts/cad-auth-prod-runtime-mount-completion.test.js',
+
   'docs/cad-auth-prod-executable-runner.md',
   'docs/cad-auth-prod-executable-runner.json',
   'offline/cad-auth-prod-executable-runner/preparation.js',

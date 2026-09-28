@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-prod-runtime-mount-completion-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_PRODUCTION_EXECUTABLE_RUNTIME_MOUNT_COMPLETION_VALIDATED_PRODUCTION_CLOSED",
+  "baseMainCommit": "9197f09e3d9966672f362ae17dcbf6439e6e232a",
+  "parent": {
+    "bootstrapBindingRepair": {
+      "path": "docs/cad-auth-executable-production-bootstrap-binding-repair.json",
+      "sha256": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
+      "status": "SOURCE_ONLY_BOOTSTRAP_BINDING_REPAIR_PACKET_VALIDATED_PRODUCTION_CLOSED"
+    }
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-prod-runtime-mount-completion-v1",
+    "sourceOnly": true,
+    "status": "SOURCE_ONLY_PRODUCTION_EXECUTABLE_RUNTIME_MOUNT_COMPLETION_READY_PRODUCTION_CLOSED",
+    "baseMainCommit": "9197f09e3d9966672f362ae17dcbf6439e6e232a",
+    "branch": "codex/cad-auth-prod-runtime-mount-completion",
+    "parent": {
+      "bootstrapBindingRepairPacketSha256": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
+      "previousExecutableCommandCardRebindPacketSha256": "8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1",
+      "previousDigestRefreshSha256": "b3e3f9e5dde4c907d90ca12420d39034da5e5a3ebbb6fd89df9c1f3f192ccb24"
+    },
+    "productionMount": {
+      "serverEntryPath": "server/index.js",
+      "mountHelperPath": "server/cadProductionExecutableRuntimeMountCompletion.js",
+      "routerPath": "server/cadUserUploadRouter.js",
+      "bootstrapPath": "server/cadLiveOpeningExecutableRuntimeBootstrap.js",
+      "wiringPath": "server/cadLiveOpeningExecutableRuntimeWiring.js",
+      "serverMountsBeforeGeneralBodyParser": true,
+      "serverUsesReviewedMountHelper": true,
+      "serverDefaultCallSuppliesNoExecutableRuntime": true,
+      "helperCreatesReviewedBootstrapMount": true,
+      "helperPassesLiveOpeningRuntimeMountIntoRouter": true,
+      "helperAcceptsExactExecutableRuntimeBindingForLaterGate": true,
+      "exactCommandCardSha256BindingStillRequired": true,
+      "currentDeploymentReferenceRecheckStillRequired": true,
+      "boundedSessionRefStillRequired": true,
+      "durableAdapterInterfaceStillRequired": true,
+      "oneSessionOneAttemptFenceStillRequired": true,
+      "independentExpiryChecksStillRequired": true,
+      "rollbackFirstControlsStillRequired": true,
+      "postRollbackFailClosedSmokeStillRequired": true,
+      "noEnvironmentRuntimeSwitch": true,
+      "bodyAdmissionLiteralRemainsFalse": true,
+      "requestBodyValidationStillAfterRouteBodyGate": true,
+      "defaultProductionBehaviorClosed": true
+    },
+    "boundedSessionBinding": {
+      "sessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+      "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "exactSessionBindingStillRequiredAtLiveGate": true,
+      "missingExactBoundedSessionStops": true
+    },
+    "nextGate": {
+      "liveOpeningAuthorizedByThisGate": false,
+      "requiresFreshPostMergeProductionDeploymentRebind": true,
+      "requiresFreshExecutableCommandCardSha256": true,
+      "requiresFreshDurableEvidenceDigest": true,
+      "requiresExactBoundedSessionBinding": true,
+      "approvalPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only production executable runtime mount completion packet <runtimeMountCompletionPacketSha256> at source commit <runtimeMountCompletionSourceCommit>, executable production bootstrap binding repair packet ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77, source-only/no-live post-merge executable command-card digest refresh SHA-256 <postMergeDigestRefreshSha256>, previous executable command-card rebind packet 8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1, previous executable digest refresh b3e3f9e5dde4c907d90ca12420d39034da5e5a3ebbb6fd89df9c1f3f192ccb24, bounded session binding rrb-ref:cad-upload-internal-mark-test-session-v1, cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, durable evidence digest <durableEvidenceDigest>, and production deployment reference <currentProductionDeploymentReference>. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting <startUtc> and expiring <expiresUtc>; issue and use only one bounded executable command-card with SHA-256 <executableCommandCardSha256> for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second live run, retry, or commercial-readiness claim.",
+      "unresolvedFields": [
+        "runtimeMountCompletionPacketSha256",
+        "runtimeMountCompletionSourceCommit",
+        "postMergeDigestRefreshSha256",
+        "currentProductionDeploymentReference",
+        "executableCommandCardSha256",
+        "durableEvidenceDigest",
+        "startUtc",
+        "expiresUtc"
+      ]
+    },
+    "controls": {
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "secretReadAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondLiveRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "effectsExecuted": 0
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-executable-production-bootstrap-binding-repair.json": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
+    "server/index.js": "b198c57f68d20f880e5a6f604904dac047c52a6a15b81dd1fb536de0d44233bb",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
+    "docs/cad-auth-prod-runtime-mount-completion.md": "f5ae1629d045634ee403a7c585f36ad50a316fe4ecdc4e398c36834b889cf4bf",
+    "offline/cad-auth-prod-runtime-mount-completion/preparation.js": "8008d6ba5616ff192c3588c31f340c1c9e82dab48de86bcb8d3c4a52e8af6e2b",
+    "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
+    "scripts/cad-auth-prod-runtime-mount-completion-checker.js": "bfa038ebc724676f222d3e39f6c40777df5982e948c836b262329ec781d58f25",
+    "scripts/cad-auth-prod-runtime-mount-completion.test.js": "7a85c1d4ba32eca1eab79b37528655644f28b078a592914b7b8b5cb95f40f84c"
+  }
+}
