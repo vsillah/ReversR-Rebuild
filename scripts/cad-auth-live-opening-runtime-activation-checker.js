@@ -37,7 +37,7 @@ function expectedPacket(readSource = read) {
     baseCommit: '3b22baa19359dcb6b2dcd30ad5ea8a35cf1c6ded',
     controls,
     implementation: {
-      enabledByDefault: false, providerAdapterSupplied: false, routerBodyGateChanged: false,
+      enabledByDefault: false, providerAdapterSupplied: false, routerBodyGateChanged: true,
       exactByteDigestRequired: true, immutableDeploymentRecheckedBeforeOpening: true,
       durableEvidenceRequired: true, permanentCrossCardRunFence: true, maxSessions: 1, maxAttempts: 1,
       expiryBeforeEveryEffect: true, independentDurableRollbackRequired: true,

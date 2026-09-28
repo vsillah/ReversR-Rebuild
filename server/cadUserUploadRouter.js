@@ -3,6 +3,7 @@ const cors = require('cors');
 const { admissionErrors, validateRequestBody } = require('./cadUserUploadAdmission');
 const { createCadInternalProductionAdmissionSwitch } = require('./cadInternalProductionAdmissionSwitch');
 const { createCadLiveOpeningRuntimeMount } = require('./cadLiveOpeningRuntimeMount');
+const { createCadLiveOpeningExecutableRuntimeBootstrap } = require('./cadLiveOpeningExecutableRuntimeBootstrap');
 // Source-closed gate: no environment, request or factory option can open it.
 const BODY_ADMISSION_AUTHORIZED = false;
 const { createUploadSessionVerifier } = require('./uploadSession');
@@ -32,12 +33,16 @@ function createCadUserUploadRouter({
   const router = express.Router();
   const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
   const send = (res, code) => res.status(errors[code][0]).json({ schemaVersion: 1, status: 'error', code, message: errors[code][1] });
-  const runtimeMount = liveOpeningRuntimeMount || createCadLiveOpeningRuntimeMount({
-    admissionSwitch: configuredAdmissionSwitch,
+  const runtimeMount = liveOpeningRuntimeMount || createCadLiveOpeningExecutableRuntimeBootstrap({
+    baseRuntimeMount: createCadLiveOpeningRuntimeMount({ admissionSwitch: configuredAdmissionSwitch }),
   });
   const admissionSwitch = runtimeMount && runtimeMount.admissionSwitch
     ? runtimeMount.admissionSwitch
     : configuredAdmissionSwitch;
+  const routeBodyGate = runtimeMount && runtimeMount.routeBodyGate
+    && typeof runtimeMount.routeBodyGate.authorizeBodyRead === 'function'
+    ? runtimeMount.routeBodyGate
+    : null;
   const corsMiddleware = cors({ origin: true, methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Upload-CSRF'] });
   router.all('/user-import', (req, res, next) => {
@@ -69,13 +74,41 @@ function createCadUserUploadRouter({
       decision = null;
     }
     if (!decision || decision.bodyReadAuthorized !== true) return send(res, 'USER_UPLOADS_DISABLED');
-    if (!BODY_ADMISSION_AUTHORIZED) return send(res, 'USER_UPLOADS_DISABLED');
+    let bodyGateDecision;
+    try {
+      bodyGateDecision = routeBodyGate ? await routeBodyGate.authorizeBodyRead({
+        bodyAdmissionAuthorized: BODY_ADMISSION_AUTHORIZED,
+        principal: result.principal,
+        admissionDecision: decision,
+      }) : null;
+    } catch {
+      bodyGateDecision = null;
+    }
+    if (!bodyGateDecision || bodyGateDecision.bodyReadAuthorized !== true) return send(res, 'USER_UPLOADS_DISABLED');
+    if (!BODY_ADMISSION_AUTHORIZED && bodyGateDecision.routeBodyGateAuthorized !== true) {
+      return send(res, 'USER_UPLOADS_DISABLED');
+    }
     // Future activation requires shared controls and a transactional authority fence
     // BEFORE opening this gate. Offline tests instrument the literal only.
-    const admission = await validateRequestBody(req);
-    if (!admission.ok) return send(res, admission.code);
-    // Payload acceptance never grants conversion authority. No executor is wired.
-    return send(res, 'USER_UPLOADS_DISABLED');
+    let admission;
+    try {
+      admission = await validateRequestBody(req);
+      if (!admission.ok) return send(res, admission.code);
+      // Payload acceptance never grants conversion authority. No executor is wired.
+      return send(res, 'USER_UPLOADS_DISABLED');
+    } finally {
+      if (routeBodyGate && typeof routeBodyGate.afterBodyAdmission === 'function') {
+        try {
+          await routeBodyGate.afterBodyAdmission({
+            bodyGateDecision,
+            admissionOk: admission?.ok === true,
+          });
+        } catch {
+          // The request response stays sanitized. Adapter cleanup failure is handled
+          // by the gate's own rollback/smoke disposition.
+        }
+      }
+    }
   });
   return router;
 }

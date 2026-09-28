@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-opening-executable-runtime-wiring-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_EXECUTABLE_RUNTIME_WIRING_PACKET_VALIDATED_PRODUCTION_CLOSED",
+  "baseMainCommit": "3f8bdcaedf210d0148d993d0fdccb66971e164f5",
+  "parent": {
+    "runtimeActivation": {
+      "path": "docs/cad-auth-live-opening-runtime-activation.json",
+      "sha256": "1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6",
+      "status": "SOURCE_ONLY_CONTROL_PLANE_IMPLEMENTED_PRODUCTION_CLOSED"
+    }
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-live-opening-executable-runtime-wiring-v1",
+    "sourceOnly": true,
+    "status": "SOURCE_ONLY_EXECUTABLE_RUNTIME_WIRING_PREPARED_PRODUCTION_CLOSED",
+    "branch": "codex/cad-auth-live-opening-executable-runtime-wiring",
+    "baseMainCommit": "3f8bdcaedf210d0148d993d0fdccb66971e164f5",
+    "captainLaneFallback": {
+      "used": true,
+      "reason": "visible Codex task/worktree creation failed twice before this bounded fallback",
+      "dedicatedWorktreeRequired": true,
+      "traceabilityPreservedInCaptainReport": true
+    },
+    "parentPackets": {
+      "runtimeActivationPacketSha256": "1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6",
+      "currentDeploymentRebindPacketSha256": "038b7ae04869095e01eda9f223d6ad51cc03845c00703ffeee4116c418840f6e",
+      "runtimeMountPrepPacketSha256": "cc34518d4b02ad198c2f01c0e05615c78bed9881cc7b864218fe5d9fb42f8d12",
+      "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285"
+    },
+    "productionBootstrap": {
+      "source": "server/cadLiveOpeningExecutableRuntimeBootstrap.js",
+      "importedByRoute": true,
+      "defaultEnabled": false,
+      "defaultClosedWithoutCommandCard": true,
+      "defaultClosedWithoutDurableAdapter": true,
+      "readsProviderEnvOrSecrets": false,
+      "issuesUploadSessions": false,
+      "readsRequestBody": false
+    },
+    "routeBodyGateIntegration": {
+      "routeSource": "server/cadUserUploadRouter.js",
+      "literalBodyAdmissionGateRemainsFalse": true,
+      "admissionSwitchMustOpenBeforeBodyGate": true,
+      "routeBodyGateMustOpenBeforeValidateRequestBody": true,
+      "missingRouteBodyGateReturns": "USER_UPLOADS_DISABLED",
+      "routeBodyGateBypassDoesNotFlipLiteral": true,
+      "postAdmissionCleanupHookInstalled": true,
+      "defaultProductionBodyReads": 0
+    },
+    "executableCommandCardBinding": {
+      "artifact": "cad-auth-live-opening-executable-command-card-v1",
+      "exactUtf8JsonSha256Required": true,
+      "canonicalJsonSha256MustMatch": true,
+      "currentDeploymentReferenceRecheckRequired": true,
+      "productionOriginBound": "https://reversr.vercel.app",
+      "productionRouteBound": "POST /api/cad/user-import",
+      "cohortRefBound": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "sourceOnlyDraftCannotOpenGate": true,
+      "commandCardIssuedByThisGate": false,
+      "executableCommandCardPreparedForLiveExecution": false
+    },
+    "durableRuntimeFence": {
+      "runFenceKey": "cad-production-internal-opening-v1",
+      "methods": [
+        "verifyApproval",
+        "verifyDurableEvidence",
+        "recheckDeployment",
+        "verifyClosedBaseline",
+        "claimRun",
+        "armRollback",
+        "verifySession",
+        "claimAttempt",
+        "openFence",
+        "consumeAttempt",
+        "closeFence",
+        "revokeSessionAndLateGrants",
+        "postRollbackSmoke"
+      ],
+      "forwardEffects": [
+        "verifyApproval",
+        "verifyDurableEvidence",
+        "recheckDeployment",
+        "verifyClosedBaseline",
+        "claimRun",
+        "armRollback",
+        "verifySession",
+        "claimAttempt",
+        "recheckDeployment",
+        "openFence",
+        "consumeAttempt"
+      ],
+      "cleanupEffects": [
+        "closeFence",
+        "revokeSessionAndLateGrants",
+        "postRollbackSmoke"
+      ],
+      "oneSessionOneAttemptLedgerEnforced": true,
+      "independentExpiryCheckBeforeEveryEffect": true,
+      "rollbackArmedBeforeOpenFence": true,
+      "postRollbackFailClosedSmokeRequired": true,
+      "unknownOutcomeStopsWithoutRetry": true,
+      "cleanupAllowedAfterExpiry": true,
+      "durableAdapterEvidenceStillRequiredAtLiveGate": true
+    },
+    "stopConditions": {
+      "failingCheck": true,
+      "unknownOutcome": true,
+      "staleDeploymentBinding": true,
+      "missingDurableAdapterEvidence": true,
+      "commandCardDigestMismatch": true,
+      "currentDeploymentRecheckMissing": true,
+      "oneSessionOneAttemptFenceMissing": true,
+      "independentExpiryEvidenceMissing": true,
+      "routeBodyObserverMissing": true,
+      "rollbackSmokeEvidenceMissing": true,
+      "runtimeCredentialsOrProviderConfigurationNeeded": true
+    },
+    "nextGate": {
+      "authorized": false,
+      "gate": "bounded-live-opening-executable-command-card-and-runtime-activation",
+      "exactApprovalPhraseNeeded": true,
+      "mustBindFreshProductionDeployment": true,
+      "mustBindExecutableCommandCardSha256": true,
+      "mustBindWindowInsideApprovalText": true,
+      "mustRunPostRollbackFailClosedSmoke": true
+    },
+    "controls": {
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "secretReadAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondLiveRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "effectsExecuted": 0
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-opening-runtime-activation.json": "1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6",
+    "server/cadUserUploadRouter.js": "d5fff80834936580baea6c4141252b59fb1a92d5b394875e34df3d7fa83d96cb",
+    "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "35483bfc469ac1fb10795eda729dbd6ef6dfb35a6a67697265952cf6dc612f02",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
+    "offline/cad-auth-live-opening-executable-runtime-wiring/preparation.js": "92aa691e62d98d8823cca1ccae6606a56348e3eaa444ad66dbb0b50eeb80d848",
+    "docs/cad-auth-live-opening-executable-runtime-wiring.md": "5a287f3a1a92e4572304ab5a86b0a4e6061bbca66af1bcab267d1ad3319d64da",
+    "scripts/cad-auth-live-opening-executable-runtime-wiring-checker.js": "8b58039f5e1e6685136b5eff161085342ad232bef0083425b015343eaf06b7aa",
+    "scripts/cad-auth-live-opening-executable-runtime-wiring.test.js": "5fe2d00bdcfd13f4c03e9165922b21091816fafdb40f57b86dbde2d58e456690"
+  }
+}
