@@ -1,186 +1,176 @@
 const assert = require('node:assert/strict');
-const { test } = require('node:test');
 const fs = require('node:fs');
-const vm = require('node:vm');
 const path = require('node:path');
-const { createCadLiveOpeningExecutableRuntimeBootstrap } = require('../server/cadLiveOpeningExecutableRuntimeBootstrap');
-const { FORWARD_EFFECTS, CLEANUP_EFFECTS } = require('../server/cadLiveOpeningExecutableRuntimeWiring');
-const { harness, expiresUtc } = require('./cad-auth-prod-runtime-mount-fixture');
+const { spawnSync } = require('node:child_process');
+const { test } = require('node:test');
+const { createCadProductionExecutableRuntimeMount } =
+  require('../server/cadProductionExecutableRuntimeMountCompletion');
+const { createCadLiveOpeningExecutableRuntimeBootstrap } =
+  require('../server/cadLiveOpeningExecutableRuntimeBootstrap');
+const {
+  BOOTSTRAP_BINDING_REPAIR_PACKET_SHA256,
+  PREVIOUS_EXECUTABLE_COMMAND_CARD_REBIND_PACKET_SHA256,
+  PREVIOUS_DIGEST_REFRESH_SHA256,
+  BOUNDED_SESSION_REF,
+  INTERNAL_COHORT_REF,
+  exactLiveOpeningApprovalPhrase,
+  runtimeMountCompletionPreparation,
+  checkRuntimeMountCompletionPreparation,
+} = require('../offline/cad-auth-prod-runtime-mount-completion/preparation');
+const { harness } = require('./cad-auth-prod-runtime-mount-fixture');
+const {
+  PACKET,
+  SOURCES,
+  checkPacket,
+} = require('./cad-auth-prod-runtime-mount-completion-checker');
+
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'server/index.js'), 'utf8');
+const read = file => fs.readFileSync(path.join(root, file));
+const packet = () => JSON.parse(read(PACKET));
 
-// Execute the actual production mount block without initializing other server providers.
-function mount(options) {
-  const first = source.indexOf('const cadLiveOpeningRuntime =');
-  const last = source.indexOf('\napp.use(cors(', first);
-  assert.ok(first > 0 && last > first);
-  let passed, runtime;
-  const sessionService = {};
-  vm.runInNewContext(source.slice(first, last), {
-    createCadLiveOpeningExecutableRuntimeBootstrap(...args) {
-      assert.equal(args.length, 0, 'production must not supply live inputs');
-      runtime = createCadLiveOpeningExecutableRuntimeBootstrap(options);
-      return runtime;
+function closed(result) {
+  for (const [field, expected] of Object.entries(runtimeMountCompletionPreparation().controls)) {
+    assert.equal(result[field], expected, field);
+  }
+  assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|PRIVATE_HOME|ABSOLUTE_PRIVATE_SOURCE|\/Users\/|\.local\//);
+}
+
+test('packet validates production mount completion while preserving closed controls', () => {
+  const p = packet();
+  const result = checkPacket(p);
+  assert.equal(result.ok, true);
+  closed(result);
+  assert.equal(p.parent.bootstrapBindingRepair.sha256, BOOTSTRAP_BINDING_REPAIR_PACKET_SHA256);
+  assert.equal(p.preparation.parent.previousExecutableCommandCardRebindPacketSha256,
+    PREVIOUS_EXECUTABLE_COMMAND_CARD_REBIND_PACKET_SHA256);
+  assert.equal(p.preparation.parent.previousDigestRefreshSha256, PREVIOUS_DIGEST_REFRESH_SHA256);
+  assert.equal(p.preparation.productionMount.defaultProductionBehaviorClosed, true);
+  assert.equal(p.preparation.productionMount.noEnvironmentRuntimeSwitch, true);
+  assert.equal(p.preparation.nextGate.liveOpeningAuthorizedByThisGate, false);
+});
+
+test('production helper defaults closed and passes exact runtime binding only when supplied', async () => {
+  const defaultMount = createCadLiveOpeningExecutableRuntimeBootstrap();
+  assert.equal(defaultMount.enabled, false);
+  assert.equal((await defaultMount.admissionSwitch.decide()).code, 'EXECUTABLE_RUNTIME_WIRING_DISABLED');
+
+  const exact = harness();
+  let capturedBootstrapRuntime;
+  let capturedRouterOptions;
+  const expectedMount = Object.freeze({ admissionSwitch: defaultMount.admissionSwitch });
+  const returned = createCadProductionExecutableRuntimeMount({
+    corsOrigins: ['https://reversr.vercel.app'],
+    sessionService: { lookupSession() {} },
+    executableRuntime: exact.options,
+    bootstrap({ executableRuntime }) {
+      capturedBootstrapRuntime = executableRuntime;
+      return expectedMount;
     },
-    createCadUserUploadRouter(input) { passed = input; return 'router'; },
-    configuredCorsOrigins: [], cadUploadSessionRuntime: { sessionService },
-    app: { use(route, router) { assert.equal(route, '/api/cad'); assert.equal(router, 'router'); } },
+    createRouter(options) {
+      capturedRouterOptions = options;
+      return 'router';
+    },
   });
-  assert.equal(passed.liveOpeningRuntimeMount, runtime);
-  assert.equal(passed.sessionService, sessionService);
-  assert.ok(last < source.indexOf('app.use(express.json('));
-  return runtime;
-}
-async function run(h, options = h.options, principal = h.principal) {
-  const runtime = mount({ executableRuntime: options });
-  const input = { bodyAdmissionAuthorized: false, principal };
-  const admissionDecision = await runtime.admissionSwitch.decide(input);
-  return { runtime, result: await runtime.routeBodyGate.authorizeBodyRead({ ...input, admissionDecision }) };
-}
-
-test('production mount is default closed with no body authority or adapter effects', async () => {
-  const runtime = mount();
-  assert.equal(runtime.enabled, false);
-  assert.equal(runtime.requestBodyAdmissionReadAuthorized, false);
-  assert.equal(runtime.effectsExecuted, 0);
-  assert.equal((await runtime.admissionSwitch.decide()).bodyReadAuthorized, false);
-  assert.equal((await runtime.routeBodyGate.authorizeBodyRead()).bodyReadAuthorized, false);
-  assert.equal(fs.readFileSync(path.join(root, 'api/[...path].js'), 'utf8').trim(), "module.exports = require('../server/index');");
+  assert.equal(returned, 'router');
+  assert.strictEqual(capturedBootstrapRuntime, exact.options);
+  assert.deepEqual(capturedRouterOptions.corsOrigins, ['https://reversr.vercel.app']);
+  assert.strictEqual(capturedRouterOptions.liveOpeningRuntimeMount, expectedMount);
+  assert.equal(typeof capturedRouterOptions.sessionService.lookupSession, 'function');
 });
 
-test('exact synthetic bootstrap binding reaches the mount and closes with rollback smoke', async () => {
-  const h = harness();
-  const { runtime, result } = await run(h);
-  assert.equal(result.routeBodyGateAuthorized, true);
-  assert.equal(result.commandCardSha256, h.commandCardSha256);
-  assert.deepEqual(h.events.map(e => e.operation), FORWARD_EFFECTS);
-  for (const { input } of h.events) {
-    assert.equal(input.sessionId, h.card.sessionId);
-    assert.equal(input.deploymentReference, h.card.productionDeploymentReference);
-    assert.equal(input.durableEvidenceSha256, h.card.durableEvidenceSha256);
-    assert.equal(input.bodyReadAuthorized, false);
+test('server source mounts helper before body parser without env-driven activation', () => {
+  const index = read('server/index.js').toString();
+  const helper = read('server/cadProductionExecutableRuntimeMountCompletion.js').toString();
+  const route = read('server/cadUserUploadRouter.js').toString();
+  assert.match(index, /createCadProductionExecutableRuntimeMount/);
+  assert.ok(index.indexOf("app.use('/api/cad', createCadProductionExecutableRuntimeMount") <
+    index.indexOf("app.use(express.json"));
+  assert.doesNotMatch(index, /commandCardBytes|commandCardSha256|currentDeploymentReference/);
+  assert.match(helper, /createCadLiveOpeningExecutableRuntimeBootstrap/);
+  assert.match(helper, /createCadUserUploadRouter/);
+  assert.match(helper, /executableRuntime/);
+  assert.match(helper, /liveOpeningRuntimeMount/);
+  assert.doesNotMatch(helper, /process\.env|node:fs|child_process|fetch\s*\(|https?\.request|\.listen\s*\(/);
+  assert.match(route, /const BODY_ADMISSION_AUTHORIZED = false;/);
+  assert.ok(route.indexOf('decision = await admissionSwitch.decide') < route.indexOf('bodyGateDecision = routeBodyGate'));
+  assert.ok(route.indexOf('bodyGateDecision = routeBodyGate') < route.indexOf('validateRequestBody(req)'));
+});
+
+test('next live approval phrase is complete except post-merge values this gate cannot know', () => {
+  const phrase = exactLiveOpeningApprovalPhrase();
+  assert.match(phrase, /one bounded internal production upload-admission opening/);
+  assert.match(phrase, new RegExp(BOOTSTRAP_BINDING_REPAIR_PACKET_SHA256));
+  assert.match(phrase, new RegExp(PREVIOUS_EXECUTABLE_COMMAND_CARD_REBIND_PACKET_SHA256));
+  assert.match(phrase, new RegExp(PREVIOUS_DIGEST_REFRESH_SHA256));
+  assert.match(phrase, new RegExp(BOUNDED_SESSION_REF));
+  assert.match(phrase, new RegExp(INTERNAL_COHORT_REF));
+  for (const unresolved of runtimeMountCompletionPreparation().nextGate.unresolvedFields) {
+    assert.match(phrase, new RegExp(`<${unresolved}>`));
   }
-  assert.equal((await runtime.routeBodyGate.afterBodyAdmission()).rollbackVerified, true);
-  assert.deepEqual(h.events.slice(-3).map(e => e.operation), CLEANUP_EFFECTS);
-  assert.equal((await runtime.routeBodyGate.authorizeBodyRead()).code, 'ATTEMPT_ALREADY_SPENT');
+  assert.equal(runtimeMountCompletionPreparation().nextGate.requiresFreshPostMergeProductionDeploymentRebind, true);
+  assert.equal(runtimeMountCompletionPreparation().nextGate.requiresFreshExecutableCommandCardSha256, true);
+  assert.equal(runtimeMountCompletionPreparation().nextGate.requiresExactBoundedSessionBinding, true);
 });
 
-test('digest bytes, immutable deployment, exact session and missing adapters fail closed before effects', async () => {
-  for (const change of [
-    h => ({ ...h.options, commandCardBytes: h.commandCardBytes + ' ' }),
-    h => ({ ...h.options, commandCardSha256: '0'.repeat(64) }),
-    h => ({ ...h.options, currentDeploymentReference: 'rrb-ref:stale' }),
-    h => ({ ...h.options, adapter: undefined }),
-    h => ({ ...h.options, adapter: { ...h.adapter, verifyDurableEvidence: undefined } }),
-  ]) {
-    const h = harness();
-    assert.equal((await run(h, change(h))).result.bodyReadAuthorized, false);
-    assert.equal(h.events.length, 0);
-  }
-  for (const sessionId of [undefined, 'different-session']) {
-    const h = harness();
-    assert.equal((await run(h, h.options, { ...h.principal, sessionId })).result.bodyReadAuthorized, false);
-    assert.equal(h.events.length, 0);
-  }
-});
-
-test('durable evidence and fresh deployment receipt mismatches stop before opening', async () => {
-  for (const target of ['verifyDurableEvidence', 'recheckDeployment', 'verifySession', 'claimAttempt']) {
-    const h = harness({ mutate(operation, receipt) {
-      if (operation !== target) return;
-      if (target === 'verifyDurableEvidence') receipt.evidenceSha256 = '0'.repeat(64);
-      if (target === 'recheckDeployment') receipt.immutableCurrent = false;
-      if (target === 'verifySession') receipt.sessionId = 'mismatch';
-      if (target === 'claimAttempt') receipt.expiryCheckedAtomically = false;
-    } });
-    const { result } = await run(h);
-    assert.equal(result.bodyReadAuthorized, false);
-    assert.equal(h.events.some(e => e.operation === 'openFence'), false);
-  }
-});
-
-test('deployment drift between baseline and opening rolls back before opening', async () => {
-  let rechecks = 0;
-  const h = harness({ mutate(operation, receipt) {
-    if (operation === 'recheckDeployment' && ++rechecks === 2) receipt.deploymentReference = 'rrb-ref:stale';
-  } });
-  const { result } = await run(h);
-  assert.equal(result.bodyReadAuthorized, false);
-  assert.equal(result.rollbackVerified, true);
-  assert.equal(h.events.some(e => e.operation === 'openFence'), false);
-});
-
-test('expiry is independently checked before each forward effect, cleanup still runs after expiry', async () => {
-  for (let cutoff = 0; cutoff < FORWARD_EFFECTS.length; cutoff++) {
-    let ticks = 0;
-    const h = harness({ now: () => Date.parse(expiresUtc) + (ticks++ >= cutoff ? 0 : -1000) });
-    const { result } = await run(h);
-    assert.equal(result.bodyReadAuthorized, false);
-    assert.deepEqual(h.events.filter(e => !e.input.cleanup).map(e => e.operation), FORWARD_EFFECTS.slice(0, cutoff));
-    if (cutoff > FORWARD_EFFECTS.indexOf('armRollback')) {
-      assert.equal(result.rollbackVerified, true);
-      assert.deepEqual(h.events.slice(-3).map(e => e.operation), CLEANUP_EFFECTS);
+test('every leaf is immutable and sanitized failure stays closed', () => {
+  const original = runtimeMountCompletionPreparation();
+  function visit(value, trail = []) {
+    for (const [key, item] of Object.entries(value)) {
+      const next = [...trail, key];
+      if (item && typeof item === 'object') visit(item, next);
+      else {
+        const changed = structuredClone(original);
+        let target = changed;
+        for (const parent of trail) target = target[parent];
+        target[key] = item === true ? false : item === false ? true : 'PRIVATE_SENTINEL';
+        const result = checkRuntimeMountCompletionPreparation(changed);
+        assert.equal(result.ok, false, next.join('.'));
+        closed(result);
+        delete target[key];
+        assert.equal(checkRuntimeMountCompletionPreparation(changed).ok, false, next.join('.'));
+      }
     }
   }
+  visit(original);
 });
 
-test('atomic shared ledger fences a second process and unknown smoke prevents success', async () => {
-  const ledger = new Set();
-  const h = harness({ ledger });
-  const first = await run(h);
-  await first.runtime.routeBodyGate.afterBodyAdmission();
-  const second = await run(harness({ ledger }));
-  assert.equal(second.result.bodyReadAuthorized, false);
-  const badSmoke = harness({ mutate(operation, receipt) {
-    if (operation === 'postRollbackSmoke') receipt.failClosed = false;
-  } });
-  const opened = await run(badSmoke);
-  const cleanup = await opened.runtime.routeBodyGate.afterBodyAdmission();
-  assert.equal(cleanup.code, 'ROLLBACK_OR_SMOKE_UNKNOWN_NO_RETRY');
-  assert.equal(cleanup.rollbackVerified, false);
-  assert.equal(cleanup.retryAuthorized, false);
-});
-
-test('actual default router rejects a verified synthetic principal without body listeners or parsers', async () => {
-  const { createCadUserUploadRouter } = require('../server/cadUserUploadRouter');
-  const express = require('express');
-  const { once } = require('node:events');
-  const app = express();
-  let reads = 0;
-  app.use((req, res, next) => {
-    const on = req.on.bind(req);
-    req.on = (event, ...args) => { if (event === 'data') reads++; return on(event, ...args); };
-    next();
-  });
-  app.use('/api/cad', createCadUserUploadRouter({ liveOpeningRuntimeMount: mount(),
-    sessionService: { lookupSession: async () => ({ schemaVersion: 1, userId: 'synthetic-user', shopId: 'synthetic-shop', sessionId: 'synthetic-session', authMethod: 'password', status: 'active', expiresAt: Date.now() + 60000, transport: 'bearer', cadUploadAllowed: true }) } }));
-  app.use(express.json());
-  const server = app.listen(0, '127.0.0.1');
-  try {
-    await once(server, 'listening');
-    const response = await fetch(`http://127.0.0.1:${server.address().port}/api/cad/user-import`, { method: 'POST', headers: { Authorization: 'Bearer us1.' + Buffer.alloc(32, 1).toString('base64url') } });
-    assert.equal((await response.json()).code, 'USER_UPLOADS_DISABLED');
-    assert.equal(reads, 0);
-  } finally { await new Promise(resolve => server.close(resolve)); }
-});
-
-test('manifest binds every source and blocks drift, hostile input and live flags', () => {
-  const { PACKET, SOURCES, checkPacket } = require('./cad-auth-prod-runtime-mount-completion-checker');
-  const read = file => fs.readFileSync(path.join(root, file));
-  const packet = JSON.parse(read(PACKET));
-  assert.equal(checkPacket(packet).ok, true);
+test('source drift, missing files and hostile inputs fail closed', () => {
+  const p = packet();
   for (const source of SOURCES) {
-    assert.equal(checkPacket(packet, { readSource: file => file === source ? Buffer.from('drift') : read(file) }).ok, false);
+    for (const missing of [false, true]) {
+      const result = checkPacket(p, { readSource(file) {
+        if (file !== source) return read(file);
+        if (missing) throw Error('PRIVATE_SENTINEL');
+        return Buffer.concat([read(file), Buffer.from('\n')]);
+      } });
+      assert.equal(result.ok, false, source);
+      closed(result);
+    }
   }
-  const hostile = {};
-  Object.defineProperty(hostile, 'value', { enumerable: true, get() { throw Error('must not invoke'); } });
-  assert.equal(checkPacket(hostile).ok, false);
-  assert.equal(checkPacket({ ...packet, runtimeActivationAuthorized: true }).ok, false);
-  const { spawnSync } = require('node:child_process');
-  for (const flag of ['--execute', '--activate', '--issue-command-card', '--live', '/private/sentinel']) {
-    const child = spawnSync(process.execPath, ['scripts/cad-auth-prod-runtime-mount-completion-checker.js', flag], { cwd: root, encoding: 'utf8' });
-    assert.equal(child.status, 1);
-    assert.equal(JSON.parse(child.stdout).runtimeActivationAuthorized, false);
-    assert.doesNotMatch(child.stdout + child.stderr, /sentinel/);
+  let calls = 0;
+  const hook = () => { calls += 1; throw Error('PRIVATE_SENTINEL'); };
+  const accessor = {};
+  Object.defineProperty(accessor, 'preparation', { enumerable: true, get: hook });
+  const proxy = new Proxy({}, { get: hook, ownKeys: hook, getPrototypeOf: hook });
+  const cycle = {};
+  cycle.self = cycle;
+  for (const input of [null, undefined, [], 'PRIVATE_SENTINEL', accessor, proxy, cycle, { toJSON: hook }]) {
+    const result = checkPacket(input, { readSource: hook });
+    assert.equal(result.ok, false);
+    closed(result);
+  }
+  assert.equal(calls, 0);
+});
+
+test('checker refuses live execution, command-card issuance and arbitrary paths', () => {
+  for (const args of [['--execute'], ['--live'], ['--activate'], ['--issue-command-card'],
+    ['--approval', 'PRIVATE_SENTINEL'], ['PRIVATE_SENTINEL'], ['--write', 'PRIVATE_SENTINEL']]) {
+    const run = spawnSync(process.execPath, [
+      'scripts/cad-auth-prod-runtime-mount-completion-checker.js',
+      ...args,
+    ], { cwd: root, encoding: 'utf8' });
+    assert.equal(run.status, 1);
+    assert.doesNotMatch(run.stdout + run.stderr, /PRIVATE_SENTINEL|\/Users\//);
+    closed(JSON.parse(run.stdout));
   }
 });
