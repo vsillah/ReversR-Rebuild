@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-opening-runtime-activation-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_CONTROL_PLANE_IMPLEMENTED_PRODUCTION_CLOSED",
+  "baseCommit": "3b22baa19359dcb6b2dcd30ad5ea8a35cf1c6ded",
+  "controls": {
+    "runtimeActivationAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "retryAuthorized": false,
+    "secondLiveRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "commercialReadinessClaimed": false,
+    "effectsExecuted": 0
+  },
+  "implementation": {
+    "enabledByDefault": false,
+    "providerAdapterSupplied": false,
+    "routerBodyGateChanged": false,
+    "exactByteDigestRequired": true,
+    "immutableDeploymentRecheckedBeforeOpening": true,
+    "durableEvidenceRequired": true,
+    "permanentCrossCardRunFence": true,
+    "maxSessions": 1,
+    "maxAttempts": 1,
+    "expiryBeforeEveryEffect": true,
+    "independentDurableRollbackRequired": true,
+    "expiredCleanupStillRequired": true,
+    "postRollbackFailClosedSmokeRequired": true,
+    "actualDurableAdapterQualifiedBySyntheticTests": false
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-opening-current-deployment-rebind.json": "2ab0ef9ad064c2686624c9a3ab201babee569656e718308d205c4ca235ac82d1",
+    "scripts/cad-upload-admission-activation-runner-rebind.test.js": "3f172cb38602d9ac23c23ba34f8934c25b407a323389a09db3b3e4cabfdebcc2",
+    "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
+    "server/cadUserUploadRouter.js": "ce2dc4edc91ebed1407e337a4ccb381bb1b0d6e33f1330674ec6718ff466aef5",
+    "server/cadLiveOpeningRuntimeActivation.js": "2c9a1e87c5210069953c40813440ff11f9d9f8e34075df01db5c127b7a0fb458",
+    "docs/cad-auth-live-opening-runtime-activation.md": "00ec1e3055486a631546f2393809ba52b19c69a153f8939f0fd6af7c2439c5d8",
+    "scripts/cad-auth-live-opening-runtime-activation-checker.js": "9bbcf723b7b60797bc24026125d3a068e852ae01e8095fa1bd02efd62ad33731",
+    "scripts/cad-auth-live-opening-runtime-activation.test.js": "5e04acfcc35a08b46bd3f38737c442a55fe4ed9bba0ee2670ce26b7b6c70a872"
+  }
+}

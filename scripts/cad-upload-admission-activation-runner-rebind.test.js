@@ -41,7 +41,7 @@ test('compatibility config maps the reviewed mounted harness to the 22:30Z rollo
   assert.equal(bridge.executorCapabilities.trackedRouteModified, false);
 });
 
-test('runner blocks outside the accepted window and succeeds in simulated window', async () => {
+test('legacy runner stays blocked even in its simulated window after runtime mounting', async () => {
   const before = await executeUploadActivationExactWindow({
     now: () => Date.parse('2026-09-16T22:29:59Z'),
     writeEvidence: false,
@@ -54,17 +54,15 @@ test('runner blocks outside the accepted window and succeeds in simulated window
     now: () => Date.parse('2026-09-16T22:30:05Z'),
     writeEvidence: false,
   });
-  assert.equal(result.decision, 'UPLOAD_ACTIVATION_WINDOW_ROLLOVER_EXECUTED');
-  assert.equal(result.runCompleted, true);
-  assert.equal(result.unknownOutcome, false);
-  assert.equal(result.runRef, 'rrb-ref:cad-upload-activation-window-rollover-2230z');
-  assert.equal(result.bodyAdmissionValidated, true);
-  assert.equal(result.terminalCode, 'USER_UPLOADS_DISABLED');
-  assert.equal(result.counts.mountedRouteDisabledChecks, 2);
-  assert.equal(result.counts.mountedDevelopmentBodyValidationChecks, 1);
-  assert.equal(result.counts.conversionDispatches, 0);
-  assert.equal(result.counts.sandboxDispatches, 0);
-  assert.equal(result.counts.storeMutations, 0);
+  // The current runtime mount is an independent fence. Flipping only the old
+  // body literal in a VM must no longer yield legacy body-admission success.
+  assert.equal(result.decision, 'BLOCKED');
+  assert.equal(result.code, 'MOUNTED_DEVELOPMENT_BODY_ADMISSION_FAILED');
+  assert.equal(result.runCompleted, false);
+  assert.equal(result.unknownOutcome, true);
+  assert.deepEqual(result.admitted, {
+    status: 503, code: 'USER_UPLOADS_DISABLED', bodyReads: 0,
+  });
 
   const after = await executeUploadActivationExactWindow({
     now: () => Date.parse('2026-09-16T23:00:00Z'),

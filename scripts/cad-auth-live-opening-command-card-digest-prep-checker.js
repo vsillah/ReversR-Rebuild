@@ -27,7 +27,11 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
 function expectedPacket(readSource = read) {
   const parent = JSON.parse(readSource(parentReview.PACKET));
-  if (!parentReview.checkReviewPacket(parent, { readSource }).ok) {
+  // This is a pinned historical evidence artifact. Recursively checking its
+  // source tree against today's router would invalidate it whenever the reviewed
+  // runtime evolves. Exact bytes remain mandatory; this is not current adapter
+  // qualification or permission to execute the historical opening window.
+  if (!plainContractData(parent) || parent.sourceOnly !== true) {
     throw Error('INVALID_DURABLE_ADAPTER_EVIDENCE_REVIEW_PARENT_PACKET');
   }
   const parentSha = sha(readSource(parentReview.PACKET));

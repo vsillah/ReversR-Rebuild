@@ -14,9 +14,9 @@ commercial readiness.
 The packet binds:
 
 - live-opening runtime mount prep packet
-  `24d3a96fc431f2a23e14724f4b8c061e8fefaa3cbbb97c4832b6a8d570f10346`;
+  `89003dd7abe901e10ec4658572bcb28d2b37379aa64dd92d33428c1a8cdecb2c`;
 - prior command-card digest prep packet
-  `53aab3bab61f99b8d995236096440ae838f706c25e5e9cf4bb30639faf5bad81`;
+  `a151bc0681e6e6497c32086d04dc58f7b82ab4b97171530e08a35978db588513`;
 - current production deployment reference
   `https://vercel.com/vsillahs-projects/reversr/CyBjkXRmZsWuw3q4LS3gcnCweMRL`;
 - production target `https://reversr.vercel.app POST /api/cad/user-import`;
