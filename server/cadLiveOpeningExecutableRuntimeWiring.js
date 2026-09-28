@@ -318,9 +318,11 @@ function createCadLiveOpeningExecutableRuntimeWiring({
       const completed = [];
       try {
         for (const operation of FORWARD_EFFECTS) {
+          // A mutation may commit before its response is lost. Cleanup must run
+          // even when the first durable claim or rollback-arm outcome is unknown.
+          if (MUTATIONS.has(operation)) rollbackRequired = true;
           const completedOperation = await step(operation, context, false);
           completed.push(completedOperation);
-          if (operation === 'armRollback') rollbackRequired = true;
         }
         openGate = Object.freeze({ context, completed: Object.freeze(completed), rollbackRequired });
         return Object.freeze({

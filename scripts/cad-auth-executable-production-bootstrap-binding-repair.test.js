@@ -31,10 +31,10 @@ function closed(result) {
   assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|PRIVATE_HOME|ABSOLUTE_PRIVATE_SOURCE|\/Users\/|\.local\//);
 }
 
-test('packet validates repaired bootstrap binding while preserving closed production controls', () => {
+test('bootstrap repair packet is historical after execution binding and rollback repair', () => {
   const p = packet();
   const result = checkPacket(p);
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, false);
   closed(result);
   assert.equal(p.parent.executableCommandCardRebind.sha256, PREVIOUS_EXECUTABLE_COMMAND_CARD_REBIND_PACKET_SHA256);
   assert.equal(p.preparation.historicalBindings.previousDigestRefreshSha256, PREVIOUS_DIGEST_REFRESH_SHA256);

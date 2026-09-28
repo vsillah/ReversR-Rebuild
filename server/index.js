@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { createCadDevAuthSessionIssuerRouter } = require('./cadDevAuthSessionIssuerRouter');
 const { createCadUploadSessionGatewayService } = require('./cadUploadSessionGatewayService');
+const { createCadProductionExecutionBinding } = require('./cadProductionExecutionBinding');
 const { createCadProductionExecutableRuntimeMount } = require('./cadProductionExecutableRuntimeMountCompletion');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
@@ -35,11 +36,12 @@ const cadUploadSessionRuntime = createCadUploadSessionGatewayService({ env: proc
 // CAD auth/session issuance is mounted but closed without explicit development adapters.
 // It must run before general body parsers and never opens upload admission.
 app.use('/api/cad', createCadDevAuthSessionIssuerRouter());
-// Reviewed executable mount completion: this gate supplies no live runtime input.
+// Reviewed server-owned execution binding remains disabled without a later live gate.
 // Later live use must rebind deployment, card, session and durable evidence.
 app.use('/api/cad', createCadProductionExecutableRuntimeMount({
   corsOrigins: configuredCorsOrigins,
   sessionService: cadUploadSessionRuntime.sessionService,
+  executableRuntime: createCadProductionExecutionBinding(),
 }));
 
 app.use(cors({

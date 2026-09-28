@@ -4,6 +4,11 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const files = [
+  'server/cadProductionExecutionBinding.js',
+  'scripts/cad-auth-live-opening-execution-gap-closure.test.js',
+  'scripts/cad-auth-live-opening-execution-gap-closure-checker.js',
+  'docs/cad-auth-live-opening-execution-gap-closure.md',
+  'docs/cad-auth-live-opening-execution-gap-closure.json',
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'docs/cad-auth-prod-durable-runner-adapter-prep.json',
   'offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js',
@@ -773,7 +778,7 @@ const files = [
   'scripts/cad-convex-backend-contract.test.js',
   'scripts/cad-convex-contract-manifest.js',
 ];
-const manifest = { version: 73, mode: 'offline-source-unqualified',
+const manifest = { version: 74, mode: 'offline-source-unqualified',
   baseCommit: '80474b111d358f98788f363672973207ffee854d',
   productionWiring: false, liveQualification: false,
   functions: require('../offline/cad-convex/sessionAdapter').FUNCTIONS,

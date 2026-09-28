@@ -1,5 +1,5 @@
 {
-  "version": 73,
+  "version": 74,
   "mode": "offline-source-unqualified",
   "baseCommit": "80474b111d358f98788f363672973207ffee854d",
   "productionWiring": false,
@@ -78,6 +78,11 @@
   "schemaTemplate": "offline/cad-convex/convex/schema.ts.template",
   "internalOnlyPolicyFunction": "cad:changeAuthority",
   "files": {
+    "server/cadProductionExecutionBinding.js": "a50f97b75f31b64d5774b1265d197c85fc6bf6fc484381d6bd45e5daafd0ee1e",
+    "scripts/cad-auth-live-opening-execution-gap-closure.test.js": "74c7b79284ccd030fe2cc8e4c720e62efdd83c9da64f4831efcc9e5eed936055",
+    "scripts/cad-auth-live-opening-execution-gap-closure-checker.js": "66e3458b5dcd83e98585a7defd340db79d70c556a0d024c7644eff145e77fa7e",
+    "docs/cad-auth-live-opening-execution-gap-closure.md": "2063faaa130301b17519ebfe9d5b00d6aca0d50b9c4785b06249bd10d343e6d2",
+    "docs/cad-auth-live-opening-execution-gap-closure.json": "62052cae429117761a772c2c97b020cc1c2624d0a34d94e2086aa7e63142248d",
     "docs/cad-auth-prod-durable-runner-adapter-prep.md": "2b8dccd796830b9eb5c3e9f3bac9b593b9e48694b8836970e1162778abf78325",
     "docs/cad-auth-prod-durable-runner-adapter-prep.json": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
     "offline/cad-auth-prod-durable-runner-adapter-prep/preparation.js": "d16d0d7a63c865fbfe55e49038c6ce6f9ec81e93656b3bb3973cfc11d6475c76",
@@ -115,7 +120,7 @@
     "docs/cad-auth-live-opening-executable-runtime-wiring.json": "be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8",
     "offline/cad-auth-live-opening-executable-runtime-wiring/preparation.js": "92aa691e62d98d8823cca1ccae6606a56348e3eaa444ad66dbb0b50eeb80d848",
     "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
-    "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
     "scripts/cad-auth-live-opening-executable-runtime-wiring-checker.js": "8b58039f5e1e6685136b5eff161085342ad232bef0083425b015343eaf06b7aa",
     "scripts/cad-auth-live-opening-executable-runtime-wiring.test.js": "051ef1505ed3c8fdacb7b91646ea5776337510dac1f7e13dee839edad07b6a1d",
     "docs/cad-auth-live-opening-executable-command-card-rebind.md": "873218b1fd6a8fb9825dcedd1120c3a0f3929640aa7da6bbd31a224fc4d07836",
@@ -127,15 +132,15 @@
     "docs/cad-auth-executable-production-bootstrap-binding-repair.json": "ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77",
     "offline/cad-auth-executable-production-bootstrap-binding-repair/preparation.js": "2e9b240f7e94efbbde31bbcf87a06130cc688fbaad29f5cb72f62e0f23dfe49d",
     "scripts/cad-auth-executable-production-bootstrap-binding-repair-checker.js": "de0af688147ec0cf972534dd477a181347a7911b0944b7e9d32e4ca5227631a0",
-    "scripts/cad-auth-executable-production-bootstrap-binding-repair.test.js": "7451de70c6459a0ca82a387232a1d1119b6f982d248a693823e9a65e7e0c732c",
+    "scripts/cad-auth-executable-production-bootstrap-binding-repair.test.js": "baf8242604ed6cd98c8903ac5aab02ab5f4aabe3e38ca35b062e672005947102",
     "docs/cad-auth-prod-runtime-mount-completion.md": "f5ae1629d045634ee403a7c585f36ad50a316fe4ecdc4e398c36834b889cf4bf",
     "docs/cad-auth-prod-runtime-mount-completion.json": "87b9f0e23ac1b6017f7bc8cf5cff3ab6967220398ad33798f7ed6e81fab4ecae",
     "offline/cad-auth-prod-runtime-mount-completion/preparation.js": "8008d6ba5616ff192c3588c31f340c1c9e82dab48de86bcb8d3c4a52e8af6e2b",
-    "server/index.js": "b198c57f68d20f880e5a6f604904dac047c52a6a15b81dd1fb536de0d44233bb",
+    "server/index.js": "68ea067c663c98790cf1692c33177ac7d87217d2e9c24d4f581160977bfe1516",
     "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
     "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
     "scripts/cad-auth-prod-runtime-mount-completion-checker.js": "bfa038ebc724676f222d3e39f6c40777df5982e948c836b262329ec781d58f25",
-    "scripts/cad-auth-prod-runtime-mount-completion.test.js": "7a85c1d4ba32eca1eab79b37528655644f28b078a592914b7b8b5cb95f40f84c",
+    "scripts/cad-auth-prod-runtime-mount-completion.test.js": "e544ddf4c56cb78f2f3574c9f38dd9bf412a8dab782a7888ef0652071c3aff64",
     "docs/cad-auth-prod-executable-runner.md": "61f0fc304c120643d2447abb9a6c786f5afb4815953537f02e484e6b49d0bd72",
     "docs/cad-auth-prod-executable-runner.json": "5d613e1c1064fecf3c14a7810dc4c3453a45be82905cc7060f8cf1ae1a67603b",
     "offline/cad-auth-prod-executable-runner/preparation.js": "5b63d898c00deebf2d7471329adbaacce8905a011ad5bcc4ceca2b0a86d6eb1d",
@@ -815,6 +820,6 @@
     "offline/cad-convex/convex/schema.ts.template": "4b0cec8b2aa4146b9f8785560a3b7bb9eb53947455625b94495fed5a41bc0026",
     "offline/cad-convex/convex/cad.ts.template": "9f4a47adee1216d5b72f4aadf756529d15925c6f3327edef5b1dd2f988c0bc93",
     "scripts/cad-convex-backend-contract.test.js": "c9bec08437c1189d4c5f8dca79c4b46b3e8f684c775131e4d56bc284174de590",
-    "scripts/cad-convex-contract-manifest.js": "6941616ca6440a70f8b406cd20d340131c0e319c340d1e08f263e53bdfaf5f67"
+    "scripts/cad-convex-contract-manifest.js": "fcc316bba0add3fd9d5811043d5ce7f63885f8dd14aa0b2814d66e9527c4da39"
   }
 }

@@ -35,10 +35,10 @@ function closed(result) {
   assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|PRIVATE_HOME|ABSOLUTE_PRIVATE_SOURCE|\/Users\/|\.local\//);
 }
 
-test('packet validates production mount completion while preserving closed controls', () => {
+test('historical mount packet fails current-source validation after execution binding closure', () => {
   const p = packet();
   const result = checkPacket(p);
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, false);
   closed(result);
   assert.equal(p.parent.bootstrapBindingRepair.sha256, BOOTSTRAP_BINDING_REPAIR_PACKET_SHA256);
   assert.equal(p.preparation.parent.previousExecutableCommandCardRebindPacketSha256,
