@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "packet": "cad-auth-live-opening-executable-command-card-rebind-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_EXECUTABLE_COMMAND_CARD_REBIND_PACKET_VALIDATED_NO_LIVE_EFFECTS",
+  "sourceCommit": "f330ba5e934c28c05428ecd26cf4e04c58bbb790",
+  "parent": {
+    "executableRuntimeWiring": {
+      "path": "docs/cad-auth-live-opening-executable-runtime-wiring.json",
+      "sha256": "be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8",
+      "status": "SOURCE_ONLY_EXECUTABLE_RUNTIME_WIRING_PACKET_VALIDATED_PRODUCTION_CLOSED"
+    }
+  },
+  "preparation": {
+    "schemaVersion": 1,
+    "packet": "cad-auth-live-opening-executable-command-card-rebind-v1",
+    "sourceOnly": true,
+    "status": "SOURCE_ONLY_EXECUTABLE_COMMAND_CARD_REBIND_NO_LIVE_EFFECTS",
+    "sourceCommit": "f330ba5e934c28c05428ecd26cf4e04c58bbb790",
+    "productionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/BsEHweLAyEPADhnTPkw6WsEsonJK",
+    "parentPackets": {
+      "executableRuntimeWiringPacketSha256": "be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8",
+      "runtimeActivationPacketSha256": "1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6",
+      "currentDeploymentRebindPacketSha256": "038b7ae04869095e01eda9f223d6ad51cc03845c00703ffeee4116c418840f6e",
+      "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
+      "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
+      "uploadReadinessRollupPacketSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+      "coherentRestrictedSourceSetProjectionPacketSha256": "2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b",
+      "acceptedProvenanceProjectionPacketSha256": "03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec"
+    },
+    "proposedOpeningWindow": {
+      "startUtc": "2026-09-28T04:30:00Z",
+      "expiresUtc": "2026-09-28T05:00:00Z",
+      "durationMinutes": 30,
+      "startInclusiveExpiryExclusive": true,
+      "currentGateDoesNotOpenWindow": true,
+      "laterApprovalMustRepeatWindow": true
+    },
+    "boundedSessionBinding": {
+      "sessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+      "exactBindingRequiredAtLiveGate": true,
+      "uploadSessionIssuedByThisGate": false,
+      "staleOrMismatchedSessionStops": true
+    },
+    "durableEvidenceBinding": {
+      "sha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+      "derivedFromPublicSourceOnlyRefs": true,
+      "durableAdapterEvidenceStillRequiredAtLiveGate": true,
+      "missingDurableAdapterEvidenceStops": true
+    },
+    "executableCommandCardDigest": {
+      "algorithm": "SHA-256",
+      "artifact": "cad-auth-live-opening-executable-command-card-v1",
+      "canonicalEncoding": "JSON.stringify over cad-auth-live-opening-executable-command-card-v1 draft bytes",
+      "sha256": "a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6",
+      "byteSha256": "a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6",
+      "canonicalJsonSha256": "a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6",
+      "digestResolved": true,
+      "draftBytesPreparedForReview": true,
+      "executableCommandCardIssuedByThisGate": false,
+      "runtimeActivationAuthorizedByThisGate": false,
+      "requestBodyAdmissionReadAuthorizedByThisGate": false,
+      "commandCard": {
+        "schemaVersion": 1,
+        "artifact": "cad-auth-live-opening-executable-command-card-v1",
+        "sourceOnly": false,
+        "executable": true,
+        "issued": true,
+        "authorizedForLiveUse": true,
+        "productionUploadAdmissionOpeningAuthorized": true,
+        "uploadSessionIssuanceEnabled": false,
+        "requestBodyAdmissionReadAuthorized": true,
+        "conversionAuthorized": false,
+        "sandboxDispatchAuthorized": false,
+        "privateCadUseAuthorized": false,
+        "externalMessagesAuthorized": false,
+        "retryAuthorized": false,
+        "secondLiveRunAuthorized": false,
+        "sourceCommit": "f330ba5e934c28c05428ecd26cf4e04c58bbb790",
+        "executableRuntimeWiringPacketSha256": "be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8",
+        "runtimeActivationPacketSha256": "1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6",
+        "currentDeploymentRebindPacketSha256": "038b7ae04869095e01eda9f223d6ad51cc03845c00703ffeee4116c418840f6e",
+        "durableAdapterEvidenceCommandCardReviewPacketSha256": "c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce",
+        "durableAdapterPacketSha256": "783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285",
+        "uploadReadinessRollupPacketSha256": "9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b",
+        "coherentRestrictedSourceSetProjectionPacketSha256": "2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b",
+        "acceptedProvenanceProjectionPacketSha256": "03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec",
+        "privateRestrictedSourceSetSha256": "2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4",
+        "restrictedSourceSetRunId": "20260925t182340z",
+        "productionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/BsEHweLAyEPADhnTPkw6WsEsonJK",
+        "productionOrigin": "https://reversr.vercel.app",
+        "productionRoute": "POST /api/cad/user-import",
+        "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+        "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+        "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+        "openingWindow": {
+          "startUtc": "2026-09-28T04:30:00Z",
+          "expiresUtc": "2026-09-28T05:00:00Z",
+          "startInclusiveExpiryExclusive": true
+        },
+        "ceilings": {
+          "concurrentSessions": 1,
+          "uploadAttempts": 1,
+          "retries": 0,
+          "secondLiveRuns": 0
+        },
+        "liveExecutionControls": {
+          "independentExpiryCheckBeforeEveryEffect": true,
+          "atomicDurableRunClaimRequired": true,
+          "atomicDurableAttemptClaimRequired": true,
+          "rollbackImmediatelyAfterWindow": true,
+          "postRollbackFailClosedSmokeRequired": true,
+          "unknownOutcomeStopsWithoutRetry": true
+        }
+      }
+    },
+    "runtimeBindingReview": {
+      "bindingAccepted": true,
+      "ok": false,
+      "code": "EXECUTABLE_RUNTIME_WIRING_READY_DISABLED_BY_DEFAULT",
+      "commandCardSha256": "a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6",
+      "currentDeploymentRechecked": true,
+      "oneSessionOneAttemptFenceRequired": true,
+      "independentExpiryBeforeEveryEffectRequired": true,
+      "rollbackFirstControlsRequired": true,
+      "postRollbackFailClosedSmokeRequired": true,
+      "runtimeStillDisabledByDefault": true
+    },
+    "runtimeRequirements": {
+      "runFenceKey": "cad-production-internal-opening-v1",
+      "methods": [
+        "verifyApproval",
+        "verifyDurableEvidence",
+        "recheckDeployment",
+        "verifyClosedBaseline",
+        "claimRun",
+        "armRollback",
+        "verifySession",
+        "claimAttempt",
+        "openFence",
+        "consumeAttempt",
+        "closeFence",
+        "revokeSessionAndLateGrants",
+        "postRollbackSmoke"
+      ],
+      "forwardEffects": [
+        "verifyApproval",
+        "verifyDurableEvidence",
+        "recheckDeployment",
+        "verifyClosedBaseline",
+        "claimRun",
+        "armRollback",
+        "verifySession",
+        "claimAttempt",
+        "recheckDeployment",
+        "openFence",
+        "consumeAttempt"
+      ],
+      "cleanupEffects": [
+        "closeFence",
+        "revokeSessionAndLateGrants",
+        "postRollbackSmoke"
+      ],
+      "exactUtf8JsonSha256Required": true,
+      "canonicalJsonSha256MustMatch": true,
+      "immutableCurrentDeploymentRecheckRequired": true,
+      "oneSessionOneAttemptDurableFenceRequired": true,
+      "independentExpiryCheckBeforeEveryEffectRequired": true,
+      "rollbackImmediatelyAfterWindow": true,
+      "postRollbackFailClosedSmokeRequired": true
+    },
+    "evidenceSummary": {
+      "currentProductionDeploymentBound": true,
+      "executableRuntimeWiringPacketBound": true,
+      "exactBoundedSessionRefBound": true,
+      "exactWindowProposed": true,
+      "executableCommandCardSha256Resolved": true,
+      "runtimeBindingAcceptedWhileDisabled": true,
+      "allControlsClosed": true,
+      "effectsExecuted": 0,
+      "privateValuesProjected": false,
+      "privatePathsProjected": false,
+      "keyListingsProjected": false
+    },
+    "stopConditions": {
+      "failingCheck": true,
+      "failingSmoke": true,
+      "unknownOutcome": true,
+      "staleDeploymentBinding": true,
+      "missingDurableAdapterEvidence": true,
+      "commandCardDigestMismatch": true,
+      "currentDeploymentRecheckMissing": true,
+      "exactBoundedSessionBindingMissing": true,
+      "oneSessionOneAttemptFenceMissing": true,
+      "independentExpiryEvidenceMissing": true,
+      "routeBodyObserverMissing": true,
+      "rollbackSmokeEvidenceMissing": true,
+      "runtimeCredentialsOrProviderConfigurationNeeded": true,
+      "secretOrPrivateValueWouldBeRead": true
+    },
+    "nextLiveOpeningGate": {
+      "authorized": false,
+      "exactPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only/no-live executable runtime command-card rebind packet <executableCommandCardRebindPacketSha256> at source commit <executableCommandCardRebindSourceCommit>, PR #433 executable runtime wiring packet be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8, runtime activation packet 1ea9aecd93d00abee4dca807c70c89c1900cde93c111e131a991777bce3a83f6, current-deployment rebind packet 038b7ae04869095e01eda9f223d6ad51cc03845c00703ffeee4116c418840f6e, durable adapter evidence command-card review packet c857f4fd982dbdfb113450920e88f25841f5e21b25f9ed515232d1b49b9420ce, durable adapter packet 783fc44dc5b052f7f6d2da933e8d32c09ab11a872ba3f9d2a027db173a16d285, production deployment reference https://vercel.com/vsillahs-projects/reversr/BsEHweLAyEPADhnTPkw6WsEsonJK, source-only upload-admission readiness rollup packet 9c85cdef9841a16f8400e1ba960c16cbbc3e83e6d63130324287266733dc204b, coherent restricted source-set projection packet 2a3c04870214faa8a108ea364b702f7cedb7c12878dae49add67168d3f153d9b, private restricted source-set SHA-256 2d437fd9e964dd1c346bb60d9d3de8d14bd845e1980a225ffeb4ca4c4b2216c4, run id 20260925t182340z, accepted provenance projection packet 03be649bfab60b66700775fc00946daf9209cc9cfa4d3f741214342c1d784aec, bounded session binding rrb-ref:cad-upload-internal-mark-test-session-v1, and durable evidence digest 8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting 2026-09-28T04:30:00Z and expiring 2026-09-28T05:00:00Z; issue and use only one bounded executable command-card with SHA-256 a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6 for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second live run, retry, or commercial-readiness claim.",
+      "unresolvedFields": [
+        "executableCommandCardRebindPacketSha256",
+        "executableCommandCardRebindSourceCommit"
+      ],
+      "phraseFields": {
+        "executableCommandCardRebindPacketSha256": null,
+        "executableCommandCardRebindSourceCommit": null,
+        "productionDeploymentReference": "https://vercel.com/vsillahs-projects/reversr/BsEHweLAyEPADhnTPkw6WsEsonJK",
+        "startUtc": "2026-09-28T04:30:00Z",
+        "expiresUtc": "2026-09-28T05:00:00Z",
+        "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+        "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+        "executableCommandCardSha256": "a74502308b8d6dc9a7d9f67f30a2d6cf018de1ccb9cb69eb23a4b831d7cf62d6"
+      },
+      "liveOpeningRequiresSeparateApproval": true,
+      "executableCommandCardIssuanceRequiresSeparateApproval": true,
+      "uploadSessionIssuanceRequiresSeparateApproval": true,
+      "requestBodyAdmissionReadRequiresSeparateApproval": true,
+      "runtimeActivationRequiresSeparateApproval": true,
+      "unresolvedPlaceholdersAreNotApproval": true
+    },
+    "controls": {
+      "providerEnvResourceBillingChangeAuthorized": false,
+      "secretReadAuthorized": false,
+      "uploadSessionIssuanceAuthorized": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "liveEvidenceCollectionAuthorized": false,
+      "runtimeActivationAuthorized": false,
+      "executableCommandCardIssuanceAuthorized": false,
+      "externalMessagesAuthorized": false,
+      "retryAuthorized": false,
+      "secondLiveRunAuthorized": false,
+      "realUserCommercializationAuthorized": false,
+      "commercialReadinessClaimed": false,
+      "effectsExecuted": 0,
+      "sourceOnlyExecutableCommandCardRebindAuthorized": true,
+      "exactWindowProposalAuthorized": true,
+      "executableCommandCardSha256ComputationAuthorized": true,
+      "cleanupAuthorized": false
+    }
+  },
+  "sourceBindings": {
+    "docs/cad-auth-live-opening-executable-runtime-wiring.json": "be6dfceec943ec31309fa942ed2b2aa9a76b73d62551a53b4b432a82b4a27fb8",
+    "docs/cad-auth-live-opening-executable-command-card-rebind.md": "873218b1fd6a8fb9825dcedd1120c3a0f3929640aa7da6bbd31a224fc4d07836",
+    "offline/cad-auth-live-opening-executable-command-card-rebind/preparation.js": "f8377dc437cba1d4541fce9d5ac3890a892f69b93c43f6ba1c05cc919c53ebb1",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "b8b96caf633fcaaf4205f6009a26deacc07421944f87e52b2dbb9073ced62d27",
+    "scripts/cad-auth-live-opening-executable-command-card-rebind-checker.js": "1fafb78c5db159087fe26bc6e4e67dac458840340bd6181181b335d396dcad45",
+    "scripts/cad-auth-live-opening-executable-command-card-rebind.test.js": "aec9e29ff57070e9996094dfb0e1856e8610654081994d7781a1d87d122e0efe"
+  }
+}
