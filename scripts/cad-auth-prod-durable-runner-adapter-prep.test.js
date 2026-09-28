@@ -224,20 +224,41 @@ test('rollback is idempotent and independent fence never grants admission', () =
   assert.equal(fence.admissionAllowed, false);
 });
 
-test('source packet is transitively bound and source drift fails closed', () => {
-  const packet = JSON.parse(fs.readFileSync(PACKET));
-  assert.equal(checkPacket(packet).ok, true);
+test('historical source packet validates at its original revision and rejects current drift', () => {
+  // This immutable packet predates later router changes. Never refresh it in place.
+  const revision = '00fd71d76430123c220af25e85d37ecba802b7b0';
+  const snapshot = new Map();
+  const readHistorical = file => {
+    if (!snapshot.has(file)) {
+      const result = spawnSync('git', ['show', `${revision}:${file}`]);
+      assert.equal(result.status, 0, `Historical source unavailable: ${file}`);
+      snapshot.set(file, result.stdout);
+    }
+    return snapshot.get(file);
+  };
+  const packetBytes = fs.readFileSync(PACKET);
+  assert.deepEqual(packetBytes, readHistorical(PACKET));
+  const packet = JSON.parse(packetBytes);
+  assert.equal(checkPacket(packet, { readSource: readHistorical }).ok, true);
   for (const source of SOURCES) {
     assert.equal(checkPacket(packet, { readSource(file) {
-      return file === source ? Buffer.from('drift') : fs.readFileSync(file);
+      return file === source ? Buffer.from('drift') : readHistorical(file);
     } }).ok, false, source);
   }
+  assert.notEqual(sha(fs.readFileSync('server/cadUserUploadRouter.js')),
+    packet.sourceBindings['server/cadUserUploadRouter.js']);
+  assert.equal(checkPacket(packet).ok, false);
 });
 
 test('CLI refuses live execution, authority options and arbitrary paths', () => {
   for (const args of [[], ['--execute'], ['--live'], ['--activate'], ['--approval', 'PRIVATE_SENTINEL'], ['--write', '--execute']]) {
     const result = spawnSync(process.execPath, ['scripts/cad-auth-prod-durable-runner-adapter-prep-checker.js', ...args], { encoding: 'utf8' });
-    assert.equal(result.status, args.length ? 1 : 0);
+    // No-argument validation also rejects the stale historical packet.
+    assert.equal(result.status, 1);
+    const closedResult = JSON.parse(result.stdout);
+    assert.equal(closedResult.ok, false);
+    assert.equal(closedResult.effectsExecuted, 0);
+    assert.equal(closedResult.liveExecutionAuthorized, false);
     assert.doesNotMatch(result.stdout + result.stderr, /PRIVATE_SENTINEL|\/Users\//);
   }
 });
