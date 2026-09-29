@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-production-binding-source-install-v1",
+  "sourceOnly": true,
+  "baseCommit": "6504ede193b84fb0a710bf7a2e0d2258cd52137f",
+  "roadmap": "5/6 complete",
+  "status": "SOURCE_INSTALL_MECHANISM_DEFAULT_CLOSED",
+  "installation": {
+    "enabled": false,
+    "manifest": null,
+    "liveGate": null,
+    "durableAdapter": null
+  },
+  "liveOpeningAuthorized": false,
+  "commandCardIssued": false,
+  "runtimeActivated": false,
+  "durableAdapterQualified": false,
+  "effectsExecuted": 0,
+  "nextApprovalPhraseAvailable": false,
+  "unresolved": [
+    "postMergeDeployment",
+    "currentFailClosedSmoke",
+    "durableAdapterEvidence",
+    "exactBoundedSession",
+    "freshUtcWindow",
+    "commandCardBytesAndSha256",
+    "installationSha256"
+  ],
+  "stopConditions": [
+    "failingChecks",
+    "failingSmoke",
+    "unknownOutcome",
+    "staleDeploymentBinding",
+    "missingDurableAdapterEvidence",
+    "missingExactBoundedSessionBinding",
+    "privateDataLeakageRisk",
+    "runtimeCredentialsOrProviderConfigurationNeeded"
+  ],
+  "sourceBindings": {
+    ".github/workflows/release-local-ci.yml": "60b6fc7559cb3d0c977479055978701cc642388fa7bb2175774949c5d80cdbd4",
+    "server/cadProductionExecutionBindingInstallation.js": "161e9d1a0b118c3b8f7cf45a43d81e6ec99d7759844480925bf21414468c9088",
+    "server/cadProductionExecutionBindingSourceInstall.js": "b1f28481255629903e94c6542dbb2295a226352b07e2c9680bb9c65b13a40bd9",
+    "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
+    "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
+    "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/index.js": "68ea067c663c98790cf1692c33177ac7d87217d2e9c24d4f581160977bfe1516",
+    "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
+    "scripts/cad-auth-production-binding-source-install.test.js": "206a4689b98903b314b171c4ec6718e9077c2ce64425359af85a8e98ad96b598",
+    "scripts/cad-auth-production-binding-source-install-checker.js": "486c21d0a22a3d203616b1853f21f63a6ed344ffa6072f855379796f92bc8d36",
+    "scripts/cad-auth-production-execution-binding-finalization.test.js": "c452276e149f9a70e6bd33f52aa501f52abccf38662644152be1453876c286d9",
+    "docs/cad-auth-production-execution-binding-finalization.json": "92426e94003fcdb43692f262e6c22ad8f5dc984b23a6f5de2a78e6a264c5af22",
+    "docs/cad-auth-production-binding-source-install.md": "79c3739683e3eca3a1bd076f078a5984c251fd94effc85f3ef76bfd8c0fc4842"
+  }
+}

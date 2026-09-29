@@ -5,6 +5,7 @@ const { METHODS, reviewExecutableCommandCardBinding } =
 
 const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const PRODUCTION_EXECUTION_BINDING_SOURCE = null;
+const { resolveCadProductionExecutionBindingSource } = require('./cadProductionExecutionBindingSourceInstall');
 const SHA = /^[a-f0-9]{64}$/;
 const REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/;
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -15,7 +16,8 @@ const isId = value => typeof value === 'string' && ID.test(value);
 const isService = value => value && typeof value === 'object' && !Array.isArray(value)
   && METHODS.every(name => typeof value[name] === 'function');
 
-function createCadProductionExecutionBindingSource(input = PRODUCTION_EXECUTION_BINDING_SOURCE) {
+function createCadProductionExecutionBindingSource(input = resolveCadProductionExecutionBindingSource()
+  || PRODUCTION_EXECUTION_BINDING_SOURCE) {
   try {
     if (!input || typeof input !== 'object' || Array.isArray(input) || input.enabled !== true) return null;
     if (input.boundedSessionRef !== BOUNDED_SESSION_REF

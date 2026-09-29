@@ -98,9 +98,9 @@ test('source module and production entry expose no env, filesystem, provider or 
   }
 });
 
-test('source-only finalization packet validates and rejects drift', () => {
+test('historical finalization packet remains stale after source-install wiring and rejects drift', () => {
   const packet = JSON.parse(read(PACKET));
-  assert.equal(checkPacket(packet).ok, true);
+  assert.equal(checkPacket(packet).ok, false);
   for (const source of SOURCES) {
     const result = checkPacket(packet, {
       readSource(file) {

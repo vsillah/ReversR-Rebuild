@@ -28,6 +28,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify CAD production source installation remains closed
+        run: |
+          node scripts/cad-auth-production-binding-source-install-checker.js
+          node --test scripts/cad-auth-production-binding-source-install.test.js scripts/cad-auth-production-execution-binding-finalization.test.js scripts/cad-auth-live-opening-execution-gap-closure.test.js scripts/cad-auth-live-opening-executable-runtime-wiring.test.js scripts/cad-auth-final-live-opening-rebind-prep.test.js
+
       - name: Verify synthetic shadow coverage
         run: npm run iges:shadow:test
 
