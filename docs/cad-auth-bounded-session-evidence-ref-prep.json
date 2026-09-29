@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-bounded-session-evidence-ref-prep-v1",
+  "sourceOnly": true,
+  "status": "STOPPED_SOURCE_INPUTS_UNRESOLVED_AND_DEPLOYMENT_REBIND_REQUIRED",
+  "roadmap": "5/6 complete; Step 6 preparation only",
+  "taskId": "01a0eeb4-c566-7702-bef6-9e1c343da498",
+  "approvedGate": {
+    "parentPacketSha256": "0c36065f91fe722f5079052a10155dec3462449ea3bd1214d105599daff1bcc6",
+    "sourceCommit": "07c45369b6c95f594995bb85875636cc8c51f383",
+    "pullRequest": 447,
+    "deploymentId": "dpl_EMhat5M6tCGRrbsK81oS7FHDMxix",
+    "target": "https://reversr-i0ypw7nkp-vsillahs-projects.vercel.app",
+    "reportedSmoke": {
+      "status": 401,
+      "code": "USER_SESSION_REQUIRED",
+      "observedAtUtc": "2026-09-29T19:41:22Z",
+      "provenance": "captain delegation; not repeated or independently verified by this lane"
+    }
+  },
+  "deployment": {
+    "schemaRequiredId": "dpl_9mMogp9HjVEtdvH8Eoc3hVMrj4St",
+    "schemaRequiredSourceCommit": "c9bdc2929f3d6b67439db42fb1a7511f9b42f641",
+    "matchesApprovedGate": false,
+    "freshnessVerified": false,
+    "rebindApplied": false
+  },
+  "candidates": {
+    "boundedSessionRef": {
+      "source": "offline/cad-auth-durable-adapter-rejection-prep/binding.schema.json",
+      "sourceSha256": "fb6f7a9bd4623369dd2bc9a6b9c831e26e27f5486481f5cc58c4ee349b17ecc9",
+      "pointer": "/properties/boundedSessionRef/const",
+      "value": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+      "acceptedAsLiveBinding": false,
+      "reason": "Opaque designation only; not an existing runtime session ID."
+    },
+    "rejectedPendingSession": {
+      "source": "docs/cad-auth-production-binding-source-install.json",
+      "sourceSha256": "ba790f1871036bf7e716ef910cbf7e41196ebe76b75a5b7c975df6ac1bcbcd45",
+      "pointer": "/installation/manifest/sessionId",
+      "value": "rrb-ref:cad-upload-internal-mark-test-session-v1-pending",
+      "acceptedAsLiveBinding": false,
+      "reason": "Explicit pending value; prohibited as exact session input."
+    },
+    "historicalEvidence": [
+      {
+        "source": "docs/cad-auth-production-binding-source-install.json",
+        "sourceSha256": "ba790f1871036bf7e716ef910cbf7e41196ebe76b75a5b7c975df6ac1bcbcd45",
+        "pointer": "/installation/manifest/durableEvidenceSha256",
+        "value": "c772521be9c6ebd48e2395439f1eed5f733dac9af40e1f96edbcec5db6510637",
+        "acceptedAsLiveBinding": false,
+        "reason": "Source installation remains unqualified and exact session unresolved."
+      },
+      {
+        "source": "docs/cad-auth-final-live-opening-rebind-prep.json",
+        "sourceSha256": "379a59c25b882eaccaa53a2230770d0d6777f26c92650bd715abf8a1bfe096ed",
+        "pointer": "/finalOpeningBindings/durableEvidenceSha256",
+        "value": "60c823d125e9e564b33640ff327360e53c1f7488649d0aa23469d3bd005dfb97",
+        "acceptedAsLiveBinding": false,
+        "reason": "Historical deployment and opening window; no exact session ID attestation."
+      },
+      {
+        "source": "docs/cad-auth-live-opening-executable-command-card-rebind.json",
+        "sourceSha256": "8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1",
+        "pointer": "/preparation/durableEvidenceBinding/sha256",
+        "value": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+        "acceptedAsLiveBinding": false,
+        "reason": "Derived from public source references; live adapter evidence expressly still required."
+      }
+    ]
+  },
+  "requiredProvenance": {
+    "fields": [
+      "sessionId",
+      "durableEvidenceSha256",
+      "productionDeploymentReference",
+      "sourceCommit",
+      "sourceInputStopTask",
+      "sessionInputStopTask",
+      "stopDisposition",
+      "runtimeInstallStopSha256",
+      "approvedNonSecretSourceRecordSha256"
+    ],
+    "sourceInputStopTask": "01a0ee9f-28aa-7d71-b170-4ae4236148d0",
+    "sessionInputStopTask": "01a0eea2-7b7d-7d30-adbf-c07784cf237a",
+    "runtimeInstallStopSha256": "d706fd784052b72ab48d7fc0dfebaf3369251b8490c6925e5d26c4487b367540",
+    "approvedNonSecretSourceRecordSha256": null,
+    "rule": "An approved existing non-secret source record must attest the exact existing session ID and evidence digest together with the immutable target and source authority. Hashing this candidate manifest cannot establish that attestation."
+  },
+  "resolvedBinding": null,
+  "nextApprovalPhrase": null,
+  "unresolved": [
+    "exactExistingSessionId",
+    "durableEvidenceSha256",
+    "approvedNonSecretSourceRecord",
+    "schemaDeploymentRebind",
+    "currentDeploymentVerification"
+  ],
+  "controls": {
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "privateEvidenceReadAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "runtimeInstallationAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "liveRetryAuthorized": false,
+    "secondLiveRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "commercialReadinessClaimed": false,
+    "durableAdapterQualified": false,
+    "runtimeMounted": false
+  },
+  "liveEffectsExecuted": 0,
+  "sourceBindings": {
+    "docs/cad-auth-durable-adapter-rejection-prep.json": "0c36065f91fe722f5079052a10155dec3462449ea3bd1214d105599daff1bcc6",
+    "offline/cad-auth-durable-adapter-rejection-prep/binding.schema.json": "fb6f7a9bd4623369dd2bc9a6b9c831e26e27f5486481f5cc58c4ee349b17ecc9",
+    "docs/cad-auth-production-binding-source-install.json": "ba790f1871036bf7e716ef910cbf7e41196ebe76b75a5b7c975df6ac1bcbcd45",
+    "docs/cad-auth-final-live-opening-rebind-prep.json": "379a59c25b882eaccaa53a2230770d0d6777f26c92650bd715abf8a1bfe096ed",
+    "docs/cad-auth-live-opening-executable-command-card-rebind.json": "8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1",
+    "docs/cad-auth-bounded-session-evidence-ref-prep.md": "42912be60f58a138bc4d77d8b3bae3c9f32395592f0e86fb17bcb4912a8bd6eb",
+    "scripts/cad-auth-bounded-session-evidence-ref-prep-checker.js": "e357beec71a9e16ce1d7c15d9c7fc36401dd622aa53bd6dbeec627c2d95bd4ab",
+    "scripts/cad-auth-bounded-session-evidence-ref-prep.test.js": "c452feecfa6a18e5a10885377b434054bddcf280fdb97c0de27acdc5d235a897"
+  }
+}
