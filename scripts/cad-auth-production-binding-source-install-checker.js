@@ -3,6 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
+const { METHODS } = require('../server/cadLiveOpeningExecutableRuntimeWiring');
+const { PRODUCTION_BINDING_INSTALLATION } =
+  require('../server/cadProductionExecutionBindingInstallation');
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-production-binding-source-install.json';
 const SOURCES = Object.freeze([
@@ -13,6 +16,7 @@ const SOURCES = Object.freeze([
   'server/cadProductionExecutionBinding.js',
   'server/cadProductionExecutableRuntimeMountCompletion.js',
   'server/cadLiveOpeningExecutableRuntimeWiring.js',
+  'server/cadLiveOpeningRuntimeMount.js',
   'server/cadLiveOpeningExecutableRuntimeBootstrap.js',
   'server/cadUserUploadRouter.js',
   'server/index.js',
@@ -25,6 +29,34 @@ const SOURCES = Object.freeze([
 ]);
 const read = file => fs.readFileSync(path.join(ROOT, file));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+function installationProjection(installation = PRODUCTION_BINDING_INSTALLATION) {
+  const manifest = installation.manifest || {};
+  const liveGate = installation.liveGate || {};
+  const durableAdapter = installation.durableAdapter || {};
+  const service = durableAdapter.service || {};
+  return {
+    enabled: installation.enabled === true,
+    manifest: {
+      schemaVersion: manifest.schemaVersion,
+      commandCardBytesSha256: sha(manifest.commandCardBytes || ''),
+      commandCardSha256: manifest.commandCardSha256,
+      currentDeploymentReference: manifest.currentDeploymentReference,
+      boundedSessionRef: manifest.boundedSessionRef,
+      sessionId: manifest.sessionId,
+      durableEvidenceSha256: manifest.durableEvidenceSha256,
+      durableServiceRef: manifest.durableServiceRef,
+    },
+    liveGate: {
+      explicitLiveOpeningApproved: liveGate.explicitLiveOpeningApproved === true,
+      installationSha256: liveGate.installationSha256,
+    },
+    durableAdapter: {
+      serviceRef: durableAdapter.serviceRef,
+      evidenceSha256: durableAdapter.evidenceSha256,
+      methodNames: METHODS.filter(name => typeof service[name] === 'function'),
+    },
+  };
+}
 function expectedPacket(readSource = read) {
   return {
     schemaVersion: 1,
@@ -32,8 +64,10 @@ function expectedPacket(readSource = read) {
     sourceOnly: true,
     baseCommit: '6504ede193b84fb0a710bf7a2e0d2258cd52137f',
     roadmap: '5/6 complete',
-    status: 'SOURCE_INSTALL_MECHANISM_DEFAULT_CLOSED',
-    installation: { enabled: false, manifest: null, liveGate: null, durableAdapter: null },
+    status: 'SOURCE_INSTALL_PATH_PROVEN_DEFAULT_CLOSED',
+    installation: installationProjection(),
+    installPathProven: true,
+    defaultProductionBehaviorClosed: true,
     liveOpeningAuthorized: false,
     commandCardIssued: false,
     runtimeActivated: false,
@@ -41,7 +75,8 @@ function expectedPacket(readSource = read) {
     effectsExecuted: 0,
     nextApprovalPhraseAvailable: false,
     unresolved: ['postMergeDeployment', 'currentFailClosedSmoke', 'durableAdapterEvidence',
-      'exactBoundedSession', 'freshUtcWindow', 'commandCardBytesAndSha256', 'installationSha256'],
+      'exactBoundedSession', 'freshUtcWindow', 'explicitLiveOpeningEnablement',
+      'currentProductionCommandCardBytesAndSha256', 'currentProductionInstallationSha256'],
     stopConditions: ['failingChecks', 'failingSmoke', 'unknownOutcome', 'staleDeploymentBinding',
       'missingDurableAdapterEvidence', 'missingExactBoundedSessionBinding', 'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded'],
