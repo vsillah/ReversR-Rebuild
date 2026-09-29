@@ -1,14 +1,12 @@
 // Server-owned binding only. No environment, filesystem, provider or request inputs.
 const { reviewExecutableCommandCardBinding, METHODS, CLEANUP_EFFECTS, RUN_FENCE_KEY } =
   require('./cadLiveOpeningExecutableRuntimeWiring');
+const { createCadProductionExecutionBindingSource } =
+  require('./cadProductionExecutionBindingSource');
 const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const DISABLED = Object.freeze({ enabled: false });
 
-// The reviewed deployment keeps this null. A later source-reviewed live gate must
-// supply the exact binding and independently qualified durable service capability.
-const PRODUCTION_EXECUTION_BINDING = null;
-
-function createCadProductionExecutionBinding(input = PRODUCTION_EXECUTION_BINDING) {
+function createCadProductionExecutionBinding(input = createCadProductionExecutionBindingSource()) {
   try {
     if (!input || input.enabled !== true) return DISABLED;
     const binding = reviewExecutableCommandCardBinding(input);

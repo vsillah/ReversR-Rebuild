@@ -27,9 +27,12 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file));
 const packet = () => JSON.parse(read(PACKET));
 
-test('packet binds PR 442 projection, production deployment and fail-closed smoke', () => {
+test('historical final rebind prep is stale after production execution binding finalization', () => {
   const p = packet();
-  assert.equal(checkPacket(p).ok, true);
+  const result = checkPacket(p);
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'FINAL_LIVE_OPENING_REBIND_PREP_BLOCKED');
+  assert.equal(result.effectsExecuted, 0);
   assert.equal(p.sourceCommit, MAIN_COMMIT);
   assert.equal(p.parentPackets.durableQualificationProjectionPacketSha256, PROJECTION_SHA);
   assert.equal(p.productionDeployment.id, PRODUCTION_DEPLOYMENT_ID);
@@ -120,22 +123,20 @@ test('mutations, private fields and hostile inputs fail closed', () => {
   }
 });
 
-test('approval phrase is exact and digest-bound', () => {
+test('approval phrase is unavailable for stale final rebind prep', () => {
   const bytes = read(PACKET);
-  const phrase = approvalPhrase(bytes);
-  assert.ok(phrase.includes(createHash('sha256').update(bytes).digest('hex')));
-  assert.ok(phrase.includes(commandCardSha256()));
-  assert.equal(checkApprovalPhrase(bytes, phrase), true);
-  for (const wrong of [phrase + ' ', phrase.replace('draft PR', 'PR'), phrase.replace('No private', 'Allow private'), '', null]) {
-    assert.equal(checkApprovalPhrase(bytes, wrong), false);
-  }
+  assert.ok(createHash('sha256').update(bytes).digest('hex'));
+  assert.ok(commandCardSha256());
+  assert.throws(() => approvalPhrase(bytes), /^Error: FINAL_LIVE_OPENING_REBIND_PREP_BLOCKED$/);
+  assert.equal(checkApprovalPhrase(bytes, 'PRIVATE_SENTINEL'), false);
 });
 
-test('CLI validates source-only packet and rejects live/private modes', () => {
+test('CLI blocks stale source-only packet and rejects live/private modes', () => {
   const script = 'scripts/cad-auth-final-live-opening-rebind-prep-checker.js';
   const ok = spawnSync(process.execPath, [script], { cwd: root, encoding: 'utf8' });
-  assert.equal(ok.status, 0);
-  assert.equal(JSON.parse(ok.stdout).ok, true);
+  assert.equal(ok.status, 1);
+  assert.equal(JSON.parse(ok.stdout).ok, false);
+  assert.equal(JSON.parse(ok.stdout).effectsExecuted, 0);
   for (const args of [['--live'], ['--activate'], ['--issue-command-card'], ['--read-private'],
     ['--upload-session'], ['PRIVATE_SENTINEL'], ['--write', 'PRIVATE_SENTINEL']]) {
     const run = spawnSync(process.execPath, [script, ...args], { cwd: root, encoding: 'utf8' });

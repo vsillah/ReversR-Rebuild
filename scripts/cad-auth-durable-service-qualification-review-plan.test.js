@@ -17,9 +17,12 @@ const readSource = file => fs.readFileSync(path.join(root, file));
 const packet = () => JSON.parse(readSource(PACKET));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
-test('review plan binds repaired inventory review while keeping live qualification false', () => {
+test('historical review plan is stale after production execution binding finalization', () => {
   const p = packet();
-  assert.equal(checkPacket(p).ok, true);
+  const result = checkPacket(p);
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'QUALIFICATION_REVIEW_PLAN_BLOCKED');
+  assert.equal(result.effectsExecuted, 0);
   assert.equal(p.repairedInventoryReviewSha256, '3e18bdf6c31901ea172997c0ea155ba101676af9a1c60a4db827c12d6c79f181');
   assert.equal(p.repairedInventoryReviewReceiptSha256, '02657eeff430a73599fc4c2d74fe0f97f10bcb1d6b7c4e039535fe00f8cf44ff');
   assert.equal(p.acceptedInventoryBinding.acceptedArtifactCount, 9);
@@ -78,32 +81,22 @@ test('source closure drift and private path reads block', () => {
       : readSource(file) }).ok, false, source);
   }
   const reads = [];
-  assert.equal(checkPacket(packet(), { readSource: file => { reads.push(file); return readSource(file); } }).ok, true);
+  assert.equal(checkPacket(packet(), { readSource: file => { reads.push(file); return readSource(file); } }).ok, false);
   assert.equal(reads.some(file => file.startsWith('.local/') || file.includes('..')), false);
   assert.equal(reads.some(file => file.includes('private') && file.startsWith('.local/')), false);
 });
 
-test('next phrase is exact, digest-bound and still live-unqualified', () => {
+test('next phrase is unavailable for stale review plan', () => {
   const bytes = readSource(PACKET);
-  const phrase = approvalPhrase(bytes);
-  assert.ok(phrase.includes(sha(bytes)));
-  for (const value of [
-    packet().repairedInventoryReviewSha256,
-    packet().repairedInventoryReviewReceiptSha256,
-    packet().gapPlanPacketSha256,
-    packet().sourceEvidenceSetReference,
-    packet().durableServiceReference,
-  ]) assert.ok(phrase.includes(value), value);
-  assert.doesNotMatch(phrase, /<[^>]+>/);
-  assert.match(phrase, /liveDurableServiceQualified false and productionExecutionBinding null/);
-  assert.match(phrase, /does not authorize production execution/);
-  assert.ok(phrase.includes('No provider/env/resource/billing changes'));
+  assert.ok(sha(bytes));
+  assert.throws(() => approvalPhrase(bytes), /^Error: QUALIFICATION_REVIEW_PLAN_BLOCKED$/);
   assert.throws(() => approvalPhrase(Buffer.from(JSON.stringify({ ...packet(), controls: { ...packet().controls, runtimeActivationAuthorized: true } }))));
 });
 
-test('CLI writes source packet but rejects private or live modes', () => {
+test('CLI stays blocked for stale packet and rejects private or live modes', () => {
   const write = spawnSync(process.execPath, ['scripts/cad-auth-durable-service-qualification-review-plan-checker.js', '--write'], { cwd: root, encoding: 'utf8' });
-  assert.equal(write.status, 0);
+  assert.equal(write.status, 1);
+  assert.equal(JSON.parse(write.stdout).effectsExecuted, 0);
   for (const arg of ['--read-private', '--qualify', '--activate', '--issue-command-card', '/private/PRIVATE_SENTINEL']) {
     const result = spawnSync(process.execPath, ['scripts/cad-auth-durable-service-qualification-review-plan-checker.js', arg], { cwd: root, encoding: 'utf8' });
     assert.equal(result.status, 1);

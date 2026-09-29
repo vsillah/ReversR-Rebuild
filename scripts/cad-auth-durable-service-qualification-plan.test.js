@@ -8,8 +8,13 @@ const root = path.resolve(__dirname, '..');
 const readSource = file => fs.readFileSync(path.join(root, file));
 const packet = () => JSON.parse(readSource(PACKET));
 
-test('plan cannot promote synthetic validation to service qualification or authority', () => {
-  assert.equal(checkPacket(packet()).ok, true);
+test('historical plan is stale after production execution binding finalization', () => {
+  const result = checkPacket(packet());
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'QUALIFICATION_PLAN_BLOCKED');
+  assert.equal(result.liveDurableServiceQualified, false);
+  assert.equal(result.productionExecutionBinding, null);
+  assert.equal(result.effectsExecuted, 0);
   for (const changes of [{ liveDurableServiceQualified: true }, { productionExecutionBinding: {} },
     { executableCommandCardIssued: true }, { privateEvidenceRead: true },
     { durableServiceReference: 'rrb-ref:invented-service' }, { extra: true }]) {
@@ -38,11 +43,8 @@ test('hostile inputs are rejected without invoking getters or leaking their valu
     assert.doesNotMatch(JSON.stringify(checkPacket(input)), /PRIVATE_SENTINEL/);
   }
 });
-test('approval binds final bytes and has only user-owned private reference placeholders', () => {
-  const phrase = approvalPhrase(readSource(PACKET));
-  assert.deepEqual(phrase.match(/<[^>]+>/g), ['<privateSourceEvidenceSetReference>', '<durableServiceReference>']);
-  assert.match(phrase, /liveDurableServiceQualified must remain false/);
-  assert.match(phrase, /No provider\/env\/resource\/billing changes/);
+test('approval is unavailable for the stale historical plan', () => {
+  assert.throws(() => approvalPhrase(readSource(PACKET)), /^Error: QUALIFICATION_PLAN_BLOCKED$/);
   assert.throws(() => approvalPhrase(JSON.stringify({ ...packet(), liveDurableServiceQualified: true })));
 });
 test('CLI denies arbitrary paths and live operations with sanitized zero-effect output', () => {

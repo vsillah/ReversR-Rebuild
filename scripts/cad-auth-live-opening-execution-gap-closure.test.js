@@ -126,9 +126,11 @@ const { spawnSync } = require('node:child_process');
 const { PACKET, SOURCES, checkPacket, approvalPhrase } = require('./cad-auth-live-opening-execution-gap-closure-checker');
 const root = path.resolve(__dirname, '..');
 const readSource = file => fs.readFileSync(path.join(root, file));
-test('successor packet detects every bound source drift and refuses hostile inputs', () => {
+test('execution-gap packet is historical after production binding finalization and refuses hostile inputs', () => {
   const packet = JSON.parse(readSource(PACKET));
-  assert.equal(checkPacket(packet).ok, true);
+  const result = checkPacket(packet);
+  assert.equal(result.ok, false);
+  assert.equal(result.effectsExecuted, 0);
   for (const source of SOURCES) {
     assert.equal(checkPacket(packet, { readSource: file => file === source
       ? Buffer.concat([readSource(file), Buffer.from('drift')]) : readSource(file) }).ok, false);
@@ -170,6 +172,9 @@ test('production entry supplies the disabled factory before general body parsing
   assert.ok(source.indexOf('executableRuntime: createCadProductionExecutionBinding()')
     < source.indexOf('app.use(express.json'));
   const binding = readSource('server/cadProductionExecutionBinding.js').toString();
-  assert.match(binding, /const PRODUCTION_EXECUTION_BINDING = null;/);
+  const sourceBinding = readSource('server/cadProductionExecutionBindingSource.js').toString();
+  assert.match(binding, /createCadProductionExecutionBindingSource\(\)/);
+  assert.match(sourceBinding, /const PRODUCTION_EXECUTION_BINDING_SOURCE = null;/);
   assert.doesNotMatch(binding, /process\.env|node:fs|child_process|fetch\s*\(|https?\.request|\.listen\s*\(/);
+  assert.doesNotMatch(sourceBinding, /process\.env|node:fs|child_process|fetch\s*\(|https?\.request|\.listen\s*\(/);
 });
