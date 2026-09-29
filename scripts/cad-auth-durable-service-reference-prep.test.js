@@ -16,9 +16,15 @@ const root = path.resolve(__dirname, '..');
 const readSource = file => fs.readFileSync(path.join(root, file));
 const packet = () => JSON.parse(readSource(PACKET));
 
-test('reference prep creates concrete opaque refs without private reads or authority', () => {
+test('historical reference prep is stale after production execution binding finalization', () => {
   const p = packet();
-  assert.equal(checkPacket(p).ok, true);
+  const result = checkPacket(p);
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'REFERENCE_PREP_BLOCKED');
+  assert.equal(result.effectsExecuted, 0);
+  assert.equal(result.privateEvidenceRead, false);
+  assert.equal(result.liveDurableServiceQualified, false);
+  assert.equal(result.productionExecutionBinding, null);
   assert.equal(p.durableServiceReference, DURABLE_SERVICE_REF);
   assert.equal(p.privateSourceEvidenceSetReference, PRIVATE_SOURCE_EVIDENCE_SET_REF);
   assert.deepEqual(p.nextGate.remainingUserPlaceholders, []);
@@ -32,15 +38,8 @@ test('reference prep creates concrete opaque refs without private reads or autho
   assert.equal(p.controls.requestBodyAdmissionReadAuthorized, false);
 });
 
-test('next private review phrase has no unresolved opaque-reference placeholders', () => {
-  const phrase = approvalPhrase(readSource(PACKET));
-  assert.match(phrase, new RegExp(PRIVATE_SOURCE_EVIDENCE_SET_REF));
-  assert.match(phrase, new RegExp(DURABLE_SERVICE_REF));
-  assert.doesNotMatch(phrase, /<privateSourceEvidenceSetReference>/);
-  assert.doesNotMatch(phrase, /<durableServiceReference>/);
-  assert.doesNotMatch(phrase, /<referencePrepPacketSha256>/);
-  assert.match(phrase, /liveDurableServiceQualified must remain false/);
-  assert.match(phrase, /No provider\/env\/resource\/billing changes/);
+test('next private review phrase is unavailable for stale reference prep', () => {
+  assert.throws(() => approvalPhrase(readSource(PACKET)), /^Error: REFERENCE_PREP_BLOCKED$/);
 });
 
 test('every bound source drift blocks reference prep', () => {

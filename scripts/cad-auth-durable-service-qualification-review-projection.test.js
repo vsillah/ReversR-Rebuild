@@ -9,9 +9,12 @@ const root = path.resolve(__dirname, '..');
 const readSource = file => fs.readFileSync(path.join(root, file));
 const packet = () => JSON.parse(readSource(PACKET));
 
-test('accepted disposition is projected with exact bindings and closed controls', () => {
+test('historical accepted-disposition projection is stale after production execution binding finalization', () => {
   const p = packet();
-  assert.equal(checkPacket(p).ok, true);
+  const result = checkPacket(p);
+  assert.equal(result.ok, false);
+  assert.equal(result.code, 'QUALIFICATION_REVIEW_PROJECTION_BLOCKED');
+  assert.equal(result.effectsExecuted, 0);
   assert.equal(p.privateQualificationReviewSha256, '5e064d6edb779def902dbf43f970593d23ea771acf72bbea2ada9f88173a0e43');
   assert.equal(p.qualificationReviewReceiptSha256, '6fe6679616bbde8bf2a16f1fed9cd3ab662713112958eaed97efb7e6e0fb41ea');
   assert.equal(p.qualificationReviewPlanPacketSha256, '6a6628713c38cf43e0c62dfa8ef16dcd5b0c58e61164ab7f5bdd33d39c30ed55');
@@ -70,21 +73,16 @@ test('all source drift and missing sources block; reads stay in the fixed public
     assert.match(file, /^(docs|scripts|offline|server)\//);
     assert.doesNotMatch(file, /\.\.|\.local|rrb-ref:|^\//);
     reads.add(file); return readSource(file);
-  } }).ok, true);
-  assert.deepEqual([...reads].sort(), [...SOURCES].sort());
+  } }).ok, false);
+  assert.ok(reads.size > 0);
+  for (const file of reads) assert.ok(SOURCES.includes(file), file);
 });
 
-test('approval is byte-digest-bound and accepts only the exact publication phrase', () => {
+test('approval is unavailable for stale qualification review projection', () => {
   const bytes = readSource(PACKET);
-  const phrase = approvalPhrase(bytes);
-  assert.ok(phrase.includes(createHash('sha256').update(bytes).digest('hex')));
-  assert.ok(phrase.startsWith('I approve public push of branch codex/cad-auth-durable-qualification-projection and creation of one draft PR'));
-  assert.match(phrase, /Keep durableServiceQualified false, liveDurableServiceQualified false, productionExecutionBinding null/);
-  assert.equal(checkApprovalPhrase(bytes, phrase), true);
-  for (const wrong of [phrase + ' ', phrase.replace('draft PR', 'PR'), phrase.replace('No private', 'Allow private'), '', null]) {
-    assert.equal(checkApprovalPhrase(bytes, wrong), false);
-  }
-  assert.equal(checkApprovalPhrase(Buffer.concat([bytes, Buffer.from('\n')]), phrase), false);
+  assert.ok(createHash('sha256').update(bytes).digest('hex'));
+  assert.throws(() => approvalPhrase(bytes), /^Error: QUALIFICATION_REVIEW_PROJECTION_BLOCKED$/);
+  assert.equal(checkApprovalPhrase(bytes, 'PRIVATE_SENTINEL'), false);
   assert.throws(() => approvalPhrase(Buffer.from('{PRIVATE_SENTINEL')), /^Error: QUALIFICATION_REVIEW_PROJECTION_BLOCKED$/);
 });
 
@@ -103,8 +101,9 @@ test('hostile accessors and private error data are never returned', () => {
 test('CLI validates offline and rejects live/private modes without echoing arguments', () => {
   const script = 'scripts/cad-auth-durable-service-qualification-review-projection-checker.js';
   const valid = spawnSync(process.execPath, [script], { cwd: root, encoding: 'utf8' });
-  assert.equal(valid.status, 0);
-  assert.equal(JSON.parse(valid.stdout).ok, true);
+  assert.equal(valid.status, 1);
+  assert.equal(JSON.parse(valid.stdout).ok, false);
+  assert.equal(JSON.parse(valid.stdout).effectsExecuted, 0);
   for (const args of [['--read-private'], ['--qualify'], ['--activate'], ['--push'], ['--issue-command-card'], ['/private/PRIVATE_SENTINEL'], ['--write', 'PRIVATE_SENTINEL']]) {
     const result = spawnSync(process.execPath, [script, ...args], { cwd: root, encoding: 'utf8' });
     assert.equal(result.status, 1);
