@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "boundedSessionRef",
+    "sessionId",
+    "durableEvidenceSha256",
+    "productionDeploymentReference",
+    "provenance"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "boundedSessionRef": {
+      "type": "string",
+      "const": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+      "maxLength": 48
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^(?!.*(?:[Pp][Ee][Nn][Dd][Ii][Nn][Gg]|[Pp][Ll][Aa][Cc][Ee][Hh][Oo][Ll][Dd][Ee][Rr]))[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "durableEvidenceSha256": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "productionDeploymentReference": {
+      "type": "string",
+      "const": "dpl_9mMogp9HjVEtdvH8Eoc3hVMrj4St",
+      "maxLength": 32
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "durableEvidenceSha256",
+        "productionDeploymentReference",
+        "sourceCommit",
+        "sourceInputStopTask",
+        "sessionInputStopTask",
+        "stopDisposition",
+        "runtimeInstallStopSha256",
+        "approvedNonSecretSourceRecordSha256"
+      ],
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(?!.*(?:[Pp][Ee][Nn][Dd][Ii][Nn][Gg]|[Pp][Ll][Aa][Cc][Ee][Hh][Oo][Ll][Dd][Ee][Rr]))[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "durableEvidenceSha256": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "productionDeploymentReference": {
+          "type": "string",
+          "const": "dpl_9mMogp9HjVEtdvH8Eoc3hVMrj4St",
+          "maxLength": 32
+        },
+        "sourceCommit": {
+          "type": "string",
+          "const": "c9bdc2929f3d6b67439db42fb1a7511f9b42f641",
+          "maxLength": 40
+        },
+        "sourceInputStopTask": {
+          "type": "string",
+          "const": "01a0ee9f-28aa-7d71-b170-4ae4236148d0",
+          "maxLength": 36
+        },
+        "sessionInputStopTask": {
+          "type": "string",
+          "const": "01a0eea2-7b7d-7d30-adbf-c07784cf237a",
+          "maxLength": 36
+        },
+        "stopDisposition": {
+          "type": "string",
+          "const": "STOPPED_SOURCE_INPUTS_UNRESOLVED",
+          "maxLength": 32
+        },
+        "runtimeInstallStopSha256": {
+          "type": "string",
+          "const": "d706fd784052b72ab48d7fc0dfebaf3369251b8490c6925e5d26c4487b367540",
+          "maxLength": 64
+        },
+        "approvedNonSecretSourceRecordSha256": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  }
+}
