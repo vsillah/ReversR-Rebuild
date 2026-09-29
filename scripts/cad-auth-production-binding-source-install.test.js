@@ -3,6 +3,10 @@ const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const { harness, expiresUtc } = require('./cad-auth-prod-runtime-mount-fixture');
+const {
+  PRODUCTION_BINDING_INSTALLATION,
+  createProductionBindingInstallation,
+} = require('../server/cadProductionExecutionBindingInstallation');
 const { resolveCadProductionExecutionBindingSource: resolve } = require('../server/cadProductionExecutionBindingSourceInstall');
 const { createCadProductionExecutionBindingSource, BOUNDED_SESSION_REF } = require('../server/cadProductionExecutionBindingSource');
 const { createCadProductionExecutionBinding } = require('../server/cadProductionExecutionBinding');
@@ -43,9 +47,39 @@ async function gate(f, runtime) {
 }
 
 test('production default path stays closed without service effects', () => {
+  assert.equal(PRODUCTION_BINDING_INSTALLATION.enabled, false);
+  assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.schemaVersion, 1);
+  assert.equal(PRODUCTION_BINDING_INSTALLATION.liveGate.explicitLiveOpeningApproved, false);
+  assert.equal(PRODUCTION_BINDING_INSTALLATION.durableAdapter.serviceRef,
+    PRODUCTION_BINDING_INSTALLATION.manifest.durableServiceRef);
+  assert.equal(PRODUCTION_BINDING_INSTALLATION.durableAdapter.evidenceSha256,
+    PRODUCTION_BINDING_INSTALLATION.manifest.durableEvidenceSha256);
+  for (const name of METHODS) {
+    assert.equal(typeof PRODUCTION_BINDING_INSTALLATION.durableAdapter.service[name], 'function', name);
+  }
   assert.equal(resolve(), null);
   assert.equal(createCadProductionExecutionBindingSource(), null);
   assert.deepEqual(createCadProductionExecutionBinding(), { enabled: false });
+});
+
+test('source installation factory produces an exact installable binding without touching defaults', () => {
+  const h = harness();
+  const installation = createProductionBindingInstallation({
+    enabled: true,
+    explicitLiveOpeningApproved: true,
+    commandCard: h.card,
+    durableServiceRef: 'rrb-ref:synthetic-service',
+    durableService: h.adapter,
+  });
+  const input = resolve(installation, h.options.now);
+  assert.equal(input.enabled, true);
+  assert.equal(input.commandCardSha256, h.commandCardSha256);
+  assert.equal(input.currentDeploymentReference, h.options.currentDeploymentReference);
+  assert.equal(input.boundedSessionRef, BOUNDED_SESSION_REF);
+  assert.equal(input.sessionId, h.card.sessionId);
+  assert.equal(input.durableEvidenceSha256, h.card.durableEvidenceSha256);
+  assert.equal(h.events.length, 0);
+  assert.equal(resolve(), null);
 });
 
 test('synthetic exact installation reaches production mount and mandatory cleanup, once only', async () => {

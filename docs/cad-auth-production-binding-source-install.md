@@ -7,10 +7,13 @@ closed, and the sixth phase still requires a separately approved live opening.
 
 `server/index.js` calls `createCadProductionExecutionBinding()`; its source factory
 now resolves `cadProductionExecutionBindingInstallation.js` through
-`resolveCadProductionExecutionBindingSource()`. The committed slots are disabled
-with null manifest, live gate and durable adapter. Importing or resolving them
-makes no service calls. There is no environment toggle, file loader, HTTP endpoint,
-credential lookup or executable command-card issuer.
+`resolveCadProductionExecutionBindingSource()`. The committed installation is no
+longer an empty null slot: it contains a reviewed manifest projection, live-gate
+digest, and durable adapter method surface. It is still disabled and explicitly
+not live-approved, so default production behavior remains fail-closed. Importing
+or resolving the installation makes no service calls. There is no environment
+toggle, file loader, HTTP endpoint, credential lookup or executable command-card
+issuer.
 
 A later separately reviewed source installation must provide:
 
@@ -44,7 +47,11 @@ final await before admission. Default construction never opens admission.
 
 ## Source and live boundaries
 
-This packet contains no installed command-card, live gate or durable adapter.
+This packet contains no live-approved command-card, runtime activation, provider
+adapter or durable-service qualification. The installed source object is a
+disabled proof surface: its manifest, installation digest and adapter methods
+can be consumed by the production resolver only when a later exact source gate
+binds current production values and explicitly marks the live gate approved.
 Tests use synthetic in-memory service doubles and perform no request-body IO.
 The older finalization packet is preserved as historical provenance; its source
 hashes are stale after this change and its checker must reject it. The new packet
@@ -66,10 +73,11 @@ live run, commercialization or commercial-readiness claim are authorized here.
 
 ## Later live-opening gate
 
-An exact actionable phrase cannot be issued from this source-only packet: the
-post-merge deployment, current fail-closed smoke, actual durable adapter evidence,
-exact bounded session ID, fresh UTC window and command-card bytes/digest remain
-unresolved. The following is a non-actionable template only:
+An exact actionable phrase cannot be issued from this source-only packet alone:
+the post-merge deployment, current fail-closed smoke, actual durable adapter
+evidence, exact bounded session ID, fresh UTC window, live-approved command-card
+bytes/digest and production installation digest remain unresolved. The following
+is a non-actionable template only:
 
 > I approve one bounded internal production upload-admission opening for ReversR
 > CAD user-import, bound to source-install packet <packetSha256>, source commit
