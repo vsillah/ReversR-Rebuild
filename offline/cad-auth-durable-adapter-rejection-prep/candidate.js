@@ -4,7 +4,7 @@ const METHODS = Object.freeze(['verifyApproval', 'verifyDurableEvidence',
   'recheckDeployment', 'verifyClosedBaseline', 'claimRun', 'armRollback',
   'verifySession', 'claimAttempt', 'openFence', 'consumeAttempt', 'closeFence',
   'revokeSessionAndLateGrants', 'postRollbackSmoke']);
-const APPROVAL_PHRASE = 'Approve source-only supply and review of the exact existing bounded-session ID, durable-evidence SHA-256, immutable deployment binding, and non-secret provenance for cad-auth-durable-adapter-rejection-prep; no session issuance, private evidence reads, runtime installation, activation, or live command-card issuance.';
+const APPROVAL_PHRASE = 'Approve source-only runtime-install completion preparation from the schema-rebound non-secret bounded-session/evidence source record; no session issuance, private evidence reads, runtime activation, upload admission, or executable live command-card issuance.';
 
 function closed(code) {
   return Object.freeze({ code, sourceOnly: true, enabled: false,
