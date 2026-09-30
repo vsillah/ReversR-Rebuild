@@ -2,6 +2,9 @@ const { createHash } = require('node:crypto');
 const { METHODS, reviewExecutableCommandCardBinding } = require('./cadLiveOpeningExecutableRuntimeWiring');
 const { PRODUCTION_BINDING_INSTALLATION } = require('./cadProductionExecutionBindingInstallation');
 const {
+  createSourceOwnedLiveOpeningExecutionArchitectureInstallation,
+} = require('./cadLiveOpeningExecutionArchitectureClosure');
+const {
   createSourceOwnedDefaultProductionBindingInstallation,
 } = require('./cadProductionDefaultBindingSourceClosure');
 
@@ -13,7 +16,8 @@ const REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/;
 // Runtime verification of approval, evidence and the immutable deployment is
 // still required before the durable service claims the single run and attempt.
 function resolveCadProductionExecutionBindingSource(
-  installation = createSourceOwnedDefaultProductionBindingInstallation()
+  installation = createSourceOwnedLiveOpeningExecutionArchitectureInstallation()
+    || createSourceOwnedDefaultProductionBindingInstallation()
     || PRODUCTION_BINDING_INSTALLATION,
   now = Date.now,
 ) {

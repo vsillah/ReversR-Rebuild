@@ -4,6 +4,9 @@ const { createCadDevAuthSessionIssuerRouter } = require('./cadDevAuthSessionIssu
 const { createCadUploadSessionGatewayService } = require('./cadUploadSessionGatewayService');
 const { createCadProductionExecutionBinding } = require('./cadProductionExecutionBinding');
 const { createCadProductionExecutableRuntimeMount } = require('./cadProductionExecutableRuntimeMountCompletion');
+const {
+  createLiveOpeningExecutionArchitectureRuntime,
+} = require('./cadLiveOpeningExecutionArchitectureClosure');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
@@ -32,6 +35,9 @@ const configuredCorsOrigins = parseListEnv(process.env.API_CORS_ORIGINS);
 const corsAllowsAllOrigins = configuredCorsOrigins.length === 0 || configuredCorsOrigins.includes('*');
 const apiRequestBodyLimit = process.env.API_REQUEST_BODY_LIMIT || '50mb';
 const cadUploadSessionRuntime = createCadUploadSessionGatewayService({ env: process.env });
+const cadLiveOpeningExecutionRuntime = createLiveOpeningExecutionArchitectureRuntime();
+const cadUserUploadSessionService = cadLiveOpeningExecutionRuntime.sessionService
+  || cadUploadSessionRuntime.sessionService;
 
 // CAD auth/session issuance is mounted but closed without explicit development adapters.
 // It must run before general body parsers and never opens upload admission.
@@ -40,7 +46,7 @@ app.use('/api/cad', createCadDevAuthSessionIssuerRouter());
 // Later live use must rebind deployment, card, session and durable evidence.
 app.use('/api/cad', createCadProductionExecutableRuntimeMount({
   corsOrigins: configuredCorsOrigins,
-  sessionService: cadUploadSessionRuntime.sessionService,
+  sessionService: cadUserUploadSessionService,
   executableRuntime: createCadProductionExecutionBinding(),
 }));
 
