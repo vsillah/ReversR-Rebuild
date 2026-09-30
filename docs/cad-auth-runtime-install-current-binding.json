@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-runtime-install-current-binding-v1",
+  "sourceOnly": true,
+  "roadmap": "5/6 complete",
+  "status": "CURRENT_DEPLOYMENT_RUNTIME_INSTALL_SOURCE_PREPARED_DEFAULT_CLOSED",
+  "purpose": "break the stale deployment-binding loop without opening production admission",
+  "boundInputs": {
+    "approvedRefreshSha256": "763069e9536e5239307c7785c482316569cdc21054060565b20a52369077da76",
+    "runtimeInstallEnablementPacketSha256": "17127be86910f4148f2140ba549abfdd2b9e984b5af2993d9934f5228ea2ed2f",
+    "runtimeInstallEnablementSourceCommit": "64397c62c0e4bd4c2a320c23165692c22559e8f5",
+    "runtimeInstallEnablementMergeCommit": "9d8b18a0ef4e1ceb0b1ce0509ad67feabb1ae5f5",
+    "stoppedLiveOpeningDispositionSha256": "7320eb5443265dee745e84a936486ae0ca01fbafeded09875c5a960723ba7003",
+    "schemaRebindPacketSha256": "05682b6e4ede9e8f8c45008e3538d9ee95f9962f23ad999241b0569a3e744143",
+    "sessionEvidenceSourceRecordSha256": "81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5",
+    "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+    "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+    "durableServiceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z"
+  },
+  "deploymentMetadataPolicy": {
+    "source": "allowlisted Vercel system environment only",
+    "requiredVercelEnv": "production",
+    "requiredGitOwner": "vsillah",
+    "requiredGitRepo": "ReversR-Rebuild",
+    "requiredGitRef": "main",
+    "requiredProjectProductionTarget": "https://reversr.vercel.app",
+    "acceptsSecrets": false,
+    "acceptsProviderConfig": false,
+    "acceptsRequestInput": false,
+    "acceptsPrivateEvidence": false
+  },
+  "proofWindow": {
+    "startUtc": "2026-09-30T16:00:00Z",
+    "expiresUtc": "2026-09-30T16:30:00Z",
+    "proofNowUtc": "2026-09-30T16:05:00Z"
+  },
+  "defaultProof": {
+    "productionBindingInstallationEnabled": false,
+    "defaultResolveIsNull": true,
+    "defaultSourceIsNull": true,
+    "defaultExecutionBindingEnabled": false
+  },
+  "currentBindingProof": {
+    "proofNowUtc": "2026-09-30T16:05:00Z",
+    "proofDeploymentReference": "dpl_SourceOwnedCurrentBindingProof000000",
+    "proofDeploymentTarget": "https://reversr-current-binding-proof-vsillahs-projects.vercel.app",
+    "metadataAccepted": true,
+    "preparedOk": true,
+    "installationEnabled": true,
+    "explicitLiveOpeningApproved": true,
+    "commandCardSha256": "bd27366392092bfec1e46ceb262b3bb062890d6acc486d98a579a28e609764a9",
+    "installationSha256": "3378062abd1eb6d72240b397970cb4a86d6b8f6f8602c383a78bdb5320a9775c",
+    "resolvedSourceNonNull": true,
+    "executionSourceNonNull": true,
+    "executionBindingEnabled": true,
+    "effectsExecuted": 0
+  },
+  "installPathProven": true,
+  "defaultProductionBehaviorClosed": true,
+  "liveOpeningAuthorized": false,
+  "runtimeInstallationActivated": false,
+  "uploadAdmissionActivated": false,
+  "commandCardIssuedForLiveExecution": false,
+  "durableServiceLiveQualified": false,
+  "privateEvidenceRead": false,
+  "effectsExecuted": 0,
+  "nextGate": {
+    "requiresPublicReviewMergeAndProductionSmoke": true,
+    "requiresCurrentDeploymentMetadataVerification": true,
+    "requiresFreshUtcWindow": true,
+    "requiresExactCommandCardSha256": true,
+    "requiresExactInstallationSha256": true,
+    "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge current-deployment runtime-install binding refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to runtime-install current-binding packet SHA-256 <currentBindingPacketSha256> at source commit <currentBindingSourceCommit>, runtime-install enablement packet SHA-256 17127be86910f4148f2140ba549abfdd2b9e984b5af2993d9934f5228ea2ed2f, approved live-opening refresh SHA-256 763069e9536e5239307c7785c482316569cdc21054060565b20a52369077da76, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed source can derive a source-owned installable binding from allowlisted current production deployment metadata, recompute durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, fresh UTC opening window, and exact later live-opening approval phrase without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on missing current deployment metadata, stale deployment binding, unresolved digest, private-data leakage risk, unknown outcome, unresolved command-card binding, missing durable adapter evidence, missing exact bounded session binding, missing installation SHA-256, runtime installation not proven source-owned, or any need for runtime credentials/provider configuration."
+  },
+  "stopConditions": [
+    "failingChecks",
+    "failingSmoke",
+    "unknownOutcome",
+    "missingCurrentDeploymentMetadata",
+    "staleDeploymentBinding",
+    "missingDurableAdapterEvidence",
+    "missingExactBoundedSessionBinding",
+    "privateDataLeakageRisk",
+    "runtimeInstallationNotProvenSourceOwned",
+    "runtimeCredentialsOrProviderConfigurationNeeded"
+  ],
+  "sourceBindings": {
+    "server/cadProductionCurrentDeploymentMetadata.js": "2b2cc49b5d555e842e6ca46796dcddbdf151f3893797368e13e5015750339964",
+    "server/cadProductionRuntimeInstallCurrentBinding.js": "8a9658d91d7c99e7de49d97b307f37abb0b7051feac911da02c8ae28b38e5e89",
+    "server/cadProductionExecutionBindingInstallation.js": "8f1065a84070c49e5753a56dc612ec151bfd4f5abcbdc5413d1b800a9bfd493c",
+    "server/cadProductionExecutionBindingSourceInstall.js": "b1f28481255629903e94c6542dbb2295a226352b07e2c9680bb9c65b13a40bd9",
+    "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
+    "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/index.js": "68ea067c663c98790cf1692c33177ac7d87217d2e9c24d4f581160977bfe1516",
+    "scripts/cad-auth-runtime-install-current-binding-checker.js": "e2a6c78ecf67f0287954da49a3205887150d06d6bef75a4a4ab647b7ba535634",
+    "scripts/cad-auth-runtime-install-current-binding.test.js": "78cd638be1af472658c4c4ed331de7068198def885745d09956532b8a576bb05",
+    "docs/cad-auth-runtime-install-current-binding.md": "91cf154270ed835d0253ac833fe438948522b77a25d428961e751e2342b2635d",
+    "docs/cad-auth-runtime-install-enable.json": "17127be86910f4148f2140ba549abfdd2b9e984b5af2993d9934f5228ea2ed2f"
+  }
+}
