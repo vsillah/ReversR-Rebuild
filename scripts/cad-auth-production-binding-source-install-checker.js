@@ -4,7 +4,7 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
 const { METHODS } = require('../server/cadLiveOpeningExecutableRuntimeWiring');
-const { PRODUCTION_BINDING_INSTALLATION } =
+const { PRODUCTION_BINDING_INSTALLATION, REVIEWED_RUNTIME_INSTALLATION_SOURCE } =
   require('../server/cadProductionExecutionBindingInstallation');
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-production-binding-source-install.json';
@@ -25,6 +25,8 @@ const SOURCES = Object.freeze([
   'scripts/cad-auth-production-binding-source-install-checker.js',
   'scripts/cad-auth-production-execution-binding-finalization.test.js',
   'docs/cad-auth-production-execution-binding-finalization.json',
+  'docs/cad-auth-session-evidence-schema-rebind.json',
+  'docs/cad-auth-durable-adapter-rejection-prep.json',
   'docs/cad-auth-production-binding-source-install.md',
 ]);
 const read = file => fs.readFileSync(path.join(ROOT, file));
@@ -62,11 +64,15 @@ function expectedPacket(readSource = read) {
     schemaVersion: 1,
     artifact: 'cad-auth-production-binding-source-install-v1',
     sourceOnly: true,
-    baseCommit: '6504ede193b84fb0a710bf7a2e0d2258cd52137f',
+    baseCommit: '5010b7262050126819eaa3caa50abb8a9662654b',
     roadmap: '5/6 complete',
-    status: 'SOURCE_INSTALL_PATH_PROVEN_DEFAULT_CLOSED',
+    status: 'RUNTIME_INSTALLATION_SOURCE_COMPLETED_DEFAULT_CLOSED',
+    reviewedRuntimeInstallationSource: REVIEWED_RUNTIME_INSTALLATION_SOURCE,
     installation: installationProjection(),
     installPathProven: true,
+    sourceOwnedInstallationBindingAvailable: true,
+    exactBoundedSessionResolved: true,
+    durableEvidenceDigestResolved: true,
     defaultProductionBehaviorClosed: true,
     liveOpeningAuthorized: false,
     commandCardIssued: false,
@@ -74,9 +80,18 @@ function expectedPacket(readSource = read) {
     durableAdapterQualified: false,
     effectsExecuted: 0,
     nextApprovalPhraseAvailable: false,
+    resolvedForSourceOnlyReview: [
+      'serverOwnedProductionBindingInstallation',
+      'exactBoundedSessionRef',
+      'exactSessionId',
+      'durableEvidenceSha256',
+      'sourceRecordSha256',
+      'schemaRebindPacketSha256',
+      'pr450ProductionFailClosedSmoke',
+    ],
     unresolved: ['postMergeDeployment', 'currentFailClosedSmoke', 'durableAdapterEvidence',
-      'exactBoundedSession', 'freshUtcWindow', 'explicitLiveOpeningEnablement',
-      'currentProductionCommandCardBytesAndSha256', 'currentProductionInstallationSha256'],
+      'freshUtcWindow', 'explicitLiveOpeningEnablement',
+      'postMergeCommandCardBytesAndSha256', 'postMergeInstallationSha256'],
     stopConditions: ['failingChecks', 'failingSmoke', 'unknownOutcome', 'staleDeploymentBinding',
       'missingDurableAdapterEvidence', 'missingExactBoundedSessionBinding', 'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded'],
