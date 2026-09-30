@@ -104,7 +104,13 @@
     "runtimeCredentialsOrProviderConfigurationNeeded"
   ],
   "sourceBindings": {
-    ".github/workflows/release-local-ci.yml": "60b6fc7559cb3d0c977479055978701cc642388fa7bb2175774949c5d80cdbd4",
+    "server/cadLiveOpeningGateCredentialClosure.js": "98250d9f54e7f96fdef2f55f5154d63f10a77a7b92f726628727ea694341f216",
+    "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "65ce312a5fa018db79934459e35c99bdbe95c7fbb6e8b38cc6c0d1e0fc7f72ba",
+    "scripts/cad-auth-credential-closure-binding-repair-checker.js": "59361e0f8e158999ac627a19f00636e946aa8a93b08ebbe6d5ce63008134f176",
+    "scripts/cad-auth-credential-closure-binding-repair.test.js": "cd0a1db44e3992497786c50693258da238f1335817afa35afcd5cae01ef6960a",
+    "docs/cad-auth-credential-closure-binding-repair.json": "57675e09d0bd717a4ce6e372e4f49a3c9c494b4dabb29194c3a973a9405584e8",
+    "docs/cad-auth-credential-closure-binding-repair.md": "5c62502cba1818c36037c2d048d6cbf36d60efd11f7dfd055c9c3a3f2e1f75e8",
+    ".github/workflows/release-local-ci.yml": "ae221962d7fe843046bc5ebbeeb8d888d616117ffc9d6c6d13e3dd35a32b9b71",
     "server/cadProductionExecutionBindingInstallation.js": "8f1065a84070c49e5753a56dc612ec151bfd4f5abcbdc5413d1b800a9bfd493c",
     "server/cadProductionExecutionBindingSourceInstall.js": "f74425f2f54de15665f19431294f998899b670bc201a79342618ce79a061b9bc",
     "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
@@ -118,7 +124,7 @@
     "server/index.js": "485132306126fae0a9fef41c8f88686a162e02e605d4861f6905cdb5a0d880b3",
     "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
     "scripts/cad-auth-production-binding-source-install.test.js": "eae2c00fce12e7bd6c8899625db3779234514e46089b2069a5939a61b4eca203",
-    "scripts/cad-auth-production-binding-source-install-checker.js": "299245e4927318821dca3f52ef2456f7ada1ab2d72e615e8236b4cc8262d9446",
+    "scripts/cad-auth-production-binding-source-install-checker.js": "7e148b667a1f6e705d3bfa141bbd5713e2c746e5225a7782e220a182714bfcec",
     "scripts/cad-auth-live-opening-execution-architecture-closure-checker.js": "51b9380f30f5898b33bb437e025f584a331006cbe069a49f8d1abfb33d34008c",
     "scripts/cad-auth-live-opening-execution-architecture-closure.test.js": "eeb227aa3c31b92ce93511ea0a75d2dfd4f90300a2c7a5f5d59490ca1daa52d5",
     "scripts/cad-auth-production-execution-binding-finalization.test.js": "7f517db75e902da7c4209afadf92a42860104c356613e97fb833e387356bcf4a",

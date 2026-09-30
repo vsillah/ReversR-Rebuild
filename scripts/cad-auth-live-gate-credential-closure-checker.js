@@ -7,17 +7,20 @@ const {
   readCadProductionCurrentDeploymentMetadata,
 } = require('../server/cadProductionCurrentDeploymentMetadata');
 const {
+  APPROVED_FAIL_CLOSED_SMOKE,
+  APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
-  COMMAND_CARD_SHA256,
+  APPROVED_PRODUCTION_TARGET,
+  CURRENT_DEPLOYMENT_METADATA_POLICY,
   DEFAULT_LIVE_GATE_CREDENTIAL_CLOSURE,
   DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY,
-  INSTALLATION_SHA256,
-  MAIN_COMMIT,
+  HISTORICAL_CREDENTIAL_CLOSURE_PACKET_SHA256,
+  HISTORICAL_CREDENTIAL_CLOSURE_SOURCE_COMMIT,
   PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
-  PRODUCTION_DEPLOYMENT_REFERENCE,
-  PRODUCTION_TARGET,
+  REPAIR_BASE_MAIN_COMMIT,
   REVIEWED_WINDOW,
   SESSION_CREDENTIAL_DIGEST_SHA256,
+  STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   createCadLiveOpeningGateCredentialClosure,
   createProofPrivateSessionCredentialSupply,
@@ -28,19 +31,22 @@ const PACKET = 'docs/cad-auth-live-gate-credential-closure.json';
 const PROOF_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   '9fbd55a035e59594a2c5770cd23d55d52a4fcac5341d8635631b7f897a0c58f4';
 const SHA = /^[a-f0-9]{64}$/;
+// Synthetic source proof only; not an observed Vercel deployment mapping.
+const PROOF_VERCEL_DEPLOYMENT_REFERENCE = 'dpl_SyntheticCredentialRepair0001';
 const PROOF_ENV = Object.freeze({
   VERCEL: '1',
   VERCEL_ENV: 'production',
-  VERCEL_DEPLOYMENT_ID: PRODUCTION_DEPLOYMENT_REFERENCE,
-  VERCEL_URL: PRODUCTION_TARGET.replace('https://', ''),
+  VERCEL_DEPLOYMENT_ID: PROOF_VERCEL_DEPLOYMENT_REFERENCE,
+  VERCEL_URL: APPROVED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
-  VERCEL_GIT_COMMIT_SHA: MAIN_COMMIT,
+  VERCEL_GIT_COMMIT_SHA: REPAIR_BASE_MAIN_COMMIT,
   VERCEL_GIT_COMMIT_REF: 'main',
   VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild',
   VERCEL_GIT_REPO_OWNER: 'vsillah',
 });
 const SOURCES = Object.freeze([
   'server/cadLiveOpeningGateCredentialClosure.js',
+  'server/cadLiveOpeningCredentialClosureMetadataPolicy.js',
   'server/index.js',
   'server/cadLiveOpeningExecutionArchitectureClosure.js',
   'server/cadProductionRuntimeInstallCurrentBinding.js',
@@ -144,22 +150,28 @@ function expectedPacket(readSource = read) {
   const wiringProof = indexWiringProof(readSource);
   return {
     schemaVersion: 1,
-    artifact: 'cad-auth-live-opening-gate-credential-closure-v1',
+    artifact: 'cad-auth-live-opening-gate-credential-closure-current-deployment-repair-v1',
     sourceOnly: true,
     roadmap: '5/6 complete',
-    status: 'LIVE_GATE_CREDENTIAL_CLOSURE_PREPARED_DEFAULT_CLOSED',
+    status: 'LIVE_GATE_CREDENTIAL_CLOSURE_CURRENT_DEPLOYMENT_REPAIRED_DEFAULT_CLOSED',
     purpose:
-      'close the executable gate and private digest-bound session credential precondition without activating production',
+      'repair the executable gate and private digest-bound session credential precondition so current deployment metadata replaces stale prior deployment constants without activating production',
     boundInputs: {
       stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+      stoppedPostMergeRebindRefreshDispositionSha256:
+        STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
       approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
-      mainCommit: MAIN_COMMIT,
-      productionDeploymentReference: PRODUCTION_DEPLOYMENT_REFERENCE,
-      productionTarget: PRODUCTION_TARGET,
-      commandCardSha256: COMMAND_CARD_SHA256,
-      installationSha256: INSTALLATION_SHA256,
+      historicalCredentialClosurePacketSha256: HISTORICAL_CREDENTIAL_CLOSURE_PACKET_SHA256,
+      historicalCredentialClosureSourceCommit: HISTORICAL_CREDENTIAL_CLOSURE_SOURCE_COMMIT,
+      repairBaseMainCommit: REPAIR_BASE_MAIN_COMMIT,
+      approvedGithubProductionDeploymentReference:
+        APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+      approvedProductionTarget: APPROVED_PRODUCTION_TARGET,
+      approvedFailClosedSmoke: APPROVED_FAIL_CLOSED_SMOKE,
+      proofVercelDeploymentReference: PROOF_VERCEL_DEPLOYMENT_REFERENCE,
       sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
       privateSessionCredentialSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
+      currentDeploymentMetadataPolicy: CURRENT_DEPLOYMENT_METADATA_POLICY,
     },
     reviewedWindow: REVIEWED_WINDOW,
     defaultGate: DEFAULT_LIVE_GATE_CREDENTIAL_CLOSURE,
@@ -187,8 +199,8 @@ function expectedPacket(readSource = read) {
       && closureProof.sessionServiceNonNull === true
       && closureProof.sourceExecutable === true
       && closureProof.executableRuntimeEnabled === true
-      && closureProof.commandCardSha256 === COMMAND_CARD_SHA256
-      && closureProof.installationSha256 === INSTALLATION_SHA256
+      && SHA.test(closureProof.commandCardSha256 || '')
+      && SHA.test(closureProof.installationSha256 || '')
       && closureProof.effectsExecuted === 0
       && wiringProof.importsCredentialClosure === true
       && wiringProof.constructsCredentialClosure === true
@@ -227,8 +239,11 @@ function expectedPacket(readSource = read) {
       'failingSmoke',
       'unknownOutcome',
       'staleDeploymentBinding',
+      'unresolvedCurrentDeploymentMetadataPolicy',
+      'unresolvedCommandCardBinding',
       'missingExecutableDefaultGateInstallationPath',
       'missingExactPrivateCredentialSupplyRequirement',
+      'missingInstallationSha256',
       'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded',
     ],
