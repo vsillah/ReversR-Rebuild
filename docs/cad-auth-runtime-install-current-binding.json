@@ -94,7 +94,7 @@
     "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
     "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
     "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
-    "server/index.js": "5b5d107e0ba4aef1789c660e9064728e37031fd8a8d856bec0636a6c601deee1",
+    "server/index.js": "485132306126fae0a9fef41c8f88686a162e02e605d4861f6905cdb5a0d880b3",
     "scripts/cad-auth-runtime-install-current-binding-checker.js": "e2a6c78ecf67f0287954da49a3205887150d06d6bef75a4a4ab647b7ba535634",
     "scripts/cad-auth-runtime-install-current-binding.test.js": "78cd638be1af472658c4c4ed331de7068198def885745d09956532b8a576bb05",
     "docs/cad-auth-runtime-install-current-binding.md": "91cf154270ed835d0253ac833fe438948522b77a25d428961e751e2342b2635d",
