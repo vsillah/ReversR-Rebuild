@@ -13,10 +13,45 @@ const {
 
 const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const DURABLE_SERVICE_REF = 'rrb-ref:cad-auth-durable-service-20260928T161754Z';
-const PENDING_DEPLOYMENT_REFERENCE = 'rrb-ref:cad-auth-source-install-gap-closure-pending-deployment';
-const PENDING_SESSION_ID = 'rrb-ref:cad-upload-internal-mark-test-session-v1-pending';
-const PENDING_START_UTC = '2030-01-01T00:00:00Z';
-const PENDING_EXPIRES_UTC = '2030-01-01T00:30:00Z';
+const REVIEWED_SCHEMA_REBIND_PACKET_SHA256 =
+  '05682b6e4ede9e8f8c45008e3538d9ee95f9962f23ad999241b0569a3e744143';
+const REVIEWED_SCHEMA_REBIND_SOURCE_COMMIT =
+  'efd6022b12bb9669bcf05113145525a3a3fd8473';
+const REVIEWED_SCHEMA_REBIND_MERGE_COMMIT =
+  '5010b7262050126819eaa3caa50abb8a9662654b';
+const REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE = '6748757459';
+const REVIEWED_PRODUCTION_TARGET =
+  'https://reversr-7ohvjcv4u-vsillahs-projects.vercel.app';
+const REVIEWED_FAIL_CLOSED_SMOKE_UTC = '2026-09-30T00:45:32Z';
+const REVIEWED_SOURCE_RECORD_PACKET_SHA256 =
+  '0d8b2c06fb2ad7f32f126909c3cbe20b9baa95f0aaa6f1d89ed892bc5820a14d';
+const REVIEWED_SOURCE_RECORD_SHA256 =
+  '81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5';
+const REVIEWED_DURABLE_EVIDENCE_SHA256 =
+  '8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7';
+const REVIEWED_START_UTC = '2030-01-01T00:00:00Z';
+const REVIEWED_EXPIRES_UTC = '2030-01-01T00:30:00Z';
+
+const REVIEWED_RUNTIME_INSTALLATION_SOURCE = Object.freeze({
+  schemaVersion: 1,
+  sourceOnly: true,
+  schemaRebindPacketSha256: REVIEWED_SCHEMA_REBIND_PACKET_SHA256,
+  schemaRebindSourceCommit: REVIEWED_SCHEMA_REBIND_SOURCE_COMMIT,
+  schemaRebindMergeCommit: REVIEWED_SCHEMA_REBIND_MERGE_COMMIT,
+  sourceRecordPacketSha256: REVIEWED_SOURCE_RECORD_PACKET_SHA256,
+  sourceRecordSha256: REVIEWED_SOURCE_RECORD_SHA256,
+  productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
+  productionTarget: REVIEWED_PRODUCTION_TARGET,
+  failClosedSmoke: Object.freeze({
+    status: 401,
+    code: 'USER_SESSION_REQUIRED',
+    observedAtUtc: REVIEWED_FAIL_CLOSED_SMOKE_UTC,
+  }),
+  boundedSessionRef: BOUNDED_SESSION_REF,
+  sessionId: BOUNDED_SESSION_REF,
+  durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
+  durableServiceRef: DURABLE_SERVICE_REF,
+});
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 
@@ -31,11 +66,11 @@ function createClosedDurableAdapterService() {
 }
 
 function createPendingExecutableCommandCard({
-  productionDeploymentReference = PENDING_DEPLOYMENT_REFERENCE,
-  sessionId = PENDING_SESSION_ID,
-  durableEvidenceSha256 = sha('cad-auth-source-install-gap-closure-pending-durable-evidence'),
-  startUtc = PENDING_START_UTC,
-  expiresUtc = PENDING_EXPIRES_UTC,
+  productionDeploymentReference = REVIEWED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference,
+  sessionId = REVIEWED_RUNTIME_INSTALLATION_SOURCE.sessionId,
+  durableEvidenceSha256 = REVIEWED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256,
+  startUtc = REVIEWED_START_UTC,
+  expiresUtc = REVIEWED_EXPIRES_UTC,
 } = {}) {
   return {
     schemaVersion: 1,
@@ -126,6 +161,7 @@ const PRODUCTION_BINDING_INSTALLATION = createProductionBindingInstallation();
 module.exports = {
   BOUNDED_SESSION_REF,
   DURABLE_SERVICE_REF,
+  REVIEWED_RUNTIME_INSTALLATION_SOURCE,
   PRODUCTION_BINDING_INSTALLATION,
   createClosedDurableAdapterService,
   createPendingExecutableCommandCard,

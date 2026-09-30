@@ -8,12 +8,13 @@ closed, and the sixth phase still requires a separately approved live opening.
 `server/index.js` calls `createCadProductionExecutionBinding()`; its source factory
 now resolves `cadProductionExecutionBindingInstallation.js` through
 `resolveCadProductionExecutionBindingSource()`. The committed installation is no
-longer an empty null slot: it contains a reviewed manifest projection, live-gate
-digest, and durable adapter method surface. It is still disabled and explicitly
-not live-approved, so default production behavior remains fail-closed. Importing
-or resolving the installation makes no service calls. There is no environment
-toggle, file loader, HTTP endpoint, credential lookup or executable command-card
-issuer.
+longer an empty null slot and no longer uses pending placeholder session/evidence
+values: it binds the reviewed PR #450 schema-rebound source record, exact bounded
+session, durable evidence digest, production deployment proof, live-gate digest,
+and durable adapter method surface. It is still disabled and explicitly not
+live-approved, so default production behavior remains fail-closed. Importing or
+resolving the installation makes no service calls. There is no environment toggle,
+file loader, HTTP endpoint, credential lookup or executable command-card issuer.
 
 A later separately reviewed source installation must provide:
 
@@ -57,11 +58,12 @@ The older finalization packet is preserved as historical provenance; its source
 hashes are stale after this change and its checker must reject it. The new packet
 binds current source hashes without refreshing historical approval evidence.
 
-Current observed base: main 6504ede193b84fb0a710bf7a2e0d2258cd52137f (PR #444).
-GitHub deployment metadata observed id 6740798739 bound to that base. This is
-pre-merge metadata, not a production-readiness or fail-closed-smoke claim. Any
-source installation/deployment changes the binding under review. Never copy an
-old target into a new card or treat the stable production alias as immutable proof.
+Current observed base: PR #450 merge commit
+5010b7262050126819eaa3caa50abb8a9662654b. GitHub production deployment
+6748757459 and fail-closed smoke 401 USER_SESSION_REQUIRED at
+2026-09-30T00:45:32Z are bound into this source-only proof. Any later source
+installation/deployment changes the binding under review. Never copy an old
+target into a new card or treat the stable production alias as immutable proof.
 If the resulting deployment cannot be bound exactly, stop. This phase supplies no
 provider-specific activation or deployment-ID reservation mechanism.
 
@@ -74,9 +76,10 @@ live run, commercialization or commercial-readiness claim are authorized here.
 ## Later live-opening gate
 
 An exact actionable phrase cannot be issued from this source-only packet alone:
-the post-merge deployment, current fail-closed smoke, actual durable adapter
-evidence, exact bounded session ID, fresh UTC window, live-approved command-card
-bytes/digest and production installation digest remain unresolved. The following
+the post-merge deployment created by this change, current fail-closed smoke,
+durable-service live qualification, fresh UTC window, live-approved command-card
+bytes/digest and production installation digest remain unresolved. The exact
+bounded session ID and durable evidence digest are now source-bound. The following
 is a non-actionable template only:
 
 > I approve one bounded internal production upload-admission opening for ReversR
