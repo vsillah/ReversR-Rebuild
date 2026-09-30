@@ -9,6 +9,12 @@ const { PRODUCTION_BINDING_INSTALLATION, REVIEWED_RUNTIME_INSTALLATION_SOURCE } 
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-production-binding-source-install.json';
 const SOURCES = Object.freeze([
+  'server/cadLiveOpeningGateCredentialClosure.js',
+  'server/cadLiveOpeningCredentialClosureMetadataPolicy.js',
+  'scripts/cad-auth-credential-closure-binding-repair-checker.js',
+  'scripts/cad-auth-credential-closure-binding-repair.test.js',
+  'docs/cad-auth-credential-closure-binding-repair.json',
+  'docs/cad-auth-credential-closure-binding-repair.md',
   '.github/workflows/release-local-ci.yml',
   'server/cadProductionExecutionBindingInstallation.js',
   'server/cadProductionExecutionBindingSourceInstall.js',

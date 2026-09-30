@@ -22,17 +22,32 @@ const {
   createProofGate,
 } = require('./cadLiveOpeningExecutionArchitectureClosure');
 
+const {
+  CURRENT_DEPLOYMENT_METADATA_POLICY,
+  validCurrentDeploymentMetadata,
+} = require('./cadLiveOpeningCredentialClosureMetadataPolicy');
+
+// Historical receipt coordinates are retained in bound provenance only.
+// Current executable bindings are derived from validated server metadata below.
 const STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
   '3b4263b5320b2e2de90f6b67eb19a11be0dae8c433b0074a9a3e690ee681a4ee';
 const APPROVED_LIVE_OPENING_REFRESH_SHA256 =
   '62962bf4962099816f9d4ac8fcb49ae1641757ce825d0423e3fe9315fc83b450';
-const MAIN_COMMIT = 'cb54d59ac736bc765acb80ce36488aa629312349';
-const PRODUCTION_DEPLOYMENT_REFERENCE = 'dpl_ARaPCuetGiJ3QVhjYe7HKPwGsHrM';
-const PRODUCTION_TARGET = 'https://reversr-9yit4igr7-vsillahs-projects.vercel.app';
-const COMMAND_CARD_SHA256 =
-  '66e2d93402a56fc265349db4b4b6473b99b73683cc975014c388b47fa7dbe6c9';
-const INSTALLATION_SHA256 =
-  '8d13d28fcffbe4c75db7803aa5224554723708e53087148d7d0649d73cc810ee';
+const STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256 =
+  'e4a0c272ab7c71c5f3cd31c57b0f383ea454ad589756cbb39c54e371246039de';
+const HISTORICAL_CREDENTIAL_CLOSURE_PACKET_SHA256 =
+  '49fb61c54ddec577e9d3316cc9cc528789567618ee8a47a272c16d2e66d16027';
+const HISTORICAL_CREDENTIAL_CLOSURE_SOURCE_COMMIT =
+  '7ece1ed0131dbef5a38a70aa508cd07696857e26';
+const REPAIR_BASE_MAIN_COMMIT = '79f25144225a2cf12052243f08a69109c3f632e7';
+const APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE = '6771743168';
+const APPROVED_PRODUCTION_TARGET =
+  'https://reversr-irbbqlave-vsillahs-projects.vercel.app';
+const APPROVED_FAIL_CLOSED_SMOKE = Object.freeze({
+  status: 401,
+  code: 'USER_SESSION_REQUIRED',
+  observedAtUtc: '2026-09-30T22:42:27Z',
+});
 const SESSION_CREDENTIAL_DIGEST_SHA256 =
   '2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359';
 const PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF =
@@ -76,11 +91,20 @@ const DEFAULT_LIVE_GATE_CREDENTIAL_CLOSURE = Object.freeze({
   explicitLiveOpeningApproved: false,
   stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
-  mainCommit: MAIN_COMMIT,
-  productionDeploymentReference: PRODUCTION_DEPLOYMENT_REFERENCE,
-  productionTarget: PRODUCTION_TARGET,
-  commandCardSha256: COMMAND_CARD_SHA256,
-  installationSha256: INSTALLATION_SHA256,
+  stoppedPostMergeRebindRefreshDispositionSha256:
+    STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
+  historicalCredentialClosurePacketSha256: HISTORICAL_CREDENTIAL_CLOSURE_PACKET_SHA256,
+  historicalCredentialClosureSourceCommit: HISTORICAL_CREDENTIAL_CLOSURE_SOURCE_COMMIT,
+  repairBaseMainCommit: REPAIR_BASE_MAIN_COMMIT,
+  approvedGithubProductionDeploymentReference: APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  approvedProductionTarget: APPROVED_PRODUCTION_TARGET,
+  approvedFailClosedSmoke: APPROVED_FAIL_CLOSED_SMOKE,
+  currentDeploymentMetadataPolicy: CURRENT_DEPLOYMENT_METADATA_POLICY,
+  mainCommit: null,
+  productionDeploymentReference: null,
+  productionTarget: null,
+  commandCardSha256: null,
+  installationSha256: null,
   sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
   privateSessionCredentialSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
   boundedSessionRef: BOUNDED_SESSION_REF,
@@ -97,25 +121,12 @@ const safeSameDigest = (left, right) => {
   return timingSafeEqual(Buffer.from(left, 'hex'), Buffer.from(right, 'hex'));
 };
 
-function validDeploymentMetadata(metadata) {
-  return metadata
-    && metadata.schemaVersion === 1
-    && metadata.source === 'vercel-system-environment'
-    && metadata.secretBearing === false
-    && metadata.deploymentReference === PRODUCTION_DEPLOYMENT_REFERENCE
-    && metadata.deploymentTarget === PRODUCTION_TARGET
-    && metadata.projectProductionTarget === 'https://reversr.vercel.app'
-    && metadata.gitCommitSha === MAIN_COMMIT
-    && metadata.gitCommitRef === 'main'
-    && metadata.gitRepo === 'ReversR-Rebuild'
-    && metadata.gitOwner === 'vsillah'
-    && metadata.vercelEnv === 'production';
-}
-
 function exactPrivateSessionCredentialSupply(supply) {
   return supply
     && typeof supply === 'object'
     && !Array.isArray(supply)
+    && Object.keys(supply).length === Object.keys(DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY).length
+    && Object.keys(supply).every(key => Object.prototype.hasOwnProperty.call(DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY, key))
     && DANGEROUS_PRIVATE_KEYS.every(key => !Object.prototype.hasOwnProperty.call(supply, key))
     && supply.schemaVersion === 1
     && supply.sourceOnly === true
@@ -142,26 +153,40 @@ function createProofPrivateSessionCredentialSupply({
   });
 }
 
+// No rolling window: only an explicit source-owned reviewed window can replace
+// the historical default. This factory prepares bindings; it grants no live authority.
+function validOpeningWindow(window) {
+  const iso = value => typeof value === 'string'
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value)
+    && Number.isFinite(Date.parse(value))
+    && new Date(value).toISOString().replace('.000Z', 'Z') === value;
+  return iso(window.startUtc) && iso(window.expiresUtc)
+    && Date.parse(window.expiresUtc) > Date.parse(window.startUtc)
+    && Date.parse(window.expiresUtc) - Date.parse(window.startUtc) <= 30 * 60 * 1000;
+}
+
 function createExactGateFromSource({
   deploymentMetadata,
   privateSessionCredentialSupply,
+  openingWindow = REVIEWED_WINDOW,
 } = {}) {
-  if (!validDeploymentMetadata(deploymentMetadata)
+  if (!validCurrentDeploymentMetadata(deploymentMetadata)
     || !exactPrivateSessionCredentialSupply(privateSessionCredentialSupply)) {
     return null;
   }
+  if (!openingWindow || !validOpeningWindow(openingWindow)) return null;
   const gate = createProofGate({
     deploymentMetadata,
     sessionCredentialDigestSha256: privateSessionCredentialSupply.credentialDigestSha256,
-    startUtc: REVIEWED_WINDOW.startUtc,
-    expiresUtc: REVIEWED_WINDOW.expiresUtc,
+    startUtc: openingWindow.startUtc,
+    expiresUtc: openingWindow.expiresUtc,
   });
   if (!gate
-    || gate.commandCardSha256 !== COMMAND_CARD_SHA256
-    || gate.installationSha256 !== INSTALLATION_SHA256
-    || gate.mainCommit !== MAIN_COMMIT
-    || gate.currentDeploymentReference !== PRODUCTION_DEPLOYMENT_REFERENCE
-    || gate.productionTarget !== PRODUCTION_TARGET
+    || !SHA.test(gate.commandCardSha256 || '')
+    || !SHA.test(gate.installationSha256 || '')
+    || gate.mainCommit !== deploymentMetadata.gitCommitSha
+    || gate.currentDeploymentReference !== deploymentMetadata.deploymentReference
+    || gate.productionTarget !== deploymentMetadata.deploymentTarget
     || gate.boundedSessionRef !== BOUNDED_SESSION_REF
     || gate.sessionId !== BOUNDED_SESSION_REF
     || gate.durableEvidenceSha256 !== REVIEWED_DURABLE_EVIDENCE_SHA256
@@ -198,14 +223,16 @@ function createCadLiveOpeningGateCredentialClosure({
   deploymentMetadata = readCadProductionCurrentDeploymentMetadata(),
   privateSessionCredentialSupply = DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY,
   durableService = createClosedDurableAdapterService(),
+  openingWindow = REVIEWED_WINDOW,
   now = Date.now,
 } = {}) {
-  const deploymentMetadataAccepted = validDeploymentMetadata(deploymentMetadata);
+  const deploymentMetadataAccepted = validCurrentDeploymentMetadata(deploymentMetadata);
   const privateCredentialSupplyAccepted =
     exactPrivateSessionCredentialSupply(privateSessionCredentialSupply);
   const gate = createExactGateFromSource({
     deploymentMetadata,
     privateSessionCredentialSupply,
+    openingWindow,
   });
   if (!gate || typeof now !== 'function') {
     return disabledClosureResult({ deploymentMetadataAccepted, privateCredentialSupplyAccepted });
@@ -246,20 +273,24 @@ function createCadLiveOpeningGateCredentialClosure({
 }
 
 module.exports = {
+  APPROVED_FAIL_CLOSED_SMOKE,
+  APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
-  COMMAND_CARD_SHA256,
+  APPROVED_PRODUCTION_TARGET,
+  CURRENT_DEPLOYMENT_METADATA_POLICY,
   DEFAULT_LIVE_GATE_CREDENTIAL_CLOSURE,
   DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY,
-  INSTALLATION_SHA256,
-  MAIN_COMMIT,
+  HISTORICAL_CREDENTIAL_CLOSURE_PACKET_SHA256,
+  HISTORICAL_CREDENTIAL_CLOSURE_SOURCE_COMMIT,
   PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
-  PRODUCTION_DEPLOYMENT_REFERENCE,
-  PRODUCTION_TARGET,
+  REPAIR_BASE_MAIN_COMMIT,
   REVIEWED_WINDOW,
   SESSION_CREDENTIAL_DIGEST_SHA256,
+  STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   createCadLiveOpeningGateCredentialClosure,
   createExactGateFromSource,
   createProofPrivateSessionCredentialSupply,
   exactPrivateSessionCredentialSupply,
+  validCurrentDeploymentMetadata,
 };
