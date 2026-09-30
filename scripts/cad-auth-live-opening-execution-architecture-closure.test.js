@@ -22,8 +22,6 @@ const {
 } = require('../server/cadProductionExecutionBindingSourceInstall');
 const {
   DEFAULT_LIVE_OPENING_EXECUTION_ARCHITECTURE_GATE,
-  REVIEWED_COMMAND_CARD_SHA256,
-  REVIEWED_INSTALLATION_SHA256,
   REVIEWED_WINDOW,
   createLiveOpeningExecutionArchitectureRuntime,
   createProofGate,
@@ -72,7 +70,10 @@ function durableService(events = []) {
 }
 
 function proofGate() {
+  const metadata = require('../server/cadProductionCurrentDeploymentMetadata')
+    .readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV);
   return createProofGate({
+    deploymentMetadata: metadata,
     sessionCredentialDigestSha256: checker.PROOF_CREDENTIAL_DIGEST_SHA256,
   });
 }
@@ -113,8 +114,12 @@ test('exact reviewed source gate resolves the executable binding source and sess
   const events = [];
   const { runtime, mount } = proofRuntime(events);
   assert.equal(runtime.sourceExecutable, true);
-  assert.equal(runtime.installation.manifest.commandCardSha256, REVIEWED_COMMAND_CARD_SHA256);
-  assert.equal(runtime.installation.liveGate.installationSha256, REVIEWED_INSTALLATION_SHA256);
+  assert.match(runtime.installation.manifest.commandCardSha256, /^[a-f0-9]{64}$/);
+  assert.match(runtime.installation.liveGate.installationSha256, /^[a-f0-9]{64}$/);
+  assert.equal(runtime.installation.manifest.commandCardSha256,
+    checker.sourceOwnedArchitectureProof().commandCardSha256);
+  assert.equal(runtime.installation.liveGate.installationSha256,
+    checker.sourceOwnedArchitectureProof().installationSha256);
   assert.equal(mount.executableRuntimeWiringMounted, true);
   assert.equal(mount.enabled, true);
   assert.equal(events.length, 0);
@@ -133,6 +138,8 @@ test('digest-bound session credential reaches runtime gate without body read', a
   const events = [];
   const proofToken = `${['u', 's', '1'].join('')}.${Buffer.alloc(32, 14).toString('base64url')}`;
   const gate = createProofGate({
+    deploymentMetadata: require('../server/cadProductionCurrentDeploymentMetadata')
+      .readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
     sessionCredentialDigestSha256: proofCredentialDigest(proofToken),
   });
   const { runtime, mount } = proofRuntime(events, gate);

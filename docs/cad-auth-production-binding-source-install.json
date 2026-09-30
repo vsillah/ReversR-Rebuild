@@ -66,7 +66,7 @@
   "exactBoundedSessionResolved": true,
   "durableEvidenceDigestResolved": true,
   "liveOpeningExecutionArchitectureClosureRecognized": true,
-  "liveOpeningExecutionArchitectureClosurePacketSha256": "ba7a5080df17f5a280dc3bfc8b2f013a36795a4b8fab169ede024711bb3e3865",
+  "liveOpeningExecutionArchitectureClosurePacketSha256": "4151b21dd59ba28063aa9e149eb6d0b8e145cfbcf862093e1b8dc09109b8806b",
   "defaultProductionBehaviorClosed": true,
   "liveOpeningAuthorized": false,
   "commandCardIssued": false,
@@ -109,7 +109,7 @@
     "server/cadProductionExecutionBindingSourceInstall.js": "f74425f2f54de15665f19431294f998899b670bc201a79342618ce79a061b9bc",
     "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
     "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
-    "server/cadLiveOpeningExecutionArchitectureClosure.js": "97e1d722bd75a691649d19d94ff8b82f8543252ce414bbc78b8731bc56c0fdb0",
+    "server/cadLiveOpeningExecutionArchitectureClosure.js": "b41ec1f484bd3541a262c68a464135427c9a42e313d28a5b255ea84c754b587d",
     "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
     "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
     "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
@@ -119,14 +119,14 @@
     "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
     "scripts/cad-auth-production-binding-source-install.test.js": "eae2c00fce12e7bd6c8899625db3779234514e46089b2069a5939a61b4eca203",
     "scripts/cad-auth-production-binding-source-install-checker.js": "299245e4927318821dca3f52ef2456f7ada1ab2d72e615e8236b4cc8262d9446",
-    "scripts/cad-auth-live-opening-execution-architecture-closure-checker.js": "8e61ac5950200f9e3bcf4cf0c222e20ff0dd396d43176fd4108a60e519f7761f",
-    "scripts/cad-auth-live-opening-execution-architecture-closure.test.js": "e8edcddfddd4633af0d69aa767a0526c7d994d25d4826d45a34da93e94073086",
+    "scripts/cad-auth-live-opening-execution-architecture-closure-checker.js": "51b9380f30f5898b33bb437e025f584a331006cbe069a49f8d1abfb33d34008c",
+    "scripts/cad-auth-live-opening-execution-architecture-closure.test.js": "eeb227aa3c31b92ce93511ea0a75d2dfd4f90300a2c7a5f5d59490ca1daa52d5",
     "scripts/cad-auth-production-execution-binding-finalization.test.js": "c452276e149f9a70e6bd33f52aa501f52abccf38662644152be1453876c286d9",
-    "docs/cad-auth-live-opening-execution-architecture-closure.json": "ba7a5080df17f5a280dc3bfc8b2f013a36795a4b8fab169ede024711bb3e3865",
-    "docs/cad-auth-live-opening-execution-architecture-closure.md": "ff23d090945fbbf28ac50458691d58e977175d53d18d865cfd5eb80149294a06",
+    "docs/cad-auth-live-opening-execution-architecture-closure.json": "4151b21dd59ba28063aa9e149eb6d0b8e145cfbcf862093e1b8dc09109b8806b",
+    "docs/cad-auth-live-opening-execution-architecture-closure.md": "a43d04e984e2182fba89ca582690e58057bf8e688a753dc228b9e5708e2b050f",
     "docs/cad-auth-production-execution-binding-finalization.json": "92426e94003fcdb43692f262e6c22ad8f5dc984b23a6f5de2a78e6a264c5af22",
     "docs/cad-auth-session-evidence-schema-rebind.json": "05682b6e4ede9e8f8c45008e3538d9ee95f9962f23ad999241b0569a3e744143",
     "docs/cad-auth-durable-adapter-rejection-prep.json": "6d1d6c37e3db52b50a5546e7bcedac97497d248dbb4898706ce9dca64e753449",
-    "docs/cad-auth-production-binding-source-install.md": "42cab7b706fde43df8b6c6b379c6c88e78fdad4502b7608cf8c59fd09f57adaa"
+    "docs/cad-auth-production-binding-source-install.md": "7f05cfd24aebc79f04bd18d6bc905d73f8e1989354c3c6b8fd80be5dd4e82491"
   }
 }
