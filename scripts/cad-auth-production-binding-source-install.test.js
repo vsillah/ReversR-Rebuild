@@ -116,8 +116,8 @@ test('no-argument production factory consumes reviewed source slots in an isolat
     const installation = ${JSON.stringify({ ...f.installation, durableAdapter: { ...f.installation.durableAdapter, service: null } })};
     installation.durableAdapter.service = h.adapter;
     const slots = require.resolve('./server/cadProductionExecutionBindingInstallation');
-    require(slots);
-    require.cache[slots].exports = { PRODUCTION_BINDING_INSTALLATION: installation };
+    const original = require(slots);
+    require.cache[slots].exports = { ...original, PRODUCTION_BINDING_INSTALLATION: installation };
     const { createCadProductionExecutionBinding } = require('./server/cadProductionExecutionBinding');
     assert.equal(createCadProductionExecutionBinding().enabled, true);
     assert.equal(h.events.length, 0);

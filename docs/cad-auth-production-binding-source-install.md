@@ -57,6 +57,10 @@ Tests use synthetic in-memory service doubles and perform no request-body IO.
 The older finalization packet is preserved as historical provenance; its source
 hashes are stale after this change and its checker must reject it. The new packet
 binds current source hashes without refreshing historical approval evidence.
+PR #456 also binds the reviewed live-opening execution architecture closure
+source path and packet. That closure is recognized only as a default-closed
+source-owned execution architecture input; it does not authorize live opening,
+runtime installation activation, upload-session issuance or body admission.
 
 Current observed base: PR #450 merge commit
 5010b7262050126819eaa3caa50abb8a9662654b. GitHub production deployment
@@ -109,6 +113,8 @@ at a draft PR; the captain handles permitted integration and production smoke.
 
 ```sh
 node scripts/cad-auth-production-binding-source-install-checker.js
+node scripts/cad-auth-live-opening-execution-architecture-closure-checker.js
 node --test scripts/cad-auth-production-binding-source-install.test.js scripts/cad-auth-production-execution-binding-finalization.test.js scripts/cad-auth-live-opening-execution-gap-closure.test.js scripts/cad-auth-live-opening-executable-runtime-wiring.test.js scripts/cad-auth-final-live-opening-rebind-prep.test.js
+node --test scripts/cad-auth-live-opening-execution-architecture-closure.test.js
 git diff --check
 ```
