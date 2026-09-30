@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-session-evidence-schema-rebind-v1",
+  "sourceOnly": true,
+  "status": "SOURCE_RECORD_BOUND_SCHEMA_REBIND_REVIEWED_RUNTIME_CLOSED",
+  "roadmap": "5/6 complete; Step 6 schema rebind only",
+  "currentProduction": {
+    "mergeCommit": "f0d459a522c7c70b394411ae580b1bddf6a9d41d",
+    "pullRequest": 449,
+    "githubDeploymentId": 6748245138,
+    "productionDeploymentReference": "6748245138",
+    "productionTarget": "https://reversr-b3m7y972q-vsillahs-projects.vercel.app",
+    "canonicalRoute": "https://reversr.vercel.app/api/cad/user-import",
+    "failClosedSmoke": {
+      "status": 401,
+      "code": "USER_SESSION_REQUIRED",
+      "observedAtUtc": "2026-09-30T00:07:10Z"
+    }
+  },
+  "sourceRecordBinding": {
+    "packetSha256": "0d8b2c06fb2ad7f32f126909c3cbe20b9baa95f0aaa6f1d89ed892bc5820a14d",
+    "sourceRecordSha256": "81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5",
+    "recordRef": "rrb-ref:cad-auth-session-evidence-source-record-20260929T205156Z",
+    "acceptedForSourceOnlySchemaRebind": true,
+    "acceptedForLiveDurableServiceQualification": false
+  },
+  "schemaRebind": {
+    "appliedByThisGate": true,
+    "schemaPath": "offline/cad-auth-durable-adapter-rejection-prep/binding.schema.json",
+    "schemaSha256": "11bc214fdd47ba3d8084988ae8200c3d2492aa917196ba9d30cb0c1fce3623bb",
+    "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+    "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+    "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+    "productionDeploymentReference": "6748245138",
+    "sourceCommit": "f0d459a522c7c70b394411ae580b1bddf6a9d41d",
+    "approvedNonSecretSourceRecordSha256": "81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5",
+    "bindingReviewCode": "BINDING_SHAPE_VALID_REQUIRES_SEPARATE_AUTHENTICITY_AND_CURRENT_TARGET_REVIEW"
+  },
+  "stillBlockedForLiveOpening": [
+    "liveDurableServiceQualification",
+    "productionExecutionBinding",
+    "runtimeInstallation",
+    "runtimeActivation",
+    "explicitLiveOpeningGate"
+  ],
+  "controls": {
+    "providerEnvResourceBillingChangeAuthorized": false,
+    "secretReadAuthorized": false,
+    "privateEvidenceReadAuthorized": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionReadAuthorized": false,
+    "conversionAuthorized": false,
+    "sandboxDispatchAuthorized": false,
+    "privateCadUseAuthorized": false,
+    "liveEvidenceCollectionAuthorized": false,
+    "runtimeInstallationAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "executableCommandCardIssuanceAuthorized": false,
+    "externalMessagesAuthorized": false,
+    "liveRetryAuthorized": false,
+    "secondLiveRunAuthorized": false,
+    "realUserCommercializationAuthorized": false,
+    "commercialReadinessClaimed": false,
+    "liveDurableServiceQualified": false
+  },
+  "productionExecutionBinding": null,
+  "liveEffectsExecuted": 0,
+  "nextGateTemplate": "I approve a bounded source-only CAD Auth production live-opening runtime installation completion gate for ReversR-Rebuild, bound to bounded-session/evidence schema rebind packet SHA-256 <schemaRebindPacketSha256> at source commit <schemaRebindSourceCommit>, PR #449 merge commit f0d459a522c7c70b394411ae580b1bddf6a9d41d, session/evidence source-record packet SHA-256 0d8b2c06fb2ad7f32f126909c3cbe20b9baa95f0aaa6f1d89ed892bc5820a14d, source record SHA-256 81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5, production deployment 6748245138, production target https://reversr-b3m7y972q-vsillahs-projects.vercel.app, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at 2026-09-30T00:07:10Z. Scope: create a dedicated task/worktree/branch to implement and review only disabled-by-default source, docs, tests, checkers, and manifests that make the reviewed exact production execution binding installation and durable adapter supply path available to createCadProductionExecutionBinding from the schema-rebound source record, while preserving default fail-closed behavior unless a later explicit live-opening gate binds exact approved values. Prove PRODUCTION_BINDING_INSTALLATION can become non-null only from reviewed server-owned source, with exact command-card bytes/SHA-256 binding, installation SHA-256 binding, current deployment reference, bounded session ref, durable evidence digest, durable service adapter implementation, one-session/one-attempt fence, independent expiry checks before every effect, rollback-first controls, post-rollback fail-closed smoke, and route body-gate integration. No provider/env/resource/billing changes, secrets or secret reads, private evidence reads, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime activation, executable command-card issuance for live execution, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on failing checks, failing smoke, unknown outcome, stale deployment binding, missing durable adapter evidence, missing exact bounded session binding, private-data leakage risk, runtime installation not proven source-owned, or any need for runtime credentials/provider configuration.",
+  "sourceBindings": {
+    "docs/cad-auth-session-evidence-source-record.json": "0d8b2c06fb2ad7f32f126909c3cbe20b9baa95f0aaa6f1d89ed892bc5820a14d",
+    "docs/cad-auth-durable-adapter-rejection-prep.json": "6d1d6c37e3db52b50a5546e7bcedac97497d248dbb4898706ce9dca64e753449",
+    "docs/cad-auth-bounded-session-evidence-ref-prep.json": "c6525cccc7ee569550edabefe20e7d60bb111d342a69fe91be4d3c9c9657111e",
+    "offline/cad-auth-durable-adapter-rejection-prep/candidate.js": "314ef483ada7e9232a8cf5ba901294b5210e0c1a5dd888e4288a8d6b2f39c051",
+    "offline/cad-auth-durable-adapter-rejection-prep/binding.schema.json": "11bc214fdd47ba3d8084988ae8200c3d2492aa917196ba9d30cb0c1fce3623bb",
+    "docs/cad-auth-session-evidence-schema-rebind.md": "e9b02e737479fb160fd957ce8f758f9f1567bdb36fc1773ed42251e62686277a",
+    "scripts/cad-auth-session-evidence-schema-rebind-checker.js": "dd00b690c1fa0956533fcbca87e67aa6d446a5e5fb4db58c8a25af1f847d4ae6",
+    "scripts/cad-auth-session-evidence-schema-rebind.test.js": "75bd9c9c875af6e532a0a02f260b877595466fa0de318c51f084261d6b43b9b4"
+  }
+}

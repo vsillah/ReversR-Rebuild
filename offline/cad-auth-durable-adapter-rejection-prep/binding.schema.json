@@ -22,18 +22,20 @@
     },
     "sessionId": {
       "type": "string",
+      "const": "rrb-ref:cad-upload-internal-mark-test-session-v1",
       "minLength": 1,
       "maxLength": 128,
       "pattern": "^(?!.*(?:[Pp][Ee][Nn][Dd][Ii][Nn][Gg]|[Pp][Ll][Aa][Cc][Ee][Hh][Oo][Ll][Dd][Ee][Rr]))[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
     },
     "durableEvidenceSha256": {
       "type": "string",
+      "const": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
       "maxLength": 64,
       "pattern": "^[a-f0-9]{64}$"
     },
     "productionDeploymentReference": {
       "type": "string",
-      "const": "dpl_9mMogp9HjVEtdvH8Eoc3hVMrj4St",
+      "const": "6748245138",
       "maxLength": 32
     },
     "provenance": {
@@ -53,23 +55,25 @@
       "properties": {
         "sessionId": {
           "type": "string",
+          "const": "rrb-ref:cad-upload-internal-mark-test-session-v1",
           "minLength": 1,
           "maxLength": 128,
           "pattern": "^(?!.*(?:[Pp][Ee][Nn][Dd][Ii][Nn][Gg]|[Pp][Ll][Aa][Cc][Ee][Hh][Oo][Ll][Dd][Ee][Rr]))[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
         },
         "durableEvidenceSha256": {
           "type": "string",
+          "const": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
           "maxLength": 64,
           "pattern": "^[a-f0-9]{64}$"
         },
         "productionDeploymentReference": {
           "type": "string",
-          "const": "dpl_9mMogp9HjVEtdvH8Eoc3hVMrj4St",
+          "const": "6748245138",
           "maxLength": 32
         },
         "sourceCommit": {
           "type": "string",
-          "const": "c9bdc2929f3d6b67439db42fb1a7511f9b42f641",
+          "const": "f0d459a522c7c70b394411ae580b1bddf6a9d41d",
           "maxLength": 40
         },
         "sourceInputStopTask": {
@@ -94,6 +98,7 @@
         },
         "approvedNonSecretSourceRecordSha256": {
           "type": "string",
+          "const": "81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5",
           "maxLength": 64,
           "pattern": "^[a-f0-9]{64}$"
         }

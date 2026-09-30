@@ -48,7 +48,7 @@ test('every required field, extra field, stale deployment and provenance mismatc
   }
   for (const key of ['sessionId', 'durableEvidenceSha256']) {
     const input = fixture(); input.provenance[key] = key === 'sessionId' ? 'other-session' : 'b'.repeat(64);
-    assert.equal(review(input).code, 'BINDING_PROVENANCE_MISMATCH');
+    assert.equal(review(input).code, 'BINDING_INPUT_REJECTED');
   }
 });
 test('structural validity grants no authenticity or installation authority', () => {
