@@ -29,8 +29,26 @@ const REVIEWED_SOURCE_RECORD_SHA256 =
   '81178504968fffa01d265b9b9541dda78935133f71f174bf0d667a79a5ca8ce5';
 const REVIEWED_DURABLE_EVIDENCE_SHA256 =
   '8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7';
-const REVIEWED_START_UTC = '2030-01-01T00:00:00Z';
-const REVIEWED_EXPIRES_UTC = '2030-01-01T00:30:00Z';
+const REVIEWED_RUNTIME_INSTALL_COMPLETION_PACKET_SHA256 =
+  '002c619cfb7815557aa722b936d46e9fa0b0def78ff3bdd03b11757664975ab3';
+const REVIEWED_RUNTIME_INSTALL_COMPLETION_SOURCE_COMMIT =
+  '5914bbc74265568c1bcf634f60402c74a81d0549';
+const STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
+  '7320eb5443265dee745e84a936486ae0ca01fbafeded09875c5a960723ba7003';
+const APPROVED_LIVE_OPENING_REFRESH_SHA256 =
+  'e0b3e097b8ed9c10b993109d220e757497cba7c216dfae77bd9f96dd1f418768';
+const APPROVED_MAIN_COMMIT =
+  '2fc0c814497646ffa4b20962f9cfb2122a562ef2';
+const APPROVED_PRODUCTION_DEPLOYMENT_REFERENCE = '6749843604';
+const APPROVED_PRODUCTION_TARGET =
+  'https://reversr-c6iaqod0h-vsillahs-projects.vercel.app';
+const APPROVED_FAIL_CLOSED_SMOKE_UTC = '2026-09-30T02:12:51Z';
+const REVIEWED_START_UTC = '2026-09-30T03:30:00Z';
+const REVIEWED_EXPIRES_UTC = '2026-09-30T04:00:00Z';
+const APPROVED_COMMAND_CARD_SHA256 =
+  '0cb84438d6e69e4894585bd7bf0efc2ed9bc593639f67209a90462ebe807f848';
+const APPROVED_INSTALLATION_SHA256 =
+  'b1ef5eacd2b42fc26ead33746502da377856d80b0f05fc36f70fd9a84a1157af';
 
 const REVIEWED_RUNTIME_INSTALLATION_SOURCE = Object.freeze({
   schemaVersion: 1,
@@ -51,6 +69,31 @@ const REVIEWED_RUNTIME_INSTALLATION_SOURCE = Object.freeze({
   sessionId: BOUNDED_SESSION_REF,
   durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
   durableServiceRef: DURABLE_SERVICE_REF,
+});
+
+const APPROVED_RUNTIME_INSTALLATION_SOURCE = Object.freeze({
+  schemaVersion: 1,
+  sourceOnly: true,
+  runtimeInstallCompletionPacketSha256: REVIEWED_RUNTIME_INSTALL_COMPLETION_PACKET_SHA256,
+  runtimeInstallCompletionSourceCommit: REVIEWED_RUNTIME_INSTALL_COMPLETION_SOURCE_COMMIT,
+  stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+  approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
+  approvedMainCommit: APPROVED_MAIN_COMMIT,
+  productionDeploymentReference: APPROVED_PRODUCTION_DEPLOYMENT_REFERENCE,
+  productionTarget: APPROVED_PRODUCTION_TARGET,
+  failClosedSmoke: Object.freeze({
+    status: 401,
+    code: 'USER_SESSION_REQUIRED',
+    observedAtUtc: APPROVED_FAIL_CLOSED_SMOKE_UTC,
+  }),
+  boundedSessionRef: BOUNDED_SESSION_REF,
+  sessionId: BOUNDED_SESSION_REF,
+  durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
+  durableServiceRef: DURABLE_SERVICE_REF,
+  startUtc: REVIEWED_START_UTC,
+  expiresUtc: REVIEWED_EXPIRES_UTC,
+  commandCardSha256: APPROVED_COMMAND_CARD_SHA256,
+  installationSha256: APPROVED_INSTALLATION_SHA256,
 });
 
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -119,12 +162,26 @@ function createPendingExecutableCommandCard({
 function createProductionBindingInstallation({
   enabled = false,
   explicitLiveOpeningApproved = false,
-  commandCard = createPendingExecutableCommandCard(),
+  commandCard = createPendingExecutableCommandCard({
+    productionDeploymentReference: APPROVED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference,
+    sessionId: APPROVED_RUNTIME_INSTALLATION_SOURCE.sessionId,
+    durableEvidenceSha256: APPROVED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256,
+    startUtc: APPROVED_RUNTIME_INSTALLATION_SOURCE.startUtc,
+    expiresUtc: APPROVED_RUNTIME_INSTALLATION_SOURCE.expiresUtc,
+  }),
   durableServiceRef = DURABLE_SERVICE_REF,
   durableService = createClosedDurableAdapterService(),
 } = {}) {
   const commandCardBytes = JSON.stringify(commandCard);
   const commandCardSha256 = sha(commandCardBytes);
+  if (commandCard.productionDeploymentReference === APPROVED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference
+    && commandCard.sessionId === APPROVED_RUNTIME_INSTALLATION_SOURCE.sessionId
+    && commandCard.durableEvidenceSha256 === APPROVED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256
+    && commandCard.openingWindow?.startUtc === APPROVED_RUNTIME_INSTALLATION_SOURCE.startUtc
+    && commandCard.openingWindow?.expiresUtc === APPROVED_RUNTIME_INSTALLATION_SOURCE.expiresUtc
+    && commandCardSha256 !== APPROVED_RUNTIME_INSTALLATION_SOURCE.commandCardSha256) {
+    throw Error('APPROVED_COMMAND_CARD_DIGEST_DRIFT');
+  }
   const manifest = freezePlain({
     schemaVersion: 1,
     commandCardBytes,
@@ -145,25 +202,52 @@ function createProductionBindingInstallation({
     evidenceSha256: commandCard.durableEvidenceSha256,
     service: durableService,
   });
+  const installationSha256 = sha(JSON.stringify(exact));
+  if (commandCardSha256 === APPROVED_RUNTIME_INSTALLATION_SOURCE.commandCardSha256
+    && installationSha256 !== APPROVED_RUNTIME_INSTALLATION_SOURCE.installationSha256) {
+    throw Error('APPROVED_INSTALLATION_DIGEST_DRIFT');
+  }
   return Object.freeze({
     enabled: enabled === true,
     manifest,
     liveGate: freezePlain({
       explicitLiveOpeningApproved: explicitLiveOpeningApproved === true,
-      installationSha256: sha(JSON.stringify(exact)),
+      installationSha256,
     }),
     durableAdapter,
   });
 }
 
-const PRODUCTION_BINDING_INSTALLATION = createProductionBindingInstallation();
+function createApprovedProductionBindingInstallation({
+  enabled = false,
+  explicitLiveOpeningApproved = false,
+  durableService = createClosedDurableAdapterService(),
+} = {}) {
+  return createProductionBindingInstallation({
+    enabled,
+    explicitLiveOpeningApproved,
+    commandCard: createPendingExecutableCommandCard({
+      productionDeploymentReference: APPROVED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference,
+      sessionId: APPROVED_RUNTIME_INSTALLATION_SOURCE.sessionId,
+      durableEvidenceSha256: APPROVED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256,
+      startUtc: APPROVED_RUNTIME_INSTALLATION_SOURCE.startUtc,
+      expiresUtc: APPROVED_RUNTIME_INSTALLATION_SOURCE.expiresUtc,
+    }),
+    durableServiceRef: APPROVED_RUNTIME_INSTALLATION_SOURCE.durableServiceRef,
+    durableService,
+  });
+}
+
+const PRODUCTION_BINDING_INSTALLATION = createApprovedProductionBindingInstallation();
 
 module.exports = {
   BOUNDED_SESSION_REF,
   DURABLE_SERVICE_REF,
   REVIEWED_RUNTIME_INSTALLATION_SOURCE,
+  APPROVED_RUNTIME_INSTALLATION_SOURCE,
   PRODUCTION_BINDING_INSTALLATION,
   createClosedDurableAdapterService,
   createPendingExecutableCommandCard,
+  createApprovedProductionBindingInstallation,
   createProductionBindingInstallation,
 };

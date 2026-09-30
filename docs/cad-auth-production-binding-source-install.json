@@ -29,9 +29,9 @@
     "enabled": false,
     "manifest": {
       "schemaVersion": 1,
-      "commandCardBytesSha256": "954a75b4ccdbdd9cee9f8aea876bae555f6ae3155d5d08cf9fe840a5216973e7",
-      "commandCardSha256": "954a75b4ccdbdd9cee9f8aea876bae555f6ae3155d5d08cf9fe840a5216973e7",
-      "currentDeploymentReference": "6748757459",
+      "commandCardBytesSha256": "0cb84438d6e69e4894585bd7bf0efc2ed9bc593639f67209a90462ebe807f848",
+      "commandCardSha256": "0cb84438d6e69e4894585bd7bf0efc2ed9bc593639f67209a90462ebe807f848",
+      "currentDeploymentReference": "6749843604",
       "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
       "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
       "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
@@ -39,7 +39,7 @@
     },
     "liveGate": {
       "explicitLiveOpeningApproved": false,
-      "installationSha256": "28ca87d01fb53ced340df1b627ad932b626fbde23f160dff5d177bd142fcce23"
+      "installationSha256": "b1ef5eacd2b42fc26ead33746502da377856d80b0f05fc36f70fd9a84a1157af"
     },
     "durableAdapter": {
       "serviceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
@@ -102,7 +102,7 @@
   ],
   "sourceBindings": {
     ".github/workflows/release-local-ci.yml": "60b6fc7559cb3d0c977479055978701cc642388fa7bb2175774949c5d80cdbd4",
-    "server/cadProductionExecutionBindingInstallation.js": "b9a91ef48c2d9acd9f92e14dc4d249e44e7831084aebc0a38afc0434c6ea141d",
+    "server/cadProductionExecutionBindingInstallation.js": "8f1065a84070c49e5753a56dc612ec151bfd4f5abcbdc5413d1b800a9bfd493c",
     "server/cadProductionExecutionBindingSourceInstall.js": "b1f28481255629903e94c6542dbb2295a226352b07e2c9680bb9c65b13a40bd9",
     "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
     "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
@@ -113,7 +113,7 @@
     "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
     "server/index.js": "68ea067c663c98790cf1692c33177ac7d87217d2e9c24d4f581160977bfe1516",
     "scripts/cad-auth-prod-runtime-mount-fixture.js": "9059b37b8d25313b5c0b723d87026030b4f17507b261f70e1a430c927591965d",
-    "scripts/cad-auth-production-binding-source-install.test.js": "1d3fba7bb2db1d17e6cfb14f8e94df2dec28e09d1d68146e892788e2ae7c71f7",
+    "scripts/cad-auth-production-binding-source-install.test.js": "201c5f2a6f9675b0beacbc83f66018b3cbe6c21790941eb91f68c940ef38652e",
     "scripts/cad-auth-production-binding-source-install-checker.js": "dc6eca765034f8903b1746152eee39254b537605fb79cb393a43003c02d17eb5",
     "scripts/cad-auth-production-execution-binding-finalization.test.js": "c452276e149f9a70e6bd33f52aa501f52abccf38662644152be1453876c286d9",
     "docs/cad-auth-production-execution-binding-finalization.json": "92426e94003fcdb43692f262e6c22ad8f5dc984b23a6f5de2a78e6a264c5af22",

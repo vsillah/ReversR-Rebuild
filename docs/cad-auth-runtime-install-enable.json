@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-runtime-install-enable-v1",
+  "sourceOnly": true,
+  "roadmap": "5/6 complete",
+  "status": "RUNTIME_INSTALLATION_ENABLEMENT_SOURCE_OWNED_DEFAULT_CLOSED",
+  "stoppedLiveOpeningDispositionSha256": "7320eb5443265dee745e84a936486ae0ca01fbafeded09875c5a960723ba7003",
+  "approvedLiveOpeningRefreshSha256": "e0b3e097b8ed9c10b993109d220e757497cba7c216dfae77bd9f96dd1f418768",
+  "mainCommit": "2fc0c814497646ffa4b20962f9cfb2122a562ef2",
+  "productionDeploymentReference": "6749843604",
+  "productionTarget": "https://reversr-c6iaqod0h-vsillahs-projects.vercel.app",
+  "failClosedSmoke": {
+    "status": 401,
+    "code": "USER_SESSION_REQUIRED",
+    "observedAtUtc": "2026-09-30T02:12:51Z"
+  },
+  "commandCardSha256": "0cb84438d6e69e4894585bd7bf0efc2ed9bc593639f67209a90462ebe807f848",
+  "installationSha256": "b1ef5eacd2b42fc26ead33746502da377856d80b0f05fc36f70fd9a84a1157af",
+  "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+  "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+  "durableServiceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
+  "openingWindow": {
+    "startUtc": "2026-09-30T03:30:00Z",
+    "expiresUtc": "2026-09-30T04:00:00Z"
+  },
+  "defaultProof": {
+    "productionBindingInstallationEnabled": false,
+    "defaultResolveIsNull": true,
+    "defaultSourceIsNull": true,
+    "defaultExecutionBindingEnabled": false
+  },
+  "approvedGateProof": {
+    "proofNowUtc": "2026-09-30T03:35:00Z",
+    "approvedInstallationEnabled": true,
+    "explicitLiveOpeningApproved": true,
+    "commandCardSha256": "0cb84438d6e69e4894585bd7bf0efc2ed9bc593639f67209a90462ebe807f848",
+    "installationSha256": "b1ef5eacd2b42fc26ead33746502da377856d80b0f05fc36f70fd9a84a1157af",
+    "resolvedSourceNonNull": true,
+    "executionSourceNonNull": true,
+    "executionBindingEnabled": true,
+    "effectsExecuted": 0
+  },
+  "installPathProven": true,
+  "defaultProductionBehaviorClosed": true,
+  "liveOpeningAuthorized": false,
+  "commandCardIssuedForLiveExecution": false,
+  "runtimeActivated": false,
+  "uploadAdmissionActivated": false,
+  "durableServiceLiveQualified": false,
+  "privateEvidenceRead": false,
+  "effectsExecuted": 0,
+  "nextGate": {
+    "requiresPostMergeDeploymentRebind": true,
+    "requiresProductionFailClosedSmoke": true,
+    "requiresFreshUtcWindow": true,
+    "requiresExactCommandCardSha256": true,
+    "requiresExactInstallationSha256": true,
+    "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge runtime-install enablement deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to runtime-install enablement packet SHA-256 <runtimeInstallEnablementPacketSha256> at source commit <runtimeInstallEnablementSourceCommit>, stopped live-opening disposition SHA-256 7320eb5443265dee745e84a936486ae0ca01fbafeded09875c5a960723ba7003, approved live-opening refresh SHA-256 e0b3e097b8ed9c10b993109d220e757497cba7c216dfae77bd9f96dd1f418768, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: recompute only the current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, fresh UTC opening window, and exact later live-opening approval phrase against the verified production deployment, returning the live-opening phrase only if runtime installation remains source-owned, default production remains fail-closed, durable adapter evidence is sufficient, and all exact bindings resolve without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation, runtime activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved digest, private-data leakage risk, unknown outcome, unresolved command-card binding, missing durable adapter evidence, missing exact bounded session binding, missing installation SHA-256, runtime installation not proven source-owned, or any need for runtime credentials/provider configuration."
+  },
+  "stopConditions": [
+    "failingChecks",
+    "failingSmoke",
+    "unknownOutcome",
+    "staleDeploymentBinding",
+    "missingDurableAdapterEvidence",
+    "missingExactBoundedSessionBinding",
+    "privateDataLeakageRisk",
+    "runtimeInstallationNotProvenSourceOwned",
+    "runtimeCredentialsOrProviderConfigurationNeeded"
+  ],
+  "sourceBindings": {
+    "server/cadProductionExecutionBindingInstallation.js": "8f1065a84070c49e5753a56dc612ec151bfd4f5abcbdc5413d1b800a9bfd493c",
+    "server/cadProductionExecutionBindingSourceInstall.js": "b1f28481255629903e94c6542dbb2295a226352b07e2c9680bb9c65b13a40bd9",
+    "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
+    "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "a2cbc8ac06bc9566dd1e09606afd4c7d26c17aaa7dd7fb693c44ef8267e813c0",
+    "server/cadLiveOpeningExecutableRuntimeWiring.js": "333f27a911db9c07481dbcd4a2d25357974bea586784950396a98ac7653302e2",
+    "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/index.js": "68ea067c663c98790cf1692c33177ac7d87217d2e9c24d4f581160977bfe1516",
+    "scripts/cad-auth-runtime-install-enable.test.js": "f6887b23137ff0a953f448f151ebca2d5561e8ee67285c78f7ce13f17b4932d9",
+    "scripts/cad-auth-runtime-install-enable-checker.js": "8e9be98b088f8116851786dba4bdaef5c9d159debd75d98844ed71252da9ab17",
+    "docs/cad-auth-runtime-install-enable.md": "b68a7a49c8fee0240a22dc82aa1689c23e2dcb30594bceb88f3c2bf43d3524ec",
+    "docs/cad-auth-production-binding-source-install.json": "846089a82b9b5d4e0bbe4d5b99216f2e5990614bf66157858f0a73baece41cb1",
+    "docs/cad-auth-session-evidence-schema-rebind.json": "05682b6e4ede9e8f8c45008e3538d9ee95f9962f23ad999241b0569a3e744143",
+    "docs/cad-auth-durable-adapter-rejection-prep.json": "6d1d6c37e3db52b50a5546e7bcedac97497d248dbb4898706ce9dca64e753449"
+  }
+}

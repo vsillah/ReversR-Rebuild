@@ -4,8 +4,8 @@ const { createHash } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const { harness, expiresUtc } = require('./cad-auth-prod-runtime-mount-fixture');
 const {
+  APPROVED_RUNTIME_INSTALLATION_SOURCE,
   PRODUCTION_BINDING_INSTALLATION,
-  REVIEWED_RUNTIME_INSTALLATION_SOURCE,
   createProductionBindingInstallation,
 } = require('../server/cadProductionExecutionBindingInstallation');
 const { resolveCadProductionExecutionBindingSource: resolve } = require('../server/cadProductionExecutionBindingSourceInstall');
@@ -51,15 +51,15 @@ test('production default path stays closed without service effects', () => {
   assert.equal(PRODUCTION_BINDING_INSTALLATION.enabled, false);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.schemaVersion, 1);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.currentDeploymentReference,
-    REVIEWED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference);
+    APPROVED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.boundedSessionRef,
-    REVIEWED_RUNTIME_INSTALLATION_SOURCE.boundedSessionRef);
+    APPROVED_RUNTIME_INSTALLATION_SOURCE.boundedSessionRef);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.sessionId,
-    REVIEWED_RUNTIME_INSTALLATION_SOURCE.sessionId);
+    APPROVED_RUNTIME_INSTALLATION_SOURCE.sessionId);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.durableEvidenceSha256,
-    REVIEWED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256);
+    APPROVED_RUNTIME_INSTALLATION_SOURCE.durableEvidenceSha256);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.durableServiceRef,
-    REVIEWED_RUNTIME_INSTALLATION_SOURCE.durableServiceRef);
+    APPROVED_RUNTIME_INSTALLATION_SOURCE.durableServiceRef);
   assert.equal(PRODUCTION_BINDING_INSTALLATION.manifest.sessionId, BOUNDED_SESSION_REF);
   assert.doesNotMatch(PRODUCTION_BINDING_INSTALLATION.manifest.sessionId, /pending/i);
   assert.doesNotMatch(PRODUCTION_BINDING_INSTALLATION.manifest.currentDeploymentReference, /pending/i);
