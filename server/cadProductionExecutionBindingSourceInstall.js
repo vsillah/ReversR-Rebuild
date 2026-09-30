@@ -1,6 +1,9 @@
 const { createHash } = require('node:crypto');
 const { METHODS, reviewExecutableCommandCardBinding } = require('./cadLiveOpeningExecutableRuntimeWiring');
 const { PRODUCTION_BINDING_INSTALLATION } = require('./cadProductionExecutionBindingInstallation');
+const {
+  createSourceOwnedDefaultProductionBindingInstallation,
+} = require('./cadProductionDefaultBindingSourceClosure');
 
 const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -10,7 +13,8 @@ const REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/;
 // Runtime verification of approval, evidence and the immutable deployment is
 // still required before the durable service claims the single run and attempt.
 function resolveCadProductionExecutionBindingSource(
-  installation = PRODUCTION_BINDING_INSTALLATION,
+  installation = createSourceOwnedDefaultProductionBindingInstallation()
+    || PRODUCTION_BINDING_INSTALLATION,
   now = Date.now,
 ) {
   try {
