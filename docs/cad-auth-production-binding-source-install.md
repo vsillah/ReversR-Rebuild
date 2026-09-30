@@ -58,9 +58,12 @@ The older finalization packet is preserved as historical provenance; its source
 hashes are stale after this change and its checker must reject it. The new packet
 binds current source hashes without refreshing historical approval evidence.
 PR #456 also binds the reviewed live-opening execution architecture closure
-source path and packet. That closure is recognized only as a default-closed
-source-owned execution architecture input; it does not authorize live opening,
-runtime installation activation, upload-session issuance or body admission.
+source path and packet. This repair refreshes that closure so the proof path
+uses allowlisted current production deployment metadata instead of stale
+hard-bound deployment constants. That closure is recognized only as a
+default-closed source-owned execution architecture input; it does not authorize
+live opening, runtime installation activation, upload-session issuance or body
+admission.
 
 Current observed base: PR #450 merge commit
 5010b7262050126819eaa3caa50abb8a9662654b. GitHub production deployment

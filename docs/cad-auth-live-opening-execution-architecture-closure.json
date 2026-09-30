@@ -3,33 +3,50 @@
   "artifact": "cad-auth-live-opening-execution-architecture-closure-v1",
   "sourceOnly": true,
   "roadmap": "5/6 complete",
-  "status": "LIVE_OPENING_EXECUTION_ARCHITECTURE_CLOSED_SOURCE_ONLY",
-  "purpose": "close the Step 6 executability gap without activating production upload admission",
+  "status": "LIVE_OPENING_ARCHITECTURE_CURRENT_DEPLOYMENT_BINDING_REPAIRED_DEFAULT_CLOSED",
+  "purpose": "replace stale architecture deployment constants with source-owned current deployment binding proof",
   "boundInputs": {
-    "stoppedLiveOpeningDispositionSha256": "1dfc2189e4639ebcf0838fbfedf383122a6142865d99f9eeb4d85e22a3dd463b",
-    "priorLiveOpeningRefreshSha256": "57e1e2e4de63fb9c668767959df8ab800e367fc11a84ef3e70f16afae028d9e2",
-    "mainCommit": "132b3fd03ac403d1c58d11273a22198befe82efd",
-    "productionDeployment": "dpl_HJceEhTfsKTFHL1qds7PJBwceEgS",
-    "productionTarget": "https://reversr-5e1c00vgn-vsillahs-projects.vercel.app",
-    "commandCardSha256": "22da640e696105416daf9ff23154fafba418ddf8e389fa296d2bdab928bdf84e",
-    "installationSha256": "8f68f4a8d8ddb11e0074628d017e0a7a698bdad215e597dc4462b56549286134",
+    "stoppedRebindRefreshDispositionSha256": "e56c49ce604785639e5c26f32ad5eeb3feb6de62d1b86981098c555743906eb1",
+    "liveOpeningExecutionArchitectureClosurePacketSha256": "ba7a5080df17f5a280dc3bfc8b2f013a36795a4b8fab169ede024711bb3e3865",
+    "productionSourceInstallValidationRepairPacketSha256": "39c2610bdcc6a5c90ea20fdd98d00ee2c93cec4c4eb5e230576231039e6dc5bd",
+    "mainCommit": "c3dca67a292cd082f08ba0f6e382009d81b5b586",
+    "githubProductionDeployment": "6770063484",
+    "productionTarget": "https://reversr-905t8gphz-vsillahs-projects.vercel.app",
+    "failClosedSmoke": {
+      "status": 401,
+      "code": "USER_SESSION_REQUIRED",
+      "observedAtUtc": "2026-09-30T21:04:32Z"
+    },
     "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7"
   },
-  "openingWindow": {
-    "startUtc": "2026-09-30T21:00:00Z",
-    "expiresUtc": "2026-09-30T21:30:00Z",
-    "proofNowUtc": "2026-09-30T21:05:00Z"
+  "deploymentMetadataPolicy": {
+    "source": "allowlisted Vercel system environment only",
+    "requiredVercelEnv": "production",
+    "requiredGitOwner": "vsillah",
+    "requiredGitRepo": "ReversR-Rebuild",
+    "requiredGitRef": "main",
+    "requiredProjectProductionTarget": "https://reversr.vercel.app",
+    "acceptsSecrets": false,
+    "acceptsProviderConfig": false,
+    "acceptsRequestInput": false,
+    "acceptsPrivateEvidence": false
+  },
+  "proofWindow": {
+    "startUtc": "2026-09-30T21:30:00Z",
+    "expiresUtc": "2026-09-30T22:00:00Z",
+    "proofNowUtc": "2026-09-30T21:35:00Z"
   },
   "defaultGate": {
     "schemaVersion": 1,
     "sourceOnly": true,
     "enabled": false,
     "explicitLiveOpeningApproved": false,
-    "stoppedLiveOpeningDispositionSha256": "1dfc2189e4639ebcf0838fbfedf383122a6142865d99f9eeb4d85e22a3dd463b",
-    "priorLiveOpeningRefreshSha256": "57e1e2e4de63fb9c668767959df8ab800e367fc11a84ef3e70f16afae028d9e2",
-    "mainCommit": "132b3fd03ac403d1c58d11273a22198befe82efd",
-    "currentDeploymentReference": "dpl_HJceEhTfsKTFHL1qds7PJBwceEgS",
-    "productionTarget": "https://reversr-5e1c00vgn-vsillahs-projects.vercel.app",
+    "stoppedRebindRefreshDispositionSha256": "e56c49ce604785639e5c26f32ad5eeb3feb6de62d1b86981098c555743906eb1",
+    "architectureClosurePacketSha256": "ba7a5080df17f5a280dc3bfc8b2f013a36795a4b8fab169ede024711bb3e3865",
+    "sourceInstallValidationRepairPacketSha256": "39c2610bdcc6a5c90ea20fdd98d00ee2c93cec4c4eb5e230576231039e6dc5bd",
+    "mainCommit": null,
+    "currentDeploymentReference": null,
+    "productionTarget": null,
     "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
     "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
     "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
@@ -52,10 +69,10 @@
     "defaultExecutionBindingEnabled": false
   },
   "sourceOwnedArchitectureProof": {
-    "proofNowUtc": "2026-09-30T21:05:00Z",
+    "proofNowUtc": "2026-09-30T21:35:00Z",
     "metadataAccepted": true,
-    "proofDeploymentReference": "dpl_HJceEhTfsKTFHL1qds7PJBwceEgS",
-    "proofDeploymentTarget": "https://reversr-5e1c00vgn-vsillahs-projects.vercel.app",
+    "proofDeploymentReference": "dpl_CurrentArchitectureBindingProof0000",
+    "proofDeploymentTarget": "https://reversr-905t8gphz-vsillahs-projects.vercel.app",
     "proofCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
     "proofCredentialValueIncluded": false,
     "gateAccepted": true,
@@ -63,14 +80,21 @@
     "installationNonNull": true,
     "sessionServiceNonNull": true,
     "sourceExecutable": true,
-    "commandCardSha256": "22da640e696105416daf9ff23154fafba418ddf8e389fa296d2bdab928bdf84e",
-    "installationSha256": "8f68f4a8d8ddb11e0074628d017e0a7a698bdad215e597dc4462b56549286134",
+    "commandCardSha256": "c58a6a4a319ae2d65c6ea1aca122372bcc69c7a6490e772dda86b07818fa51e1",
+    "installationSha256": "3a12886cc201c7434aa316abf832a9c9226bdb148a4af57bf4e0cde73120a9c0",
     "resolvedSourceNonNull": true,
     "executionSourceNonNull": true,
     "executionBindingEnabled": true,
     "effectsExecuted": 0
   },
   "executableSourcePathProven": true,
+  "currentDeploymentBindingRepair": {
+    "staleHardBoundDeploymentValuesRemovedFromExactGate": true,
+    "proofUsesMetadataDeploymentReference": true,
+    "proofUsesMetadataDeploymentTarget": true,
+    "proofUsesMetadataMainCommit": "c3dca67a292cd082f08ba0f6e382009d81b5b586",
+    "postMergeDeploymentRebindStillRequired": true
+  },
   "sessionCredentialPrecondition": {
     "sourceOwnedDigestOnly": true,
     "credentialValueIncluded": false,
@@ -103,20 +127,22 @@
     "requiresExactCommandCardSha256": true,
     "requiresExactInstallationSha256": true,
     "requiresExactDigestBoundSessionCredentialSupply": true,
-    "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge live-opening execution architecture deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to live-opening execution architecture closure packet SHA-256 <architectureClosurePacketSha256> at source commit <architectureClosureSourceCommit>, stopped live-opening disposition SHA-256 1dfc2189e4639ebcf0838fbfedf383122a6142865d99f9eeb4d85e22a3dd463b, prior live-opening refresh SHA-256 57e1e2e4de63fb9c668767959df8ab800e367fc11a84ef3e70f16afae028d9e2, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed server-owned production path can resolve the exact live-opening value source and digest-bound session credential precondition from reviewed source while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, fresh UTC opening window, and exact later live-opening approval phrase only if the default deployed path can resolve a non-null executable binding and session credential precondition under the approved gate without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved digest, private-data leakage risk, unknown outcome, unresolved command-card binding, missing executable default binding source path, missing exact digest-bound session credential precondition, missing installation SHA-256, or any need for runtime credentials/provider configuration."
+    "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge live-opening architecture current-deployment binding deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to current-deployment binding repair packet SHA-256 <currentDeploymentBindingRepairPacketSha256> at source commit <repairSourceCommit>, stopped rebind refresh disposition SHA-256 e56c49ce604785639e5c26f32ad5eeb3feb6de62d1b86981098c555743906eb1, live-opening execution architecture closure packet SHA-256 ba7a5080df17f5a280dc3bfc8b2f013a36795a4b8fab169ede024711bb3e3865, production source-install validation repair packet SHA-256 39c2610bdcc6a5c90ea20fdd98d00ee2c93cec4c4eb5e230576231039e6dc5bd, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed default path can resolve the non-null executable binding and digest-bound session credential precondition from reviewed current production metadata while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed default path can resolve the non-null executable binding under source-owned proof without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved current-deployment metadata source, unresolved digest, private-data leakage risk, unknown outcome, unresolved command-card binding, missing executable default binding source path, missing exact digest-bound session credential precondition, missing installation SHA-256, or any need for runtime credentials/provider configuration."
   },
   "stopConditions": [
     "failingChecks",
     "failingSmoke",
     "unknownOutcome",
     "staleDeploymentBinding",
+    "unresolvedCurrentDeploymentMetadataSource",
     "missingExecutableDefaultBindingSourcePath",
     "missingExactDigestBoundSessionCredentialPrecondition",
+    "missingInstallationSha256",
     "privateDataLeakageRisk",
     "runtimeCredentialsOrProviderConfigurationNeeded"
   ],
   "sourceBindings": {
-    "server/cadLiveOpeningExecutionArchitectureClosure.js": "97e1d722bd75a691649d19d94ff8b82f8543252ce414bbc78b8731bc56c0fdb0",
+    "server/cadLiveOpeningExecutionArchitectureClosure.js": "b41ec1f484bd3541a262c68a464135427c9a42e313d28a5b255ea84c754b587d",
     "server/cadProductionExecutionBindingSourceInstall.js": "f74425f2f54de15665f19431294f998899b670bc201a79342618ce79a061b9bc",
     "server/cadProductionExecutionBindingSource.js": "90ff4e3141b172d6d56703918d0e2d30c355bb7e9d00871cf68edf400ddaad26",
     "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
@@ -129,8 +155,8 @@
     "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
     "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
     "server/index.js": "5b5d107e0ba4aef1789c660e9064728e37031fd8a8d856bec0636a6c601deee1",
-    "scripts/cad-auth-live-opening-execution-architecture-closure-checker.js": "8e61ac5950200f9e3bcf4cf0c222e20ff0dd396d43176fd4108a60e519f7761f",
-    "scripts/cad-auth-live-opening-execution-architecture-closure.test.js": "e8edcddfddd4633af0d69aa767a0526c7d994d25d4826d45a34da93e94073086",
-    "docs/cad-auth-live-opening-execution-architecture-closure.md": "ff23d090945fbbf28ac50458691d58e977175d53d18d865cfd5eb80149294a06"
+    "scripts/cad-auth-live-opening-execution-architecture-closure-checker.js": "51b9380f30f5898b33bb437e025f584a331006cbe069a49f8d1abfb33d34008c",
+    "scripts/cad-auth-live-opening-execution-architecture-closure.test.js": "eeb227aa3c31b92ce93511ea0a75d2dfd4f90300a2c7a5f5d59490ca1daa52d5",
+    "docs/cad-auth-live-opening-execution-architecture-closure.md": "a43d04e984e2182fba89ca582690e58057bf8e688a753dc228b9e5708e2b050f"
   }
 }

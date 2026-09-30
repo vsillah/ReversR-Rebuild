@@ -2,18 +2,21 @@
 
 Roadmap: 5/6 complete. Step 6 remains the final live-opening gate.
 
-This source-only packet closes the execution architecture gap that stopped the
-latest bounded internal production upload-admission opening. The stopped live
-attempt proved that another live-opening phrase is not enough while the deployed
-server default path resolves to a disabled/null production execution binding.
+This source-only packet now repairs the deployment-binding portion of the
+execution architecture gap. The prior packet proved the architecture shape, but
+it was still hard-bound to an older production deployment. That made the
+post-merge rebind refresh stop honestly: the deployed source could not accept
+the current production metadata without treating stale constants as proof.
 
 The implementation adds a default-closed server-owned architecture source that is
 wired into the production execution binding resolver and the user-import session
-service selection. Production defaults remain closed, but the deployed path can
-now resolve a non-null executable binding only when a reviewed source gate
-contains exact current deployment metadata, command-card SHA-256, installation
-SHA-256, durable evidence digest, bounded session ref, and a digest-bound session
-credential precondition.
+service selection. Production defaults remain closed, but the reviewed proof path
+can resolve a non-null executable binding only when a reviewed source gate
+contains allowlisted current production deployment metadata, command-card
+SHA-256, installation SHA-256, durable evidence digest, bounded session ref, and
+a digest-bound session credential precondition. Command-card and installation
+digests are derived from the supplied current metadata and window; they are not
+accepted from a stale deployment constant.
 
 No credential value is represented in the packet. The session precondition is a
 digest-only server-owned lookup path. It does not issue sessions, read secrets,
@@ -32,9 +35,11 @@ NODE_PATH=<existing-project-node_modules> node --test scripts/cad-upload-session
 ```
 
 The next gate after public review, merge, production deployment, and fail-closed
-smoke is a post-merge deployment rebind refresh. It must recompute the current
+smoke is a post-merge current-deployment binding rebind refresh. It must verify
+the deployed default path can resolve the non-null executable binding and
+digest-bound session credential precondition from reviewed current production
+metadata while production remains fail-closed. It must then recompute the current
 deployment binding, durable evidence digest, exact bounded session binding,
 executable command-card SHA-256, installation SHA-256, and a fresh UTC opening
-window. It may return a later live-opening approval phrase only if the deployed
-default path resolves a non-null executable binding and digest-bound session
-credential precondition from reviewed source without runtime activation.
+window. It may return a later live-opening approval phrase only if that proof
+holds without runtime activation.
