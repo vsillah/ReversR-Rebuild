@@ -126,10 +126,10 @@ const { spawnSync } = require('node:child_process');
 const { PACKET, SOURCES, checkPacket, approvalPhrase } = require('./cad-auth-live-opening-execution-gap-closure-checker');
 const root = path.resolve(__dirname, '..');
 const readSource = file => fs.readFileSync(path.join(root, file));
-test('execution-gap packet is historical after production binding finalization and refuses hostile inputs', () => {
+test('execution-gap packet validates current source bindings and refuses hostile inputs', () => {
   const packet = JSON.parse(readSource(PACKET));
   const result = checkPacket(packet);
-  assert.equal(result.ok, false);
+  assert.equal(result.ok, true);
   assert.equal(result.effectsExecuted, 0);
   for (const source of SOURCES) {
     assert.equal(checkPacket(packet, { readSource: file => file === source
@@ -168,8 +168,10 @@ test('session-ref mapping must be attested by the service, and hostile bindings 
 
 test('production entry supplies the disabled factory before general body parsing', () => {
   const source = readSource('server/index.js').toString();
-  assert.match(source, /executableRuntime: createCadProductionExecutionBinding\(\)/);
-  assert.ok(source.indexOf('executableRuntime: createCadProductionExecutionBinding()')
+  assert.match(source, /createCadLiveOpeningGateCredentialClosure\(\)/);
+  assert.match(source, /cadLiveGateCredentialClosure\.executableRuntime/);
+  assert.match(source, /\|\| createCadProductionExecutionBinding\(\)/);
+  assert.ok(source.indexOf('cadLiveGateCredentialClosure.executableRuntime')
     < source.indexOf('app.use(express.json'));
   const binding = readSource('server/cadProductionExecutionBinding.js').toString();
   const sourceBinding = readSource('server/cadProductionExecutionBindingSource.js').toString();

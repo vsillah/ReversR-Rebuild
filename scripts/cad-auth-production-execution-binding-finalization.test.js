@@ -92,7 +92,9 @@ test('source module and production entry expose no env, filesystem, provider or 
   const index = read('server/index.js').toString();
   assert.match(binding, /createCadProductionExecutionBindingSource\(\)/);
   assert.match(source, /const PRODUCTION_EXECUTION_BINDING_SOURCE = null;/);
-  assert.match(index, /executableRuntime: createCadProductionExecutionBinding\(\)/);
+  assert.match(index, /createCadLiveOpeningGateCredentialClosure\(\)/);
+  assert.match(index, /cadLiveGateCredentialClosure\.executableRuntime/);
+  assert.match(index, /\|\| createCadProductionExecutionBinding\(\)/);
   for (const text of [binding, source]) {
     assert.doesNotMatch(text, /process\.env|node:fs|child_process|fetch\s*\(|https?\.request|\.listen\s*\(/);
   }
