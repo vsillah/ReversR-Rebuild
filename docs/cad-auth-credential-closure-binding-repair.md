@@ -26,7 +26,9 @@ records. The original packet remains available at its source commit.
 ## Metadata reference policy
 
 Policy: `rrb-ref:cad-auth-credential-closure-current-deployment-metadata-v2`.
-The unchanged production entry calls `createCadLiveOpeningGateCredentialClosure()`.
+The production entry now calls `createCadDeployedRuntimeSupplyPathClosure()`,
+which delegates to `createCadLiveOpeningGateCredentialClosure()` only through
+the default-closed deployed startup supply path.
 Its default reader accesses only non-secret Vercel system metadata:
 `VERCEL_DEPLOYMENT_ID`, `VERCEL_URL`, `VERCEL_PROJECT_PRODUCTION_URL`,
 `VERCEL_GIT_COMMIT_SHA`, `VERCEL_GIT_COMMIT_REF`, `VERCEL_GIT_REPO_SLUG`,
