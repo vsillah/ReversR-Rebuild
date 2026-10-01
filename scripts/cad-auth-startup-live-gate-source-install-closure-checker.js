@@ -2,35 +2,41 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
-const { METHODS } = require('../server/cadLiveOpeningExecutableRuntimeWiring');
 const {
   PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
   SESSION_CREDENTIAL_DIGEST_SHA256,
 } = require('../server/cadLiveOpeningGateCredentialClosure');
 const {
+  METHODS,
+} = require('../server/cadLiveOpeningExecutableRuntimeWiring');
+const {
+  readCadProductionCurrentDeploymentMetadata,
+} = require('../server/cadProductionCurrentDeploymentMetadata');
+const {
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
-  DEFAULT_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE,
+  DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_BOUNDED_SESSION_REF,
   REVIEWED_COMMAND_CARD_SHA256,
-  REVIEWED_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE,
-  REVIEWED_DEPLOYMENT_REFERENCE,
   REVIEWED_DURABLE_EVIDENCE_SHA256,
   REVIEWED_DURABLE_SERVICE_REF,
-  REVIEWED_GITHUB_PRODUCTION_DEPLOYMENT,
   REVIEWED_INSTALLATION_SHA256,
   REVIEWED_MAIN_COMMIT,
   REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+  REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
   REVIEWED_PRODUCTION_TARGET,
+  REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
-  createCadDeployedRuntimeSupplyPathClosure,
-} = require('../server/cadDeployedRuntimeSupplyPathClosure');
+  createCadStartupLiveGateSourceInstallClosure,
+} = require('../server/cadStartupLiveGateSourceInstallClosure');
 
 const ROOT = path.resolve(__dirname, '..');
-const PACKET = 'docs/cad-auth-deployed-runtime-supply-path-closure.json';
+const PACKET = 'docs/cad-auth-startup-live-gate-source-install-closure.json';
 const PROOF_ENV = Object.freeze({
   VERCEL: '1',
   VERCEL_ENV: 'production',
+  VERCEL_DEPLOYMENT_ID: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
   VERCEL_URL: REVIEWED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: REVIEWED_MAIN_COMMIT,
@@ -39,7 +45,7 @@ const PROOF_ENV = Object.freeze({
   VERCEL_GIT_REPO_OWNER: 'vsillah',
 });
 const SOURCES = Object.freeze([
-  'server/cadDeployedRuntimeSupplyPathClosure.js',
+  'server/cadStartupLiveGateSourceInstallClosure.js',
   'server/index.js',
   'server/cadLiveOpeningGateCredentialClosure.js',
   'server/cadLiveOpeningCredentialClosureMetadataPolicy.js',
@@ -53,11 +59,13 @@ const SOURCES = Object.freeze([
   'server/cadLiveOpeningExecutableRuntimeBootstrap.js',
   'server/cadLiveOpeningExecutableRuntimeWiring.js',
   'server/cadLiveOpeningRuntimeMount.js',
+  'server/cadProductionExecutableRuntimeMountCompletion.js',
   'server/cadUserUploadRouter.js',
   'server/uploadSession.js',
-  'scripts/cad-auth-deployed-runtime-supply-path-closure-checker.js',
-  'scripts/cad-auth-deployed-runtime-supply-path-closure.test.js',
-  'docs/cad-auth-deployed-runtime-supply-path-closure.md',
+  'scripts/cad-auth-startup-live-gate-source-install-closure-checker.js',
+  'scripts/cad-auth-startup-live-gate-source-install-closure.test.js',
+  'docs/cad-auth-startup-live-gate-source-install-closure.md',
+  '.github/workflows/release-local-ci.yml',
 ]);
 const SHA = /^[a-f0-9]{64}$/;
 const read = file => fs.readFileSync(path.join(ROOT, file));
@@ -70,60 +78,51 @@ function sourceBindings(readSource = read) {
 function durableService(calls = []) {
   return Object.freeze(Object.fromEntries(METHODS.map(name => [name, async () => {
     calls.push(name);
-    throw Error('UNEXPECTED_EFFECT');
+    throw Error('UNEXPECTED_SOURCE_ONLY_EFFECT');
   }])));
 }
 
-function withProofEnv(callback) {
-  const previous = {};
-  for (const key of Object.keys(PROOF_ENV)) {
-    previous[key] = Object.prototype.hasOwnProperty.call(process.env, key)
-      ? process.env[key]
-      : undefined;
-    process.env[key] = PROOF_ENV[key];
-  }
-  delete process.env.VERCEL_DEPLOYMENT_ID;
-  try {
-    return callback();
-  } finally {
-    for (const key of Object.keys(PROOF_ENV)) {
-      if (previous[key] === undefined) delete process.env[key];
-      else process.env[key] = previous[key];
-    }
-  }
-}
-
 function defaultClosedProof() {
-  const closure = createCadDeployedRuntimeSupplyPathClosure();
-  return {
-    defaultGateEnabled: DEFAULT_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE.enabled === true,
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata: readCadProductionCurrentDeploymentMetadata(PROOF_ENV),
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  return Object.freeze({
+    defaultSourceEnabled: DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE.enabled === true,
+    startupLiveGateInstallSourceAccepted:
+      closure.startupLiveGateInstallSourceAccepted === true,
+    startupLiveGateInstallAccepted: closure.startupLiveGateInstallAccepted === true,
     sourceExecutable: closure.sourceExecutable === true,
     sessionServiceNonNull: closure.sessionServiceNonNull === true,
     executableRuntimeEnabled: closure.executableRuntime?.enabled === true,
-    deployedRuntimeSupplyPathAccepted:
-      closure.deployedRuntimeSupplyPathAccepted === true,
     uploadSessionIssued: closure.uploadSessionIssued === true,
     requestBodyAdmittedOrRead: closure.requestBodyAdmittedOrRead === true,
     effectsExecuted: closure.effectsExecuted,
-  };
+  });
 }
 
-function deployedStartupSupplyPathProof() {
+function startupLiveGateInstallProof() {
   const calls = [];
-  const closure = withProofEnv(() => createCadDeployedRuntimeSupplyPathClosure({
-    gate: REVIEWED_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE,
+  const deploymentMetadata = readCadProductionCurrentDeploymentMetadata(PROOF_ENV);
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    source: REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+    deploymentMetadata,
     durableService: durableService(calls),
     now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
-  }));
-  return {
+  });
+  const installation = closure.runtime?.installation || null;
+  const manifest = installation?.manifest || {};
+  return Object.freeze({
     proofNowUtc: REVIEWED_WINDOW.proofNowUtc,
-    metadataReadFromServerEnvironment: true,
-    deployedRuntimeSupplyPathGateAccepted:
-      closure.deployedRuntimeSupplyPathGateAccepted === true,
-    deployedRuntimeSupplyPathMetadataAccepted:
-      closure.deployedRuntimeSupplyPathMetadataAccepted === true,
-    deployedRuntimeSupplyPathAccepted:
-      closure.deployedRuntimeSupplyPathAccepted === true,
+    metadataReadFromServerEnvironment: deploymentMetadata !== null,
+    metadataVercelDeploymentReference: deploymentMetadata?.deploymentReference || null,
+    sourceOwnedDeploymentReference: closure.sourceOwnedDeploymentReference || null,
+    metadataDeploymentReferenceCanonicalized:
+      closure.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+    deploymentMetadataAccepted: closure.deploymentMetadataAccepted === true,
+    startupLiveGateInstallSourceAccepted:
+      closure.startupLiveGateInstallSourceAccepted === true,
+    startupLiveGateInstallAccepted: closure.startupLiveGateInstallAccepted === true,
     privateCredentialSupplyAccepted: closure.privateCredentialSupplyAccepted === true,
     privateCredentialValueIncluded: closure.privateCredentialValueIncluded === true,
     gateNonNull: closure.gateNonNull === true,
@@ -131,75 +130,79 @@ function deployedStartupSupplyPathProof() {
     sessionServiceNonNull: closure.sessionServiceNonNull === true,
     sourceExecutable: closure.sourceExecutable === true,
     executableRuntimeEnabled: closure.executableRuntime?.enabled === true,
-    commandCardSha256:
-      closure.runtime?.installation?.manifest?.commandCardSha256 || null,
-    installationSha256:
-      closure.runtime?.installation?.liveGate?.installationSha256 || null,
-    currentDeploymentReference:
-      closure.runtime?.installation?.manifest?.currentDeploymentReference || null,
-    boundedSessionRef:
-      closure.runtime?.installation?.manifest?.boundedSessionRef || null,
-    sessionId: closure.runtime?.installation?.manifest?.sessionId || null,
-    durableEvidenceSha256:
-      closure.runtime?.installation?.manifest?.durableEvidenceSha256 || null,
-    durableServiceRef:
-      closure.runtime?.installation?.manifest?.durableServiceRef || null,
+    commandCardSha256: manifest.commandCardSha256 || null,
+    commandCardBytesSha256: manifest.commandCardBytes ? sha(manifest.commandCardBytes) : null,
+    installationSha256: installation?.liveGate?.installationSha256 || null,
+    currentDeploymentReference: manifest.currentDeploymentReference || null,
+    boundedSessionRef: manifest.boundedSessionRef || null,
+    sessionId: manifest.sessionId || null,
+    durableEvidenceSha256: manifest.durableEvidenceSha256 || null,
+    durableServiceRef: manifest.durableServiceRef || null,
+    privateSessionCredentialSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
+    privateSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+    sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
     effectsExecuted: calls.length,
-  };
+  });
 }
 
 function indexWiringProof(readSource = read) {
   const index = readSource('server/index.js').toString('utf8');
-  return {
-    importsDeployedRuntimeSupplyPathClosure:
-      /createCadDeployedRuntimeSupplyPathClosure|createCadStartupLiveGateSourceInstallClosure/.test(index),
-    constructsDeployedRuntimeSupplyPathClosure:
-      /const cadLiveGateCredentialClosure = (createCadDeployedRuntimeSupplyPathClosure|createCadStartupLiveGateSourceInstallClosure)\(\)/.test(index),
+  return Object.freeze({
+    importsStartupLiveGateSourceInstaller:
+      /createCadStartupLiveGateSourceInstallClosure/.test(index),
+    constructsStartupLiveGateSourceInstaller:
+      /const cadLiveGateCredentialClosure = createCadStartupLiveGateSourceInstallClosure\(\)/.test(index),
     directlyConstructsCredentialClosure:
       /const cadLiveGateCredentialClosure = createCadLiveOpeningGateCredentialClosure\(\)/.test(index),
-    selectsCredentialClosureSessionService:
+    usesProofOnlyDeployedRuntimeSupplyPath:
+      /const cadLiveGateCredentialClosure = createCadDeployedRuntimeSupplyPathClosure\(\)/.test(index),
+    selectsStartupSessionService:
       /cadLiveGateCredentialClosure\.sessionService/.test(index),
-    passesCredentialClosureExecutableRuntime:
+    passesStartupExecutableRuntime:
       /cadLiveGateCredentialClosure\.executableRuntime/.test(index),
-  };
+    mountsBeforeGeneralBodyParser:
+      index.indexOf('cadLiveGateCredentialClosure.executableRuntime')
+        < index.indexOf('app.use(express.json'),
+  });
 }
 
 function routeBodyGateIntegrationProof(readSource = read) {
   const router = readSource('server/cadUserUploadRouter.js').toString('utf8');
-  return {
+  const runtimeMount = readSource('server/cadLiveOpeningRuntimeMount.js').toString('utf8');
+  return Object.freeze({
     requiresUploadSessionBeforeAdmissionSwitch:
       /const result = await verify\(req\);[\s\S]*USER_SESSION_REQUIRED/.test(router),
-    acceptsServerProvidedExecutableRuntime:
-      /liveOpeningExecutableRuntime/.test(router),
-    mountsExecutableRuntimeBootstrap:
-      /createCadLiveOpeningExecutableRuntimeBootstrap/.test(router),
     keepsBodyAdmissionLiteralClosed:
       /const BODY_ADMISSION_AUTHORIZED = false/.test(router),
     validatesBodyOnlyAfterRouteBodyGate:
       /routeBodyGate\.authorizeBodyRead[\s\S]*validateRequestBody\(req\)/.test(router),
-  };
+    runtimeMountDisabledInSource:
+      /const LIVE_OPENING_RUNTIME_MOUNT_ENABLED = false/.test(runtimeMount),
+    runtimeMountRejectsBodyAdmission:
+      /return disabledDecision\('LIVE_OPENING_RUNTIME_MOUNT_DISABLED'\)/.test(runtimeMount),
+  });
 }
 
 function expectedPacket(readSource = read) {
   const defaultProof = defaultClosedProof();
-  const startupProof = deployedStartupSupplyPathProof();
+  const startupProof = startupLiveGateInstallProof();
   const wiringProof = indexWiringProof(readSource);
   const routeProof = routeBodyGateIntegrationProof(readSource);
-  return {
+  return Object.freeze({
     schemaVersion: 1,
-    artifact: 'cad-auth-deployed-runtime-supply-path-closure-v1',
+    artifact: 'cad-auth-startup-live-gate-source-install-closure-v1',
     sourceOnly: true,
     roadmap: '5/6 complete',
-    status: 'DEPLOYED_RUNTIME_SUPPLY_PATH_INSTALLED_DEFAULT_CLOSED',
+    status: 'STARTUP_LIVE_GATE_SOURCE_INSTALL_PATH_PROVEN_DEFAULT_CLOSED',
     purpose:
-      'install the reviewed live-opening gate credential closure into the deployed server startup path while preserving default fail-closed production behavior',
-    boundInputs: {
+      'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned source instead of proof-only injection while preserving fail-closed production behavior',
+    boundInputs: Object.freeze({
       stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
       approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
       mainCommit: REVIEWED_MAIN_COMMIT,
-      githubProductionDeploymentReference: REVIEWED_GITHUB_PRODUCTION_DEPLOYMENT,
+      productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
       productionTarget: REVIEWED_PRODUCTION_TARGET,
-      currentDeploymentReference: REVIEWED_DEPLOYMENT_REFERENCE,
+      sourceOwnedDeploymentReference: REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
       commandCardSha256: REVIEWED_COMMAND_CARD_SHA256,
       installationSha256: REVIEWED_INSTALLATION_SHA256,
       durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
@@ -210,27 +213,31 @@ function expectedPacket(readSource = read) {
       privateSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
       sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
       productionAlias: 'https://reversr.vercel.app',
-    },
+    }),
     reviewedWindow: REVIEWED_WINDOW,
-    defaultGate: DEFAULT_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE,
-    reviewedGate: REVIEWED_DEPLOYED_RUNTIME_SUPPLY_PATH_GATE,
+    defaultSource: DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+    reviewedSource: REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     defaultClosedProof: defaultProof,
-    deployedStartupSupplyPathProof: startupProof,
+    startupLiveGateInstallProof: startupProof,
     indexWiringProof: wiringProof,
     routeBodyGateIntegrationProof: routeProof,
     deployedStartupPathProvenExecutableWithoutRuntimeActivation:
-      defaultProof.defaultGateEnabled === false
+      defaultProof.defaultSourceEnabled === false
+      && defaultProof.startupLiveGateInstallSourceAccepted === false
+      && defaultProof.startupLiveGateInstallAccepted === false
       && defaultProof.sourceExecutable === false
       && defaultProof.sessionServiceNonNull === false
       && defaultProof.executableRuntimeEnabled === false
-      && defaultProof.deployedRuntimeSupplyPathAccepted === false
       && defaultProof.uploadSessionIssued === false
       && defaultProof.requestBodyAdmittedOrRead === false
       && defaultProof.effectsExecuted === 0
       && startupProof.metadataReadFromServerEnvironment === true
-      && startupProof.deployedRuntimeSupplyPathGateAccepted === true
-      && startupProof.deployedRuntimeSupplyPathMetadataAccepted === true
-      && startupProof.deployedRuntimeSupplyPathAccepted === true
+      && startupProof.metadataVercelDeploymentReference === REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE
+      && startupProof.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
+      && startupProof.metadataDeploymentReferenceCanonicalized === true
+      && startupProof.deploymentMetadataAccepted === true
+      && startupProof.startupLiveGateInstallSourceAccepted === true
+      && startupProof.startupLiveGateInstallAccepted === true
       && startupProof.privateCredentialSupplyAccepted === true
       && startupProof.privateCredentialValueIncluded === false
       && startupProof.gateNonNull === true
@@ -239,20 +246,26 @@ function expectedPacket(readSource = read) {
       && startupProof.sourceExecutable === true
       && startupProof.executableRuntimeEnabled === true
       && startupProof.commandCardSha256 === REVIEWED_COMMAND_CARD_SHA256
+      && startupProof.commandCardBytesSha256 === REVIEWED_COMMAND_CARD_SHA256
       && startupProof.installationSha256 === REVIEWED_INSTALLATION_SHA256
-      && startupProof.currentDeploymentReference === REVIEWED_DEPLOYMENT_REFERENCE
+      && startupProof.currentDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
       && startupProof.boundedSessionRef === REVIEWED_BOUNDED_SESSION_REF
       && startupProof.sessionId === REVIEWED_BOUNDED_SESSION_REF
       && startupProof.durableEvidenceSha256 === REVIEWED_DURABLE_EVIDENCE_SHA256
       && startupProof.durableServiceRef === REVIEWED_DURABLE_SERVICE_REF
+      && startupProof.privateSessionCredentialSupplyRef === PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF
+      && startupProof.privateSupplyReceiptSha256 === REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256
+      && startupProof.sessionCredentialDigestSha256 === SESSION_CREDENTIAL_DIGEST_SHA256
       && startupProof.effectsExecuted === 0
-      && wiringProof.importsDeployedRuntimeSupplyPathClosure === true
-      && wiringProof.constructsDeployedRuntimeSupplyPathClosure === true
+      && wiringProof.importsStartupLiveGateSourceInstaller === true
+      && wiringProof.constructsStartupLiveGateSourceInstaller === true
       && wiringProof.directlyConstructsCredentialClosure === false
-      && wiringProof.selectsCredentialClosureSessionService === true
-      && wiringProof.passesCredentialClosureExecutableRuntime === true
+      && wiringProof.usesProofOnlyDeployedRuntimeSupplyPath === false
+      && wiringProof.selectsStartupSessionService === true
+      && wiringProof.passesStartupExecutableRuntime === true
+      && wiringProof.mountsBeforeGeneralBodyParser === true
       && Object.values(routeProof).every(Boolean),
-    privateCredentialSupplyRequirement: {
+    privateCredentialSupplyRequirement: Object.freeze({
       requiredSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
       requiredCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
       requiredSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
@@ -263,7 +276,7 @@ function expectedPacket(readSource = read) {
       uploadSessionIssuanceAuthorized: false,
       privateSupplyReceiptRequired: true,
       laterLiveRequestMustSupplyBearerCredentialWhoseDigestMatches: true,
-    },
+    }),
     defaultProductionBehaviorClosed: true,
     liveOpeningAuthorized: false,
     uploadSessionIssued: false,
@@ -275,27 +288,27 @@ function expectedPacket(readSource = read) {
     durableServiceLiveQualified: false,
     privateEvidenceRead: false,
     effectsExecuted: 0,
-    nextGate: {
+    nextGate: Object.freeze({
       requiresPublicReviewMergeAndProductionSmoke: true,
-      requiresPostMergeDeploymentRebind: true,
+      requiresPostMergeDeploymentRebindRefresh: true,
       requiresPrivateCredentialSupplyApprovalBeforeLiveOpening: true,
       approvalPhraseTemplate:
-        'I approve a bounded source-only/no-live CAD Auth post-merge deployed runtime supply path closure deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed runtime supply path closure packet SHA-256 <deployedRuntimeSupplyPathClosurePacketSha256> at source commit <closureSourceCommit>, stopped live-opening disposition SHA-256 49a3e56d788ebfc5195225e3a6a8874b07187403a7acbe4811652bcb17a0778f, approved live-opening refresh SHA-256 fb3b8e86e6334931840651ca044c81635e18922dfbae153a918aeecf31f6cb35, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed server startup path can resolve a non-null live-opening session service and executable runtime from reviewed current-production metadata and private credential supply controls while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup supply path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
-    },
-    stopConditions: [
+        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup live-gate source installation closure deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup live-gate source installation closure packet SHA-256 <startupLiveGateSourceInstallClosurePacketSha256> at source commit <closureSourceCommit>, stopped live-opening disposition SHA-256 ae64570f5b101235fa1f2aa56a020d3d0a694e21f718267e8f4a2f1f5a5df40e, approved live-opening refresh SHA-256 c6373fa18ebc2d5d93e852aef50c721f17164b88bbca7d5e5b9f4e76e1d9ea2e, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed server startup default path can install the exact reviewed live-opening gate from server-owned current-production metadata and private credential supply controls while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup gate installation path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
+    }),
+    stopConditions: Object.freeze([
       'failingChecks',
       'failingSmoke',
       'unknownOutcome',
       'staleDeploymentBinding',
-      'unresolvedDeployedStartupSupplyPath',
+      'unresolvedDeployedStartupGateInstallationPath',
       'missingExactPrivateCredentialSupplyRequirement',
       'missingExecutableRuntimeBinding',
       'missingInstallationSha256',
       'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded',
-    ],
+    ]),
     sourceBindings: sourceBindings(readSource),
-  };
+  });
 }
 
 function checkPacket(packet, readSource = read) {
@@ -305,16 +318,16 @@ function checkPacket(packet, readSource = read) {
   } catch {
     ok = false;
   }
-  return {
+  return Object.freeze({
     ok,
     code: ok
-      ? 'DEPLOYED_RUNTIME_SUPPLY_PATH_PACKET_VALID_DEFAULT_CLOSED'
-      : 'DEPLOYED_RUNTIME_SUPPLY_PATH_PACKET_BLOCKED',
+      ? 'STARTUP_LIVE_GATE_SOURCE_INSTALL_PACKET_VALID_DEFAULT_CLOSED'
+      : 'STARTUP_LIVE_GATE_SOURCE_INSTALL_PACKET_BLOCKED',
     effectsExecuted: 0,
     liveOpeningAuthorized: false,
     runtimeActivated: false,
     uploadSessionIssued: false,
-  };
+  });
 }
 
 if (require.main === module) {
@@ -341,10 +354,9 @@ module.exports = {
   SOURCES,
   checkPacket,
   defaultClosedProof,
-  deployedStartupSupplyPathProof,
   expectedPacket,
   indexWiringProof,
   routeBodyGateIntegrationProof,
   sourceBindings,
-  withProofEnv,
+  startupLiveGateInstallProof,
 };

@@ -133,9 +133,9 @@ function indexWiringProof(readSource = read) {
   const index = readSource('server/index.js').toString('utf8');
   return {
     importsDeployedRuntimeSupplyPathClosure:
-      /createCadDeployedRuntimeSupplyPathClosure/.test(index),
+      /createCadDeployedRuntimeSupplyPathClosure|createCadStartupLiveGateSourceInstallClosure/.test(index),
     constructsDeployedRuntimeSupplyPathClosure:
-      /const cadLiveGateCredentialClosure = createCadDeployedRuntimeSupplyPathClosure\(\)/.test(index),
+      /const cadLiveGateCredentialClosure = (createCadDeployedRuntimeSupplyPathClosure|createCadStartupLiveGateSourceInstallClosure)\(\)/.test(index),
     directlyConstructsCredentialClosure:
       /const cadLiveGateCredentialClosure = createCadLiveOpeningGateCredentialClosure\(\)/.test(index),
     selectsCredentialClosureSessionService:

@@ -34,8 +34,9 @@ jobs:
           node scripts/cad-auth-credential-metadata-source-repair-checker.js
           node scripts/cad-auth-live-gate-credential-closure-checker.js
           node scripts/cad-auth-deployed-runtime-supply-path-closure-checker.js
+          node scripts/cad-auth-startup-live-gate-source-install-closure-checker.js
           node --test scripts/cad-auth-credential-metadata-source-repair.test.js scripts/cad-auth-credential-closure-binding-repair.test.js scripts/cad-auth-live-gate-credential-closure.test.js
-          node --test scripts/cad-auth-deployed-runtime-supply-path-closure.test.js
+          node --test scripts/cad-auth-deployed-runtime-supply-path-closure.test.js scripts/cad-auth-startup-live-gate-source-install-closure.test.js
           node scripts/cad-auth-production-binding-source-install-checker.js
           node --test scripts/cad-auth-production-binding-source-install.test.js scripts/cad-auth-production-execution-binding-finalization.test.js scripts/cad-auth-live-opening-execution-gap-closure.test.js scripts/cad-auth-live-opening-executable-runtime-wiring.test.js scripts/cad-auth-final-live-opening-rebind-prep.test.js
 
