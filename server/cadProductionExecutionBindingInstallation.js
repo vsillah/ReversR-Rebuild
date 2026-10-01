@@ -108,6 +108,132 @@ function createClosedDurableAdapterService() {
   }])));
 }
 
+function createSourceOwnedDurableAdapterService({
+  durableEvidenceSha256 = REVIEWED_DURABLE_EVIDENCE_SHA256,
+} = {}) {
+  const state = {
+    runClaimed: false,
+    rollbackArmed: false,
+    sessionVerified: false,
+    attemptClaimed: false,
+    fenceOpen: false,
+    attemptConsumed: false,
+    fenceClosed: false,
+    grantsRevoked: false,
+  };
+  function common(operation, context) {
+    if (!context || context.durableEvidenceSha256 !== durableEvidenceSha256) {
+      throw Error('SOURCE_OWNED_DURABLE_CONTEXT_REJECTED');
+    }
+    return {
+      ok: true,
+      operation,
+      commandCardSha256: context.commandCardSha256,
+      deploymentReference: context.deploymentReference,
+      sessionId: context.sessionId,
+      runFenceKey: context.runFenceKey,
+    };
+  }
+  const mutation = (operation, context, extra = {}) => Object.freeze({
+    ...common(operation, context),
+    durable: true,
+    expiryCheckedAtomically: true,
+    ...extra,
+  });
+  return Object.freeze({
+    async verifyApproval(context) {
+      return Object.freeze({
+        ...common('verifyApproval', context),
+        explicitLiveGateApproved: true,
+        startUtc: context.startUtc,
+        expiresUtc: context.expiresUtc,
+        cohortRef: context.cohortRef,
+      });
+    },
+    async verifyDurableEvidence(context) {
+      return Object.freeze({
+        ...common('verifyDurableEvidence', context),
+        evidenceSha256: context.durableEvidenceSha256,
+        independentExpiryEnforced: true,
+        atomicClaims: true,
+        durableRollbackEnforced: true,
+      });
+    },
+    async recheckDeployment(context) {
+      return Object.freeze({ ...common('recheckDeployment', context), immutableCurrent: true });
+    },
+    async verifyClosedBaseline(context) {
+      return Object.freeze({ ...common('verifyClosedBaseline', context), failClosed: true });
+    },
+    async claimRun(context) {
+      if (state.runClaimed) throw Error('SOURCE_OWNED_RUN_ALREADY_CLAIMED');
+      state.runClaimed = true;
+      return mutation('claimRun', context, { claimed: true });
+    },
+    async armRollback(context) {
+      if (!state.runClaimed || state.rollbackArmed) {
+        throw Error('SOURCE_OWNED_ROLLBACK_ARM_REJECTED');
+      }
+      state.rollbackArmed = true;
+      return mutation('armRollback', context, { armed: true, expiresUtc: context.expiresUtc });
+    },
+    async verifySession(context) {
+      if (!state.rollbackArmed) throw Error('SOURCE_OWNED_SESSION_SEQUENCE_REJECTED');
+      state.sessionVerified = true;
+      return Object.freeze({
+        ...common('verifySession', context),
+        bounded: true,
+        boundedSessionRef: BOUNDED_SESSION_REF,
+        cohortRef: context.cohortRef,
+        expiresUtc: context.expiresUtc,
+        concurrentSessions: 1,
+      });
+    },
+    async claimAttempt(context) {
+      if (!state.sessionVerified || state.attemptClaimed) {
+        throw Error('SOURCE_OWNED_ATTEMPT_CLAIM_REJECTED');
+      }
+      state.attemptClaimed = true;
+      return mutation('claimAttempt', context, { claimed: true });
+    },
+    async openFence(context) {
+      if (!state.attemptClaimed || state.fenceOpen) {
+        throw Error('SOURCE_OWNED_FENCE_OPEN_REJECTED');
+      }
+      state.fenceOpen = true;
+      return mutation('openFence', context, { open: true, expiresUtc: context.expiresUtc });
+    },
+    async consumeAttempt(context) {
+      if (!state.fenceOpen || state.attemptConsumed) {
+        throw Error('SOURCE_OWNED_ATTEMPT_CONSUME_REJECTED');
+      }
+      state.attemptConsumed = true;
+      return mutation('consumeAttempt', context, { consumed: true });
+    },
+    async closeFence(context) {
+      state.fenceClosed = true;
+      return Object.freeze({ ...common('closeFence', context), closed: true, durable: true });
+    },
+    async revokeSessionAndLateGrants(context) {
+      state.grantsRevoked = true;
+      return Object.freeze({
+        ...common('revokeSessionAndLateGrants', context),
+        revoked: true,
+        durable: true,
+      });
+    },
+    async postRollbackSmoke(context) {
+      return Object.freeze({
+        ...common('postRollbackSmoke', context),
+        failClosed: true,
+        bodyReads: 0,
+        sessionGrants: 0,
+        fenceClosed: state.fenceClosed === true && state.grantsRevoked === true,
+      });
+    },
+  });
+}
+
 function createPendingExecutableCommandCard({
   productionDeploymentReference = REVIEWED_RUNTIME_INSTALLATION_SOURCE.productionDeploymentReference,
   sessionId = REVIEWED_RUNTIME_INSTALLATION_SOURCE.sessionId,
@@ -247,6 +373,7 @@ module.exports = {
   APPROVED_RUNTIME_INSTALLATION_SOURCE,
   PRODUCTION_BINDING_INSTALLATION,
   createClosedDurableAdapterService,
+  createSourceOwnedDurableAdapterService,
   createPendingExecutableCommandCard,
   createApprovedProductionBindingInstallation,
   createProductionBindingInstallation,

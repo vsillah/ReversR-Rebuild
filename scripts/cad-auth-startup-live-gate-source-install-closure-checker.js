@@ -7,9 +7,6 @@ const {
   SESSION_CREDENTIAL_DIGEST_SHA256,
 } = require('../server/cadLiveOpeningGateCredentialClosure');
 const {
-  METHODS,
-} = require('../server/cadLiveOpeningExecutableRuntimeWiring');
-const {
   readCadProductionCurrentDeploymentMetadata,
 } = require('../server/cadProductionCurrentDeploymentMetadata');
 const {
@@ -36,7 +33,6 @@ const PACKET = 'docs/cad-auth-startup-live-gate-source-install-closure.json';
 const PROOF_ENV = Object.freeze({
   VERCEL: '1',
   VERCEL_ENV: 'production',
-  VERCEL_DEPLOYMENT_ID: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
   VERCEL_URL: REVIEWED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: REVIEWED_MAIN_COMMIT,
@@ -75,15 +71,9 @@ function sourceBindings(readSource = read) {
   return Object.fromEntries(SOURCES.map(file => [file, sha(readSource(file))]));
 }
 
-function durableService(calls = []) {
-  return Object.freeze(Object.fromEntries(METHODS.map(name => [name, async () => {
-    calls.push(name);
-    throw Error('UNEXPECTED_SOURCE_ONLY_EFFECT');
-  }])));
-}
-
 function defaultClosedProof() {
   const closure = createCadStartupLiveGateSourceInstallClosure({
+    source: DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     deploymentMetadata: readCadProductionCurrentDeploymentMetadata(PROOF_ENV),
     now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
   });
@@ -102,12 +92,9 @@ function defaultClosedProof() {
 }
 
 function startupLiveGateInstallProof() {
-  const calls = [];
   const deploymentMetadata = readCadProductionCurrentDeploymentMetadata(PROOF_ENV);
   const closure = createCadStartupLiveGateSourceInstallClosure({
-    source: REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     deploymentMetadata,
-    durableService: durableService(calls),
     now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
   });
   const installation = closure.runtime?.installation || null;
@@ -115,7 +102,8 @@ function startupLiveGateInstallProof() {
   return Object.freeze({
     proofNowUtc: REVIEWED_WINDOW.proofNowUtc,
     metadataReadFromServerEnvironment: deploymentMetadata !== null,
-    metadataVercelDeploymentReference: deploymentMetadata?.deploymentReference || null,
+    metadataDeploymentReference: deploymentMetadata?.deploymentReference || null,
+    reviewedProductionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
     sourceOwnedDeploymentReference: closure.sourceOwnedDeploymentReference || null,
     metadataDeploymentReferenceCanonicalized:
       closure.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
@@ -141,7 +129,8 @@ function startupLiveGateInstallProof() {
     privateSessionCredentialSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
     privateSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
     sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
-    effectsExecuted: calls.length,
+    sourceOwnedDurableAdapterPathClosed: false,
+    effectsExecuted: closure.effectsExecuted,
   });
 }
 
@@ -193,14 +182,14 @@ function expectedPacket(readSource = read) {
     artifact: 'cad-auth-startup-live-gate-source-install-closure-v1',
     sourceOnly: true,
     roadmap: '5/6 complete',
-    status: 'STARTUP_LIVE_GATE_SOURCE_INSTALL_PATH_PROVEN_DEFAULT_CLOSED',
+    status: 'STARTUP_LIVE_GATE_DEFAULT_STARTUP_PATH_PROVEN_DEFAULT_CLOSED',
     purpose:
       'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned source instead of proof-only injection while preserving fail-closed production behavior',
     boundInputs: Object.freeze({
       stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
       approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
       mainCommit: REVIEWED_MAIN_COMMIT,
-      productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
+      githubProductionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
       productionTarget: REVIEWED_PRODUCTION_TARGET,
       sourceOwnedDeploymentReference: REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
       commandCardSha256: REVIEWED_COMMAND_CARD_SHA256,
@@ -232,7 +221,8 @@ function expectedPacket(readSource = read) {
       && defaultProof.requestBodyAdmittedOrRead === false
       && defaultProof.effectsExecuted === 0
       && startupProof.metadataReadFromServerEnvironment === true
-      && startupProof.metadataVercelDeploymentReference === REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE
+      && startupProof.metadataDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
+      && startupProof.reviewedProductionDeploymentReference === REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE
       && startupProof.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
       && startupProof.metadataDeploymentReferenceCanonicalized === true
       && startupProof.deploymentMetadataAccepted === true
@@ -256,6 +246,7 @@ function expectedPacket(readSource = read) {
       && startupProof.privateSessionCredentialSupplyRef === PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF
       && startupProof.privateSupplyReceiptSha256 === REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256
       && startupProof.sessionCredentialDigestSha256 === SESSION_CREDENTIAL_DIGEST_SHA256
+      && startupProof.sourceOwnedDurableAdapterPathClosed === false
       && startupProof.effectsExecuted === 0
       && wiringProof.importsStartupLiveGateSourceInstaller === true
       && wiringProof.constructsStartupLiveGateSourceInstaller === true
@@ -293,14 +284,15 @@ function expectedPacket(readSource = read) {
       requiresPostMergeDeploymentRebindRefresh: true,
       requiresPrivateCredentialSupplyApprovalBeforeLiveOpening: true,
       approvalPhraseTemplate:
-        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup live-gate source installation closure deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup live-gate source installation closure packet SHA-256 <startupLiveGateSourceInstallClosurePacketSha256> at source commit <closureSourceCommit>, stopped live-opening disposition SHA-256 ae64570f5b101235fa1f2aa56a020d3d0a694e21f718267e8f4a2f1f5a5df40e, approved live-opening refresh SHA-256 c6373fa18ebc2d5d93e852aef50c721f17164b88bbca7d5e5b9f4e76e1d9ea2e, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed server startup default path can install the exact reviewed live-opening gate from server-owned current-production metadata and private credential supply controls while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup gate installation path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
+        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup default live-gate execution source deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup default live-gate execution source repair packet SHA-256 <startupDefaultGateRepairPacketSha256> at source commit <repairSourceCommit>, stopped live-opening disposition SHA-256 2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b, approved live-opening refresh SHA-256 5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11, GitHub production deployment <currentGithubProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed no-arg server/index.js startup path can resolve a non-null executable runtime from reviewed current-production metadata, exact live-gate source values, exact private credential supply controls, and a non-closed source-owned durable adapter path while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup default source path, closed durable adapter path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
     }),
     stopConditions: Object.freeze([
       'failingChecks',
       'failingSmoke',
       'unknownOutcome',
       'staleDeploymentBinding',
-      'unresolvedDeployedStartupGateInstallationPath',
+      'unresolvedDeployedStartupDefaultSourcePath',
+      'closedDurableAdapterPath',
       'missingExactPrivateCredentialSupplyRequirement',
       'missingExecutableRuntimeBinding',
       'missingInstallationSha256',
