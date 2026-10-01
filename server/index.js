@@ -8,8 +8,8 @@ const {
   createLiveOpeningExecutionArchitectureRuntime,
 } = require('./cadLiveOpeningExecutionArchitectureClosure');
 const {
-  createCadLiveOpeningGateCredentialClosure,
-} = require('./cadLiveOpeningGateCredentialClosure');
+  createCadDeployedRuntimeSupplyPathClosure,
+} = require('./cadDeployedRuntimeSupplyPathClosure');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
@@ -38,7 +38,7 @@ const configuredCorsOrigins = parseListEnv(process.env.API_CORS_ORIGINS);
 const corsAllowsAllOrigins = configuredCorsOrigins.length === 0 || configuredCorsOrigins.includes('*');
 const apiRequestBodyLimit = process.env.API_REQUEST_BODY_LIMIT || '50mb';
 const cadUploadSessionRuntime = createCadUploadSessionGatewayService({ env: process.env });
-const cadLiveGateCredentialClosure = createCadLiveOpeningGateCredentialClosure();
+const cadLiveGateCredentialClosure = createCadDeployedRuntimeSupplyPathClosure();
 const cadLiveOpeningExecutionRuntime = cadLiveGateCredentialClosure.runtime
   || createLiveOpeningExecutionArchitectureRuntime();
 const cadUserUploadSessionService = cadLiveGateCredentialClosure.sessionService

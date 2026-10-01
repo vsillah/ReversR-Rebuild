@@ -44,6 +44,7 @@ const PROOF_ENV = Object.freeze({
 });
 const SOURCES = Object.freeze([
   'server/cadLiveOpeningGateCredentialClosure.js',
+  'server/cadDeployedRuntimeSupplyPathClosure.js',
   'server/cadLiveOpeningCredentialClosureMetadataPolicy.js',
   'server/index.js',
   'server/cadLiveOpeningExecutionArchitectureClosure.js',
@@ -131,9 +132,11 @@ function sourceOwnedClosureProof() {
 function indexWiringProof(readSource = read) {
   const index = readSource('server/index.js').toString('utf8');
   return {
-    importsCredentialClosure:
-      /createCadLiveOpeningGateCredentialClosure/.test(index),
-    constructsCredentialClosure:
+    importsDeployedRuntimeSupplyPathClosure:
+      /createCadDeployedRuntimeSupplyPathClosure/.test(index),
+    constructsDeployedRuntimeSupplyPathClosure:
+      /const cadLiveGateCredentialClosure = createCadDeployedRuntimeSupplyPathClosure\(\)/.test(index),
+    directlyConstructsCredentialClosure:
       /const cadLiveGateCredentialClosure = createCadLiveOpeningGateCredentialClosure\(\)/.test(index),
     selectsCredentialClosureSessionService:
       /cadLiveGateCredentialClosure\.sessionService/.test(index),
@@ -201,8 +204,9 @@ function expectedPacket(readSource = read) {
       && SHA.test(closureProof.commandCardSha256 || '')
       && SHA.test(closureProof.installationSha256 || '')
       && closureProof.effectsExecuted === 0
-      && wiringProof.importsCredentialClosure === true
-      && wiringProof.constructsCredentialClosure === true
+      && wiringProof.importsDeployedRuntimeSupplyPathClosure === true
+      && wiringProof.constructsDeployedRuntimeSupplyPathClosure === true
+      && wiringProof.directlyConstructsCredentialClosure === false
       && wiringProof.selectsCredentialClosureSessionService === true
       && wiringProof.passesCredentialClosureExecutableRuntime === true,
     privateCredentialSupplyRequirement: {
