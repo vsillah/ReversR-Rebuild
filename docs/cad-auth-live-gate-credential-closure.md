@@ -11,19 +11,20 @@ are both true:
 
 - allowlisted Vercel production system metadata proves the current deployment
   belongs to `vsillah/ReversR-Rebuild` on `main`, targets
-  `https://reversr.vercel.app`, is non-secret, and supplies the immutable
-  deployment id, commit, and production target used to recompute command-card
-  and installation digests;
+  `https://reversr.vercel.app`, is non-secret, and supplies either an immutable
+  `dpl_*` deployment id or a deterministic
+  `vercel-target:<deployment-host>@<gitCommitSha>` source-owned deployment
+  reference used to recompute command-card and installation digests;
 - a private one-time credential supply is present only as a digest-bound control
   record with a private supply receipt, never as a raw credential value in
   public source.
 
-The GitHub production deployment id `6771743168`, target
-`https://reversr-irbbqlave-vsillahs-projects.vercel.app`, and fail-closed smoke
-`401 USER_SESSION_REQUIRED` observed at `2026-09-30T22:42:27Z` remain
-provenance inputs. Runtime eligibility comes from Vercel system deployment
-metadata, not from request metadata, aliases, provider lookups, or a stale
-hard-coded deployment id.
+The GitHub production deployment id `6772517435`, target
+`https://reversr-a261m8i6x-vsillahs-projects.vercel.app`, and fail-closed smoke
+`401 USER_SESSION_REQUIRED` observed no later than `2026-09-30T23:39:21Z`
+remain provenance inputs. Runtime eligibility comes from Vercel system
+deployment metadata, not from request metadata, aliases, provider lookups,
+GitHub numeric deployment ids, or a stale hard-coded deployment id.
 
 The default production import path remains fail-closed. With no private supply,
 the closure returns no session service, a disabled executable runtime, no upload
@@ -45,7 +46,9 @@ Validation:
 
 ```bash
 node scripts/cad-auth-live-gate-credential-closure-checker.js
+node scripts/cad-auth-credential-metadata-source-repair-checker.js
 node --test scripts/cad-auth-live-gate-credential-closure.test.js
+node --test scripts/cad-auth-credential-metadata-source-repair.test.js
 node --test scripts/cad-user-upload-route.test.js scripts/cad-auth-live-opening-execution-architecture-closure.test.js scripts/cad-auth-default-prod-binding-source-closure.test.js
 ```
 

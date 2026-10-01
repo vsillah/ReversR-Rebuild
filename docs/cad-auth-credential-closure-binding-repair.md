@@ -9,56 +9,59 @@ Default production stays closed without the exact private credential supply.
 
 ## Bound provenance
 
-- Base: `79f25144225a2cf12052243f08a69109c3f632e7`.
+- Base: `56a29e337ceb459c66f83d7f5207b7ba74f65686`.
 - Stopped post-merge rebind disposition SHA-256:
-  `e4a0c272ab7c71c5f3cd31c57b0f383ea454ad589756cbb39c54e371246039de`.
+  `2b47414dda01f46bea2a83d9b5b9b332393f0f53f657ee2db9986af728c092fd`.
 - Parent credential-closure packet SHA-256:
-  `49fb61c54ddec577e9d3316cc9cc528789567618ee8a47a272c16d2e66d16027`
-  at `7ece1ed0131dbef5a38a70aa508cd07696857e26`.
-- Supplied GitHub production deployment: `6771743168`.
-- Supplied production target: `https://reversr-irbbqlave-vsillahs-projects.vercel.app`.
-- Supplied historical smoke: `401 USER_SESSION_REQUIRED` at `2026-09-30T22:42:27Z`.
+  `57675e09d0bd717a4ce6e372e4f49a3c9c494b4dabb29194c3a973a9405584e8`
+  at `4f25f2f1ab3df8964c9aeaba0dafb0216b226637`.
+- Supplied GitHub production deployment: `6772517435`.
+- Supplied production target: `https://reversr-a261m8i6x-vsillahs-projects.vercel.app`.
+- Supplied historical smoke: `401 USER_SESSION_REQUIRED` observed no later than
+  `2026-09-30T23:39:21Z`.
 
 This task does not refresh that production smoke or read private disposition
 records. The original packet remains available at its source commit.
 
 ## Metadata reference policy
 
-Policy: `rrb-ref:cad-auth-credential-closure-current-deployment-metadata-v1`.
+Policy: `rrb-ref:cad-auth-credential-closure-current-deployment-metadata-v2`.
 The unchanged production entry calls `createCadLiveOpeningGateCredentialClosure()`.
 Its default reader accesses only non-secret Vercel system metadata:
 `VERCEL_DEPLOYMENT_ID`, `VERCEL_URL`, `VERCEL_PROJECT_PRODUCTION_URL`,
 `VERCEL_GIT_COMMIT_SHA`, `VERCEL_GIT_COMMIT_REF`, `VERCEL_GIT_REPO_SLUG`,
 `VERCEL_GIT_REPO_OWNER`, and `VERCEL_ENV`.
 
-The closure requires the reader's exact shape, an immutable `dpl_` ID, an
-immutable `reversr-<deployment>-vsillahs-projects.vercel.app` target, a full
+The closure requires the reader's exact shape, either an immutable `dpl_` ID
+or a source-owned `vercel-target:<deployment-host>@<gitCommitSha>` reference,
+an immutable `reversr-<deployment>-vsillahs-projects.vercel.app` target, a full
 40-character commit SHA, project target `https://reversr.vercel.app`, and exact
 `vsillah/ReversR-Rebuild`, `main`, `production` identity. Extra fields, alias
-URLs, request metadata, absent IDs, and numeric GitHub deployment IDs are
+URLs, request metadata, malformed IDs, and numeric GitHub deployment IDs are
 rejected. Missing system metadata is a stop, never permission to configure a
-provider. No new environment switch, file loader or HTTP activation endpoint
-is added.
+provider. No new environment switch, file loader or HTTP activation endpoint is
+added.
 
 System metadata identifies the serving deployment; it cannot prove an old
 immutable URL is still current production. Existing durable `recheckDeployment`
 receipts must confirm that before effects. Installation compares the gate's
-commit, target and ID with the same metadata snapshot. Stale gates reject.
-The new repair manifest uses clearly synthetic Vercel IDs; it claims no mapping
-from those IDs to the supplied GitHub deployment.
+commit, target and deployment reference with the same metadata snapshot. Stale
+gates reject. GitHub deployment ids remain provenance only and cannot become
+runtime deployment references.
 
 ## Exact binding and private supply
 
 Command-card SHA-256 covers the literal canonical UTF-8 JSON bytes constructed
-in memory from current immutable deployment ID, session, durable evidence and
-reviewed window. Parsing and reserialization must preserve that digest. No card
-is written or issued for live execution.
+in memory from current source-owned deployment reference, session, durable
+evidence and reviewed window. Parsing and reserialization must preserve that
+digest. No card is written or issued for live execution.
 
 Installation SHA-256 covers the ordered projection of schema version, literal
-command-card bytes and digest, current deployment ID, bounded session ref,
-session ID, durable evidence digest, durable service ref, start and expiry UTC.
-The resolver recomputes it. Missing or altered bytes/digests reject installation.
-The gate separately compares commit and target with current metadata.
+command-card bytes and digest, current deployment reference, bounded session
+ref, session ID, durable evidence digest, durable service ref, start and expiry
+UTC. The resolver recomputes it. Missing or altered bytes/digests reject
+installation. The gate separately compares commit and target with current
+metadata.
 
 The bounded session remains `rrb-ref:cad-upload-internal-mark-test-session-v1`.
 Durable evidence remains
@@ -89,10 +92,11 @@ expiry. Failed or unknown rollback/smoke stops without retry.
 
 Default private supply remains `supplied: false`, and the default durable
 adapter rejects every effect. Current metadata alone enables neither the
-session service nor runtime. Synthetic composition exercises the same factory
-with exact private supply controls to prove a non-null gate and installation.
-The local production router composition proves `401 USER_SESSION_REQUIRED`
-without body reads. These are source proofs, not deployed or live readiness.
+session service nor runtime. Source-owned composition exercises the same
+factory with exact private supply controls to prove a non-null gate and
+installation. The local production router composition proves
+`401 USER_SESSION_REQUIRED` without body reads. These are source proofs, not
+deployed or live readiness.
 
 ## Validation and next gate
 
@@ -100,9 +104,10 @@ Use existing local dependencies only. Focused commands:
 
 ```sh
 node scripts/cad-auth-credential-closure-binding-repair-checker.js
+node scripts/cad-auth-credential-metadata-source-repair-checker.js
 node scripts/cad-auth-live-gate-credential-closure-checker.js
 node scripts/cad-auth-production-binding-source-install-checker.js
-node --test scripts/cad-auth-credential-closure-binding-repair.test.js scripts/cad-auth-live-gate-credential-closure.test.js scripts/cad-user-upload-route.test.js scripts/cad-auth-live-opening-execution-architecture-closure.test.js scripts/cad-auth-default-prod-binding-source-closure.test.js
+node --test scripts/cad-auth-credential-metadata-source-repair.test.js scripts/cad-auth-credential-closure-binding-repair.test.js scripts/cad-auth-live-gate-credential-closure.test.js scripts/cad-user-upload-route.test.js scripts/cad-auth-live-opening-execution-architecture-closure.test.js scripts/cad-auth-default-prod-binding-source-closure.test.js
 node --test scripts/cad-auth-production-binding-source-install.test.js scripts/cad-auth-production-execution-binding-finalization.test.js scripts/cad-auth-live-opening-execution-gap-closure.test.js scripts/cad-auth-live-opening-executable-runtime-wiring.test.js scripts/cad-auth-final-live-opening-rebind-prep.test.js
 ```
 

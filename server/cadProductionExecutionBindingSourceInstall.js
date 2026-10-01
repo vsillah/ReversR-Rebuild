@@ -10,7 +10,7 @@ const {
 
 const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const sha = value => createHash('sha256').update(value).digest('hex');
-const REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/;
+const REF = /^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$/;
 
 // Source assembly is not proof of live approval or durable qualification.
 // Runtime verification of approval, evidence and the immutable deployment is

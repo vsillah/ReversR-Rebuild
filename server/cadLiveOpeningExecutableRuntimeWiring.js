@@ -61,7 +61,7 @@ const shaJson = value => createHash('sha256').update(JSON.stringify(value)).dige
 const shaBytes = value => createHash('sha256').update(value).digest('hex');
 const digest = value => typeof value === 'string' && SHA.test(value);
 const id = value => typeof value === 'string' && ID.test(value);
-const ref = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/.test(value);
+const ref = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$/.test(value);
 const iso = value => typeof value === 'string' && Number.isFinite(Date.parse(value))
   && new Date(value).toISOString().replace('.000Z', 'Z') === value;
 

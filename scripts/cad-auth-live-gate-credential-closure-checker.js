@@ -31,12 +31,10 @@ const PACKET = 'docs/cad-auth-live-gate-credential-closure.json';
 const PROOF_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   '9fbd55a035e59594a2c5770cd23d55d52a4fcac5341d8635631b7f897a0c58f4';
 const SHA = /^[a-f0-9]{64}$/;
-// Synthetic source proof only; not an observed Vercel deployment mapping.
-const PROOF_VERCEL_DEPLOYMENT_REFERENCE = 'dpl_SyntheticCredentialRepair0001';
+// Source-owned proof only; no observed or synthetic Vercel dpl id is supplied.
 const PROOF_ENV = Object.freeze({
   VERCEL: '1',
   VERCEL_ENV: 'production',
-  VERCEL_DEPLOYMENT_ID: PROOF_VERCEL_DEPLOYMENT_REFERENCE,
   VERCEL_URL: APPROVED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: REPAIR_BASE_MAIN_COMMIT,
@@ -168,7 +166,8 @@ function expectedPacket(readSource = read) {
         APPROVED_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
       approvedProductionTarget: APPROVED_PRODUCTION_TARGET,
       approvedFailClosedSmoke: APPROVED_FAIL_CLOSED_SMOKE,
-      proofVercelDeploymentReference: PROOF_VERCEL_DEPLOYMENT_REFERENCE,
+      proofVercelDeploymentReference:
+        `vercel-target:${APPROVED_PRODUCTION_TARGET.replace('https://', '').toLowerCase()}@${REPAIR_BASE_MAIN_COMMIT}`,
       sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
       privateSessionCredentialSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
       currentDeploymentMetadataPolicy: CURRENT_DEPLOYMENT_METADATA_POLICY,
