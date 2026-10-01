@@ -31,20 +31,20 @@ The proof is source-only:
 - approved live-opening refresh SHA-256:
   `5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11`
 - stopped post-merge rebind refresh disposition SHA-256:
-  `a73d2e5b63277ee0509f5630f916896bd948bc657cff3be3f65870c7902a3722`
+  `bad23f7157a8e3b1e96a2c9178d3417a29b50e50a68535dc6fff14fecf61397d`
 - historical startup default repair packet SHA-256:
-  `c916c5f275831c6d42c2742e8cc36ab35d7499d3b3d2077f3f44348c90c85280`
+  `2ae1b55ca751a345b0a7463f147fc4a0713a12902512e8dd55503084f1b7a402`
 - repair base main commit:
-  `f5ad0959788a41722da64f951e39be4a5137e0df`
-- repair base GitHub production deployment: `6782203539`
+  `ff8e4d62ab099bb22156a9696292471da14316ef`
+- repair base GitHub production deployment: `6783406536`
 - production target:
-  `https://reversr-ep7vsrc6c-vsillahs-projects.vercel.app`
+  `https://reversr-7pyd54gis-vsillahs-projects.vercel.app`
 - source-owned deployment reference:
-  `vercel-target:reversr-ep7vsrc6c-vsillahs-projects.vercel.app@f5ad0959788a41722da64f951e39be4a5137e0df`
+  `vercel-target:reversr-7pyd54gis-vsillahs-projects.vercel.app@ff8e4d62ab099bb22156a9696292471da14316ef`
 - command-card SHA-256:
-  `8beff91f949f4fecff2d15be4d62eff3300215e7c6656cfa4aaaf88fb98556f7`
+  `ae44480fa20cc0a4320b235f48fac634c97880173ec060964971d160bcae6ab5`
 - installation SHA-256:
-  `11c991cf50014025f6517b797c93ac0b1ba0661670a98bf3bfc3081bba513325`
+  `2495e05f701609ee6baeebca01cbcf0203a49fb01f99d4c32e795487020ebc6f`
 - bounded session ref:
   `rrb-ref:cad-upload-internal-mark-test-session-v1`
 - durable evidence SHA-256:
@@ -54,7 +54,7 @@ The proof is source-only:
 - private supply receipt SHA-256:
   `ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1`
 - proof window:
-  `2026-10-01T10:00:00Z` to `2026-10-01T10:30:00Z`
+  `2026-10-01T14:00:00Z` to `2026-10-01T14:30:00Z`
 
 ## Validation
 
