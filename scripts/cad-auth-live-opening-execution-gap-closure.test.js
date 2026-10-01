@@ -168,7 +168,7 @@ test('session-ref mapping must be attested by the service, and hostile bindings 
 
 test('production entry supplies the disabled factory before general body parsing', () => {
   const source = readSource('server/index.js').toString();
-  assert.match(source, /createCadDeployedRuntimeSupplyPathClosure\(\)/);
+  assert.match(source, /createCadStartupLiveGateSourceInstallClosure\(\)/);
   assert.doesNotMatch(source,
     /const cadLiveGateCredentialClosure = createCadLiveOpeningGateCredentialClosure\(\)/);
   assert.match(source, /cadLiveGateCredentialClosure\.executableRuntime/);

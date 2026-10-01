@@ -164,7 +164,7 @@
   ],
   "sourceBindings": {
     "server/cadDeployedRuntimeSupplyPathClosure.js": "580451d17e99c35c94968726679eaf2ba188a2093f424fc81b1b915ddf952e95",
-    "server/index.js": "47beea6f767e397c6e7a7d19ad8baf122199696460594bb6dd6f5384fdaebfbd",
+    "server/index.js": "8b3ddbc50282d1538dcad531b83b63005a3820f6dce3bedcd1f0b7d6cf9af856",
     "server/cadLiveOpeningGateCredentialClosure.js": "422ee493d2fc4cd92f39e5dffca79ee7bc7bf69ccdcafb36920c0e9cec26027f",
     "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "f7e9d990d39950f9281352f036b2811dd07cd873a03344fd28518f4567f26a78",
     "server/cadProductionCurrentDeploymentMetadata.js": "407c41abb3530579f783d9f74d35066a12bf96f779e68f71db6e9c238c68fbe6",
@@ -179,7 +179,7 @@
     "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
     "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
     "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
-    "scripts/cad-auth-deployed-runtime-supply-path-closure-checker.js": "5cc089b91fbad9eb13e09237911b9a43b6182e25c1fb91c2846912065a628057",
+    "scripts/cad-auth-deployed-runtime-supply-path-closure-checker.js": "86cfda8bc093d24e75791d1302635698cf39f3d5d72438254d06e614f08d13b4",
     "scripts/cad-auth-deployed-runtime-supply-path-closure.test.js": "7b5bb3a049dfd6e8b2c37fad169c8fda787da2d1bd700880a3409ef1a0c2919c",
     "docs/cad-auth-deployed-runtime-supply-path-closure.md": "7e37bc75b6ded425dacb827839ec3c17e6497f61da17750ea382dec26514b6e1"
   }
