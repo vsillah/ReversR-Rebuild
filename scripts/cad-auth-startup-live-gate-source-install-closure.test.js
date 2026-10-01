@@ -6,17 +6,17 @@ const {
   SESSION_CREDENTIAL_DIGEST_SHA256,
 } = require('../server/cadLiveOpeningGateCredentialClosure');
 const {
-  createClosedDurableAdapterService,
-} = require('../server/cadProductionExecutionBindingInstallation');
+  createCadLiveOpeningExecutableRuntimeBootstrap,
+} = require('../server/cadLiveOpeningExecutableRuntimeBootstrap');
 const {
   readCadProductionCurrentDeploymentMetadata,
 } = require('../server/cadProductionCurrentDeploymentMetadata');
 const {
+  DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_BOUNDED_SESSION_REF,
   REVIEWED_COMMAND_CARD_SHA256,
   REVIEWED_INSTALLATION_SHA256,
   REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
-  REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
   REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
   REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
@@ -28,6 +28,7 @@ const checker = require('./cad-auth-startup-live-gate-source-install-closure-che
 
 test('default startup live-gate source installer stays fail-closed', () => {
   const closure = createCadStartupLiveGateSourceInstallClosure({
+    source: DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     deploymentMetadata: readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
     now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
   });
@@ -43,7 +44,7 @@ test('default startup live-gate source installer stays fail-closed', () => {
 
 test('reviewed source installs exact startup session service and runtime from current metadata', async () => {
   const deploymentMetadata = readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV);
-  assert.equal(deploymentMetadata.deploymentReference, REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE);
+  assert.equal(deploymentMetadata.deploymentReference, REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE);
   const normalized = normalizeStartupDeploymentMetadata(
     deploymentMetadata,
     REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
@@ -51,9 +52,7 @@ test('reviewed source installs exact startup session service and runtime from cu
   assert.equal(normalized.deploymentReference, REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE);
 
   const closure = createCadStartupLiveGateSourceInstallClosure({
-    source: REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     deploymentMetadata,
-    durableService: createClosedDurableAdapterService(),
     now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
   });
   assert.equal(closure.startupLiveGateInstallSourceAccepted, true);
@@ -79,6 +78,51 @@ test('reviewed source installs exact startup session service and runtime from cu
   assert.equal(record.cadUploadAllowed, true);
 });
 
+test('deployed no-arg startup path has non-closed source-owned local body gate proof', async () => {
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata: readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  const runtimeMount = createCadLiveOpeningExecutableRuntimeBootstrap({
+    executableRuntime: closure.executableRuntime,
+  });
+  const principal = await closure.sessionService.lookupSession(SESSION_CREDENTIAL_DIGEST_SHA256);
+  assert.equal(principal.sessionId, REVIEWED_BOUNDED_SESSION_REF);
+
+  const decision = await runtimeMount.admissionSwitch.decide({
+    bodyAdmissionAuthorized: false,
+    principal,
+  });
+  assert.equal(decision.bodyReadAuthorized, true);
+  assert.equal(decision.conversionAuthorized, false);
+  assert.equal(decision.sandboxDispatchAuthorized, false);
+
+  const gateDecision = await runtimeMount.routeBodyGate.authorizeBodyRead({
+    bodyAdmissionAuthorized: false,
+    principal,
+    admissionDecision: decision,
+  });
+  assert.equal(gateDecision.bodyReadAuthorized, true);
+  assert.equal(gateDecision.routeBodyGateAuthorized, true);
+  assert.equal(gateDecision.conversionAuthorized, false);
+  assert.equal(gateDecision.sandboxDispatchAuthorized, false);
+
+  const cleanup = await runtimeMount.routeBodyGate.afterBodyAdmission({
+    bodyGateDecision: gateDecision,
+    admissionOk: false,
+  });
+  assert.equal(cleanup.rollbackVerified, true);
+  assert.equal(cleanup.unknownOutcome, false);
+
+  const secondAttempt = await runtimeMount.routeBodyGate.authorizeBodyRead({
+    bodyAdmissionAuthorized: false,
+    principal,
+    admissionDecision: decision,
+  });
+  assert.equal(secondAttempt.bodyReadAuthorized, false);
+  assert.equal(secondAttempt.code, 'ATTEMPT_ALREADY_SPENT');
+});
+
 test('source rejects drift, stale metadata, and private credential value fields', () => {
   assert.equal(exactStartupLiveGateInstallSource(REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE), true);
   for (const mutate of [
@@ -92,8 +136,8 @@ test('source rejects drift, stale metadata, and private credential value fields'
     source => { source.privateSupplyReceiptSha256 = '0'.repeat(64); },
     source => { source.privateSupplyReceiptSha256 = REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256.slice(1); },
     source => { source.sessionCredentialDigestSha256 = '0'.repeat(64); },
-    source => { source.startUtc = '2026-10-01T05:30:00Z'; },
-    source => { source.expiresUtc = '2026-10-01T05:00:00Z'; },
+    source => { source.startUtc = '2026-10-01T10:30:00Z'; },
+    source => { source.expiresUtc = '2026-10-01T10:00:00Z'; },
     source => { source.credential = 'PRIVATE_SENTINEL'; },
     source => { source.privateCredentialValue = 'PRIVATE_SENTINEL'; },
     source => { source.secret = 'PRIVATE_SENTINEL'; },

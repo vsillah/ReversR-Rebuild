@@ -2,7 +2,9 @@ const {
   createDerivedDeploymentReference,
   readCadProductionCurrentDeploymentMetadata,
 } = require('./cadProductionCurrentDeploymentMetadata');
-const { createClosedDurableAdapterService } = require('./cadProductionExecutionBindingInstallation');
+const {
+  createSourceOwnedDurableAdapterService,
+} = require('./cadProductionExecutionBindingInstallation');
 const {
   DEFAULT_PRIVATE_SESSION_CREDENTIAL_SUPPLY,
   PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
@@ -15,19 +17,19 @@ const {
 } = require('./cadLiveOpeningCredentialClosureMetadataPolicy');
 
 const STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
-  'ae64570f5b101235fa1f2aa56a020d3d0a694e21f718267e8f4a2f1f5a5df40e';
+  '2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b';
 const APPROVED_LIVE_OPENING_REFRESH_SHA256 =
-  'c6373fa18ebc2d5d93e852aef50c721f17164b88bbca7d5e5b9f4e76e1d9ea2e';
-const REVIEWED_MAIN_COMMIT = '82dd2cb8af66edf2b4926efa1cd2213e5de770e8';
-const REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE = 'dpl_Fmr2h4sZRgujHQarkgxvqvcueiW9';
-const REVIEWED_PRODUCTION_HOST = 'reversr-htg38n648-vsillahs-projects.vercel.app';
+  '5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11';
+const REVIEWED_MAIN_COMMIT = 'a0708899e4e74f18ddacdbcc72e667ab983f7e23';
+const REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE = '6775936794';
+const REVIEWED_PRODUCTION_HOST = 'reversr-m754g3gt2-vsillahs-projects.vercel.app';
 const REVIEWED_PRODUCTION_TARGET = `https://${REVIEWED_PRODUCTION_HOST}`;
 const REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
   createDerivedDeploymentReference(REVIEWED_PRODUCTION_HOST, REVIEWED_MAIN_COMMIT);
 const REVIEWED_COMMAND_CARD_SHA256 =
-  '22d7af21abf6576cc5bae8c4a287e82b7d4eaf56c4a264418f48ff0baf9f4f0f';
+  'd694d980449baf1ce7a61104183344c1f3b36b10ac932cfbafda9b12817f026e';
 const REVIEWED_INSTALLATION_SHA256 =
-  '7a49f15dadb27e9c8a8c32422aae67b7d7fd7ea2764fd81242e4efce269f0cf5';
+  '3afbbaa8861627871948c30a46c5774e799f7542634439ab583b12314e12c3c7';
 const REVIEWED_DURABLE_EVIDENCE_SHA256 =
   '8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7';
 const REVIEWED_DURABLE_SERVICE_REF =
@@ -37,9 +39,9 @@ const REVIEWED_BOUNDED_SESSION_REF =
 const REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   'ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1';
 const REVIEWED_WINDOW = Object.freeze({
-  startUtc: '2026-10-01T05:00:00Z',
-  expiresUtc: '2026-10-01T05:30:00Z',
-  proofNowUtc: '2026-10-01T05:05:00Z',
+  startUtc: '2026-10-01T10:00:00Z',
+  expiresUtc: '2026-10-01T10:30:00Z',
+  proofNowUtc: '2026-10-01T10:05:00Z',
 });
 
 const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
@@ -153,9 +155,11 @@ function disabledStartupClosure({
 }
 
 function createCadStartupLiveGateSourceInstallClosure({
-  source = DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  source = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   deploymentMetadata = readCadProductionCurrentDeploymentMetadata(),
-  durableService = createClosedDurableAdapterService(),
+  durableService = createSourceOwnedDurableAdapterService({
+    durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
+  }),
   now = Date.now,
 } = {}) {
   const sourceAccepted = exactStartupLiveGateInstallSource(source);
