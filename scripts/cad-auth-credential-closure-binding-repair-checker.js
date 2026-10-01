@@ -15,19 +15,19 @@ const PACKET = 'docs/cad-auth-credential-closure-binding-repair.json';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const read = file => fs.readFileSync(path.join(ROOT, file));
 const BOUND_INPUTS = Object.freeze({
-  baseCommit: '79f25144225a2cf12052243f08a69109c3f632e7',
-  stoppedPostMergeRebindDispositionSha256: 'e4a0c272ab7c71c5f3cd31c57b0f383ea454ad589756cbb39c54e371246039de',
-  credentialClosurePacketSha256: '49fb61c54ddec577e9d3316cc9cc528789567618ee8a47a272c16d2e66d16027',
-  credentialClosureSourceCommit: '7ece1ed0131dbef5a38a70aa508cd07696857e26',
-  githubProductionDeployment: '6771743168',
-  productionTarget: 'https://reversr-irbbqlave-vsillahs-projects.vercel.app',
-  suppliedHistoricalSmoke: { status: 401, code: 'USER_SESSION_REQUIRED', observedAtUtc: '2026-09-30T22:42:27Z' },
+  baseCommit: '56a29e337ceb459c66f83d7f5207b7ba74f65686',
+  stoppedPostMergeRebindDispositionSha256: '2b47414dda01f46bea2a83d9b5b9b332393f0f53f657ee2db9986af728c092fd',
+  credentialClosurePacketSha256: '57675e09d0bd717a4ce6e372e4f49a3c9c494b4dabb29194c3a973a9405584e8',
+  credentialClosureSourceCommit: '4f25f2f1ab3df8964c9aeaba0dafb0216b226637',
+  githubProductionDeployment: '6772517435',
+  productionTarget: 'https://reversr-a261m8i6x-vsillahs-projects.vercel.app',
+  suppliedHistoricalSmoke: { status: 401, code: 'USER_SESSION_REQUIRED', observedNoLaterThanUtc: '2026-09-30T23:39:21Z' },
 });
-// This dpl ID is deliberately synthetic. It is not an observed mapping of the
-// supplied GitHub deployment ID and must never be used for a live request.
+// No dpl ID is supplied here. The proof uses only non-secret Vercel system
+// target and commit metadata that are available without provider credentials.
 const PROOF_ENV = Object.freeze({
-  VERCEL_ENV: 'production', VERCEL_DEPLOYMENT_ID: 'dpl_SyntheticCredentialRepair0001',
-  VERCEL_URL: 'reversr-irbbqlave-vsillahs-projects.vercel.app',
+  VERCEL_ENV: 'production',
+  VERCEL_URL: 'reversr-a261m8i6x-vsillahs-projects.vercel.app',
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: BOUND_INPUTS.baseCommit, VERCEL_GIT_COMMIT_REF: 'main',
   VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild', VERCEL_GIT_REPO_OWNER: 'vsillah',
@@ -69,7 +69,7 @@ function sourceProof(env = PROOF_ENV) {
   if (sha(manifest.commandCardBytes) !== manifest.commandCardSha256
     || sha(JSON.stringify(exact)) !== installation.liveGate.installationSha256) throw Error('DIGEST_DRIFT');
   return {
-    syntheticOnly: true, liveAuthority: false, credentialValueIncluded: false,
+    sourceOwnedMetadataOnly: true, liveAuthority: false, credentialValueIncluded: false,
     gateNonNull: closure.gateNonNull, installationNonNull: closure.installationNonNull,
     executableRuntimeEnabledInSyntheticComposition: closure.executableRuntime.enabled,
     deploymentMetadata: metadata, commandCardBytesSha256: sha(manifest.commandCardBytes),
@@ -92,7 +92,6 @@ function expectedPacket(readSource = read) {
     boundInputs: BOUND_INPUTS, metadataPolicy: CURRENT_DEPLOYMENT_METADATA_POLICY,
     syntheticCurrentBindingProof: sourceProof(),
     syntheticNextDeploymentProof: sourceProof({ ...PROOF_ENV,
-      VERCEL_DEPLOYMENT_ID: 'dpl_SyntheticCredentialRepair0002',
       VERCEL_URL: 'reversr-syntheticnext-vsillahs-projects.vercel.app',
       VERCEL_GIT_COMMIT_SHA: 'b'.repeat(40) }),
     privateSupplyRequirement: {

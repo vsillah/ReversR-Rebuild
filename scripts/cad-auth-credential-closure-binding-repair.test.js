@@ -39,7 +39,7 @@ function runtime({ mutate = () => {}, clock = now, ledger } = {}) {
 
 test('current and subsequent deployment resolve new exact byte and installation bindings', () => {
   const first = checker.sourceProof();
-  const next = checker.sourceProof({ ...checker.PROOF_ENV, VERCEL_DEPLOYMENT_ID: 'dpl_SyntheticCredentialRepair0002',
+  const next = checker.sourceProof({ ...checker.PROOF_ENV,
     VERCEL_URL: 'reversr-nextproof-vsillahs-projects.vercel.app', VERCEL_GIT_COMMIT_SHA: 'b'.repeat(40) });
   assert.equal(first.gateNonNull, true);
   assert.equal(next.gateNonNull, true);
@@ -55,8 +55,12 @@ test('current and subsequent deployment resolve new exact byte and installation 
 
 test('metadata policy refuses aliases, GitHub IDs, incomplete or private metadata', () => {
   assert.equal(validMetadata(metadata()), true);
+  assert.match(metadata().deploymentReference,
+    /^vercel-target:reversr-a261m8i6x-vsillahs-projects\.vercel\.app@56a29e337ceb459c66f83d7f5207b7ba74f65686$/);
   const changes = [
     { deploymentReference: '6771743168' }, { deploymentReference: 'dpl_short' },
+    { deploymentReference: 'vercel-target:reversr-a261m8i6x-vsillahs-projects.vercel.app@bad' },
+    { deploymentReference: 'vercel-target:reversr-other-vsillahs-projects.vercel.app@56a29e337ceb459c66f83d7f5207b7ba74f65686' },
     { deploymentTarget: 'https://reversr.vercel.app' }, { deploymentTarget: 'https://attacker.invalid' },
     { deploymentTarget: 'https://reversr-abc-vsillahs-projects.vercel.app/path' },
     { deploymentTarget: 'https://reversr-abc-vsillahs-projects.vercel.app.evil' },
@@ -74,11 +78,14 @@ test('metadata policy refuses aliases, GitHub IDs, incomplete or private metadat
     const input = metadata(); const incomplete = { ...input }; delete incomplete[key];
     assert.equal(validMetadata(incomplete), false, key);
   }
-  assert.equal(readMetadata({ ...checker.PROOF_ENV, VERCEL_DEPLOYMENT_ID: undefined }), null);
+  assert.equal(readMetadata({ ...checker.PROOF_ENV, VERCEL_DEPLOYMENT_ID: '6771743168' }), null);
+  assert.equal(readMetadata({ ...checker.PROOF_ENV, VERCEL_DEPLOYMENT_ID: undefined }).deploymentReference,
+    metadata().deploymentReference);
 });
 
 test('metadata reader only accesses allowlisted non-secret system fields', () => {
   const allowed = new Set(Object.keys(checker.PROOF_ENV));
+  allowed.add('VERCEL_DEPLOYMENT_ID');
   const env = new Proxy(checker.PROOF_ENV, { get(target, key) {
     assert.ok(allowed.has(key), String(key)); return target[key];
   } });

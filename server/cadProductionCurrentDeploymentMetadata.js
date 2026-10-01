@@ -3,6 +3,8 @@
 const DEPLOYMENT_ID = /^dpl_[A-Za-z0-9]{16,96}$/;
 const SHA40 = /^[a-f0-9]{40}$/;
 const HOST = /^[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?$/;
+const DEPLOYMENT_HOST = /^reversr-[a-z0-9]+-vsillahs-projects\.vercel\.app$/;
+const DERIVED_REFERENCE_PREFIX = 'vercel-target';
 
 const EXPECTED_GIT_OWNER = 'vsillah';
 const EXPECTED_GIT_REPO = 'ReversR-Rebuild';
@@ -13,6 +15,11 @@ function normalizeHost(value) {
   if (typeof value !== 'string') return null;
   const host = value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
   return HOST.test(host) ? host : null;
+}
+
+function createDerivedDeploymentReference(deploymentHost, gitCommitSha) {
+  if (!deploymentHost || !SHA40.test(gitCommitSha)) return null;
+  return `${DERIVED_REFERENCE_PREFIX}:${deploymentHost.toLowerCase()}@${gitCommitSha}`;
 }
 
 function readCadProductionCurrentDeploymentMetadata(env = process.env) {
@@ -34,8 +41,9 @@ function readCadProductionCurrentDeploymentMetadata(env = process.env) {
     ? env.VERCEL_GIT_REPO_OWNER.trim()
     : '';
   const vercelEnv = typeof env.VERCEL_ENV === 'string' ? env.VERCEL_ENV.trim() : '';
-  if (!DEPLOYMENT_ID.test(deploymentId)
+  if ((deploymentId && !DEPLOYMENT_ID.test(deploymentId))
     || !deploymentHost
+    || !DEPLOYMENT_HOST.test(deploymentHost)
     || productionHost !== EXPECTED_PROJECT_PRODUCTION_HOST
     || !SHA40.test(gitCommitSha)
     || gitCommitRef !== EXPECTED_GIT_REF
@@ -44,10 +52,14 @@ function readCadProductionCurrentDeploymentMetadata(env = process.env) {
     || vercelEnv !== 'production') {
     return null;
   }
+  const deploymentReference = DEPLOYMENT_ID.test(deploymentId)
+    ? deploymentId
+    : createDerivedDeploymentReference(deploymentHost, gitCommitSha);
+  if (!deploymentReference) return null;
   return Object.freeze({
     schemaVersion: 1,
     source: 'vercel-system-environment',
-    deploymentReference: deploymentId,
+    deploymentReference,
     deploymentTarget: `https://${deploymentHost}`,
     projectProductionTarget: `https://${productionHost}`,
     gitCommitSha,
@@ -64,5 +76,6 @@ module.exports = {
   EXPECTED_GIT_REPO,
   EXPECTED_GIT_REF,
   EXPECTED_PROJECT_PRODUCTION_HOST,
+  createDerivedDeploymentReference,
   readCadProductionCurrentDeploymentMetadata,
 };

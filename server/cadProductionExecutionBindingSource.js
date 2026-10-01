@@ -7,7 +7,7 @@ const BOUNDED_SESSION_REF = 'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const PRODUCTION_EXECUTION_BINDING_SOURCE = null;
 const { resolveCadProductionExecutionBindingSource } = require('./cadProductionExecutionBindingSourceInstall');
 const SHA = /^[a-f0-9]{64}$/;
-const REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/;
+const REF = /^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$/;
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
 const isSha = value => typeof value === 'string' && SHA.test(value);
