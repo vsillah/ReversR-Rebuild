@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-production-session-supply-closure-v1",
+  "sourceOnly": true,
+  "roadmap": "5/6 complete",
+  "status": "PRODUCTION_SESSION_SUPPLY_CLOSURE_PREPARED_DEFAULT_CLOSED",
+  "purpose": "prepare the source-owned production session credential supply contract after the approved live-opening attempt stopped because no private bearer credential value existed for the digest-bound precondition",
+  "boundInputs": {
+    "stoppedLiveOpeningDispositionSha256": "b9b92d6832892c64c8ad4dc2889d81297d4afb9d03e93f10792e2fc8d1770036",
+    "approvedLiveOpeningRefreshSha256": "e4cf5425e1d4459acc24f5580e96d98ae9829cf2b298cf6861df5c5f859e79ad",
+    "credentialSupplyStopDispositionSha256": "7a14abaf5b775d1bfc2fd267b8f167181e9579d2e0ef67ee95b0b8851205ee34",
+    "privateCredentialReadStopDispositionSha256": "41d5aae2186edc8035ed08d3f8f608157e0cf9957600f02dfaf10d6efe22ab13",
+    "credentialDerivationStopDispositionSha256": "8187980f0de7d36a87492d93080b59e79d82c1ec2de8d94c31f232e481c7df80",
+    "mainCommit": "5f839ba1a825206fa5e5a034062fdc6ed128faf6",
+    "vercelDeploymentReference": "dpl_CWBvTNYtxVnRBwbd4qVCkPpkjZSQ",
+    "sourceOwnedDeploymentReference": "vercel-target:reversr-mrdsp0v6j-vsillahs-projects.vercel.app@5f839ba1a825206fa5e5a034062fdc6ed128faf6",
+    "productionTarget": "https://reversr-mrdsp0v6j-vsillahs-projects.vercel.app",
+    "productionAlias": "https://reversr.vercel.app",
+    "commandCardSha256": "dd61b6044fc9db2df3da8e7e9698252fd7431c2e632345c57ba91e3310aa398e",
+    "installationSha256": "2aea83127d4ab7c4af9c08149863638b933965a43c90bf254e1af0463b9978f6",
+    "boundedSessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+    "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+    "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+    "durableEvidenceSha256": "8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7",
+    "durableServiceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
+    "sessionCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "digestBoundSessionCredentialPreconditionSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "privateSessionCredentialSupplyRef": "rrb-ref:cad-auth-live-opening-private-session-credential-supply-v1",
+    "privateCredentialFileRef": "rrb-ref:cad-auth-live-opening-private-session-credential-file-20261001T150000Z",
+    "privateSupplyReceiptSha256": "ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1",
+    "reviewedWindow": {
+      "startUtc": "2026-10-01T15:00:00Z",
+      "expiresUtc": "2026-10-01T15:30:00Z"
+    }
+  },
+  "supplyPolicy": {
+    "credentialDerivationFromDigestPermitted": false,
+    "publicSourceCredentialEmbeddingPermitted": false,
+    "privateCredentialValueDisclosurePermitted": false,
+    "uploadSessionIssuanceAuthorized": false,
+    "productionUploadActivationAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "acceptedModes": [
+      "existing-private-bearer-value-matching-approved-digest",
+      "future-private-random-bearer-generation-and-source-rebind"
+    ],
+    "rejectedModes": [
+      "derive-private-bearer-from-sha256-digest",
+      "embed-private-bearer-in-public-source",
+      "read-request-body-or-private-cad-to-discover-credential",
+      "issue-production-upload-session-without-separate-live-credential-supply-gate",
+      "substitute-dev-upload-session-issuer",
+      "substitute-provider-runtime-secret-or-env-change"
+    ]
+  },
+  "defaultClosureProof": {
+    "sourceAccepted": true,
+    "credentialDerivationRejected": true,
+    "existingDigestSupplyAccepted": false,
+    "futurePrivateGenerationRebindRequired": true,
+    "credentialValueIncluded": false,
+    "credentialValueDisclosed": false,
+    "credentialValueStoredInSource": false,
+    "uploadSessionIssued": false,
+    "productionUploadActivated": false,
+    "requestBodyAdmittedOrRead": false,
+    "runtimeActivated": false,
+    "effectsExecuted": 0
+  },
+  "sanitizedSupplyProof": {
+    "sourceAccepted": true,
+    "sanitizedDigestProofAccepted": true,
+    "futurePrivateGenerationRebindRequired": false,
+    "credentialValueIncluded": false,
+    "uploadSessionIssued": false,
+    "requestBodyAdmittedOrRead": false,
+    "effectsExecuted": 0
+  },
+  "secretLeakRejectionProof": {
+    "credentialProofWithPrivateFieldAccepted": false,
+    "sourceWithPrivateFieldAccepted": false,
+    "uploadSessionIssued": false,
+    "requestBodyAdmittedOrRead": false,
+    "effectsExecuted": 0
+  },
+  "staleDigestRejectionProof": {
+    "staleDigestAccepted": false,
+    "derivationRejected": true,
+    "uploadSessionIssued": false,
+    "effectsExecuted": 0
+  },
+  "productionSessionSupplyClosurePrepared": true,
+  "defaultProductionBehaviorClosed": true,
+  "liveOpeningAuthorized": false,
+  "uploadSessionIssued": false,
+  "productionUploadActivated": false,
+  "requestBodyAdmittedOrRead": false,
+  "conversionAuthorized": false,
+  "sandboxDispatchAuthorized": false,
+  "runtimeInstallationActivated": false,
+  "runtimeActivated": false,
+  "executableCommandCardIssuedForLiveExecution": false,
+  "effectsExecuted": 0,
+  "unresolvedForLiveOpening": [
+    "private bearer credential value for current digest was not found",
+    "digest-only credential preimage cannot be derived",
+    "future live gate must either supply the exact private value or generate a new private bearer and rebind its digest",
+    "new production window and fail-closed smoke remain required after merge"
+  ],
+  "nextGate": {
+    "requiresPublicReviewMergeAndProductionSmoke": true,
+    "requiresPostMergeDeploymentRebindRefresh": true,
+    "requiresPrivateCredentialSupplyOrGenerationApprovalBeforeLiveOpening": true,
+    "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge production session supply closure deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to production session supply closure packet SHA-256 <sessionSupplyClosurePacketSha256> at source commit <sessionSupplyClosureSourceCommit>, stopped live-opening disposition SHA-256 b9b92d6832892c64c8ad4dc2889d81297d4afb9d03e93f10792e2fc8d1770036, approved live-opening refresh SHA-256 e4cf5425e1d4459acc24f5580e96d98ae9829cf2b298cf6861df5c5f859e79ad, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed source-owned production session supply contract remains default-closed, rejects credential derivation and public credential embedding, preserves the exact private credential supply requirement, and recomputes current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply or generation requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the remaining credential supply blocker is explicit and source-owned without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved production session supply closure, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply or generation requirement, missing installation SHA-256, or any need for runtime credentials/provider configuration."
+  },
+  "stopConditions": [
+    "failingChecks",
+    "failingSmoke",
+    "unknownOutcome",
+    "staleDeploymentBinding",
+    "unresolvedProductionSessionSupplyClosure",
+    "unresolvedDigest",
+    "privateDataLeakageRisk",
+    "missingExactPrivateCredentialSupplyOrGenerationRequirement",
+    "missingInstallationSha256",
+    "runtimeCredentialsOrProviderConfigurationNeeded"
+  ],
+  "sourceBindings": {
+    "server/cadProductionSessionSupplyClosure.js": "d35e0528b7bd251ceb35598b3230bfedad23a2852dc7d7884b579d19ef060725",
+    "server/cadLiveOpeningGateCredentialClosure.js": "422ee493d2fc4cd92f39e5dffca79ee7bc7bf69ccdcafb36920c0e9cec26027f",
+    "server/cadStartupLiveGateSourceInstallClosure.js": "8b12706be6f4729216bba76f42f16708db444aec66a2b0c293c5b387dd107491",
+    "server/cadLiveOpeningExecutionArchitectureClosure.js": "b41ec1f484bd3541a262c68a464135427c9a42e313d28a5b255ea84c754b587d",
+    "server/uploadSession.js": "db21dc945b9cc1e5172c1f7ebe14ed57da7ee7cd9e8df5127b1255fb2efc7c03",
+    "server/uploadSessionStore.js": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/index.js": "8b3ddbc50282d1538dcad531b83b63005a3820f6dce3bedcd1f0b7d6cf9af856",
+    "scripts/cad-auth-production-session-supply-closure-checker.js": "3a1daf7d49fea18722938f433b18a65aefc963ff84a1874bbbbe8a0607d4f022",
+    "scripts/cad-auth-production-session-supply-closure.test.js": "e2e15df73c67ced9e56b3d3ba5e2dc6f6b259de7fdd0f751fa6a3b2703fd89b3",
+    "docs/cad-auth-production-session-supply-closure.md": "b22bbb1eac073bdb2719dad969f8fca3706f7161687dcad3dc11cb0fcdb700c7",
+    ".github/workflows/release-local-ci.yml": "0eac0a86c85b0cb9e1efb6182f9b4985b87601f24c4c017b5511b1535d9c8932"
+  }
+}
