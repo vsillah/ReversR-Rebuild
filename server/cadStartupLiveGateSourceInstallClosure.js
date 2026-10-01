@@ -235,35 +235,39 @@ function disabledStartupClosure({
 }
 
 function createCadStartupLiveGateSourceInstallClosure({
-  source = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  source,
   deploymentMetadata = readCadProductionCurrentDeploymentMetadata(),
   durableService = createSourceOwnedDurableAdapterService({
     durableEvidenceSha256: REVIEWED_DURABLE_EVIDENCE_SHA256,
   }),
   now = Date.now,
 } = {}) {
-  const sourceAccepted = exactStartupLiveGateInstallSource(source);
+  const startupSource = source || createStartupLiveGateInstallSourceFromMetadata({
+    deploymentMetadata,
+    openingWindow: REVIEWED_WINDOW,
+  });
+  const sourceAccepted = exactStartupLiveGateInstallSource(startupSource);
   const normalizedDeploymentMetadata = sourceAccepted
-    ? normalizeStartupDeploymentMetadata(deploymentMetadata, source)
+    ? normalizeStartupDeploymentMetadata(deploymentMetadata, startupSource)
     : null;
   const deploymentMetadataAccepted = normalizedDeploymentMetadata !== null;
   if (!sourceAccepted || !deploymentMetadataAccepted || typeof now !== 'function') {
     return disabledStartupClosure({
       deploymentMetadataAccepted,
       startupLiveGateInstallSourceAccepted: sourceAccepted,
-      sourceOwnedDeploymentReference: source?.sourceOwnedDeploymentReference || null,
+      sourceOwnedDeploymentReference: startupSource?.sourceOwnedDeploymentReference || null,
     });
   }
   const privateSessionCredentialSupply = createProofPrivateSessionCredentialSupply({
-    supplyReceiptSha256: source.privateSupplyReceiptSha256,
+    supplyReceiptSha256: startupSource.privateSupplyReceiptSha256,
   });
   const closure = createCadLiveOpeningGateCredentialClosure({
     deploymentMetadata: normalizedDeploymentMetadata,
     privateSessionCredentialSupply,
     durableService,
     openingWindow: {
-      startUtc: source.startUtc,
-      expiresUtc: source.expiresUtc,
+      startUtc: startupSource.startUtc,
+      expiresUtc: startupSource.expiresUtc,
     },
     now,
   });
@@ -273,18 +277,19 @@ function createCadStartupLiveGateSourceInstallClosure({
     && closure.privateCredentialValueIncluded === false
     && closure.sessionServiceNonNull === true
     && closure.executableRuntime?.enabled === true
-    && installation?.manifest?.commandCardSha256 === source.commandCardSha256
-    && installation?.manifest?.currentDeploymentReference === source.sourceOwnedDeploymentReference
-    && installation?.manifest?.boundedSessionRef === source.boundedSessionRef
-    && installation?.manifest?.sessionId === source.sessionId
-    && installation?.manifest?.durableEvidenceSha256 === source.durableEvidenceSha256
-    && installation?.manifest?.durableServiceRef === source.durableServiceRef
-    && installation?.liveGate?.installationSha256 === source.installationSha256;
+    && installation?.manifest?.commandCardSha256 === startupSource.commandCardSha256
+    && installation?.manifest?.currentDeploymentReference
+      === startupSource.sourceOwnedDeploymentReference
+    && installation?.manifest?.boundedSessionRef === startupSource.boundedSessionRef
+    && installation?.manifest?.sessionId === startupSource.sessionId
+    && installation?.manifest?.durableEvidenceSha256 === startupSource.durableEvidenceSha256
+    && installation?.manifest?.durableServiceRef === startupSource.durableServiceRef
+    && installation?.liveGate?.installationSha256 === startupSource.installationSha256;
   if (!accepted) {
     return disabledStartupClosure({
       deploymentMetadataAccepted,
       startupLiveGateInstallSourceAccepted: sourceAccepted,
-      sourceOwnedDeploymentReference: source.sourceOwnedDeploymentReference,
+      sourceOwnedDeploymentReference: startupSource.sourceOwnedDeploymentReference,
     });
   }
   return Object.freeze({
@@ -292,7 +297,8 @@ function createCadStartupLiveGateSourceInstallClosure({
     deploymentMetadataAccepted: true,
     startupLiveGateInstallSourceAccepted: true,
     startupLiveGateInstallAccepted: true,
-    sourceOwnedDeploymentReference: source.sourceOwnedDeploymentReference,
+    startupLiveGateInstallSource: startupSource,
+    sourceOwnedDeploymentReference: startupSource.sourceOwnedDeploymentReference,
   });
 }
 
