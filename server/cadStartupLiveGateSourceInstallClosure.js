@@ -10,6 +10,7 @@ const {
   PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
   SESSION_CREDENTIAL_DIGEST_SHA256,
   createCadLiveOpeningGateCredentialClosure,
+  createExactGateFromSource,
   createProofPrivateSessionCredentialSupply,
 } = require('./cadLiveOpeningGateCredentialClosure');
 const {
@@ -20,16 +21,18 @@ const STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
   '2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b';
 const APPROVED_LIVE_OPENING_REFRESH_SHA256 =
   '5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11';
-const REVIEWED_MAIN_COMMIT = 'a0708899e4e74f18ddacdbcc72e667ab983f7e23';
-const REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE = '6775936794';
-const REVIEWED_PRODUCTION_HOST = 'reversr-m754g3gt2-vsillahs-projects.vercel.app';
-const REVIEWED_PRODUCTION_TARGET = `https://${REVIEWED_PRODUCTION_HOST}`;
-const REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
-  createDerivedDeploymentReference(REVIEWED_PRODUCTION_HOST, REVIEWED_MAIN_COMMIT);
-const REVIEWED_COMMAND_CARD_SHA256 =
-  'd694d980449baf1ce7a61104183344c1f3b36b10ac932cfbafda9b12817f026e';
-const REVIEWED_INSTALLATION_SHA256 =
-  '3afbbaa8861627871948c30a46c5774e799f7542634439ab583b12314e12c3c7';
+const STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256 =
+  'a73d2e5b63277ee0509f5630f916896bd948bc657cff3be3f65870c7902a3722';
+const HISTORICAL_REPAIR_PACKET_SHA256 =
+  'c916c5f275831c6d42c2742e8cc36ab35d7499d3b3d2077f3f44348c90c85280';
+const HISTORICAL_REPAIR_SOURCE_COMMIT =
+  '56f69000e12911a1c5fd04c0b5171b838fbd5d26';
+const REPAIR_BASE_MAIN_COMMIT = 'f5ad0959788a41722da64f951e39be4a5137e0df';
+const REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE = '6782203539';
+const REPAIR_BASE_PRODUCTION_HOST = 'reversr-ep7vsrc6c-vsillahs-projects.vercel.app';
+const REPAIR_BASE_PRODUCTION_TARGET = `https://${REPAIR_BASE_PRODUCTION_HOST}`;
+const REPAIR_BASE_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
+  createDerivedDeploymentReference(REPAIR_BASE_PRODUCTION_HOST, REPAIR_BASE_MAIN_COMMIT);
 const REVIEWED_DURABLE_EVIDENCE_SHA256 =
   '8d371999f3efa3f090ae84fd6e88e8a912a6e69170c7e79672a96378bc15eaa7';
 const REVIEWED_DURABLE_SERVICE_REF =
@@ -51,10 +54,18 @@ const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
   explicitLiveOpeningApproved: false,
   stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
-  mainCommit: REVIEWED_MAIN_COMMIT,
-  productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
-  sourceOwnedDeploymentReference: REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
-  productionTarget: REVIEWED_PRODUCTION_TARGET,
+  stoppedPostMergeRebindRefreshDispositionSha256:
+    STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
+  historicalRepairPacketSha256: HISTORICAL_REPAIR_PACKET_SHA256,
+  historicalRepairSourceCommit: HISTORICAL_REPAIR_SOURCE_COMMIT,
+  repairBaseMainCommit: REPAIR_BASE_MAIN_COMMIT,
+  repairBaseGithubProductionDeploymentReference:
+    REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  repairBaseProductionTarget: REPAIR_BASE_PRODUCTION_TARGET,
+  mainCommit: null,
+  productionDeploymentReference: null,
+  sourceOwnedDeploymentReference: null,
+  productionTarget: null,
   commandCardSha256: null,
   installationSha256: null,
   boundedSessionRef: REVIEWED_BOUNDED_SESSION_REF,
@@ -66,17 +77,6 @@ const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
   sessionCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
   startUtc: null,
   expiresUtc: null,
-});
-
-const REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
-  ...DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
-  enabled: true,
-  explicitLiveOpeningApproved: true,
-  commandCardSha256: REVIEWED_COMMAND_CARD_SHA256,
-  installationSha256: REVIEWED_INSTALLATION_SHA256,
-  privateSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
-  startUtc: REVIEWED_WINDOW.startUtc,
-  expiresUtc: REVIEWED_WINDOW.expiresUtc,
 });
 
 const SHA = /^[a-f0-9]{64}$/;
@@ -100,6 +100,70 @@ function validWindow(startUtc, expiresUtc) {
     && expires - start <= 30 * 60 * 1000;
 }
 
+function createStartupLiveGateInstallSourceFromMetadata({
+  deploymentMetadata = readCadProductionCurrentDeploymentMetadata(),
+  openingWindow = REVIEWED_WINDOW,
+  privateSupplyReceiptSha256 = REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+  enabled = true,
+  explicitLiveOpeningApproved = true,
+} = {}) {
+  if (!validCurrentDeploymentMetadata(deploymentMetadata)
+    || !validWindow(openingWindow?.startUtc, openingWindow?.expiresUtc)
+    || typeof privateSupplyReceiptSha256 !== 'string'
+    || !SHA.test(privateSupplyReceiptSha256)) return null;
+  const privateSessionCredentialSupply = createProofPrivateSessionCredentialSupply({
+    supplyReceiptSha256: privateSupplyReceiptSha256,
+  });
+  const gate = createExactGateFromSource({
+    deploymentMetadata,
+    privateSessionCredentialSupply,
+    openingWindow,
+  });
+  if (!gate) return null;
+  return Object.freeze({
+    ...DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+    enabled: enabled === true,
+    explicitLiveOpeningApproved: explicitLiveOpeningApproved === true,
+    mainCommit: deploymentMetadata.gitCommitSha,
+    productionDeploymentReference: deploymentMetadata.deploymentReference,
+    sourceOwnedDeploymentReference: deploymentMetadata.deploymentReference,
+    productionTarget: deploymentMetadata.deploymentTarget,
+    commandCardSha256: gate.commandCardSha256,
+    installationSha256: gate.installationSha256,
+    privateSupplyReceiptSha256,
+    startUtc: openingWindow.startUtc,
+    expiresUtc: openingWindow.expiresUtc,
+  });
+}
+
+const REPAIR_BASE_DEPLOYMENT_METADATA = Object.freeze({
+  schemaVersion: 1,
+  source: 'vercel-system-environment',
+  deploymentReference: REPAIR_BASE_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  deploymentTarget: REPAIR_BASE_PRODUCTION_TARGET,
+  projectProductionTarget: 'https://reversr.vercel.app',
+  gitCommitSha: REPAIR_BASE_MAIN_COMMIT,
+  gitCommitRef: 'main',
+  gitRepo: 'ReversR-Rebuild',
+  gitOwner: 'vsillah',
+  vercelEnv: 'production',
+  secretBearing: false,
+});
+
+const REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE =
+  createStartupLiveGateInstallSourceFromMetadata({
+    deploymentMetadata: REPAIR_BASE_DEPLOYMENT_METADATA,
+    openingWindow: REVIEWED_WINDOW,
+  });
+const REVIEWED_MAIN_COMMIT = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.mainCommit;
+const REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE =
+  REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.productionDeploymentReference;
+const REVIEWED_PRODUCTION_TARGET = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.productionTarget;
+const REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
+  REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.sourceOwnedDeploymentReference;
+const REVIEWED_COMMAND_CARD_SHA256 = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.commandCardSha256;
+const REVIEWED_INSTALLATION_SHA256 = REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE.installationSha256;
+
 function exactStartupLiveGateInstallSource(source) {
   return source && typeof source === 'object' && !Array.isArray(source)
     && DANGEROUS_KEYS.every(key => !Object.prototype.hasOwnProperty.call(source, key))
@@ -109,12 +173,27 @@ function exactStartupLiveGateInstallSource(source) {
     && source.explicitLiveOpeningApproved === true
     && source.stoppedLiveOpeningDispositionSha256 === STOPPED_LIVE_OPENING_DISPOSITION_SHA256
     && source.approvedLiveOpeningRefreshSha256 === APPROVED_LIVE_OPENING_REFRESH_SHA256
-    && source.mainCommit === REVIEWED_MAIN_COMMIT
-    && source.productionDeploymentReference === REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE
-    && source.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
-    && source.productionTarget === REVIEWED_PRODUCTION_TARGET
-    && source.commandCardSha256 === REVIEWED_COMMAND_CARD_SHA256
-    && source.installationSha256 === REVIEWED_INSTALLATION_SHA256
+    && source.stoppedPostMergeRebindRefreshDispositionSha256
+      === STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256
+    && source.historicalRepairPacketSha256 === HISTORICAL_REPAIR_PACKET_SHA256
+    && source.historicalRepairSourceCommit === HISTORICAL_REPAIR_SOURCE_COMMIT
+    && source.repairBaseMainCommit === REPAIR_BASE_MAIN_COMMIT
+    && source.repairBaseGithubProductionDeploymentReference
+      === REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE
+    && source.repairBaseProductionTarget === REPAIR_BASE_PRODUCTION_TARGET
+    && typeof source.mainCommit === 'string'
+    && /^[a-f0-9]{40}$/.test(source.mainCommit)
+    && typeof source.productionDeploymentReference === 'string'
+    && source.productionDeploymentReference === source.sourceOwnedDeploymentReference
+    && typeof source.productionTarget === 'string'
+    && /^https:\/\/reversr-[a-z0-9]+-vsillahs-projects\.vercel\.app$/.test(source.productionTarget)
+    && source.sourceOwnedDeploymentReference
+      === createDerivedDeploymentReference(
+        source.productionTarget.replace(/^https:\/\//, ''),
+        source.mainCommit,
+      )
+    && SHA.test(source.commandCardSha256 || '')
+    && SHA.test(source.installationSha256 || '')
     && source.boundedSessionRef === REVIEWED_BOUNDED_SESSION_REF
     && source.sessionId === REVIEWED_BOUNDED_SESSION_REF
     && source.durableEvidenceSha256 === REVIEWED_DURABLE_EVIDENCE_SHA256
@@ -130,7 +209,8 @@ function normalizeStartupDeploymentMetadata(metadata, source) {
   if (!validCurrentDeploymentMetadata(metadata)
     || !exactStartupLiveGateInstallSource(source)
     || metadata.gitCommitSha !== source.mainCommit
-    || metadata.deploymentTarget !== source.productionTarget) return null;
+    || metadata.deploymentTarget !== source.productionTarget
+    || metadata.deploymentReference !== source.sourceOwnedDeploymentReference) return null;
   return Object.freeze({
     ...metadata,
     deploymentReference: source.sourceOwnedDeploymentReference,
@@ -232,7 +312,16 @@ module.exports = {
   REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+  HISTORICAL_REPAIR_PACKET_SHA256,
+  HISTORICAL_REPAIR_SOURCE_COMMIT,
+  REPAIR_BASE_DEPLOYMENT_METADATA,
+  REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  REPAIR_BASE_MAIN_COMMIT,
+  REPAIR_BASE_PRODUCTION_TARGET,
+  REPAIR_BASE_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   createCadStartupLiveGateSourceInstallClosure,
+  createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
 };
