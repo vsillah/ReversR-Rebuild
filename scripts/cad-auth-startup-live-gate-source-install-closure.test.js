@@ -12,7 +12,14 @@ const {
   readCadProductionCurrentDeploymentMetadata,
 } = require('../server/cadProductionCurrentDeploymentMetadata');
 const {
+  ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+  ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW,
+  ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
   DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
   REVIEWED_BOUNDED_SESSION_REF,
   REVIEWED_COMMAND_CARD_SHA256,
   REVIEWED_INSTALLATION_SHA256,
@@ -20,6 +27,7 @@ const {
   REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
   REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
+  createCadStartupActiveLiveOpeningWindow,
   createCadStartupLiveGateSourceInstallClosure,
   createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
@@ -138,6 +146,52 @@ test('startup source derives executable binding from a fresh current deployment'
   assert.equal(staleClosure.startupLiveGateInstallAccepted, false);
 });
 
+test('deployed no-arg startup path resolves the active repaired window from source-owned time', () => {
+  const now = () => Date.parse(ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.proofNowUtc);
+  const activeWindow = createCadStartupActiveLiveOpeningWindow({ now });
+  assert.deepEqual(activeWindow, ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW);
+  const deploymentMetadata = readCadProductionCurrentDeploymentMetadata({
+    VERCEL: '1',
+    VERCEL_ENV: 'production',
+    VERCEL_URL: ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET.replace('https://', ''),
+    VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
+    VERCEL_GIT_COMMIT_SHA: ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+    VERCEL_GIT_COMMIT_REF: 'main',
+    VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild',
+    VERCEL_GIT_REPO_OWNER: 'vsillah',
+  });
+  assert.equal(
+    deploymentMetadata.deploymentReference,
+    ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  );
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata,
+    now,
+  });
+  assert.equal(closure.deploymentMetadataAccepted, true);
+  assert.equal(closure.startupLiveGateInstallSourceAccepted, true);
+  assert.equal(closure.startupLiveGateInstallAccepted, true);
+  assert.equal(closure.sourceExecutable, true);
+  assert.equal(closure.sessionServiceNonNull, true);
+  assert.equal(closure.executableRuntime.enabled, true);
+  assert.equal(closure.startupLiveGateInstallSource.startUtc,
+    ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.startUtc);
+  assert.equal(closure.startupLiveGateInstallSource.expiresUtc,
+    ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.expiresUtc);
+  assert.equal(
+    closure.startupLiveGateInstallSource.privateSupplyReceiptSha256,
+    GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+  );
+  assert.equal(
+    closure.runtime.installation.manifest.commandCardSha256,
+    ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+  );
+  assert.equal(
+    closure.runtime.installation.liveGate.installationSha256,
+    ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+  );
+});
+
 test('deployed no-arg startup path has non-closed source-owned local body gate proof', async () => {
   const closure = createCadStartupLiveGateSourceInstallClosure({
     deploymentMetadata: readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
@@ -188,6 +242,14 @@ test('source rejects drift, stale metadata, and private credential value fields'
   for (const mutate of [
     source => { source.enabled = false; },
     source => { source.explicitLiveOpeningApproved = false; },
+    source => { source.activeWindowBindingRepairStoppedLiveOpeningDispositionSha256 = '0'.repeat(64); },
+    source => { source.activeWindowBindingRepairApprovedRefreshSha256 = '0'.repeat(64); },
+    source => { source.activeWindowBindingRepairBaseMainCommit = '0'.repeat(40); },
+    source => { source.activeWindowBindingRepairGithubProductionDeploymentReference = '0'; },
+    source => { source.activeWindowBindingRepairProductionTarget = 'https://reversr-stale-vsillahs-projects.vercel.app'; },
+    source => { source.activeWindowBindingRepairSourceOwnedDeploymentReference = 'stale'; },
+    source => { source.activeWindowBindingRepairPreviousCommandCardSha256 = '0'.repeat(64); },
+    source => { source.activeWindowBindingRepairPreviousInstallationSha256 = '0'.repeat(64); },
     source => { source.mainCommit = '0'.repeat(40); },
     source => { source.productionDeploymentReference = 'dpl_stale'; },
     source => { source.sourceOwnedDeploymentReference = 'stale'; },
