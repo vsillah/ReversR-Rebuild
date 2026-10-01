@@ -104,14 +104,14 @@
     "runtimeCredentialsOrProviderConfigurationNeeded"
   ],
   "sourceBindings": {
-    "server/cadLiveOpeningGateCredentialClosure.js": "422ee493d2fc4cd92f39e5dffca79ee7bc7bf69ccdcafb36920c0e9cec26027f",
+    "server/cadLiveOpeningGateCredentialClosure.js": "0ea3363105b0a87a74d3f6423a083d97e8813d4f543d8a845eea63417eae20d1",
     "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "f7e9d990d39950f9281352f036b2811dd07cd873a03344fd28518f4567f26a78",
     "scripts/cad-auth-credential-closure-binding-repair-checker.js": "91c7344b59192acdcb3c33d80b88e77a0766396ab8eefcad4a5ae2537386c827",
     "scripts/cad-auth-credential-metadata-source-repair-checker.js": "8cf0f2c7826ca297e3924245b18945015f2be6b2fe3b3f4a5c01b69b42d1b83d",
     "scripts/cad-auth-credential-closure-binding-repair.test.js": "808408b1b3228fc0699c6f6cb2e7c74b4c8ac37739bce3a35d31bfa945f53bd2",
     "scripts/cad-auth-credential-metadata-source-repair.test.js": "d6d93f994061f8ee2025c104c073fd641806df058205123db03f2d3a8101a7cf",
-    "docs/cad-auth-credential-closure-binding-repair.json": "d89ec077d1a3671b973177496f5c3790f5cee632ead6928e3ea7d3501b29e0c8",
-    "docs/cad-auth-credential-metadata-source-repair.json": "a959b144fcfe073316347306140a33c18e5f337fc8a82dd17a4e3ecb051cd0fc",
+    "docs/cad-auth-credential-closure-binding-repair.json": "04f8c9ececf9acd1749d41dca9037546d3c5a4ed2c3a81529ae2a642b099881f",
+    "docs/cad-auth-credential-metadata-source-repair.json": "8a0d7380909e67ecd93131e0ce6af564b0f0057b2ee324876aca61aac9e1c813",
     "docs/cad-auth-credential-closure-binding-repair.md": "41ece8dd1cce1e35cbdace88060d54a0951bafa25e80c14a2a1c6ee75ce63871",
     "docs/cad-auth-credential-metadata-source-repair.md": "5bf0a7f7f548dcc3dd9c057cd2e130bf90de2b7ea8e0171d98e8cd0dfff2dff0",
     ".github/workflows/release-local-ci.yml": "0eac0a86c85b0cb9e1efb6182f9b4985b87601f24c4c017b5511b1535d9c8932",
