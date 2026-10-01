@@ -5,13 +5,12 @@ installation gap without activating upload admission.
 
 ## Scope
 
-The production entry now calls
-`createCadStartupLiveGateSourceInstallClosure()` with its no-argument startup
-path. The exported disabled source stays available for default-closed proof,
-while the reviewed startup source proves that deployed startup code can resolve
-a non-null executable runtime from current-production metadata, exact live-gate
-values, private supply controls, and a non-closed source-owned durable adapter
-path.
+The production entry calls `createCadStartupLiveGateSourceInstallClosure()` with
+its no-argument startup path. The exported disabled source stays available for
+default-closed proof, while the reviewed startup source now derives its
+deployment reference, target, command-card digest, and installation digest from
+validated current production metadata. This closes the stale-deployment binding
+gap without reading provider credentials or activating upload admission.
 
 The proof is source-only:
 
@@ -30,16 +29,21 @@ The proof is source-only:
   `2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b`
 - approved live-opening refresh SHA-256:
   `5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11`
-- main commit: `a0708899e4e74f18ddacdbcc72e667ab983f7e23`
-- GitHub production deployment: `6775936794`
+- stopped post-merge rebind refresh disposition SHA-256:
+  `a73d2e5b63277ee0509f5630f916896bd948bc657cff3be3f65870c7902a3722`
+- historical startup default repair packet SHA-256:
+  `c916c5f275831c6d42c2742e8cc36ab35d7499d3b3d2077f3f44348c90c85280`
+- repair base main commit:
+  `f5ad0959788a41722da64f951e39be4a5137e0df`
+- repair base GitHub production deployment: `6782203539`
 - production target:
-  `https://reversr-m754g3gt2-vsillahs-projects.vercel.app`
+  `https://reversr-ep7vsrc6c-vsillahs-projects.vercel.app`
 - source-owned deployment reference:
-  `vercel-target:reversr-m754g3gt2-vsillahs-projects.vercel.app@a0708899e4e74f18ddacdbcc72e667ab983f7e23`
+  `vercel-target:reversr-ep7vsrc6c-vsillahs-projects.vercel.app@f5ad0959788a41722da64f951e39be4a5137e0df`
 - command-card SHA-256:
-  `d694d980449baf1ce7a61104183344c1f3b36b10ac932cfbafda9b12817f026e`
+  `8beff91f949f4fecff2d15be4d62eff3300215e7c6656cfa4aaaf88fb98556f7`
 - installation SHA-256:
-  `3afbbaa8861627871948c30a46c5774e799f7542634439ab583b12314e12c3c7`
+  `11c991cf50014025f6517b797c93ac0b1ba0661670a98bf3bfc3081bba513325`
 - bounded session ref:
   `rrb-ref:cad-upload-internal-mark-test-session-v1`
 - durable evidence SHA-256:
@@ -62,10 +66,10 @@ node --test scripts/cad-auth-startup-live-gate-source-install-closure.test.js
 
 The checker records
 `STARTUP_LIVE_GATE_DEFAULT_STARTUP_PATH_PROVEN_DEFAULT_CLOSED` only when the
-startup import, no-argument startup path, current metadata normalization, exact
+startup import, no-argument startup path, current metadata derivation, exact
 command-card digest, exact installation digest, source-owned durable adapter
-path, private supply receipt requirement, route body gate, and default
-fail-closed proof all remain intact.
+path, private supply receipt requirement, route body gate, default fail-closed
+proof, and fresh-deployment regression proof all remain intact.
 
 ## Next Approval Phrase
 

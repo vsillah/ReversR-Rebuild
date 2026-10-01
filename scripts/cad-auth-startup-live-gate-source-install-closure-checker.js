@@ -12,6 +12,11 @@ const {
 const {
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
   DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  HISTORICAL_REPAIR_PACKET_SHA256,
+  HISTORICAL_REPAIR_SOURCE_COMMIT,
+  REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  REPAIR_BASE_MAIN_COMMIT,
+  REPAIR_BASE_PRODUCTION_TARGET,
   REVIEWED_BOUNDED_SESSION_REF,
   REVIEWED_COMMAND_CARD_SHA256,
   REVIEWED_DURABLE_EVIDENCE_SHA256,
@@ -24,6 +29,7 @@ const {
   REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
   REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
+  STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   createCadStartupLiveGateSourceInstallClosure,
 } = require('../server/cadStartupLiveGateSourceInstallClosure');
@@ -184,12 +190,20 @@ function expectedPacket(readSource = read) {
     roadmap: '5/6 complete',
     status: 'STARTUP_LIVE_GATE_DEFAULT_STARTUP_PATH_PROVEN_DEFAULT_CLOSED',
     purpose:
-      'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned source instead of proof-only injection while preserving fail-closed production behavior',
+      'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned current deployment metadata instead of stale deployment constants while preserving fail-closed production behavior',
     boundInputs: Object.freeze({
       stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
       approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
+      stoppedPostMergeRebindRefreshDispositionSha256:
+        STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
+      historicalRepairPacketSha256: HISTORICAL_REPAIR_PACKET_SHA256,
+      historicalRepairSourceCommit: HISTORICAL_REPAIR_SOURCE_COMMIT,
+      repairBaseMainCommit: REPAIR_BASE_MAIN_COMMIT,
+      repairBaseGithubProductionDeploymentReference:
+        REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+      repairBaseProductionTarget: REPAIR_BASE_PRODUCTION_TARGET,
       mainCommit: REVIEWED_MAIN_COMMIT,
-      githubProductionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
+      productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
       productionTarget: REVIEWED_PRODUCTION_TARGET,
       sourceOwnedDeploymentReference: REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
       commandCardSha256: REVIEWED_COMMAND_CARD_SHA256,

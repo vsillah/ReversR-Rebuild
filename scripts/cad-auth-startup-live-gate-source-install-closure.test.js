@@ -21,6 +21,7 @@ const {
   REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   REVIEWED_WINDOW,
   createCadStartupLiveGateSourceInstallClosure,
+  createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
 } = require('../server/cadStartupLiveGateSourceInstallClosure');
@@ -78,6 +79,45 @@ test('reviewed source installs exact startup session service and runtime from cu
   assert.equal(record.cadUploadAllowed, true);
 });
 
+test('startup source derives executable binding from a fresh current deployment', () => {
+  const deploymentMetadata = readCadProductionCurrentDeploymentMetadata({
+    ...checker.PROOF_ENV,
+    VERCEL_URL: 'reversr-fresh123-vsillahs-projects.vercel.app',
+    VERCEL_GIT_COMMIT_SHA: '1234567890abcdef1234567890abcdef12345678',
+  });
+  const source = createStartupLiveGateInstallSourceFromMetadata({
+    deploymentMetadata,
+    openingWindow: REVIEWED_WINDOW,
+  });
+  assert.equal(exactStartupLiveGateInstallSource(source), true);
+  assert.equal(source.mainCommit, deploymentMetadata.gitCommitSha);
+  assert.equal(source.sourceOwnedDeploymentReference, deploymentMetadata.deploymentReference);
+  assert.notEqual(source.sourceOwnedDeploymentReference, REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE);
+
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    source,
+    deploymentMetadata,
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  assert.equal(closure.deploymentMetadataAccepted, true);
+  assert.equal(closure.startupLiveGateInstallAccepted, true);
+  assert.equal(closure.runtime.installation.manifest.currentDeploymentReference,
+    deploymentMetadata.deploymentReference);
+  assert.equal(closure.runtime.installation.manifest.commandCardSha256,
+    source.commandCardSha256);
+  assert.equal(closure.runtime.installation.liveGate.installationSha256,
+    source.installationSha256);
+
+  const staleMetadata = readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV);
+  const staleClosure = createCadStartupLiveGateSourceInstallClosure({
+    source,
+    deploymentMetadata: staleMetadata,
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  assert.equal(staleClosure.deploymentMetadataAccepted, false);
+  assert.equal(staleClosure.startupLiveGateInstallAccepted, false);
+});
+
 test('deployed no-arg startup path has non-closed source-owned local body gate proof', async () => {
   const closure = createCadStartupLiveGateSourceInstallClosure({
     deploymentMetadata: readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
@@ -131,8 +171,8 @@ test('source rejects drift, stale metadata, and private credential value fields'
     source => { source.mainCommit = '0'.repeat(40); },
     source => { source.productionDeploymentReference = 'dpl_stale'; },
     source => { source.sourceOwnedDeploymentReference = 'stale'; },
-    source => { source.commandCardSha256 = '0'.repeat(64); },
-    source => { source.installationSha256 = '0'.repeat(64); },
+    source => { source.commandCardSha256 = '0'.repeat(63); },
+    source => { source.installationSha256 = '0'.repeat(63); },
     source => { source.privateSupplyReceiptSha256 = '0'.repeat(64); },
     source => { source.privateSupplyReceiptSha256 = REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256.slice(1); },
     source => { source.sessionCredentialDigestSha256 = '0'.repeat(64); },
@@ -154,6 +194,19 @@ test('source rejects drift, stale metadata, and private credential value fields'
     assert.equal(closure.startupLiveGateInstallAccepted, false);
     assert.equal(closure.sourceExecutable, false);
   }
+
+  const digestDriftSource = {
+    ...REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+    commandCardSha256: '0'.repeat(64),
+  };
+  assert.equal(exactStartupLiveGateInstallSource(digestDriftSource), true);
+  const digestDriftClosure = createCadStartupLiveGateSourceInstallClosure({
+    source: digestDriftSource,
+    deploymentMetadata: readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV),
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  assert.equal(digestDriftClosure.startupLiveGateInstallAccepted, false);
+  assert.equal(digestDriftClosure.sourceExecutable, false);
 });
 
 test('checker validates packet, refuses live modes, and avoids private-value leakage', () => {
