@@ -10,8 +10,18 @@ const {
   readCadProductionCurrentDeploymentMetadata,
 } = require('../server/cadProductionCurrentDeploymentMetadata');
 const {
+  ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+  ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+  ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW,
+  ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
   DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
   HISTORICAL_REPAIR_PACKET_SHA256,
   HISTORICAL_REPAIR_SOURCE_COMMIT,
   REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
@@ -31,6 +41,7 @@ const {
   REVIEWED_WINDOW,
   STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+  createCadStartupActiveLiveOpeningWindow,
   createCadStartupLiveGateSourceInstallClosure,
 } = require('../server/cadStartupLiveGateSourceInstallClosure');
 
@@ -43,6 +54,16 @@ const PROOF_ENV = Object.freeze({
   VERCEL_URL: REVIEWED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: REVIEWED_MAIN_COMMIT,
+  VERCEL_GIT_COMMIT_REF: 'main',
+  VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild',
+  VERCEL_GIT_REPO_OWNER: 'vsillah',
+});
+const ACTIVE_WINDOW_REPAIR_PROOF_ENV = Object.freeze({
+  VERCEL: '1',
+  VERCEL_ENV: 'production',
+  VERCEL_URL: ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET.replace('https://', ''),
+  VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
+  VERCEL_GIT_COMMIT_SHA: ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
   VERCEL_GIT_COMMIT_REF: 'main',
   VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild',
   VERCEL_GIT_REPO_OWNER: 'vsillah',
@@ -143,6 +164,61 @@ function startupLiveGateInstallProof() {
   });
 }
 
+function activeWindowBindingRepairProof() {
+  const now = () => Date.parse(ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.proofNowUtc);
+  const activeWindow = createCadStartupActiveLiveOpeningWindow({ now });
+  const deploymentMetadata =
+    readCadProductionCurrentDeploymentMetadata(ACTIVE_WINDOW_REPAIR_PROOF_ENV);
+  const closure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata,
+    now,
+  });
+  const installation = closure.runtime?.installation || null;
+  const manifest = installation?.manifest || {};
+  return Object.freeze({
+    stoppedLiveOpeningDispositionSha256:
+      ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+    approvedLiveOpeningRefreshSha256:
+      ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
+    baseMainCommit: ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+    githubProductionDeploymentReference:
+      ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+    productionTarget: ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+    sourceOwnedDeploymentReference:
+      ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+    activeWindow,
+    activeWindowMatchesStoppedLiveOpening:
+      activeWindow?.startUtc === ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.startUtc
+      && activeWindow?.expiresUtc === ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW.expiresUtc,
+    deploymentMetadataAccepted: closure.deploymentMetadataAccepted === true,
+    startupLiveGateInstallSourceAccepted:
+      closure.startupLiveGateInstallSourceAccepted === true,
+    startupLiveGateInstallAccepted: closure.startupLiveGateInstallAccepted === true,
+    sourceExecutable: closure.sourceExecutable === true,
+    sessionServiceNonNull: closure.sessionServiceNonNull === true,
+    executableRuntimeEnabled: closure.executableRuntime?.enabled === true,
+    privateSupplyReceiptSha256:
+      closure.startupLiveGateInstallSource?.privateSupplyReceiptSha256 || null,
+    privateSupplyReceiptBoundToGeneratedCredential:
+      closure.startupLiveGateInstallSource?.privateSupplyReceiptSha256
+        === GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+    commandCardSha256: manifest.commandCardSha256 || null,
+    commandCardBytesSha256: manifest.commandCardBytes ? sha(manifest.commandCardBytes) : null,
+    installationSha256: installation?.liveGate?.installationSha256 || null,
+    previousCommandCardSha256:
+      ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+    previousInstallationSha256:
+      ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+    commandCardMatchesApprovedLiveOpening:
+      manifest.commandCardSha256
+        === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+    installationMatchesApprovedLiveOpening:
+      installation?.liveGate?.installationSha256
+        === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+    effectsExecuted: closure.effectsExecuted,
+  });
+}
+
 function indexWiringProof(readSource = read) {
   const index = readSource('server/index.js').toString('utf8');
   return Object.freeze({
@@ -184,6 +260,7 @@ function routeBodyGateIntegrationProof(readSource = read) {
 function expectedPacket(readSource = read) {
   const defaultProof = defaultClosedProof();
   const startupProof = startupLiveGateInstallProof();
+  const activeProof = activeWindowBindingRepairProof();
   const wiringProof = indexWiringProof(readSource);
   const routeProof = routeBodyGateIntegrationProof(readSource);
   return Object.freeze({
@@ -191,9 +268,9 @@ function expectedPacket(readSource = read) {
     artifact: 'cad-auth-startup-live-gate-source-install-closure-v1',
     sourceOnly: true,
     roadmap: '5/6 complete',
-    status: 'STARTUP_LIVE_GATE_DEFAULT_STARTUP_PATH_PROVEN_DEFAULT_CLOSED',
+    status: 'STARTUP_LIVE_GATE_ACTIVE_WINDOW_BINDING_REPAIRED_DEFAULT_CLOSED',
     purpose:
-      'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned current deployment metadata instead of stale deployment constants while preserving fail-closed production behavior',
+      'make the deployed server startup path able to install the exact reviewed live-opening gate from server-owned current deployment metadata and an active source-owned UTC window instead of stale window constants while preserving fail-closed production behavior',
     boundInputs: Object.freeze({
       stoppedLiveOpeningDispositionSha256: STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
       approvedLiveOpeningRefreshSha256: APPROVED_LIVE_OPENING_REFRESH_SHA256,
@@ -205,6 +282,22 @@ function expectedPacket(readSource = read) {
       repairBaseGithubProductionDeploymentReference:
         REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
       repairBaseProductionTarget: REPAIR_BASE_PRODUCTION_TARGET,
+      activeWindowBindingRepairStoppedLiveOpeningDispositionSha256:
+        ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+      activeWindowBindingRepairApprovedRefreshSha256:
+        ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
+      activeWindowBindingRepairBaseMainCommit:
+        ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+      activeWindowBindingRepairGithubProductionDeploymentReference:
+        ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+      activeWindowBindingRepairProductionTarget:
+        ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+      activeWindowBindingRepairSourceOwnedDeploymentReference:
+        ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+      activeWindowBindingRepairPreviousCommandCardSha256:
+        ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+      activeWindowBindingRepairPreviousInstallationSha256:
+        ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
       mainCommit: REVIEWED_MAIN_COMMIT,
       productionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
       productionTarget: REVIEWED_PRODUCTION_TARGET,
@@ -225,6 +318,7 @@ function expectedPacket(readSource = read) {
     reviewedSource: REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
     defaultClosedProof: defaultProof,
     startupLiveGateInstallProof: startupProof,
+    activeWindowBindingRepairProof: activeProof,
     indexWiringProof: wiringProof,
     routeBodyGateIntegrationProof: routeProof,
     deployedStartupPathProvenExecutableWithoutRuntimeActivation:
@@ -265,6 +359,20 @@ function expectedPacket(readSource = read) {
       && startupProof.sessionCredentialDigestSha256 === SESSION_CREDENTIAL_DIGEST_SHA256
       && startupProof.sourceOwnedDurableAdapterPathClosed === false
       && startupProof.effectsExecuted === 0
+      && activeProof.activeWindowMatchesStoppedLiveOpening === true
+      && activeProof.deploymentMetadataAccepted === true
+      && activeProof.startupLiveGateInstallSourceAccepted === true
+      && activeProof.startupLiveGateInstallAccepted === true
+      && activeProof.sourceExecutable === true
+      && activeProof.sessionServiceNonNull === true
+      && activeProof.executableRuntimeEnabled === true
+      && activeProof.privateSupplyReceiptBoundToGeneratedCredential === true
+      && activeProof.commandCardSha256 === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256
+      && activeProof.commandCardBytesSha256 === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256
+      && activeProof.installationSha256 === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256
+      && activeProof.commandCardMatchesApprovedLiveOpening === true
+      && activeProof.installationMatchesApprovedLiveOpening === true
+      && activeProof.effectsExecuted === 0
       && wiringProof.importsStartupLiveGateSourceInstaller === true
       && wiringProof.constructsStartupLiveGateSourceInstaller === true
       && wiringProof.directlyConstructsCredentialClosure === false
@@ -276,7 +384,7 @@ function expectedPacket(readSource = read) {
     privateCredentialSupplyRequirement: Object.freeze({
       requiredSupplyRef: PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF,
       requiredCredentialDigestSha256: SESSION_CREDENTIAL_DIGEST_SHA256,
-      requiredSupplyReceiptSha256: REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256,
+      requiredSupplyReceiptSha256: GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
       requiredTransport: 'bearer',
       credentialValueMustRemainPrivate: true,
       credentialValueIncludedInSource: false,
@@ -301,13 +409,14 @@ function expectedPacket(readSource = read) {
       requiresPostMergeDeploymentRebindRefresh: true,
       requiresPrivateCredentialSupplyApprovalBeforeLiveOpening: true,
       approvalPhraseTemplate:
-        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup default live-gate execution source deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup default live-gate execution source repair packet SHA-256 <startupDefaultGateRepairPacketSha256> at source commit <repairSourceCommit>, stopped live-opening disposition SHA-256 2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b, approved live-opening refresh SHA-256 5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed no-arg server/index.js startup path can resolve a non-null executable runtime from reviewed current-production metadata, exact live-gate source values, exact private credential supply controls, and a non-closed source-owned durable adapter path while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup default source path, closed durable adapter path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
+        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup active-window binding repair deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup active-window binding repair packet SHA-256 <activeWindowBindingRepairPacketSha256> at source commit <repairSourceCommit>, stopped live-opening disposition SHA-256 1d5e73cd6104f473a2c4469d7efb9aa1b9f42775bea572bc2f776c01f6a507d0, approved live-opening refresh SHA-256 735674f9af7a72ce9be12cb73c433f54aa693f6e5aad159183b07c55110fb308, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed no-arg server/index.js startup path can resolve a non-null executable runtime from reviewed current-production metadata, exact live-gate source values, exact private credential supply controls, a non-closed source-owned durable adapter path, and a fresh active UTC window while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable for the active window without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, private credential reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved active-window source binding, unresolved deployed startup default source path, closed durable adapter path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
     }),
     stopConditions: Object.freeze([
       'failingChecks',
       'failingSmoke',
       'unknownOutcome',
       'staleDeploymentBinding',
+      'unresolvedActiveWindowSourceBinding',
       'unresolvedDeployedStartupDefaultSourcePath',
       'closedDurableAdapterPath',
       'missingExactPrivateCredentialSupplyRequirement',
@@ -358,9 +467,11 @@ if (require.main === module) {
 }
 
 module.exports = {
+  ACTIVE_WINDOW_REPAIR_PROOF_ENV,
   PACKET,
   PROOF_ENV,
   SOURCES,
+  activeWindowBindingRepairProof,
   checkPacket,
   defaultClosedProof,
   expectedPacket,

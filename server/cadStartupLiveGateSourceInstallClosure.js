@@ -44,11 +44,37 @@ const REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   'ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1';
 const GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   '6da997122386aefce6c31cd86f060af1a848bae80bfd763eb47b94f61399f150';
+const ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
+  '1d5e73cd6104f473a2c4469d7efb9aa1b9f42775bea572bc2f776c01f6a507d0';
+const ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256 =
+  '735674f9af7a72ce9be12cb73c433f54aa693f6e5aad159183b07c55110fb308';
+const ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT =
+  '3df734c7478c037845e8c72a9e32669de3d4093d';
+const ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE = '6793483139';
+const ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_HOST =
+  'reversr-333l201xx-vsillahs-projects.vercel.app';
+const ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET =
+  `https://${ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_HOST}`;
+const ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
+  createDerivedDeploymentReference(
+    ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_HOST,
+    ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+  );
+const ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256 =
+  '46f806282fababa97966500a40e53ecbc48144cdf2573378b05f23cdc8c052be';
+const ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256 =
+  '86ab7f459736683a9e8ce85a207657fe16eba091ebe0b34b2870dd20b3d61dd3';
 const REVIEWED_WINDOW = Object.freeze({
   startUtc: '2026-10-01T15:00:00Z',
   expiresUtc: '2026-10-01T15:30:00Z',
   proofNowUtc: '2026-10-01T15:05:00Z',
 });
+const ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW = Object.freeze({
+  startUtc: '2026-10-01T23:00:00Z',
+  expiresUtc: '2026-10-01T23:30:00Z',
+  proofNowUtc: '2026-10-01T23:05:00Z',
+});
+const ACTIVE_WINDOW_DURATION_MS = 30 * 60 * 1000;
 
 const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
   schemaVersion: 1,
@@ -65,6 +91,22 @@ const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
   repairBaseGithubProductionDeploymentReference:
     REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
   repairBaseProductionTarget: REPAIR_BASE_PRODUCTION_TARGET,
+  activeWindowBindingRepairStoppedLiveOpeningDispositionSha256:
+    ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+  activeWindowBindingRepairApprovedRefreshSha256:
+    ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
+  activeWindowBindingRepairBaseMainCommit:
+    ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+  activeWindowBindingRepairGithubProductionDeploymentReference:
+    ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  activeWindowBindingRepairProductionTarget:
+    ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+  activeWindowBindingRepairSourceOwnedDeploymentReference:
+    ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  activeWindowBindingRepairPreviousCommandCardSha256:
+    ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+  activeWindowBindingRepairPreviousInstallationSha256:
+    ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
   mainCommit: null,
   productionDeploymentReference: null,
   sourceOwnedDeploymentReference: null,
@@ -101,6 +143,28 @@ function validWindow(startUtc, expiresUtc) {
   return Number.isFinite(start) && Number.isFinite(expires)
     && expires > start
     && expires - start <= 30 * 60 * 1000;
+}
+
+function isoNoMilliseconds(ms) {
+  if (!Number.isFinite(ms)) return null;
+  return new Date(ms).toISOString().replace('.000Z', 'Z');
+}
+
+function createCadStartupActiveLiveOpeningWindow({
+  now = Date.now,
+  windowDurationMs = ACTIVE_WINDOW_DURATION_MS,
+} = {}) {
+  const stamp = typeof now === 'function' ? now() : now;
+  if (!Number.isFinite(stamp)
+    || !Number.isSafeInteger(Math.trunc(stamp))
+    || windowDurationMs !== ACTIVE_WINDOW_DURATION_MS) return null;
+  const start = Math.floor(stamp / ACTIVE_WINDOW_DURATION_MS) * ACTIVE_WINDOW_DURATION_MS;
+  const expires = start + ACTIVE_WINDOW_DURATION_MS;
+  const startUtc = isoNoMilliseconds(start);
+  const expiresUtc = isoNoMilliseconds(expires);
+  const proofNowUtc = isoNoMilliseconds(stamp);
+  if (!validWindow(startUtc, expiresUtc)) return null;
+  return Object.freeze({ startUtc, expiresUtc, proofNowUtc });
 }
 
 function sourceOwnedDeploymentReferenceFromMetadata(deploymentMetadata) {
@@ -204,6 +268,22 @@ function exactStartupLiveGateInstallSource(source) {
     && source.repairBaseGithubProductionDeploymentReference
       === REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE
     && source.repairBaseProductionTarget === REPAIR_BASE_PRODUCTION_TARGET
+    && source.activeWindowBindingRepairStoppedLiveOpeningDispositionSha256
+      === ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256
+    && source.activeWindowBindingRepairApprovedRefreshSha256
+      === ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256
+    && source.activeWindowBindingRepairBaseMainCommit
+      === ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT
+    && source.activeWindowBindingRepairGithubProductionDeploymentReference
+      === ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE
+    && source.activeWindowBindingRepairProductionTarget
+      === ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET
+    && source.activeWindowBindingRepairSourceOwnedDeploymentReference
+      === ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE
+    && source.activeWindowBindingRepairPreviousCommandCardSha256
+      === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256
+    && source.activeWindowBindingRepairPreviousInstallationSha256
+      === ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256
     && typeof source.mainCommit === 'string'
     && /^[a-f0-9]{40}$/.test(source.mainCommit)
     && typeof source.productionDeploymentReference === 'string'
@@ -266,9 +346,11 @@ function createCadStartupLiveGateSourceInstallClosure({
   }),
   now = Date.now,
 } = {}) {
+  const activeOpeningWindow = createCadStartupActiveLiveOpeningWindow({ now });
   const startupSource = source || createStartupLiveGateInstallSourceFromMetadata({
     deploymentMetadata,
-    openingWindow: REVIEWED_WINDOW,
+    openingWindow: activeOpeningWindow,
+    privateSupplyReceiptSha256: GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
   });
   const sourceAccepted = exactStartupLiveGateInstallSource(startupSource);
   const normalizedDeploymentMetadata = sourceAccepted
@@ -327,6 +409,16 @@ function createCadStartupLiveGateSourceInstallClosure({
 }
 
 module.exports = {
+  ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
+  ACTIVE_WINDOW_BINDING_REPAIR_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_COMMAND_CARD_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PREVIOUS_INSTALLATION_SHA256,
+  ACTIVE_WINDOW_BINDING_REPAIR_PRODUCTION_TARGET,
+  ACTIVE_WINDOW_BINDING_REPAIR_PROOF_WINDOW,
+  ACTIVE_WINDOW_BINDING_REPAIR_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
+  ACTIVE_WINDOW_BINDING_REPAIR_STOPPED_LIVE_OPENING_DISPOSITION_SHA256,
+  ACTIVE_WINDOW_DURATION_MS,
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
   DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
   GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
@@ -352,6 +444,7 @@ module.exports = {
   REPAIR_BASE_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
   STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   createCadStartupLiveGateSourceInstallClosure,
+  createCadStartupActiveLiveOpeningWindow,
   createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
