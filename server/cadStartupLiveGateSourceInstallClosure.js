@@ -42,6 +42,8 @@ const REVIEWED_BOUNDED_SESSION_REF =
   'rrb-ref:cad-upload-internal-mark-test-session-v1';
 const REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   'ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1';
+const GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
+  '6da997122386aefce6c31cd86f060af1a848bae80bfd763eb47b94f61399f150';
 const REVIEWED_WINDOW = Object.freeze({
   startUtc: '2026-10-01T15:00:00Z',
   expiresUtc: '2026-10-01T15:30:00Z',
@@ -107,6 +109,11 @@ function sourceOwnedDeploymentReferenceFromMetadata(deploymentMetadata) {
     deploymentMetadata.deploymentTarget.replace(/^https:\/\//, ''),
     deploymentMetadata.gitCommitSha,
   );
+}
+
+function validPrivateSupplyReceiptSha256(value) {
+  return value === REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256
+    || value === GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256;
 }
 
 function createStartupLiveGateInstallSourceFromMetadata({
@@ -215,7 +222,7 @@ function exactStartupLiveGateInstallSource(source) {
     && source.durableEvidenceSha256 === REVIEWED_DURABLE_EVIDENCE_SHA256
     && source.durableServiceRef === REVIEWED_DURABLE_SERVICE_REF
     && source.privateSessionCredentialSupplyRef === PRIVATE_SESSION_CREDENTIAL_SUPPLY_REF
-    && source.privateSupplyReceiptSha256 === REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256
+    && validPrivateSupplyReceiptSha256(source.privateSupplyReceiptSha256)
     && source.sessionCredentialDigestSha256 === SESSION_CREDENTIAL_DIGEST_SHA256
     && SHA.test(source.privateSupplyReceiptSha256)
     && validWindow(source.startUtc, source.expiresUtc);
@@ -322,6 +329,7 @@ function createCadStartupLiveGateSourceInstallClosure({
 module.exports = {
   APPROVED_LIVE_OPENING_REFRESH_SHA256,
   DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE,
+  GENERATED_PRIVATE_SUPPLY_RECEIPT_SHA256,
   REVIEWED_BOUNDED_SESSION_REF,
   REVIEWED_COMMAND_CARD_SHA256,
   REVIEWED_DURABLE_EVIDENCE_SHA256,
@@ -348,4 +356,5 @@ module.exports = {
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
   sourceOwnedDeploymentReferenceFromMetadata,
+  validPrivateSupplyReceiptSha256,
 };

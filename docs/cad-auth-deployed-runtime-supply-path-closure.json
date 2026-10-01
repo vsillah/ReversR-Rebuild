@@ -20,7 +20,7 @@
     "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
     "privateSessionCredentialSupplyRef": "rrb-ref:cad-auth-live-opening-private-session-credential-supply-v1",
     "privateSupplyReceiptSha256": "ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1",
-    "sessionCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "sessionCredentialDigestSha256": "76c7cb47f616bc2e6a1ca99ad35d534d5c0cdaaba460f26717d79e100d90d87e",
     "productionAlias": "https://reversr.vercel.app"
   },
   "reviewedWindow": {
@@ -47,7 +47,7 @@
     "durableServiceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
     "privateSessionCredentialSupplyRef": "rrb-ref:cad-auth-live-opening-private-session-credential-supply-v1",
     "privateSupplyReceiptSha256": null,
-    "sessionCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "sessionCredentialDigestSha256": "76c7cb47f616bc2e6a1ca99ad35d534d5c0cdaaba460f26717d79e100d90d87e",
     "startUtc": null,
     "expiresUtc": null
   },
@@ -70,7 +70,7 @@
     "durableServiceRef": "rrb-ref:cad-auth-durable-service-20260928T161754Z",
     "privateSessionCredentialSupplyRef": "rrb-ref:cad-auth-live-opening-private-session-credential-supply-v1",
     "privateSupplyReceiptSha256": "ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1",
-    "sessionCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "sessionCredentialDigestSha256": "76c7cb47f616bc2e6a1ca99ad35d534d5c0cdaaba460f26717d79e100d90d87e",
     "startUtc": "2026-10-01T04:00:00Z",
     "expiresUtc": "2026-10-01T04:30:00Z"
   },
@@ -123,7 +123,7 @@
   "deployedStartupPathProvenExecutableWithoutRuntimeActivation": true,
   "privateCredentialSupplyRequirement": {
     "requiredSupplyRef": "rrb-ref:cad-auth-live-opening-private-session-credential-supply-v1",
-    "requiredCredentialDigestSha256": "2165440ab2035b4fa249cf960cc036b449b9eb780776c89ad5cba46b9033e359",
+    "requiredCredentialDigestSha256": "76c7cb47f616bc2e6a1ca99ad35d534d5c0cdaaba460f26717d79e100d90d87e",
     "requiredSupplyReceiptSha256": "ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1",
     "requiredTransport": "bearer",
     "credentialValueMustRemainPrivate": true,
@@ -165,7 +165,7 @@
   "sourceBindings": {
     "server/cadDeployedRuntimeSupplyPathClosure.js": "580451d17e99c35c94968726679eaf2ba188a2093f424fc81b1b915ddf952e95",
     "server/index.js": "8b3ddbc50282d1538dcad531b83b63005a3820f6dce3bedcd1f0b7d6cf9af856",
-    "server/cadLiveOpeningGateCredentialClosure.js": "422ee493d2fc4cd92f39e5dffca79ee7bc7bf69ccdcafb36920c0e9cec26027f",
+    "server/cadLiveOpeningGateCredentialClosure.js": "0ea3363105b0a87a74d3f6423a083d97e8813d4f543d8a845eea63417eae20d1",
     "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "f7e9d990d39950f9281352f036b2811dd07cd873a03344fd28518f4567f26a78",
     "server/cadProductionCurrentDeploymentMetadata.js": "407c41abb3530579f783d9f74d35066a12bf96f779e68f71db6e9c238c68fbe6",
     "server/cadLiveOpeningExecutionArchitectureClosure.js": "b41ec1f484bd3541a262c68a464135427c9a42e313d28a5b255ea84c754b587d",
