@@ -39,6 +39,7 @@ const PACKET = 'docs/cad-auth-startup-live-gate-source-install-closure.json';
 const PROOF_ENV = Object.freeze({
   VERCEL: '1',
   VERCEL_ENV: 'production',
+  VERCEL_DEPLOYMENT_ID: 'dpl_StartupSourceOwnedDplProof123',
   VERCEL_URL: REVIEWED_PRODUCTION_TARGET.replace('https://', ''),
   VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
   VERCEL_GIT_COMMIT_SHA: REVIEWED_MAIN_COMMIT,
@@ -111,6 +112,8 @@ function startupLiveGateInstallProof() {
     metadataDeploymentReference: deploymentMetadata?.deploymentReference || null,
     reviewedProductionDeploymentReference: REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE,
     sourceOwnedDeploymentReference: closure.sourceOwnedDeploymentReference || null,
+    metadataDeploymentReferenceIsDplProvenance:
+      /^dpl_[A-Za-z0-9]{16,96}$/.test(deploymentMetadata?.deploymentReference || ''),
     metadataDeploymentReferenceCanonicalized:
       closure.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE,
     deploymentMetadataAccepted: closure.deploymentMetadataAccepted === true,
@@ -235,7 +238,7 @@ function expectedPacket(readSource = read) {
       && defaultProof.requestBodyAdmittedOrRead === false
       && defaultProof.effectsExecuted === 0
       && startupProof.metadataReadFromServerEnvironment === true
-      && startupProof.metadataDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
+      && startupProof.metadataDeploymentReferenceIsDplProvenance === true
       && startupProof.reviewedProductionDeploymentReference === REVIEWED_PRODUCTION_DEPLOYMENT_REFERENCE
       && startupProof.sourceOwnedDeploymentReference === REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE
       && startupProof.metadataDeploymentReferenceCanonicalized === true
@@ -298,7 +301,7 @@ function expectedPacket(readSource = read) {
       requiresPostMergeDeploymentRebindRefresh: true,
       requiresPrivateCredentialSupplyApprovalBeforeLiveOpening: true,
       approvalPhraseTemplate:
-        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup default live-gate execution source deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup default live-gate execution source repair packet SHA-256 <startupDefaultGateRepairPacketSha256> at source commit <repairSourceCommit>, stopped live-opening disposition SHA-256 2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b, approved live-opening refresh SHA-256 5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11, GitHub production deployment <currentGithubProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed no-arg server/index.js startup path can resolve a non-null executable runtime from reviewed current-production metadata, exact live-gate source values, exact private credential supply controls, and a non-closed source-owned durable adapter path while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup default source path, closed durable adapter path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
+        'I approve a bounded source-only/no-live CAD Auth post-merge deployed startup default live-gate execution source deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to deployed startup default live-gate execution source repair packet SHA-256 <startupDefaultGateRepairPacketSha256> at source commit <repairSourceCommit>, stopped live-opening disposition SHA-256 2981866f2d55a16ab1586d9c297ff58af63aa627dd09536bab40b736aed9de4b, approved live-opening refresh SHA-256 5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed no-arg server/index.js startup path can resolve a non-null executable runtime from reviewed current-production metadata, exact live-gate source values, exact private credential supply controls, and a non-closed source-owned durable adapter path while default production remains fail-closed; recompute current-production deployment binding, durable evidence digest, exact bounded session binding, executable command-card bytes/SHA-256, installation SHA-256, private credential supply requirement, fresh UTC opening window, and exact later live-opening approval phrase only if the deployed startup path is proven executable without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private evidence reads, durable-service live qualification, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, live evidence collection, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved deployed startup default source path, closed durable adapter path, unresolved digest, private-data leakage risk, unknown outcome, missing exact private credential supply requirement, missing executable runtime binding, missing installation SHA-256, or any need for runtime credentials/provider configuration.',
     }),
     stopConditions: Object.freeze([
       'failingChecks',

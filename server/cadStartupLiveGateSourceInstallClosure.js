@@ -22,14 +22,15 @@ const STOPPED_LIVE_OPENING_DISPOSITION_SHA256 =
 const APPROVED_LIVE_OPENING_REFRESH_SHA256 =
   '5ceafc4693650f42989cc320fb653254428565056d005b3536e3dc7489eb5c11';
 const STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256 =
-  'bad23f7157a8e3b1e96a2c9178d3417a29b50e50a68535dc6fff14fecf61397d';
+  'eaa74f2b5c287e7dc008b0317b1f4b297532c087e5ebc9686c47baae0ffd58fb';
 const HISTORICAL_REPAIR_PACKET_SHA256 =
-  '2ae1b55ca751a345b0a7463f147fc4a0713a12902512e8dd55503084f1b7a402';
+  '988386d4eb807cb6cbb98aa1f39253fb88f11f1b17ad18ccc1416f32c6bff38c';
 const HISTORICAL_REPAIR_SOURCE_COMMIT =
-  '2f918d535d829a18eda41abf0e0bdce64f52c081';
-const REPAIR_BASE_MAIN_COMMIT = 'ff8e4d62ab099bb22156a9696292471da14316ef';
-const REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE = '6783406536';
-const REPAIR_BASE_PRODUCTION_HOST = 'reversr-7pyd54gis-vsillahs-projects.vercel.app';
+  'da7a0f15bf5f0d084001cd131a1cd4a8dd1e9310';
+const REPAIR_BASE_MAIN_COMMIT = 'fc3a2e20c07922f4188e4c7e2c4878b53f22f6bb';
+const REPAIR_BASE_GITHUB_PRODUCTION_DEPLOYMENT_REFERENCE =
+  'dpl_ArAQeKQ5Gey4fz9BP87KRYSqYo4R';
+const REPAIR_BASE_PRODUCTION_HOST = 'reversr-8gns2sgrw-vsillahs-projects.vercel.app';
 const REPAIR_BASE_PRODUCTION_TARGET = `https://${REPAIR_BASE_PRODUCTION_HOST}`;
 const REPAIR_BASE_SOURCE_OWNED_DEPLOYMENT_REFERENCE =
   createDerivedDeploymentReference(REPAIR_BASE_PRODUCTION_HOST, REPAIR_BASE_MAIN_COMMIT);
@@ -42,9 +43,9 @@ const REVIEWED_BOUNDED_SESSION_REF =
 const REVIEWED_PRIVATE_SUPPLY_RECEIPT_SHA256 =
   'ced805a319450aab99b305185f52fa4e45bfa1291fcc120a27ad00b6b9f9b7a1';
 const REVIEWED_WINDOW = Object.freeze({
-  startUtc: '2026-10-01T14:00:00Z',
-  expiresUtc: '2026-10-01T14:30:00Z',
-  proofNowUtc: '2026-10-01T14:05:00Z',
+  startUtc: '2026-10-01T15:00:00Z',
+  expiresUtc: '2026-10-01T15:30:00Z',
+  proofNowUtc: '2026-10-01T15:05:00Z',
 });
 
 const DEFAULT_STARTUP_LIVE_GATE_INSTALL_SOURCE = Object.freeze({
@@ -100,6 +101,14 @@ function validWindow(startUtc, expiresUtc) {
     && expires - start <= 30 * 60 * 1000;
 }
 
+function sourceOwnedDeploymentReferenceFromMetadata(deploymentMetadata) {
+  if (!validCurrentDeploymentMetadata(deploymentMetadata)) return null;
+  return createDerivedDeploymentReference(
+    deploymentMetadata.deploymentTarget.replace(/^https:\/\//, ''),
+    deploymentMetadata.gitCommitSha,
+  );
+}
+
 function createStartupLiveGateInstallSourceFromMetadata({
   deploymentMetadata = readCadProductionCurrentDeploymentMetadata(),
   openingWindow = REVIEWED_WINDOW,
@@ -111,11 +120,18 @@ function createStartupLiveGateInstallSourceFromMetadata({
     || !validWindow(openingWindow?.startUtc, openingWindow?.expiresUtc)
     || typeof privateSupplyReceiptSha256 !== 'string'
     || !SHA.test(privateSupplyReceiptSha256)) return null;
+  const sourceOwnedDeploymentReference =
+    sourceOwnedDeploymentReferenceFromMetadata(deploymentMetadata);
+  if (!sourceOwnedDeploymentReference) return null;
+  const sourceOwnedDeploymentMetadata = Object.freeze({
+    ...deploymentMetadata,
+    deploymentReference: sourceOwnedDeploymentReference,
+  });
   const privateSessionCredentialSupply = createProofPrivateSessionCredentialSupply({
     supplyReceiptSha256: privateSupplyReceiptSha256,
   });
   const gate = createExactGateFromSource({
-    deploymentMetadata,
+    deploymentMetadata: sourceOwnedDeploymentMetadata,
     privateSessionCredentialSupply,
     openingWindow,
   });
@@ -125,8 +141,8 @@ function createStartupLiveGateInstallSourceFromMetadata({
     enabled: enabled === true,
     explicitLiveOpeningApproved: explicitLiveOpeningApproved === true,
     mainCommit: deploymentMetadata.gitCommitSha,
-    productionDeploymentReference: deploymentMetadata.deploymentReference,
-    sourceOwnedDeploymentReference: deploymentMetadata.deploymentReference,
+    productionDeploymentReference: sourceOwnedDeploymentReference,
+    sourceOwnedDeploymentReference,
     productionTarget: deploymentMetadata.deploymentTarget,
     commandCardSha256: gate.commandCardSha256,
     installationSha256: gate.installationSha256,
@@ -210,7 +226,8 @@ function normalizeStartupDeploymentMetadata(metadata, source) {
     || !exactStartupLiveGateInstallSource(source)
     || metadata.gitCommitSha !== source.mainCommit
     || metadata.deploymentTarget !== source.productionTarget
-    || metadata.deploymentReference !== source.sourceOwnedDeploymentReference) return null;
+    || sourceOwnedDeploymentReferenceFromMetadata(metadata)
+      !== source.sourceOwnedDeploymentReference) return null;
   return Object.freeze({
     ...metadata,
     deploymentReference: source.sourceOwnedDeploymentReference,
@@ -330,4 +347,5 @@ module.exports = {
   createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
+  sourceOwnedDeploymentReferenceFromMetadata,
 };

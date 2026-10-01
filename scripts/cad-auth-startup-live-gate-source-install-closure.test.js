@@ -45,7 +45,7 @@ test('default startup live-gate source installer stays fail-closed', () => {
 
 test('reviewed source installs exact startup session service and runtime from current metadata', async () => {
   const deploymentMetadata = readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV);
-  assert.equal(deploymentMetadata.deploymentReference, REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE);
+  assert.equal(deploymentMetadata.deploymentReference, checker.PROOF_ENV.VERCEL_DEPLOYMENT_ID);
   const normalized = normalizeStartupDeploymentMetadata(
     deploymentMetadata,
     REVIEWED_STARTUP_LIVE_GATE_INSTALL_SOURCE,
@@ -82,16 +82,21 @@ test('reviewed source installs exact startup session service and runtime from cu
 test('startup source derives executable binding from a fresh current deployment', () => {
   const deploymentMetadata = readCadProductionCurrentDeploymentMetadata({
     ...checker.PROOF_ENV,
+    VERCEL_DEPLOYMENT_ID: 'dpl_FreshStartupSourceOwnedRef123456',
     VERCEL_URL: 'reversr-fresh123-vsillahs-projects.vercel.app',
     VERCEL_GIT_COMMIT_SHA: '1234567890abcdef1234567890abcdef12345678',
   });
+  const expectedSourceOwnedReference =
+    'vercel-target:reversr-fresh123-vsillahs-projects.vercel.app@1234567890abcdef1234567890abcdef12345678';
+  assert.equal(deploymentMetadata.deploymentReference, 'dpl_FreshStartupSourceOwnedRef123456');
   const source = createStartupLiveGateInstallSourceFromMetadata({
     deploymentMetadata,
     openingWindow: REVIEWED_WINDOW,
   });
   assert.equal(exactStartupLiveGateInstallSource(source), true);
   assert.equal(source.mainCommit, deploymentMetadata.gitCommitSha);
-  assert.equal(source.sourceOwnedDeploymentReference, deploymentMetadata.deploymentReference);
+  assert.equal(source.sourceOwnedDeploymentReference, expectedSourceOwnedReference);
+  assert.equal(source.productionDeploymentReference, expectedSourceOwnedReference);
   assert.notEqual(source.sourceOwnedDeploymentReference, REVIEWED_SOURCE_OWNED_DEPLOYMENT_REFERENCE);
 
   const closure = createCadStartupLiveGateSourceInstallClosure({
@@ -101,8 +106,9 @@ test('startup source derives executable binding from a fresh current deployment'
   });
   assert.equal(closure.deploymentMetadataAccepted, true);
   assert.equal(closure.startupLiveGateInstallAccepted, true);
+  assert.equal(closure.sourceOwnedDeploymentReference, expectedSourceOwnedReference);
   assert.equal(closure.runtime.installation.manifest.currentDeploymentReference,
-    deploymentMetadata.deploymentReference);
+    expectedSourceOwnedReference);
   assert.equal(closure.runtime.installation.manifest.commandCardSha256,
     source.commandCardSha256);
   assert.equal(closure.runtime.installation.liveGate.installationSha256,
@@ -114,9 +120,11 @@ test('startup source derives executable binding from a fresh current deployment'
   });
   assert.equal(noArgClosure.deploymentMetadataAccepted, true);
   assert.equal(noArgClosure.startupLiveGateInstallAccepted, true);
-  assert.equal(noArgClosure.sourceOwnedDeploymentReference, deploymentMetadata.deploymentReference);
+  assert.equal(noArgClosure.sourceOwnedDeploymentReference, expectedSourceOwnedReference);
+  assert.equal(noArgClosure.startupLiveGateInstallSource.sourceOwnedDeploymentReference,
+    expectedSourceOwnedReference);
   assert.equal(noArgClosure.runtime.installation.manifest.currentDeploymentReference,
-    deploymentMetadata.deploymentReference);
+    expectedSourceOwnedReference);
   assert.equal(noArgClosure.startupLiveGateInstallSource.commandCardSha256,
     noArgClosure.runtime.installation.manifest.commandCardSha256);
 
