@@ -7,10 +7,11 @@ installation gap without activating upload admission.
 
 The production entry calls `createCadStartupLiveGateSourceInstallClosure()` with
 its no-argument startup path. The exported disabled source stays available for
-default-closed proof, while the reviewed startup source now derives its
-deployment reference, target, command-card digest, and installation digest from
-validated current production metadata. This closes the stale-deployment binding
-gap without reading provider credentials or activating upload admission.
+default-closed proof, while the no-argument startup path now derives its
+reviewed startup source, deployment reference, target, command-card digest, and
+installation digest from validated current production metadata. This closes the
+stale-deployment binding gap without reading provider credentials or activating
+upload admission.
 
 The proof is source-only:
 
@@ -69,7 +70,8 @@ The checker records
 startup import, no-argument startup path, current metadata derivation, exact
 command-card digest, exact installation digest, source-owned durable adapter
 path, private supply receipt requirement, route body gate, default fail-closed
-proof, and fresh-deployment regression proof all remain intact.
+proof, no-argument fresh-deployment derivation proof, and stale-metadata
+rejection proof all remain intact.
 
 ## Next Approval Phrase
 

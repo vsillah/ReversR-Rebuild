@@ -108,6 +108,18 @@ test('startup source derives executable binding from a fresh current deployment'
   assert.equal(closure.runtime.installation.liveGate.installationSha256,
     source.installationSha256);
 
+  const noArgClosure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata,
+    now: () => Date.parse(REVIEWED_WINDOW.proofNowUtc),
+  });
+  assert.equal(noArgClosure.deploymentMetadataAccepted, true);
+  assert.equal(noArgClosure.startupLiveGateInstallAccepted, true);
+  assert.equal(noArgClosure.sourceOwnedDeploymentReference, deploymentMetadata.deploymentReference);
+  assert.equal(noArgClosure.runtime.installation.manifest.currentDeploymentReference,
+    deploymentMetadata.deploymentReference);
+  assert.equal(noArgClosure.startupLiveGateInstallSource.commandCardSha256,
+    noArgClosure.runtime.installation.manifest.commandCardSha256);
+
   const staleMetadata = readCadProductionCurrentDeploymentMetadata(checker.PROOF_ENV);
   const staleClosure = createCadStartupLiveGateSourceInstallClosure({
     source,
