@@ -4,8 +4,11 @@ const COOKIE = '__Host-reversr-upload-session';
 const deny = code => ({ ok: false, code });
 const digest = value => createHash('sha256').update(value).digest('hex');
 const id = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
-const secret = value => typeof value === 'string' && /^[A-Za-z0-9_-]{43}$/.test(value)
-  && Buffer.from(value, 'base64url').toString('base64url') === value;
+// Treat the bearer suffix as an opaque URL-safe lookup secret. Some reviewed
+// private custody values are generated as 43 CSPRNG-selected URL-safe
+// characters rather than canonical base64url-encoded bytes; the digest-bound
+// session store remains the authority.
+const secret = value => typeof value === 'string' && /^[A-Za-z0-9_-]{43}$/.test(value);
 
 function readCredential(req) {
   const headers = req.headers;
