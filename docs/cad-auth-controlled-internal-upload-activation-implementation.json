@@ -2,9 +2,17 @@
   "schemaVersion": 1,
   "artifact": "cad-auth-controlled-internal-upload-activation-implementation-packet-v1",
   "sourceOnly": true,
-  "roadmap": "Phase 7.2 controlled internal upload activation implementation",
+  "roadmap": "Phase 7.3 controlled internal upload activation deployed startup wiring repair",
   "status": "CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_IMPLEMENTATION_READY_SOURCE_ONLY",
-  "purpose": "install disabled-by-default source-owned manifest controls for a later bounded internal upload body-admission gate while preserving default production fail-closed behavior",
+  "boundStopDisposition": {
+    "stoppedControlledUploadActivationDispositionSha256": "82bfbfce410ff148e45b1b17a3b28e5eb58ecfb072c97f036eb474a8e5803395",
+    "approvedControlledActivationRefreshSha256": "7ce4c01d627f251606ad72cf128281391a00e836de6523c9f794bf5f3d5fbcf2",
+    "stoppedReason": "controlled activation module existed but was not mounted into the deployed startup/default route path",
+    "stoppedRequestBodyAdmissionAttempted": false,
+    "stoppedCredentialPrinted": false,
+    "stoppedPostStopSmoke": "401 USER_SESSION_REQUIRED"
+  },
+  "purpose": "wire disabled-by-default source-owned controlled upload activation controls into the deployed startup route path while preserving production fail-closed behavior",
   "implementationArtifact": "cad-auth-controlled-internal-upload-activation-implementation-v1",
   "implementation": {
     "schemaVersion": 1,
@@ -195,7 +203,7 @@
   },
   "implementationResolved": true,
   "routeStillClosed": true,
-  "defaultProductionUnwired": true,
+  "deployedStartupWiredDefaultClosed": true,
   "validatorEnvelopePreserved": true,
   "receiptSanitizationProof": {
     "rejectsCredentialValue": true,
@@ -226,16 +234,19 @@
     "commercialReadinessClaim": false
   },
   "sourceBindings": {
+    ".github/workflows/release-local-ci.yml": "98ab0e29e362d583a4ed5c003b0f5fd93e88b354c2dacb7644b2691b8160e289",
+    "server/index.js": "be5072694e9e635d6f42bb2fcbadfaa9ce94d4cbc01b31879b25be37cf1b38b0",
     "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "2ce3c74cc6ec9ad9f671d0ae48ff07cd2b9046d002a2e80745e8acab22db74c3",
     "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
     "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
     "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
-    "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "608b32f7c9d643bab872e3fb1e31d21b20cbab21136f8a1ec05980a03a27d14a",
-    "docs/cad-auth-controlled-internal-upload-activation-decision.json": "d73f177fff7d814e644f161a5039e062ada065e92be3fe303ac041738646fd71",
+    "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "b633be4e06901cc38cd0191ed5ace9a919f5690ee21a2869fd911d701be50ee7",
+    "docs/cad-auth-controlled-internal-upload-activation-decision.json": "76da21e4c6f5a72add52cedfe333d838ce5f10dac183e2657a43693a71c508c0",
     "docs/cad-auth-controlled-internal-upload-activation-decision.md": "5061065f2606ebe4abee4a6d6acd750e83aea368aa83b5ecf349fb61d80a368e",
     "docs/cad-production-upload-activation-scope.md": "4cda1730305906916c56da89896b9937f941b49b7a9de20780e1c7c558fb7a98",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "8085b6463da0b5701f2d3f0ef0930143f0e2d2bae6648bc12b6f0c1105529eae",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "7dea11e9e77c9d097a5fa5f7d2be89a084c09ed69601dec0519280959ec753fc"
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "f803266489bc929c72bcc04b9f444f106dd277742086508c4500db1ccb36070a",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "a63e1e8e6149de007de0f683f505f2c34e52328b9f8a557ebab790721e8c0da2"
   }
 }

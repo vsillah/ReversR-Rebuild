@@ -109,6 +109,6 @@
     "scripts/cad-auth-phase6-live-opening-closeout-checker.js": "808bb21bda0961b3fc2e9792ca015461afaa1b99970a2ad0c19939ce34f09e1c",
     "scripts/cad-auth-phase6-live-opening-closeout.test.js": "7c4197d65d45d958b0f95a753a7be1760701bac1c09ece007f2f50bb11fcb7a6",
     "docs/cad-auth-phase6-live-opening-closeout.md": "0972bd3f9b2b66bc4c58f29cebfd4aa8c921af0b50a64b7f7b7797ea6efd16c0",
-    ".github/workflows/release-local-ci.yml": "11e8e054d058466d92fd5b215063bc2f0aa1fbc0cf0a0e6e15a37bda2af0cdf5"
+    ".github/workflows/release-local-ci.yml": "98ab0e29e362d583a4ed5c003b0f5fd93e88b354c2dacb7644b2691b8160e289"
   }
 }

@@ -14,7 +14,10 @@ const {
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-controlled-internal-upload-activation-implementation.json';
 const SOURCES = Object.freeze([
+  '.github/workflows/release-local-ci.yml',
+  'server/index.js',
   'server/cadControlledInternalUploadActivation.js',
+  'server/cadProductionExecutableRuntimeMountCompletion.js',
   'server/cadUserUploadRouter.js',
   'server/cadUserUploadAdmission.js',
   'server/cadWorkerContract.js',
@@ -54,10 +57,16 @@ function validatorEnvelopePreserved(readSource = read) {
     && VALIDATOR_ENVELOPE.externalReferencesAuthorized === false;
 }
 
-function defaultProductionUnwired(readSource = read) {
+function deployedStartupWiredDefaultClosed(readSource = read) {
   const index = readSource('server/index.js').toString('utf8');
+  const mount = readSource('server/cadProductionExecutableRuntimeMountCompletion.js').toString('utf8');
   const route = readSource('server/cadUserUploadRouter.js').toString('utf8');
-  return !/cadControlledInternalUploadActivation/.test(index)
+  return /createCadProductionExecutableRuntimeMount/.test(index)
+    && /createCadControlledInternalUploadActivationMount/.test(mount)
+    && /baseRuntimeMount/.test(mount)
+    && /composeControlledRuntimeMount/.test(mount)
+    && /controlledInternalUploadActivation/.test(mount)
+    && /liveOpeningRuntimeMount: productionRuntimeMount/.test(mount)
     && !/cadControlledInternalUploadActivation/.test(route)
     && CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_ENABLED === false;
 }
@@ -68,10 +77,21 @@ function expectedPacket(readSource = read) {
     schemaVersion: 1,
     artifact: 'cad-auth-controlled-internal-upload-activation-implementation-packet-v1',
     sourceOnly: true,
-    roadmap: 'Phase 7.2 controlled internal upload activation implementation',
+    roadmap: 'Phase 7.3 controlled internal upload activation deployed startup wiring repair',
     status: review.status,
+    boundStopDisposition: Object.freeze({
+      stoppedControlledUploadActivationDispositionSha256:
+        '82bfbfce410ff148e45b1b17a3b28e5eb58ecfb072c97f036eb474a8e5803395',
+      approvedControlledActivationRefreshSha256:
+        '7ce4c01d627f251606ad72cf128281391a00e836de6523c9f794bf5f3d5fbcf2',
+      stoppedReason:
+        'controlled activation module existed but was not mounted into the deployed startup/default route path',
+      stoppedRequestBodyAdmissionAttempted: false,
+      stoppedCredentialPrinted: false,
+      stoppedPostStopSmoke: '401 USER_SESSION_REQUIRED',
+    }),
     purpose:
-      'install disabled-by-default source-owned manifest controls for a later bounded internal upload body-admission gate while preserving default production fail-closed behavior',
+      'wire disabled-by-default source-owned controlled upload activation controls into the deployed startup route path while preserving production fail-closed behavior',
     implementationArtifact: IMPLEMENTATION_ARTIFACT,
     implementation: review,
     implementationResolved: review.status
@@ -81,7 +101,7 @@ function expectedPacket(readSource = read) {
       && review.authorizes?.productionUploadActivation === false
       && review.authorizes?.requestBodyAdmissionOrRead === false,
     routeStillClosed: routeStillClosed(readSource),
-    defaultProductionUnwired: defaultProductionUnwired(readSource),
+    deployedStartupWiredDefaultClosed: deployedStartupWiredDefaultClosed(readSource),
     validatorEnvelopePreserved: validatorEnvelopePreserved(readSource),
     receiptSanitizationProof: Object.freeze({
       rejectsCredentialValue: forbiddenKeyPresent({ credentialValue: 'PRIVATE_SENTINEL' }),
@@ -124,7 +144,7 @@ function checkPacket(packet, readSource = read) {
   }
   const resolved = packet?.implementationResolved === true
     && packet?.routeStillClosed === true
-    && packet?.defaultProductionUnwired === true
+    && packet?.deployedStartupWiredDefaultClosed === true
     && packet?.validatorEnvelopePreserved === true
     && packet?.receiptSanitizationProof?.rejectsCredentialValue === true
     && packet?.receiptSanitizationProof?.rejectsRequestBody === true
@@ -147,7 +167,7 @@ function checkPacket(packet, readSource = read) {
       : 'CAD_AUTH_CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_IMPLEMENTATION_BLOCKED',
     implementationResolved: resolved,
     routeStillClosed: packet?.routeStillClosed === true,
-    defaultProductionUnwired: packet?.defaultProductionUnwired === true,
+    deployedStartupWiredDefaultClosed: packet?.deployedStartupWiredDefaultClosed === true,
     validatorEnvelopePreserved: packet?.validatorEnvelopePreserved === true,
     productionUploadActivationAuthorized: packet?.authorizes?.productionUploadActivation === true,
     requestBodyAdmissionOrReadAuthorized: packet?.authorizes?.requestBodyAdmissionOrRead === true,
@@ -184,7 +204,7 @@ module.exports = {
   PACKET,
   SOURCES,
   checkPacket,
-  defaultProductionUnwired,
+  deployedStartupWiredDefaultClosed,
   expectedPacket,
   routeStillClosed,
   sourceBindings,
