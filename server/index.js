@@ -9,6 +9,7 @@ const {
 } = require('./cadLiveOpeningExecutionArchitectureClosure');
 const {
   createCadStartupLiveGateSourceInstallClosure,
+  createCadStartupLiveGateSessionService,
 } = require('./cadStartupLiveGateSourceInstallClosure');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
@@ -41,9 +42,14 @@ const cadUploadSessionRuntime = createCadUploadSessionGatewayService({ env: proc
 const cadLiveGateCredentialClosure = createCadStartupLiveGateSourceInstallClosure();
 const cadLiveOpeningExecutionRuntime = cadLiveGateCredentialClosure.runtime
   || createLiveOpeningExecutionArchitectureRuntime();
-const cadUserUploadSessionService = cadLiveGateCredentialClosure.sessionService
-  || cadLiveOpeningExecutionRuntime.sessionService
-  || cadUploadSessionRuntime.sessionService;
+const cadFallbackUploadSessionService = cadUploadSessionRuntime.configured === true
+  ? cadUploadSessionRuntime.sessionService
+  : cadLiveGateCredentialClosure.sessionService
+    || cadLiveOpeningExecutionRuntime.sessionService
+    || null;
+const cadUserUploadSessionService = createCadStartupLiveGateSessionService({
+  fallbackSessionService: cadFallbackUploadSessionService,
+});
 
 // CAD auth/session issuance is mounted but closed without explicit development adapters.
 // It must run before general body parsers and never opens upload admission.

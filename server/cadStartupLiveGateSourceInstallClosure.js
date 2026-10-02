@@ -408,6 +408,49 @@ function createCadStartupLiveGateSourceInstallClosure({
   });
 }
 
+function createCadStartupLiveGateSessionService({
+  deploymentMetadata = readCadProductionCurrentDeploymentMetadata,
+  durableService,
+  now = Date.now,
+  fallbackSessionService,
+} = {}) {
+  const readDeploymentMetadata = typeof deploymentMetadata === 'function'
+    ? deploymentMetadata
+    : () => deploymentMetadata;
+  const fallback = fallbackSessionService
+    && typeof fallbackSessionService.lookupSession === 'function'
+    ? fallbackSessionService
+    : null;
+  return Object.freeze({
+    async issueSession() {
+      return Object.freeze({ ok: false, code: 'UPLOAD_SESSION_ISSUANCE_DISABLED' });
+    },
+    async lookupSession(key, options = {}) {
+      options.signal?.throwIfAborted?.();
+      let record = null;
+      try {
+        const closure = createCadStartupLiveGateSourceInstallClosure({
+          deploymentMetadata: readDeploymentMetadata(),
+          durableService,
+          now,
+        });
+        if (closure.startupLiveGateInstallAccepted === true
+          && closure.sessionService
+          && typeof closure.sessionService.lookupSession === 'function') {
+          record = await closure.sessionService.lookupSession(key, options);
+        }
+      } catch {
+        record = null;
+      }
+      if (record) return record;
+      return fallback ? fallback.lookupSession(key, options) : null;
+    },
+    async revokeSession() {
+      return Object.freeze({ ok: false, code: 'UPLOAD_SESSION_REVOCATION_NOT_AUTHORIZED' });
+    },
+  });
+}
+
 module.exports = {
   ACTIVE_WINDOW_BINDING_REPAIR_APPROVED_REFRESH_SHA256,
   ACTIVE_WINDOW_BINDING_REPAIR_BASE_MAIN_COMMIT,
@@ -445,6 +488,7 @@ module.exports = {
   STOPPED_POST_MERGE_REBIND_REFRESH_DISPOSITION_SHA256,
   createCadStartupLiveGateSourceInstallClosure,
   createCadStartupActiveLiveOpeningWindow,
+  createCadStartupLiveGateSessionService,
   createStartupLiveGateInstallSourceFromMetadata,
   exactStartupLiveGateInstallSource,
   normalizeStartupDeploymentMetadata,
