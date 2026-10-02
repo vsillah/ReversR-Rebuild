@@ -4,6 +4,13 @@ const { spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const { createUploadSessionVerifier } = require('../server/uploadSession');
 const {
+  readCadProductionCurrentDeploymentMetadata,
+} = require('../server/cadProductionCurrentDeploymentMetadata');
+const {
+  createCadStartupLiveGateSessionService,
+  createCadStartupLiveGateSourceInstallClosure,
+} = require('../server/cadStartupLiveGateSourceInstallClosure');
+const {
   GENERATED_PRIVATE_CREDENTIAL_DIGEST_SHA256,
   createOpaqueTokenVerifierProof,
   createProductionSessionCredentialAcceptanceRepair,
@@ -11,6 +18,16 @@ const {
 const checker = require('./cad-auth-production-session-credential-acceptance-repair-checker');
 
 const sha = value => createHash('sha256').update(value).digest('hex');
+const PRODUCTION_PROOF_ENV = Object.freeze({
+  VERCEL: '1',
+  VERCEL_ENV: 'production',
+  VERCEL_URL: 'reversr-h4t9buhmx-vsillahs-projects.vercel.app',
+  VERCEL_PROJECT_PRODUCTION_URL: 'reversr.vercel.app',
+  VERCEL_GIT_COMMIT_SHA: '8b8b47b67b2a39ec3353121aa5c832262469c92e',
+  VERCEL_GIT_COMMIT_REF: 'main',
+  VERCEL_GIT_REPO_SLUG: 'ReversR-Rebuild',
+  VERCEL_GIT_REPO_OWNER: 'vsillah',
+});
 
 function request(headers) {
   return new Proxy({ headers }, { get(target, key) {
@@ -51,6 +68,7 @@ test('repair proof is source-only, default-closed, and bound to generated digest
   const repair = createProductionSessionCredentialAcceptanceRepair();
   assert.equal(repair.accepted, true);
   assert.equal(repair.status, 'PRODUCTION_SESSION_CREDENTIAL_ACCEPTANCE_REPAIRED_DEFAULT_CLOSED');
+  assert.equal(repair.stoppedLiveOpening.observedAtUtc, '2026-10-02T11:02:05Z');
   assert.equal(
     repair.boundInputs.generatedPrivateCredentialDigestSha256,
     GENERATED_PRIVATE_CREDENTIAL_DIGEST_SHA256,
@@ -58,10 +76,54 @@ test('repair proof is source-only, default-closed, and bound to generated digest
   assert.equal(repair.verifierRepair.acceptsOpaqueUrlSafeBearerShape, true);
   assert.equal(repair.verifierRepair.intentionallyNonCanonicalFixture, true);
   assert.equal(repair.verifierRepair.verifierCanonicalBase64RequirementRemoved, true);
+  assert.equal(repair.requestTimeSessionServiceRepair.priorStartupCapturedWindowRisk, true);
+  assert.equal(repair.requestTimeSessionServiceRepair.requestTimeWindowResolutionRequired, true);
+  assert.equal(repair.requestTimeSessionServiceRepair.dynamicLookupSessionServiceInstalled, true);
+  assert.equal(repair.requestTimeSessionServiceRepair.verifierStillUsesDigestOnlyLookup, true);
   assert.equal(repair.liveOpeningAuthorized, false);
   assert.equal(repair.uploadSessionIssued, false);
   assert.equal(repair.requestBodyAdmittedOrRead, false);
   assert.equal(repair.effectsExecuted, 0);
+});
+
+test('request-time startup live gate session service accepts digest in the active window', async () => {
+  let nowMs = Date.parse('2026-10-02T09:52:43Z');
+  const readDeploymentMetadata = () => readCadProductionCurrentDeploymentMetadata(PRODUCTION_PROOF_ENV);
+  const staleStartupClosure = createCadStartupLiveGateSourceInstallClosure({
+    deploymentMetadata: readDeploymentMetadata(),
+    now: () => nowMs,
+  });
+  const requestTimeSessionService = createCadStartupLiveGateSessionService({
+    deploymentMetadata: readDeploymentMetadata,
+    now: () => nowMs,
+  });
+  nowMs = Date.parse('2026-10-02T11:02:05Z');
+  assert.equal(
+    await staleStartupClosure.sessionService.lookupSession(GENERATED_PRIVATE_CREDENTIAL_DIGEST_SHA256),
+    null,
+  );
+  const session = await requestTimeSessionService.lookupSession(
+    GENERATED_PRIVATE_CREDENTIAL_DIGEST_SHA256,
+  );
+  assert.equal(session.sessionId, 'rrb-ref:cad-upload-internal-mark-test-session-v1');
+  assert.equal(session.status, 'active');
+  assert.equal(session.transport, 'bearer');
+  assert.equal(session.cadUploadAllowed, true);
+  assert.deepEqual(
+    await requestTimeSessionService.issueSession(),
+    { ok: false, code: 'UPLOAD_SESSION_ISSUANCE_DISABLED' },
+  );
+  assert.deepEqual(
+    await requestTimeSessionService.revokeSession(),
+    { ok: false, code: 'UPLOAD_SESSION_REVOCATION_NOT_AUTHORIZED' },
+  );
+});
+
+test('server startup route uses request-time live gate session service', () => {
+  const source = require('node:fs').readFileSync('server/index.js', 'utf8');
+  assert.match(source, /createCadStartupLiveGateSessionService/);
+  assert.match(source, /const cadUserUploadSessionService = createCadStartupLiveGateSessionService/);
+  assert.match(source, /fallbackSessionService: cadFallbackUploadSessionService/);
 });
 
 test('proof rejects private value fields', () => {

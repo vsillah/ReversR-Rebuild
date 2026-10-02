@@ -11,6 +11,7 @@ const {
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-production-session-credential-acceptance-repair.json';
 const SOURCES = Object.freeze([
+  'server/index.js',
   'server/uploadSession.js',
   'server/cadProductionSessionCredentialAcceptanceRepair.js',
   'server/cadLiveOpeningGateCredentialClosure.js',
@@ -48,6 +49,10 @@ function expectedPacket(readSource = read) {
       && repair.verifierRepair.acceptsOpaqueUrlSafeBearerShape === true
       && repair.verifierRepair.intentionallyNonCanonicalFixture === true
       && repair.verifierRepair.verifierCanonicalBase64RequirementRemoved === true
+      && repair.requestTimeSessionServiceRepair.priorStartupCapturedWindowRisk === true
+      && repair.requestTimeSessionServiceRepair.requestTimeWindowResolutionRequired === true
+      && repair.requestTimeSessionServiceRepair.dynamicLookupSessionServiceInstalled === true
+      && repair.requestTimeSessionServiceRepair.verifierStillUsesDigestOnlyLookup === true
       && repair.boundInputs.generatedPrivateCredentialDigestSha256
         === GENERATED_PRIVATE_CREDENTIAL_DIGEST_SHA256
       && repair.defaultProductionBehaviorClosed === true
