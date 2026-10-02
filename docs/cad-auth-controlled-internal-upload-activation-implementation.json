@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-controlled-internal-upload-activation-implementation-packet-v1",
+  "sourceOnly": true,
+  "roadmap": "Phase 7.2 controlled internal upload activation implementation",
+  "status": "CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_IMPLEMENTATION_READY_SOURCE_ONLY",
+  "purpose": "install disabled-by-default source-owned manifest controls for a later bounded internal upload body-admission gate while preserving default production fail-closed behavior",
+  "implementationArtifact": "cad-auth-controlled-internal-upload-activation-implementation-v1",
+  "implementation": {
+    "schemaVersion": 1,
+    "artifact": "cad-auth-controlled-internal-upload-activation-implementation-v1",
+    "sourceOnly": true,
+    "status": "CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_IMPLEMENTATION_READY_SOURCE_ONLY",
+    "boundApproval": {
+      "postMergeDecisionRebindRefreshSha256": "1a3d5da0a9c7e21f5d58445510018c7c8913402696f6ff50d8239e1727b2bca3",
+      "currentProductionDeploymentBindingSha256": "5241aa6217768e86ce76665f94f1af4b97125a903ff5eef6bdbc6031b2984f18",
+      "mainCommit": "66c7ad1e23bf68316dd350c79d0324ad61e67dd2",
+      "controlledInternalUploadActivationDecisionPacketSha256": "d73f177fff7d814e644f161a5039e062ada065e92be3fe303ac041738646fd71",
+      "controlledInternalUploadActivationDecisionSourceCommit": "3dc4c72959a0d060eec6e71a11c9e8aa53cc54c3",
+      "githubProductionDeployment": "6811229679",
+      "productionTarget": "https://reversr-2bbhn3jbb-vsillahs-projects.vercel.app",
+      "productionAlias": "https://reversr.vercel.app",
+      "sourceOwnedDeploymentReference": "vercel-target:reversr-2bbhn3jbb-vsillahs-projects.vercel.app@66c7ad1e23bf68316dd350c79d0324ad61e67dd2",
+      "failClosedSmokeObservedBeforeUtc": "2026-10-02T15:09:45Z"
+    },
+    "controlledActivationPath": {
+      "manifestDriven": true,
+      "defaultProductionClosed": true,
+      "defaultActivationEnabled": false,
+      "routeBodyGateInterface": "server/cadUserUploadRouter.js#routeBodyGate.authorizeBodyRead",
+      "noRouteConstantChange": true,
+      "proofWindowIsSourceOnly": true,
+      "disabledManifest": {
+        "schemaVersion": 1,
+        "artifact": "cad-auth-controlled-internal-upload-activation-manifest-v1",
+        "sourceOnly": true,
+        "activationEnabled": false,
+        "defaultProductionClosed": true,
+        "productionUploadActivationAuthorizedNow": false,
+        "requestBodyAdmissionReadAuthorizedNow": false,
+        "route": "POST /api/cad/user-import",
+        "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+        "sessionId": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+        "currentDeploymentReference": "vercel-target:reversr-2bbhn3jbb-vsillahs-projects.vercel.app@66c7ad1e23bf68316dd350c79d0324ad61e67dd2",
+        "openingWindow": {
+          "startUtc": "2030-01-01T00:00:00Z",
+          "expiresUtc": "2030-01-01T00:30:00Z",
+          "startInclusiveExpiryExclusive": true
+        },
+        "commandCardSha256": "b465133b9315740c9117d5d8a867a58f66dee1ed7c7b23b0bd1a27219ada40b2",
+        "validatorEnvelope": {
+          "currentValidator": "server/cadUserUploadAdmission.js",
+          "acceptedContainer": "application/json",
+          "requiredPayloadKeys": [
+            "contentBase64",
+            "fileName",
+            "mimeType"
+          ],
+          "acceptedMimeTypes": [
+            "model/iges",
+            "application/iges",
+            "application/octet-stream"
+          ],
+          "acceptedFileExtensions": [
+            "igs",
+            "iges"
+          ],
+          "sourceLimitBytes": 262144,
+          "requestLimitBytes": 393216,
+          "timeoutMs": 10000,
+          "stepStpAuthorized": false,
+          "externalReferencesAuthorized": false
+        },
+        "oneSessionOneAttemptFenceRequired": true,
+        "independentExpiryCheckBeforeEveryEffect": true,
+        "rollbackFirstControlsRequired": true,
+        "rollbackArmedBeforeBodyAdmission": true,
+        "postRollbackFailClosedSmokeRequired": true,
+        "sanitizedReceiptsRequired": true,
+        "cadBytesReceiptAuthorized": false,
+        "privateFileNameReceiptAuthorized": false,
+        "conversionAuthorized": false,
+        "sandboxDispatchAuthorized": false,
+        "durableProjectHistoryAuthorized": false,
+        "privateCadUseAuthorized": false,
+        "retryAuthorized": false,
+        "secondLiveRunAuthorized": false,
+        "externalMessagesAuthorized": false,
+        "realUserCommercializationAuthorized": false,
+        "commercialReadinessClaim": false,
+        "commandCardBytes": "{\"schemaVersion\":1,\"artifact\":\"cad-auth-controlled-internal-upload-activation-command-card-v1\",\"sourceOnly\":true,\"issuedForLiveExecution\":false,\"productionUploadActivationAuthorized\":false,\"requestBodyAdmissionReadAuthorized\":false,\"productionOrigin\":\"https://reversr.vercel.app\",\"productionRoute\":\"POST /api/cad/user-import\",\"cohortRef\":\"rrb-ref:cad-upload-internal-mark-test-cohort-v1\",\"sessionId\":\"rrb-ref:cad-upload-internal-mark-test-session-v1\",\"productionDeploymentReference\":\"vercel-target:reversr-2bbhn3jbb-vsillahs-projects.vercel.app@66c7ad1e23bf68316dd350c79d0324ad61e67dd2\",\"openingWindow\":{\"startUtc\":\"2030-01-01T00:00:00Z\",\"expiresUtc\":\"2030-01-01T00:30:00Z\",\"startInclusiveExpiryExclusive\":true},\"validatorEnvelope\":{\"currentValidator\":\"server/cadUserUploadAdmission.js\",\"acceptedContainer\":\"application/json\",\"requiredPayloadKeys\":[\"contentBase64\",\"fileName\",\"mimeType\"],\"acceptedMimeTypes\":[\"model/iges\",\"application/iges\",\"application/octet-stream\"],\"acceptedFileExtensions\":[\"igs\",\"iges\"],\"sourceLimitBytes\":262144,\"requestLimitBytes\":393216,\"timeoutMs\":10000,\"stepStpAuthorized\":false,\"externalReferencesAuthorized\":false},\"ceilings\":{\"concurrentSessions\":1,\"uploadAttempts\":1,\"retries\":0,\"secondLiveRuns\":0},\"liveExecutionControls\":{\"independentExpiryCheckBeforeEveryEffect\":true,\"oneSessionOneAttemptFenceRequired\":true,\"rollbackFirstControlsRequired\":true,\"rollbackArmedBeforeBodyAdmission\":true,\"postRollbackFailClosedSmokeRequired\":true,\"unknownOutcomeStopsWithoutRetry\":true,\"sanitizedReceiptRequired\":true},\"conversionAuthorized\":false,\"sandboxDispatchAuthorized\":false,\"durableProjectHistoryAuthorized\":false,\"privateCadUseAuthorized\":false,\"externalMessagesAuthorized\":false,\"realUserCommercializationAuthorized\":false,\"commercialReadinessClaim\":false}",
+        "installationSha256": "63978b9263c45a196d27021e1d989c2569e7f1e34f04e293a15433c5fb56ab55"
+      },
+      "disabledManifestReview": {
+        "ok": false,
+        "code": "CONTROLLED_UPLOAD_ACTIVATION_MANIFEST_ACCEPTED_DEFAULT_CLOSED",
+        "admissionAuthorized": false,
+        "bodyReadAuthorized": false,
+        "routeBodyGateAuthorized": false,
+        "productionUploadActivationAuthorized": false,
+        "conversionAuthorized": false,
+        "sandboxDispatchAuthorized": false,
+        "durableProjectHistoryAuthorized": false,
+        "requestContentRecordingAuthorized": false,
+        "retryAuthorized": false,
+        "secondLiveRunAuthorized": false,
+        "externalEffectAuthorized": false,
+        "bindingAccepted": true,
+        "activationEnabled": false,
+        "currentDeploymentRechecked": true,
+        "commandCardSha256": "b465133b9315740c9117d5d8a867a58f66dee1ed7c7b23b0bd1a27219ada40b2",
+        "installationSha256": "63978b9263c45a196d27021e1d989c2569e7f1e34f04e293a15433c5fb56ab55",
+        "openingWindow": {
+          "startUtc": "2030-01-01T00:00:00Z",
+          "expiresUtc": "2030-01-01T00:30:00Z",
+          "startInclusiveExpiryExclusive": true
+        },
+        "validatorEnvelopeAccepted": true
+      },
+      "forwardEffects": [
+        "verifyCurrentDeployment",
+        "verifyCommandCardBinding",
+        "verifyClosedBaseline",
+        "claimRun",
+        "verifyBoundedSession",
+        "claimAttempt",
+        "armRollback",
+        "openBodyAdmissionFence",
+        "consumeAttemptBeforeBodyRead"
+      ],
+      "cleanupEffects": [
+        "closeBodyAdmissionFence",
+        "revokeSessionAndLateGrants",
+        "postRollbackFailClosedSmoke"
+      ]
+    },
+    "validatorEnvelope": {
+      "currentValidator": "server/cadUserUploadAdmission.js",
+      "acceptedContainer": "application/json",
+      "requiredPayloadKeys": [
+        "contentBase64",
+        "fileName",
+        "mimeType"
+      ],
+      "acceptedMimeTypes": [
+        "model/iges",
+        "application/iges",
+        "application/octet-stream"
+      ],
+      "acceptedFileExtensions": [
+        "igs",
+        "iges"
+      ],
+      "sourceLimitBytes": 262144,
+      "requestLimitBytes": 393216,
+      "timeoutMs": 10000,
+      "stepStpAuthorized": false,
+      "externalReferencesAuthorized": false
+    },
+    "boundedControls": {
+      "cohortRef": "rrb-ref:cad-upload-internal-mark-test-cohort-v1",
+      "sessionRef": "rrb-ref:cad-upload-internal-mark-test-session-v1",
+      "uploadAttempts": 1,
+      "concurrentSessions": 1,
+      "retries": 0,
+      "secondLiveRun": false,
+      "independentExpiryCheckBeforeEveryEffect": true,
+      "rollbackFirstControls": true,
+      "rollbackArmedBeforeBodyAdmission": true,
+      "postRollbackFailClosedSmoke": true,
+      "sanitizedReceiptsNoCadBytes": true,
+      "sanitizedReceiptsNoPrivateFileNames": true
+    },
+    "authorizes": {
+      "sourceOnlyDocsTestsCheckersManifests": true,
+      "localValidation": true,
+      "productionUploadActivation": false,
+      "requestBodyAdmissionOrRead": false,
+      "privateCredentialRead": false,
+      "uploadSessionIssuance": false,
+      "conversionDispatch": false,
+      "sandboxDispatch": false,
+      "privateCadUse": false,
+      "runtimeInstallationActivation": false,
+      "executableCommandCardIssuance": false,
+      "externalMessages": false,
+      "realUserCommercialization": false,
+      "commercialReadinessClaim": false
+    },
+    "nextGate": {
+      "requiresPublicReviewMergeAndProductionSmoke": true,
+      "requiresPostMergeImplementationRebindRefresh": true,
+      "approvalPhraseTemplate": "I approve a bounded source-only/no-live CAD Auth post-merge controlled internal upload activation implementation deployment rebind refresh for ReversR-Rebuild at main commit <postMergeMainCommit>, bound to controlled internal upload activation implementation packet SHA-256 <controlledInternalUploadActivationImplementationPacketSha256> at source commit <controlledInternalUploadActivationImplementationSourceCommit>, production deployment <currentProductionDeploymentReference>, production target <currentProductionTarget>, and fail-closed smoke 401 USER_SESSION_REQUIRED observed at <smokeObservedAtUtc>. Scope: verify the deployed source remains default-closed and proves the manifest-driven controlled internal upload body-admission path, IGES-only validator envelope, one cohort, one session, one upload attempt, no retry, independent expiry checks before every effect, rollback-first controls, post-rollback fail-closed smoke, sanitized receipts with no CAD bytes or private file names, current-production deployment binding, and exact later live activation approval phrase without runtime activation. No repo changes, deployment, provider/env/resource/billing changes, secrets or secret reads, private credential reads, upload-session issuance, production upload activation, request-body admission/read beyond fail-closed smoke, conversion, Sandbox dispatch, private CAD use, runtime installation activation, executable command-card issuance, external messages, live retry, second live run, real-user commercialization, or commercial-readiness claim. Stop on stale deployment binding, unresolved controlled activation implementation path, unresolved digest, request-body admission/read trigger, private credential leakage risk, missing rollback-first controls, missing IGES-only validator preservation, unknown outcome, or any need for runtime credentials/provider configuration."
+    }
+  },
+  "implementationResolved": true,
+  "routeStillClosed": true,
+  "defaultProductionUnwired": true,
+  "validatorEnvelopePreserved": true,
+  "receiptSanitizationProof": {
+    "rejectsCredentialValue": true,
+    "rejectsRequestBody": true,
+    "rejectsCadBytes": true,
+    "rejectsPrivateFileName": true
+  },
+  "authorizes": {
+    "sourceOnlyDocsTestsCheckersManifests": true,
+    "localValidation": true,
+    "draftPrAfterExplicitApproval": true,
+    "greenCheckMergeAfterExplicitApproval": true,
+    "normalVercelDeploymentFromMainAfterExplicitApproval": true,
+    "productionFailClosedSmokeAfterExplicitApproval": true,
+    "productionUploadActivation": false,
+    "requestBodyAdmissionOrRead": false,
+    "privateCredentialRead": false,
+    "uploadSessionIssuance": false,
+    "conversionDispatch": false,
+    "sandboxDispatch": false,
+    "privateCadUse": false,
+    "runtimeInstallationActivation": false,
+    "executableCommandCardIssuance": false,
+    "externalMessages": false,
+    "liveRetry": false,
+    "secondLiveRun": false,
+    "realUserCommercialization": false,
+    "commercialReadinessClaim": false
+  },
+  "sourceBindings": {
+    "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
+    "server/cadUserUploadRouter.js": "7958dd965e6d607a992e83ad111c0e7da44ddaec65d1996087bd6e8e2496a6ab",
+    "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
+    "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
+    "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
+    "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "608b32f7c9d643bab872e3fb1e31d21b20cbab21136f8a1ec05980a03a27d14a",
+    "docs/cad-auth-controlled-internal-upload-activation-decision.json": "d73f177fff7d814e644f161a5039e062ada065e92be3fe303ac041738646fd71",
+    "docs/cad-auth-controlled-internal-upload-activation-decision.md": "5061065f2606ebe4abee4a6d6acd750e83aea368aa83b5ecf349fb61d80a368e",
+    "docs/cad-production-upload-activation-scope.md": "4cda1730305906916c56da89896b9937f941b49b7a9de20780e1c7c558fb7a98",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "8085b6463da0b5701f2d3f0ef0930143f0e2d2bae6648bc12b6f0c1105529eae",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "7dea11e9e77c9d097a5fa5f7d2be89a084c09ed69601dec0519280959ec753fc"
+  }
+}
