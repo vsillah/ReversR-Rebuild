@@ -93,6 +93,12 @@ function checkPacket(packet, readSource = read) {
 
 if (require.main === module) {
   try {
+    if (process.argv.length > 3 || (process.argv[2] && process.argv[2] !== '--write')) {
+      throw Error('INVALID_MODE');
+    }
+    if (process.argv[2] === '--write') {
+      fs.writeFileSync(path.join(ROOT, PACKET), `${JSON.stringify(expectedPacket(), null, 2)}\n`);
+    }
     const packet = JSON.parse(read(PACKET));
     const result = checkPacket(packet);
     console.log(JSON.stringify(result));

@@ -45,6 +45,25 @@ This gate wires the disabled-by-default controlled upload activation source path
 
 The startup path can therefore resolve the controlled activation body-gate interface from deployed source, but it still cannot authorize a request-body read unless a later explicit gate lands exact reviewed values, merges, deploys, passes fail-closed smoke, and supplies the bounded live activation approval.
 
+## Observable controlled admission proof
+
+The stopped controlled activation showed why `503 USER_UPLOADS_DISABLED` is not enough evidence by itself: the same terminal appears when the route never opens the controlled body gate. This repair keeps that terminal code but adds a source-owned observable proof path for the later bounded live attempt.
+
+When and only when all of these conditions are true:
+
+- the controlled upload route body gate returns `CONTROLLED_UPLOAD_BODY_ADMISSION_FENCE_OPEN`,
+- the IGES-only validator accepts the one approved JSON body,
+- `afterBodyAdmission()` completes rollback and post-rollback fail-closed smoke with `CONTROLLED_UPLOAD_POST_ROLLBACK_FAIL_CLOSED_SMOKE_PASSED`,
+
+the route adds these sanitized response headers before returning `503 USER_UPLOADS_DISABLED`:
+
+- `X-ReversR-CAD-Controlled-Upload-Validation: iges-body-validated`
+- `X-ReversR-CAD-Controlled-Upload-Rollback: post-rollback-fail-closed-smoke-passed`
+- `X-ReversR-CAD-Controlled-Command-Card-SHA256: <reviewed command-card digest>`
+- `X-ReversR-CAD-Controlled-Installation-SHA256: <reviewed installation digest>`
+
+The headers do not include credential values, request bodies, CAD bytes, file names, private paths, user identifiers, or provider state. Default-closed requests and controlled-gate failures continue to return `USER_UPLOADS_DISABLED` without these headers.
+
 ## Validator envelope
 
 The controlled activation path preserves the current IGES-only request envelope:

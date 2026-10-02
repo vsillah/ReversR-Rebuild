@@ -2,7 +2,17 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const Module = require('node:module');
+const { once } = require('node:events');
+const { createHash } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
+const express = require('express');
+const {
+  CONTROLLED_UPLOAD_COMMAND_CARD_HEADER,
+  CONTROLLED_UPLOAD_INSTALLATION_HEADER,
+  CONTROLLED_UPLOAD_ROLLBACK_HEADER,
+  CONTROLLED_UPLOAD_VALIDATION_HEADER,
+  createCadUserUploadRouter,
+} = require('../server/cadUserUploadRouter');
 const {
   CLEANUP_EFFECTS,
   CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_ENABLED,
@@ -43,6 +53,7 @@ function requireProductionMountWithStubbedHttpDeps() {
 }
 
 const NOW = Date.parse('2030-01-01T00:05:00Z');
+const sha = value => createHash('sha256').update(value).digest('hex');
 const principal = Object.freeze({
   schemaVersion: 1,
   userId: 'source-owned-internal-tester',
@@ -116,6 +127,61 @@ function adapter({ events = [], ledger, mutate = () => {} } = {}) {
   return Object.freeze(Object.fromEntries(
     METHODS.map(operation => [operation, async input => receiptFor(operation, input)]),
   ));
+}
+
+function row(content, section, seq) {
+  return `${String(content || '').padEnd(72, ' ').slice(0, 72)}${section}${String(seq).padStart(7, ' ')}`;
+}
+
+function syntheticIgesBody() {
+  const rows = [
+    row('Synthetic IGES for controlled ReversR upload validation only', 'S', 1),
+    row('1H,,1H;,7HReversR,9HSynthetic,32,38,6,308,15,1.0,1,2HIN,1,0.01;', 'G', 1),
+    row('     100       1       0       0       0       0       0       0000000', 'D', 1),
+    row('     100       0       0       1       0       0       0       0       0', 'D', 2),
+    row('100,0,0,0;', 'P', 1),
+    row('S      1G      1D      2P      1', 'T', 1),
+  ];
+  return {
+    contentBase64: Buffer.from(rows.join('\n'), 'ascii').toString('base64'),
+    fileName: 'synthetic-internal-validation.igs',
+    mimeType: 'model/iges',
+  };
+}
+
+async function routeFixture(t, liveOpeningRuntimeMount) {
+  const credential = `us1.${Buffer.alloc(32, 9).toString('base64url')}`;
+  const credentialDigest = sha(credential);
+  const app = express();
+  app.use('/api/cad', createCadUserUploadRouter({
+    corsOrigins: ['https://approved.example'],
+    liveOpeningRuntimeMount,
+    sessionService: Object.freeze({
+      async lookupSession(digest) {
+        return digest === credentialDigest ? Object.freeze({
+          schemaVersion: 1,
+          userId: principal.userId,
+          shopId: principal.shopId,
+          sessionId: principal.sessionId,
+          authMethod: 'password',
+          status: 'active',
+          expiresAt: Date.parse('2030-01-01T00:20:00Z'),
+          transport: 'bearer',
+          cadUploadAllowed: true,
+        }) : null;
+      },
+    }),
+  }));
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => {
+    server.closeAllConnections();
+    server.close();
+  });
+  return {
+    credential,
+    url: `http://127.0.0.1:${server.address().port}/api/cad/user-import`,
+  };
 }
 
 async function open(mount) {
@@ -383,6 +449,63 @@ test('controlled startup composition preserves existing base executable runtime 
   assert.equal(bodyGateDecision.code, 'BASE_BODY_GATE_OPEN');
   await captured.liveOpeningRuntimeMount.routeBodyGate.afterBodyAdmission({ bodyGateDecision });
   assert.equal(cleaned, true);
+});
+
+test('route emits observable controlled validation headers only after body validation and rollback smoke', async t => {
+  const events = [];
+  const manifest = createControlledInternalUploadActivationManifest({ activationEnabled: true });
+  const mount = createCadControlledInternalUploadActivationMount({
+    enabled: true,
+    manifest,
+    adapter: adapter({ events }),
+    now: () => NOW,
+  });
+  const fixture = await routeFixture(t, mount);
+  const response = await fetch(fixture.url, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${fixture.credential}`,
+      'content-type': 'application/json',
+      origin: 'https://approved.example',
+    },
+    body: JSON.stringify(syntheticIgesBody()),
+  });
+  const payload = await response.json();
+
+  assert.equal(response.status, 503);
+  assert.equal(payload.code, 'USER_UPLOADS_DISABLED');
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), 'iges-body-validated');
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), 'post-rollback-fail-closed-smoke-passed');
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), manifest.commandCardSha256);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), manifest.installationSha256);
+  assert.match(response.headers.get('access-control-expose-headers'), /X-ReversR-CAD-Controlled-Upload-Validation/);
+  assert.deepEqual(events.map(event => event.operation), [...FORWARD_EFFECTS, ...CLEANUP_EFFECTS]);
+  assert.doesNotMatch([...response.headers.values()].join('\n'), /us1\.|contentBase64|synthetic-internal-validation|private-session-credential/i);
+});
+
+test('route does not emit observable controlled validation headers for default-closed gate', async t => {
+  const mount = createCadControlledInternalUploadActivationMount({
+    adapter: adapter(),
+    now: () => NOW,
+  });
+  const fixture = await routeFixture(t, mount);
+  const response = await fetch(fixture.url, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${fixture.credential}`,
+      'content-type': 'application/json',
+      origin: 'https://approved.example',
+    },
+    body: JSON.stringify(syntheticIgesBody()),
+  });
+  const payload = await response.json();
+
+  assert.equal(response.status, 503);
+  assert.equal(payload.code, 'USER_UPLOADS_DISABLED');
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), null);
 });
 
 test('checker CLI validates committed packet and rejects live modes', () => {

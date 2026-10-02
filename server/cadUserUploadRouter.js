@@ -9,6 +9,11 @@ const BODY_ADMISSION_AUTHORIZED = false;
 const { createUploadSessionVerifier } = require('./uploadSession');
 const { uploadSessionService } = require('./uploadSessionStore');
 
+const CONTROLLED_UPLOAD_VALIDATION_HEADER = 'X-ReversR-CAD-Controlled-Upload-Validation';
+const CONTROLLED_UPLOAD_ROLLBACK_HEADER = 'X-ReversR-CAD-Controlled-Upload-Rollback';
+const CONTROLLED_UPLOAD_COMMAND_CARD_HEADER = 'X-ReversR-CAD-Controlled-Command-Card-SHA256';
+const CONTROLLED_UPLOAD_INSTALLATION_HEADER = 'X-ReversR-CAD-Controlled-Installation-SHA256';
+const SHA256 = /^[a-f0-9]{64}$/;
 const errors = Object.freeze({
   ...admissionErrors,
   USER_SESSION_REQUIRED: [401, 'A valid upload session is required.'],
@@ -19,6 +24,22 @@ const errors = Object.freeze({
   METHOD_NOT_ALLOWED: [405, 'Use POST for this endpoint.'],
 });
 const sessionFailures = new Set(['SESSION_MISSING', 'SESSION_MALFORMED', 'SESSION_INVALID', 'SESSION_REVOKED', 'SESSION_EXPIRED']);
+
+function setControlledUploadValidationHeaders(res, bodyGateDecision, cleanupDecision) {
+  if (bodyGateDecision?.code !== 'CONTROLLED_UPLOAD_BODY_ADMISSION_FENCE_OPEN'
+    || bodyGateDecision.routeBodyGateAuthorized !== true
+    || bodyGateDecision.bodyReadAuthorized !== true
+    || cleanupDecision?.code !== 'CONTROLLED_UPLOAD_POST_ROLLBACK_FAIL_CLOSED_SMOKE_PASSED'
+    || cleanupDecision.rollbackVerified !== true
+    || cleanupDecision.unknownOutcome === true
+    || !SHA256.test(bodyGateDecision.commandCardSha256 || '')
+    || !SHA256.test(bodyGateDecision.installationSha256 || '')) return false;
+  res.set(CONTROLLED_UPLOAD_VALIDATION_HEADER, 'iges-body-validated');
+  res.set(CONTROLLED_UPLOAD_ROLLBACK_HEADER, 'post-rollback-fail-closed-smoke-passed');
+  res.set(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER, bodyGateDecision.commandCardSha256);
+  res.set(CONTROLLED_UPLOAD_INSTALLATION_HEADER, bodyGateDecision.installationSha256);
+  return true;
+}
 
 // Server-only injection consumes the shared service contract. The admission
 // switch is imported but default-closed; no executor dependency or conversion
@@ -46,7 +67,13 @@ function createCadUserUploadRouter({
     ? runtimeMount.routeBodyGate
     : null;
   const corsMiddleware = cors({ origin: true, methods: ['POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Upload-CSRF'] });
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Upload-CSRF'],
+    exposedHeaders: [
+      CONTROLLED_UPLOAD_VALIDATION_HEADER,
+      CONTROLLED_UPLOAD_ROLLBACK_HEADER,
+      CONTROLLED_UPLOAD_COMMAND_CARD_HEADER,
+      CONTROLLED_UPLOAD_INSTALLATION_HEADER,
+    ] });
   router.all('/user-import', (req, res, next) => {
     res.set('Cache-Control', 'no-store');
     // Match API origin policy, but never echo rejected origins in errors.
@@ -93,15 +120,13 @@ function createCadUserUploadRouter({
     // Future activation requires shared controls and a transactional authority fence
     // BEFORE opening this gate. Offline tests instrument the literal only.
     let admission;
+    let cleanupDecision;
     try {
       admission = await validateRequestBody(req);
-      if (!admission.ok) return send(res, admission.code);
-      // Payload acceptance never grants conversion authority. No executor is wired.
-      return send(res, 'USER_UPLOADS_DISABLED');
     } finally {
       if (routeBodyGate && typeof routeBodyGate.afterBodyAdmission === 'function') {
         try {
-          await routeBodyGate.afterBodyAdmission({
+          cleanupDecision = await routeBodyGate.afterBodyAdmission({
             bodyGateDecision,
             admissionOk: admission?.ok === true,
           });
@@ -111,7 +136,18 @@ function createCadUserUploadRouter({
         }
       }
     }
+    if (!admission.ok) return send(res, admission.code);
+    setControlledUploadValidationHeaders(res, bodyGateDecision, cleanupDecision);
+    // Payload acceptance never grants conversion authority. No executor is wired.
+    return send(res, 'USER_UPLOADS_DISABLED');
   });
   return router;
 }
-module.exports = { createCadUserUploadRouter };
+module.exports = {
+  CONTROLLED_UPLOAD_COMMAND_CARD_HEADER,
+  CONTROLLED_UPLOAD_INSTALLATION_HEADER,
+  CONTROLLED_UPLOAD_ROLLBACK_HEADER,
+  CONTROLLED_UPLOAD_VALIDATION_HEADER,
+  createCadUserUploadRouter,
+  setControlledUploadValidationHeaders,
+};
