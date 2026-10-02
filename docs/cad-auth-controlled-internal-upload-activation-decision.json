@@ -159,7 +159,7 @@
   ],
   "sourceBindings": {
     "docs/cad-auth-controlled-internal-upload-activation-decision.md": "5061065f2606ebe4abee4a6d6acd750e83aea368aa83b5ecf349fb61d80a368e",
-    "docs/cad-auth-phase6-live-opening-closeout.json": "c6ce99d3ff91e9f2ec7caee42165bca7035fbdef9d8f626b961058c6d3cf018c",
+    "docs/cad-auth-phase6-live-opening-closeout.json": "bfb0fda9cad61b3b082cd8d4aa229da71b6a98c0433cb79ea2a096037c16aa91",
     "docs/cad-production-upload-activation-scope.json": "eea069a1233d661392836f93340bec80b141adf070e96f7471fe130d59a09fb1",
     "docs/cad-production-upload-activation-scope.md": "4cda1730305906916c56da89896b9937f941b49b7a9de20780e1c7c558fb7a98",
     "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",

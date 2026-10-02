@@ -1,8 +1,17 @@
-# CAD Auth controlled internal upload activation implementation
+# CAD Auth controlled internal upload activation deployed startup wiring repair
 
-Status: source-only implementation ready for review. This packet does not activate production uploads.
+Status: source-only deployed startup wiring repair ready for review. This packet does not activate production uploads.
 
-This gate installs a disabled-by-default controlled upload activation source path for Phase 7. It keeps `POST /api/cad/user-import` closed by default while preparing a reviewed manifest and route-body-gate mount for a later exact live activation approval.
+This gate wires the disabled-by-default controlled upload activation source path into the deployed startup/default route path for Phase 7. It keeps `POST /api/cad/user-import` closed by default while proving that a later exact live activation approval can reach the reviewed manifest and route-body-gate mount from server-owned source.
+
+## Bound stop disposition
+
+- Stopped disposition: `82bfbfce410ff148e45b1b17a3b28e5eb58ecfb072c97f036eb474a8e5803395`
+- Approved controlled activation refresh: `7ce4c01d627f251606ad72cf128281391a00e836de6523c9f794bf5f3d5fbcf2`
+- Stopped reason: controlled activation source existed, but it was not mounted into the deployed startup/default route path.
+- Stopped credential handling: digest verified; credential value was not printed.
+- Stopped production body admission: not attempted.
+- Post-stop smoke: `401 USER_SESSION_REQUIRED`
 
 ## Bound production decision
 
@@ -32,7 +41,9 @@ This gate installs a disabled-by-default controlled upload activation source pat
 - sanitized receipts that reject CAD bytes, request bodies, credentials, and private file names,
 - conversion, Sandbox dispatch, durable project history, private CAD, external messages, real-user commercialization, and commercial-readiness claim all closed.
 
-The module is not mounted into production by this gate. It can only authorize body-read locally when a caller explicitly supplies an enabled manifest, exact current deployment reference, complete adapter receipts, a valid session principal, and an active approved window. The default export path remains closed.
+`server/cadProductionExecutableRuntimeMountCompletion.js` now wraps the existing production live-opening runtime mount with `createCadControlledInternalUploadActivationMount()` before handing it to `server/cadUserUploadRouter.js`. The default mount remains closed because `CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_ENABLED` is still `false` and no enabled manifest or adapter is supplied by startup source.
+
+The startup path can therefore resolve the controlled activation body-gate interface from deployed source, but it still cannot authorize a request-body read unless a later explicit gate lands exact reviewed values, merges, deploys, passes fail-closed smoke, and supplies the bounded live activation approval.
 
 ## Validator envelope
 
@@ -50,4 +61,4 @@ The controlled activation path preserves the current IGES-only request envelope:
 
 ## Later gate
 
-The next gate is a post-merge deployment rebind refresh. It must prove the deployed source remains default-closed and can still derive the manifest-driven controlled activation path without runtime activation. It must not read request bodies except the fail-closed smoke, must not read private credentials, and must not activate uploads.
+The next gate is a post-merge deployment rebind refresh. It must prove the deployed startup path is wired to the controlled activation mount, remains default-closed, preserves the IGES-only validator envelope, and can still derive the exact later controlled activation approval phrase without runtime activation. It must not read request bodies except the fail-closed smoke, must not read private credentials, and must not activate uploads.

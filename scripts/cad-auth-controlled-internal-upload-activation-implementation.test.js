@@ -1,6 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const Module = require('node:module');
 const { spawnSync } = require('node:child_process');
 const {
   CLEANUP_EFFECTS,
@@ -18,6 +19,28 @@ const {
   reviewControlledInternalUploadActivationManifest,
 } = require('../server/cadControlledInternalUploadActivation');
 const checker = require('./cad-auth-controlled-internal-upload-activation-implementation-checker');
+
+function requireProductionMountWithStubbedHttpDeps() {
+  const originalLoad = Module._load;
+  Module._load = function load(request, parent, isMain) {
+    if (request === 'express') {
+      return {
+        Router: () => ({
+          all() { return this; },
+          use() { return this; },
+          post() { return this; },
+        }),
+      };
+    }
+    if (request === 'cors') return () => (_req, _res, next) => next?.();
+    return originalLoad.call(this, request, parent, isMain);
+  };
+  try {
+    return require('../server/cadProductionExecutableRuntimeMountCompletion');
+  } finally {
+    Module._load = originalLoad;
+  }
+}
 
 const NOW = Date.parse('2030-01-01T00:05:00Z');
 const principal = Object.freeze({
@@ -249,9 +272,10 @@ test('route source remains closed and checker binds deterministic source packet'
   const packet = checker.expectedPacket();
 
   assert.equal(checker.routeStillClosed(), true);
-  assert.equal(checker.defaultProductionUnwired(), true);
+  assert.equal(checker.deployedStartupWiredDefaultClosed(), true);
   assert.equal(checker.validatorEnvelopePreserved(), true);
   assert.equal(packet.implementationResolved, true);
+  assert.equal(packet.deployedStartupWiredDefaultClosed, true);
   assert.equal(packet.authorizes.productionUploadActivation, false);
   assert.equal(packet.authorizes.requestBodyAdmissionOrRead, false);
   assert.equal(checker.checkPacket(packet).ok, true);
@@ -269,6 +293,96 @@ test('route source remains closed and checker binds deterministic source packet'
       Buffer.from(candidate === file ? 'drift' : ''),
     ])).ok, false, file);
   }
+});
+
+test('production startup mount wires controlled activation and remains default-closed', async () => {
+  const {
+    createCadProductionExecutableRuntimeMount,
+  } = requireProductionMountWithStubbedHttpDeps();
+  let captured = null;
+  const baseRuntimeMount = Object.freeze({
+    admissionSwitch: Object.freeze({
+      decide: async () => Object.freeze({
+        code: 'BASE_DEFAULT_CLOSED',
+        bodyReadAuthorized: false,
+        routeBodyGateAuthorized: false,
+      }),
+    }),
+    routeBodyGate: Object.freeze({
+      authorizeBodyRead: async () => Object.freeze({
+        code: 'BASE_GATE_CLOSED',
+        bodyReadAuthorized: false,
+        routeBodyGateAuthorized: false,
+      }),
+    }),
+  });
+  const router = createCadProductionExecutableRuntimeMount({
+    sessionService: Object.freeze({ lookupSession: async () => null }),
+    bootstrap: () => baseRuntimeMount,
+    createRouter: options => {
+      captured = options;
+      return Object.freeze({ mounted: true });
+    },
+  });
+
+  assert.equal(router.mounted, true);
+  assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationMounted, true);
+  assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationEnabled, false);
+  assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationDefaultClosed, true);
+
+  const decision = await captured.liveOpeningRuntimeMount.admissionSwitch.decide({
+    bodyAdmissionAuthorized: false,
+    principal,
+  });
+  assert.equal(decision.bodyReadAuthorized, false);
+  assert.equal(decision.code, 'BASE_DEFAULT_CLOSED');
+});
+
+test('controlled startup composition preserves existing base executable runtime gates', async () => {
+  const {
+    createCadProductionExecutableRuntimeMount,
+  } = requireProductionMountWithStubbedHttpDeps();
+  let captured = null;
+  let cleaned = false;
+  const baseRuntimeMount = Object.freeze({
+    admissionSwitch: Object.freeze({
+      decide: async () => Object.freeze({
+        code: 'BASE_BODY_GATE_READY',
+        bodyReadAuthorized: true,
+        routeBodyGateAuthorized: false,
+      }),
+    }),
+    routeBodyGate: Object.freeze({
+      authorizeBodyRead: async () => Object.freeze({
+        code: 'BASE_BODY_GATE_OPEN',
+        bodyReadAuthorized: true,
+        routeBodyGateAuthorized: true,
+      }),
+      afterBodyAdmission: async () => {
+        cleaned = true;
+        return Object.freeze({ code: 'BASE_GATE_CLEANED', bodyReadAuthorized: false });
+      },
+    }),
+  });
+  createCadProductionExecutableRuntimeMount({
+    sessionService: Object.freeze({ lookupSession: async () => null }),
+    bootstrap: () => baseRuntimeMount,
+    createRouter: options => {
+      captured = options;
+      return Object.freeze({ mounted: true });
+    },
+  });
+
+  const input = { bodyAdmissionAuthorized: false, principal };
+  const admissionDecision = await captured.liveOpeningRuntimeMount.admissionSwitch.decide(input);
+  assert.equal(admissionDecision.code, 'BASE_BODY_GATE_READY');
+  const bodyGateDecision = await captured.liveOpeningRuntimeMount.routeBodyGate.authorizeBodyRead({
+    ...input,
+    admissionDecision,
+  });
+  assert.equal(bodyGateDecision.code, 'BASE_BODY_GATE_OPEN');
+  await captured.liveOpeningRuntimeMount.routeBodyGate.afterBodyAdmission({ bodyGateDecision });
+  assert.equal(cleaned, true);
 });
 
 test('checker CLI validates committed packet and rejects live modes', () => {
