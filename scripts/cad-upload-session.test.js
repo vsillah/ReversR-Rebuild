@@ -48,11 +48,29 @@ test('forged credential, expiry boundary, revocation and missing permission fail
     await code(verifier({ ...base, ...patch }), request(), expected);
   }
 });
+test('opaque URL-safe bearer secrets reach digest lookup even when not canonical base64url', async () => {
+  const opaque = `us1.${'A'.repeat(42)}B`;
+  assert.match(opaque, /^us1\.[A-Za-z0-9_-]{43}$/);
+  assert.notEqual(Buffer.from(opaque.slice(4), 'base64url').toString('base64url'), opaque.slice(4));
+  let observedKey;
+  const verify = createUploadSessionVerifier({
+    now: () => 1000,
+    allowedOrigins: [],
+    lookupSession: async key => {
+      observedKey = key;
+      return key === hash(opaque) ? base : null;
+    },
+  });
+  const result = await verify(request({ authorization: `Bearer ${opaque}` }));
+  assert.equal(observedKey, hash(opaque));
+  assert.equal(result.ok, true);
+  assert.equal(result.principal.sessionId, base.sessionId);
+});
 test('malformed credentials and ambiguous transports never reach store', async () => {
   const verify = verifier(base, { lookupSession: () => { assert.fail('store must not run'); } });
   for (const headers of [{ authorization: ['Bearer x'] }, { authorization: '' },
     { authorization: `Bearer ${token} ` }, { authorization: `Bearer us2.${token.slice(4)}` },
-    { authorization: 'Bearer us1.' + 'A'.repeat(42) + 'B' },
+    { authorization: 'Bearer us1.' + 'A'.repeat(42) },
     { authorization: `Bearer ${token}`, cookie: `${cookieName}=${token}` },
     { cookie: `${cookieName}=${token}; ${cookieName}=${token}` }, { cookie: ['bad'] },
     { authorization: 'x'.repeat(8193) }]) await code(verify, request(headers), 'SESSION_MALFORMED');

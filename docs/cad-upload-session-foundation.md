@@ -25,10 +25,14 @@ it from app, hooks, shared client libraries or Expo entrypoints. It reads only N
 request headers/rawHeaders. It never accepts a body, profile, request query, account
 row, commercial grant, access password or operator token as identity evidence.
 
-The credential is `us1.` followed by canonical, unpadded base64url encoding of 32
-cryptographically random bytes. This is an opaque lookup secret, not client claims
-or a self-signed token. Future server issuance must use a CSPRNG after verified
-login and verified user/shop membership. The companion issuer helper requires explicit trusted adapters; there is no
+The credential is `us1.` followed by a 43-character URL-safe opaque secret.
+Future server issuance should use canonical, unpadded base64url encoding of 32
+cryptographically random bytes, but the verifier treats the suffix as an opaque
+digest-bound value so privately generated 43-character URL-safe CSPRNG secrets
+can be accepted by an exact source-owned session service. This is an opaque
+lookup secret, not client claims or a self-signed token. Future server issuance
+must use a CSPRNG after verified login and verified user/shop membership.
+The companion issuer helper requires explicit trusted adapters; there is no
 credential minting endpoint or default production wiring. Do not derive credentials from
 IDs, passwords or profile data. Version changes require explicit verifier support.
 
