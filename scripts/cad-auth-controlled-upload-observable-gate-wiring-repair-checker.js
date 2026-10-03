@@ -17,6 +17,7 @@ const PACKET = 'docs/cad-auth-controlled-upload-observable-gate-wiring-repair.js
 const SOURCES = Object.freeze([
   '.github/workflows/release-local-ci.yml',
   'server/index.js',
+  'docs/cad-auth-controlled-upload-durable-fence-repair.md',
   'server/cadControlledUploadDigestDriftRepair.js',
   'server/cadControlledUploadObservableGateWiringRepair.js',
   'server/cadControlledInternalUploadActivation.js',
@@ -99,6 +100,17 @@ function validatorEnvelopePreserved(readSource = read) {
     && /!\s*\/\\\.\(igs\|iges\)\$\/i\.test\(body\.fileName\)/.test(contract);
 }
 
+function durableHostBarrierPreserved(readSource = read) {
+  const gate = readSource('server/cadControlledUploadObservableGateWiringRepair.js').toString('utf8');
+  const composition = readSource('server/cadProductionExecutableRuntimeMountCompletion.js').toString('utf8');
+  return /controlledUploadRuntimeBlocked: true/.test(gate)
+    && /controlledInternalUploadActivation: Object.freeze\(\{ enabled: false \}\)/.test(gate)
+    && /function createControlledUploadObservableGateAdapter\(\)[\s\S]*?return null;/.test(gate)
+    && !/new (Set|Map)\(|durable: true|expiryCheckedAtomically: true|status: 401/.test(gate)
+    && /controlledRuntimeMount\?\.controlledUploadRuntimeBlocked === true\) return controlledDecision/.test(composition)
+    && /controlledRuntimeMount\?\.controlledUploadRuntimeBlocked === true\) \{\s*return controlledGate.authorizeBodyRead/.test(composition);
+}
+
 function expectedPacket(readSource = read) {
   const review = createControlledUploadObservableGateWiringRepairReview();
   return Object.freeze({
@@ -108,7 +120,7 @@ function expectedPacket(readSource = read) {
     roadmap: 'Phase 7 controlled internal upload activation observable deployed wiring repair',
     status: review.status,
     purpose:
-      'repair deployed startup/default route wiring so the controlled internal upload activation mount can emit source-owned observable body-admission proof headers under a later exact live gate',
+      'retain source binding while blocking body admission and proof headers until a reviewed shared durable upload host and independent smoke verifier exist',
     boundInputs: Object.freeze({
       stoppedControlledUploadActivationDispositionSha256:
         review.boundStopDisposition.stoppedControlledUploadActivationDispositionSha256,
@@ -122,6 +134,10 @@ function expectedPacket(readSource = read) {
       approvedCommandCardSha256: APPROVED_COMMAND_CARD_SHA256,
       approvedInstallationSha256: APPROVED_INSTALLATION_SHA256,
     }),
+    durableHostBarrierPreserved: durableHostBarrierPreserved(readSource),
+    runtimeBlocked: true,
+    liveDurabilityVerified: false,
+    independentSmokeVerified: false,
     review,
     deployedStartupObservableGateWired: deployedStartupObservableGateWired(readSource),
     observableProofHeadersPreserved: observableProofHeadersPreserved(readSource),
@@ -174,7 +190,7 @@ function checkPacket(packet, readSource = read) {
     matches = false;
   }
   const resolved = packet?.review?.status
-    === 'CONTROLLED_UPLOAD_OBSERVABLE_GATE_WIRING_READY_SOURCE_ONLY'
+    === 'CONTROLLED_UPLOAD_OBSERVABLE_GATE_SOURCE_BOUND_RUNTIME_BLOCKED'
     && packet?.deployedStartupObservableGateWired === true
     && packet?.observableProofHeadersPreserved === true
     && packet?.routeVerifierClockInjectable === true
@@ -190,13 +206,21 @@ function checkPacket(packet, readSource = read) {
     && packet?.authorizes?.commercialReadinessClaim === false;
   const serialized = JSON.stringify(packet || {});
   const noPrivateLeakage = !/PRIVATE_SENTINEL|CAD_SENTINEL|\/Users\/|\.local\/|private-session-credential/i.test(serialized);
-  const ok = matches && resolved && closed && noPrivateLeakage;
+  const runtimeClosed = packet?.durableHostBarrierPreserved === true
+    && packet?.runtimeBlocked === true
+    && packet?.liveDurabilityVerified === false
+    && packet?.independentSmokeVerified === false
+    && (packet?.review?.binding || packet?.review?.controlledBinding)?.enabled === false;
+  const ok = matches && resolved && closed && runtimeClosed && noPrivateLeakage;
   return Object.freeze({
     ok,
     code: ok
       ? 'CAD_AUTH_CONTROLLED_UPLOAD_OBSERVABLE_GATE_WIRING_REPAIR_VALID_SOURCE_ONLY'
       : 'CAD_AUTH_CONTROLLED_UPLOAD_OBSERVABLE_GATE_WIRING_REPAIR_BLOCKED',
     resolved,
+    runtimeBlocked: true,
+    liveDurabilityVerified: false,
+    independentSmokeVerified: false,
     routeStillDefaultClosed: packet?.routeStillDefaultClosed === true,
     deployedStartupObservableGateWired:
       packet?.deployedStartupObservableGateWired === true,
@@ -244,6 +268,7 @@ module.exports = {
   checkPacket,
   deployedStartupObservableGateWired,
   expectedPacket,
+  durableHostBarrierPreserved,
   observableProofHeadersPreserved,
   routeVerifierClockInjectable,
   routeStillDefaultClosed,

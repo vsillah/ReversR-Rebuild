@@ -249,6 +249,9 @@
     "privateDataLeakageRisk",
     "runtimeCredentialsOrProviderConfigurationNeeded"
   ],
+  "controlledUploadRuntimeBlocked": true,
+  "controlledUploadRuntimeBlocker": "CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED",
+  "controlledUploadLiveDurabilityVerified": false,
   "sourceBindings": {
     "server/cadStartupLiveGateSourceInstallClosure.js": "672383dd0617afc6c36481469fa623baf82a15624431d05bac8b4595acd7b569",
     "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
@@ -264,10 +267,10 @@
     "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
     "server/cadLiveOpeningExecutableRuntimeWiring.js": "5f03e6f70cdc4b1ef12ef1fbaed48b555e5df8707c3ff7de0e74c5d38488ced1",
     "server/cadLiveOpeningRuntimeMount.js": "13264eea4a6e2d79c30028c30b3b10439aa7f3755e7a482f2f7076ad1b1c5c71",
-    "server/cadProductionExecutableRuntimeMountCompletion.js": "abe18d606098c7c724a98471acd6c5b6bfa17e3d7baaf86a84786246c86d7a2d",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
-    "scripts/cad-auth-startup-live-gate-source-install-closure-checker.js": "ad520df7d54f934bd2369a6c7e6811c7a9f3123c2dd0c21d4ef9645934dd8fe1",
+    "scripts/cad-auth-startup-live-gate-source-install-closure-checker.js": "401a38e27e5848077db2990a4ab9a6f118001ad640248f944350e8e8e178a5b9",
     "scripts/cad-auth-startup-live-gate-source-install-closure.test.js": "ef178bc4e425de518b22f9b5c0fbf1d4bf1d402c7873d004bbe505d4f51ec366",
     "docs/cad-auth-startup-live-gate-source-install-closure.md": "030190de8d0cd8444756d7c124c83cd2546bc527a2e10e8962fd27673846d2fe",
     ".github/workflows/release-local-ci.yml": "f518711e39a5ad28cd1707446fd5794c570635c90e644fc3a74eafabfd423989"

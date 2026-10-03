@@ -38,6 +38,9 @@ function expectedPacket(readSource = read) {
     liveDurableServiceQualified: false, executableCommandCardIssued: false,
     productionExecutionBinding: null, controls: runtimeMountCompletionPreparation().controls,
     approvalPhraseTemplate: approvalPhrase(),
+    runtimeAdmissionBlocked: true,
+    runtimeBlocker: 'CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED',
+    liveDurabilityVerified: false,
     sourceBindings: Object.fromEntries(SOURCES.map(file => [file, sha(readSource(file))])) };
 }
 function checkPacket(input, { readSource = read } = {}) {

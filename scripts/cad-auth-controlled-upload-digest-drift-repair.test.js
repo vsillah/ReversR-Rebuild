@@ -96,6 +96,15 @@ async function routeFixture(t, liveOpeningRuntimeMount) {
   const credential = `${['us', '1.'].join('')}${Buffer.alloc(32, 7).toString('base64url')}`;
   const credentialDigest = sha(credential);
   const app = express();
+  let bodySubscriptions = 0;
+  app.use((req, _res, next) => {
+    const on = req.on;
+    req.on = function (event, ...args) {
+      if (event === 'data' || event === 'readable') bodySubscriptions++;
+      return on.call(this, event, ...args);
+    };
+    next();
+  });
   app.use('/api/cad', createCadUserUploadRouter({
     corsOrigins: ['https://approved.example'],
     liveOpeningRuntimeMount,
@@ -123,6 +132,7 @@ async function routeFixture(t, liveOpeningRuntimeMount) {
     server.close();
   });
   return {
+    bodySubscriptions: () => bodySubscriptions,
     credential,
     url: `http://127.0.0.1:${server.address().port}/api/cad/user-import`,
   };
@@ -147,7 +157,7 @@ test('repair review resolves approval-bound command-card and installation digest
   });
 
   assert.equal(review.sourceOnly, true);
-  assert.equal(review.status, 'CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_READY_SOURCE_ONLY');
+  assert.equal(review.status, 'CONTROLLED_UPLOAD_DIGEST_DRIFT_SOURCE_BOUND_RUNTIME_BLOCKED');
   assert.equal(review.repair.providerDeploymentIdIsProvenanceOnly, true);
   assert.equal(review.repair.sourceOwnedDeploymentReferenceResolved, true);
   assert.equal(review.binding.commandCardSha256, APPROVED_DIGEST_DRIFT_REPAIR_COMMAND_CARD_SHA256);
@@ -182,7 +192,7 @@ test('provider deployment id would drift without source-owned repair', () => {
   assert.equal(sourceManifest.installationSha256, APPROVED_DIGEST_DRIFT_REPAIR_INSTALLATION_SHA256);
 });
 
-test('deployed route proof headers use repaired source-owned digests', async t => {
+test('deployed route withholds proof headers despite repaired source-owned digests', async t => {
   const controlledMount = createCadControlledUploadDigestDriftRepairActivationMount({
     deploymentMetadata: () => proofDeploymentMetadata(),
     now,
@@ -203,9 +213,10 @@ test('deployed route proof headers use repaired source-owned digests', async t =
 
   assert.equal(response.status, 503);
   assert.equal(payload.code, 'USER_UPLOADS_DISABLED');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), 'iges-body-validated');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), 'post-rollback-fail-closed-smoke-passed');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), APPROVED_DIGEST_DRIFT_REPAIR_COMMAND_CARD_SHA256);
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), APPROVED_DIGEST_DRIFT_REPAIR_INSTALLATION_SHA256);
+  assert.equal(fixture.bodySubscriptions(), 0);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), null);
   assert.doesNotMatch([...response.headers.values()].join('\n'), /contentBase64|synthetic-digest-drift-repair|private-session-credential/i);
 });

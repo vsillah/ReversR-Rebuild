@@ -114,6 +114,9 @@ function expectedPacket(readSource = read) {
     stopConditions: ['failingChecks', 'failingSmoke', 'unknownOutcome', 'staleDeploymentBinding',
       'missingDurableAdapterEvidence', 'missingExactBoundedSessionBinding', 'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded'],
+    runtimeAdmissionBlocked: true,
+    runtimeBlocker: 'CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED',
+    liveDurabilityVerified: false,
     sourceBindings: Object.fromEntries(SOURCES.map(file => [file, sha(readSource(file))])),
   };
 }

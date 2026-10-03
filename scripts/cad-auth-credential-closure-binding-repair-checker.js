@@ -103,6 +103,9 @@ function expectedPacket(readSource = read) {
     runtimeActivated: false, uploadSessionIssued: false, requestBodyRead: false,
     executableCommandCardIssuedForLiveExecution: false, privateEvidenceRead: false,
     nextGate: 'public review, merge/deploy authority, then source-only post-merge rebind with current metadata, fresh reviewed UTC window, exact card/installation digests and fail-closed smoke; private supply and live opening require separate authority',
+    controlledUploadRuntimeBlocked: true,
+    controlledUploadRuntimeBlocker: 'CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED',
+    controlledUploadLiveDurabilityVerified: false,
     sourceBindings: Object.fromEntries(SOURCES.map(file => [file, sha(readSource(file))])),
   };
 }

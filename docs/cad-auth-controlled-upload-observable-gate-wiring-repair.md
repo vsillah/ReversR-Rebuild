@@ -1,8 +1,6 @@
 # CAD Auth controlled upload observable gate wiring repair
 
-Status: source-only deployed startup wiring repair ready for review. This packet does not activate production uploads.
-
-The bounded controlled upload activation on `2026-10-03T02:30:00Z` reached the disabled terminal `USER_UPLOADS_DISABLED`, but the response did not include the reviewed observable proof headers. That means the deployed startup/default route path still had not installed the controlled activation mount that can prove body-admission validation, rollback, and smoke from server-owned source.
+Status: source wiring retained; runtime blocked. See [corrective repair](cad-auth-controlled-upload-durable-fence-repair.md). Historical process-local adapter receipts never established shared durability, atomic expiry, rollback or independently executed smoke.
 
 ## Bound disposition
 
@@ -14,38 +12,21 @@ The bounded controlled upload activation on `2026-10-03T02:30:00Z` reached the d
 - Approved command-card SHA-256: `63bedb7cecae55872d8ac291ab3dd9761de202634a13998a7a77c6eb0051f03c`
 - Approved installation SHA-256: `df21b3ec6ecfa44d5190f63a815722c2b0bd90b5f596121294f51439acf859c3`
 
-## Repair
+## Corrected behavior
 
-`server/cadControlledUploadObservableGateWiringRepair.js` creates a server-owned controlled activation source from reviewed current-production deployment metadata and the current bounded UTC window. It then builds the existing controlled internal upload activation manifest, adapter, and mount without reading credentials, request bodies, private CAD, provider state, or secrets.
+The source-only review preserves the original deployment/session/cohort/card/install/window binding. The deployed startup factory now returns a terminal denial without constructing an adapter or invoking the base runtime. Its configuration is disabled even when source digests match. The composition layer cannot fall back to a legacy admission gate after this denial.
 
-`server/index.js` now passes a controlled activation mount factory into `createCadProductionExecutableRuntimeMount()`. The factory receives the existing base runtime mount, so the repair is part of the deployed route path rather than a proof-only test injection.
-
-`server/cadProductionExecutableRuntimeMountCompletion.js` accepts that factory and composes the controlled activation route-body gate before the existing base gate.
-
-`server/cadUserUploadRouter.js` keeps `Date.now` as the production default, but now accepts a source-owned clock for focused validation. The observable gate route proof pins that clock to the approved proof window so local source-only validation stays stable after the bounded live window expires.
+The unsafe Set-backed adapter and fabricated rollback/smoke receipts have been removed. The adapter resolver returns null; supplied flags, ledgers or callbacks cannot authorize admission. The existing generic protocol runner is exercised only through explicitly synthetic local fixtures in this repair.
 
 ## Safety properties
 
-- Default production remains fail-closed.
-- Unauthenticated requests still stop at `401 USER_SESSION_REQUIRED`.
-- Credentialed requests without a later exact live activation gate still stop at `503 USER_UPLOADS_DISABLED`.
-- No production upload activation, conversion, Sandbox dispatch, durable project history, private CAD use, external messages, retry, second live run, real-user commercialization, or commercial-readiness claim is authorized.
-- The IGES-only validator envelope remains unchanged.
-- The one-session and one-attempt fence remains enforced.
-- Rollback is armed before body admission opens.
-- The observable headers may appear only after the controlled gate opens, the IGES validator accepts the one approved body, and post-rollback fail-closed smoke passes.
-
-## Observable proof headers
-
-The later controlled live activation must prove the deployed source can emit all four headers:
-
-- `X-ReversR-CAD-Controlled-Upload-Validation`
-- `X-ReversR-CAD-Controlled-Upload-Rollback`
-- `X-ReversR-CAD-Controlled-Command-Card-SHA256`
-- `X-ReversR-CAD-Controlled-Installation-SHA256`
-
-These headers cannot include credential values, CAD bytes, request bodies, private file names, local paths, provider identifiers, or user identifiers.
+- Unauthenticated requests remain `401 USER_SESSION_REQUIRED`.
+- Synthetic credentialed local requests stop at `503 USER_UPLOADS_DISABLED` before body-stream subscription.
+- Denials emit no controlled validation, rollback, command-card or installation proof headers.
+- The IGES-only validator and exact binding contracts remain unchanged.
+- One session, one attempt, no retries and rollback-first controls remain requirements for a future durable host; this repair does not claim they have been durably qualified.
+- Production activity and commercial-readiness claims remain unauthorized.
 
 ## Next gate
 
-After this repair is reviewed, merged, deployed, and fail-closed smoked, the next gate is a source-only/no-live post-merge rebind refresh. It must verify the deployed startup route wiring resolves the observable controlled body-admission path from reviewed source, recompute the current deployment binding, controlled manifest digest, command-card SHA-256, installation SHA-256, and a fresh UTC activation window, and return the exact later live activation approval phrase without runtime activation.
+A reviewed source-owned shared transactional upload host with atomic expiry, durable close/revocation and a real independent smoke verifier is required. The offline engine adapter alone does not supply that host. This repair stops at local validation and a scoped commit.

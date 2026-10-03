@@ -255,7 +255,7 @@
     ".github/workflows/release-local-ci.yml": "f518711e39a5ad28cd1707446fd5794c570635c90e644fc3a74eafabfd423989",
     "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
     "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
-    "server/cadProductionExecutableRuntimeMountCompletion.js": "abe18d606098c7c724a98471acd6c5b6bfa17e3d7baaf86a84786246c86d7a2d",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
     "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
     "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
@@ -265,6 +265,6 @@
     "docs/cad-auth-controlled-internal-upload-activation-decision.md": "5061065f2606ebe4abee4a6d6acd750e83aea368aa83b5ecf349fb61d80a368e",
     "docs/cad-production-upload-activation-scope.md": "4cda1730305906916c56da89896b9937f941b49b7a9de20780e1c7c558fb7a98",
     "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "dff6f84be721a68855027c068fe38b325f5074f55cd888855f2bf060eb8f819e",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "43d0970b94e43f2237c51ce1ac578c7b2e936664a5ecb3a1e16dd23523e9f5e3"
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "be977c19fc58e201de60bc507cf700faec34f1d477befce1841bd1ea34014295"
   }
 }

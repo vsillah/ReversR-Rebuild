@@ -62,6 +62,7 @@ const principal = Object.freeze({
   cadUploadAllowed: true,
 });
 
+// Synthetic protocol receipts only; these do not prove durable storage or real smoke.
 function adapter({ events = [], ledger, mutate = () => {} } = {}) {
   function receiptFor(operation, input) {
     const receipt = {
@@ -281,7 +282,7 @@ test('enabled local proof mount opens one route body gate then rolls back and sm
   assert.equal((await open(mount)).bodyReadAuthorized, false);
 });
 
-test('durable one-session and one-attempt fence blocks a second mount with the same ledger', async () => {
+test('synthetic shared-ledger protocol blocks a second mount without proving durability', async () => {
   const ledger = new Set();
   const manifest = createControlledInternalUploadActivationManifest({ activationEnabled: true });
   const first = createCadControlledInternalUploadActivationMount({
@@ -534,5 +535,54 @@ test('checker CLI validates committed packet and rejects live modes', () => {
     });
     assert.equal(denied.status, 1);
     assert.doesNotMatch(denied.stdout + denied.stderr, /us1\.|PRIVATE_SENTINEL|CAD_SENTINEL/);
+  }
+});
+
+for (const operation of CLEANUP_EFFECTS) {
+  for (const failure of ['throw', 'forged']) {
+    test(`synthetic ${operation} ${failure} remains unknown without retry or proof headers`, async t => {
+      const mount = createCadControlledInternalUploadActivationMount({
+        enabled: true,
+        manifest: createControlledInternalUploadActivationManifest({ activationEnabled: true }),
+        now: () => NOW,
+        adapter: adapter({ mutate: (name, receipt) => {
+          if (name !== operation) return;
+          if (failure === 'throw') throw Error('synthetic failure');
+          receipt.installationSha256 = '0'.repeat(64);
+        } }),
+      });
+      assert.equal((await open(mount)).bodyReadAuthorized, true);
+      const result = await mount.routeBodyGate.afterBodyAdmission();
+      assert.equal(result.code, 'CONTROLLED_UPLOAD_ROLLBACK_OR_SMOKE_UNKNOWN_NO_RETRY');
+      assert.equal(result.rollbackVerified, false);
+      assert.equal(result.unknownOutcome, true);
+      assert.deepEqual(result.cleanupFailures, [operation]);
+      assert.equal((await open(mount)).bodyReadAuthorized, false);
+      const { setControlledUploadValidationHeaders } = require('../server/cadUserUploadRouter');
+      let headers = 0;
+      assert.equal(setControlledUploadValidationHeaders({ set() { headers++; } }, {
+        code: 'CONTROLLED_UPLOAD_BODY_ADMISSION_FENCE_OPEN',
+        bodyReadAuthorized: true, routeBodyGateAuthorized: true,
+        commandCardSha256: 'a'.repeat(64), installationSha256: 'b'.repeat(64),
+      }, result), false);
+      assert.equal(headers, 0);
+    });
+  }
+}
+
+test('synthetic forged forward receipts stop before body admission and execute all cleanup', async () => {
+  for (const operation of ['claimRun', 'claimAttempt', 'armRollback', 'openBodyAdmissionFence', 'consumeAttemptBeforeBodyRead']) {
+    const events = [];
+    const mount = createCadControlledInternalUploadActivationMount({
+      enabled: true,
+      manifest: createControlledInternalUploadActivationManifest({ activationEnabled: true }),
+      now: () => NOW,
+      adapter: adapter({ events, mutate: (name, receipt) => {
+        if (name === operation) receipt.expiryCheckedAtomically = false;
+      } }),
+    });
+    assert.equal((await open(mount)).bodyReadAuthorized, false);
+    assert.deepEqual(events.slice(-3).map(event => event.operation), CLEANUP_EFFECTS);
+    assert.equal((await open(mount)).bodyReadAuthorized, false);
   }
 });

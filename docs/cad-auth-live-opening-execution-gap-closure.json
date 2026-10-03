@@ -28,11 +28,14 @@
     "effectsExecuted": 0
   },
   "approvalPhraseTemplate": "I approve one bounded internal production upload-admission opening for ReversR CAD user-import, bound to source-only production executable runtime mount completion packet 87b9f0e23ac1b6017f7bc8cf5cff3ab6967220398ad33798f7ed6e81fab4ecae at source commit 8d33cae7d0f352954ae6c0ef4c8115dc633c8d9f, executable production bootstrap binding repair packet ed60db97a2cfc0c8ce37a417347a7c19f67adbcbeb4388dd327dd5183860dd77, source-only/no-live post-merge executable command-card digest refresh SHA-256 <postMergeDigestRefreshSha256>, previous executable command-card rebind packet 8412b6d4495bf0dc852e3b3875497f839b01529825c7d22171814ee107eb67c1, previous executable digest refresh b3e3f9e5dde4c907d90ca12420d39034da5e5a3ebbb6fd89df9c1f3f192ccb24, bounded session binding rrb-ref:cad-upload-internal-mark-test-session-v1, cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, durable evidence digest <durableEvidenceDigest>, and production deployment reference <currentProductionDeploymentReference>. Scope: against https://reversr.vercel.app POST /api/cad/user-import, for cohort rrb-ref:cad-upload-internal-mark-test-cohort-v1, starting <startUtc> and expiring <expiresUtc>; issue and use only one bounded executable command-card with SHA-256 <executableCommandCardSha256> for admission-only body validation for public, synthetic, or explicitly authorized internal tester CAD; one concurrent session; one upload attempt; independent expiry checks before every effect; atomic durable run and attempt claims; stop on unknown outcome; rollback immediately after the window; and run post-rollback fail-closed smoke before cleanup. No conversion, Sandbox dispatch, private CAD, real-user commercialization, external messages, provider/env/resource/billing changes, second live run, retry, or commercial-readiness claim. This approval additionally binds execution-gap closure packet <executionGapClosurePacketSha256> at source commit <executionGapClosureSourceCommit> and independently qualified durable service <durableServiceReference>; its session-ref mapping, atomic global run and attempt claims, crash-safe expiry and revocation, rollback-first controls, and post-rollback smoke must be verified before opening.",
+  "runtimeAdmissionBlocked": true,
+  "runtimeBlocker": "CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED",
+  "liveDurabilityVerified": false,
   "sourceBindings": {
     "docs/cad-auth-prod-runtime-mount-completion.json": "87b9f0e23ac1b6017f7bc8cf5cff3ab6967220398ad33798f7ed6e81fab4ecae",
     "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
     "server/cadProductionExecutionBinding.js": "62c95c5b7b9d6d333b54e4b40c7ea1a4e55e8f2c2b95222434f6ace938315ebb",
-    "server/cadProductionExecutableRuntimeMountCompletion.js": "abe18d606098c7c724a98471acd6c5b6bfa17e3d7baaf86a84786246c86d7a2d",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
     "server/cadLiveOpeningExecutableRuntimeBootstrap.js": "4275c83434abd7ab589ef8c2e66ee6018013355efc5605c8a1c7be60494446c8",
     "server/cadLiveOpeningExecutableRuntimeWiring.js": "5f03e6f70cdc4b1ef12ef1fbaed48b555e5df8707c3ff7de0e74c5d38488ced1",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
@@ -40,7 +43,7 @@
     "scripts/cad-auth-prod-runtime-mount-completion.test.js": "e544ddf4c56cb78f2f3574c9f38dd9bf412a8dab782a7888ef0652071c3aff64",
     "scripts/cad-auth-executable-production-bootstrap-binding-repair.test.js": "baf8242604ed6cd98c8903ac5aab02ab5f4aabe3e38ca35b062e672005947102",
     "scripts/cad-auth-live-opening-execution-gap-closure.test.js": "c49772dd16021b2ee20c5fcca72553bd62e60e22babc640190b204c8c5cbf0fb",
-    "scripts/cad-auth-live-opening-execution-gap-closure-checker.js": "66e3458b5dcd83e98585a7defd340db79d70c556a0d024c7644eff145e77fa7e",
+    "scripts/cad-auth-live-opening-execution-gap-closure-checker.js": "ac496ad15432ef61cf95f4e30bb22cf758befcc145b86ff63cb52ed0b68b2313",
     "docs/cad-auth-live-opening-execution-gap-closure.md": "2063faaa130301b17519ebfe9d5b00d6aca0d50b9c4785b06249bd10d343e6d2"
   }
 }
