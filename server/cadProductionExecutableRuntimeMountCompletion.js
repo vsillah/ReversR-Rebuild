@@ -61,15 +61,18 @@ function createCadProductionExecutableRuntimeMount({
   executableRuntime,
   liveOpeningRuntimeMount,
   controlledInternalUploadActivation = {},
+  controlledInternalUploadActivationMount,
   bootstrap = createCadLiveOpeningExecutableRuntimeBootstrap,
   createControlledMount = createCadControlledInternalUploadActivationMount,
   createRouter = createCadUserUploadRouter,
 } = {}) {
   const baseRuntimeMount = liveOpeningRuntimeMount || bootstrap({ executableRuntime });
-  const controlledRuntimeMount = createControlledMount({
-    ...controlledInternalUploadActivation,
-    baseRuntimeMount,
-  });
+  const controlledRuntimeMount = typeof controlledInternalUploadActivationMount === 'function'
+    ? controlledInternalUploadActivationMount({ baseRuntimeMount })
+    : controlledInternalUploadActivationMount || createControlledMount({
+      ...controlledInternalUploadActivation,
+      baseRuntimeMount,
+    });
   const productionRuntimeMount = composeControlledRuntimeMount({
     baseRuntimeMount,
     controlledRuntimeMount,
