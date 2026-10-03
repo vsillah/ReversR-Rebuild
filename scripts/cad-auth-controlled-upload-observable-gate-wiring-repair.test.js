@@ -76,6 +76,7 @@ async function routeFixture(t, liveOpeningRuntimeMount) {
   app.use('/api/cad', createCadUserUploadRouter({
     corsOrigins: ['https://approved.example'],
     liveOpeningRuntimeMount,
+    now,
     sessionService: Object.freeze({
       async lookupSession(digest) {
         return digest === credentialDigest ? Object.freeze({

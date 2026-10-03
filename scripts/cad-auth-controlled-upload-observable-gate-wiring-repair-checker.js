@@ -69,6 +69,17 @@ function observableProofHeadersPreserved(readSource = read) {
     && /return send\(res, 'USER_UPLOADS_DISABLED'\);/.test(router);
 }
 
+function routeVerifierClockInjectable(readSource = read) {
+  const router = readSource('server/cadUserUploadRouter.js').toString('utf8');
+  const testSource =
+    readSource('scripts/cad-auth-controlled-upload-observable-gate-wiring-repair.test.js')
+      .toString('utf8');
+  return /now = Date\.now/.test(router)
+    && /createUploadSessionVerifier\(\{ lookupSession: sessionService\.lookupSession, allowedOrigins, now \}\)/.test(router)
+    && /createCadUserUploadRouter\(\{[\s\S]*\n\s+now,/.test(testSource)
+    && /const now = \(\) => Date\.parse\(APPROVED_CONTROLLED_WINDOW\.proofNowUtc\);/.test(testSource);
+}
+
 function routeStillDefaultClosed(readSource = read) {
   const router = readSource('server/cadUserUploadRouter.js').toString('utf8');
   const activation = readSource('server/cadControlledInternalUploadActivation.js').toString('utf8');
@@ -113,6 +124,7 @@ function expectedPacket(readSource = read) {
     review,
     deployedStartupObservableGateWired: deployedStartupObservableGateWired(readSource),
     observableProofHeadersPreserved: observableProofHeadersPreserved(readSource),
+    routeVerifierClockInjectable: routeVerifierClockInjectable(readSource),
     routeStillDefaultClosed: routeStillDefaultClosed(readSource),
     validatorEnvelopePreserved: validatorEnvelopePreserved(readSource),
     laterLiveGateRequirements: Object.freeze({
@@ -164,6 +176,7 @@ function checkPacket(packet, readSource = read) {
     === 'CONTROLLED_UPLOAD_OBSERVABLE_GATE_WIRING_READY_SOURCE_ONLY'
     && packet?.deployedStartupObservableGateWired === true
     && packet?.observableProofHeadersPreserved === true
+    && packet?.routeVerifierClockInjectable === true
     && packet?.routeStillDefaultClosed === true
     && packet?.validatorEnvelopePreserved === true
     && packet?.laterLiveGateRequirements?.requestBodyAdmissionNow === false;
@@ -188,6 +201,8 @@ function checkPacket(packet, readSource = read) {
       packet?.deployedStartupObservableGateWired === true,
     observableProofHeadersPreserved:
       packet?.observableProofHeadersPreserved === true,
+    routeVerifierClockInjectable:
+      packet?.routeVerifierClockInjectable === true,
     validatorEnvelopePreserved: packet?.validatorEnvelopePreserved === true,
     productionUploadActivationAuthorized:
       packet?.authorizes?.productionUploadActivation === true,
@@ -229,6 +244,7 @@ module.exports = {
   deployedStartupObservableGateWired,
   expectedPacket,
   observableProofHeadersPreserved,
+  routeVerifierClockInjectable,
   routeStillDefaultClosed,
   sourceBindings,
   validatorEnvelopePreserved,

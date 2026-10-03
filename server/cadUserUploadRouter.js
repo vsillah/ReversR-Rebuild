@@ -51,9 +51,10 @@ function createCadUserUploadRouter({
   admissionSwitch: configuredAdmissionSwitch = createCadInternalProductionAdmissionSwitch(),
   liveOpeningRuntimeMount,
   liveOpeningExecutableRuntime,
+  now = Date.now,
 } = {}) {
   const router = express.Router();
-  const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins });
+  const verify = createUploadSessionVerifier({ lookupSession: sessionService.lookupSession, allowedOrigins, now });
   const send = (res, code) => res.status(errors[code][0]).json({ schemaVersion: 1, status: 'error', code, message: errors[code][1] });
   const runtimeMount = liveOpeningRuntimeMount || createCadLiveOpeningExecutableRuntimeBootstrap({
     baseRuntimeMount: createCadLiveOpeningRuntimeMount({ admissionSwitch: configuredAdmissionSwitch }),
