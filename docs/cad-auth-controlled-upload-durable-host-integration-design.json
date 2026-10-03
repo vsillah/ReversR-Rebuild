@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "artifact": "cad-auth-controlled-upload-durable-host-integration-design-v1",
+  "phase": "7-source-only-design",
+  "assertionLevel": "source-assertions-only",
+  "sourceOnly": true,
+  "hostQualified": false,
+  "bodyAdmissionAuthorized": false,
+  "liveReady": false,
+  "costs": 0,
+  "baseCommit": "b4a310f84186697c8cb2d751c21bf79265969cad",
+  "equivalentRepairCommit": "72dc3ace4382bd3a2a034cf07a1fa1db25694817",
+  "candidate": "Convex; existing repository only; transport/auth/qualification absent",
+  "runtimeBarrier": "CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED",
+  "runtimeChanged": false,
+  "providerCalls": 0,
+  "privateReads": 0,
+  "executableCardIssued": false,
+  "liveWindowIssued": false,
+  "approvalPhraseIssued": false,
+  "authorizes": {
+    "hostImplementation": false,
+    "hostConfiguration": false,
+    "providerAccess": false,
+    "secretRead": false,
+    "privateEvidenceRead": false,
+    "sessionIssuance": false,
+    "grantInstallation": false,
+    "bodyRead": false,
+    "conversion": false,
+    "sandbox": false,
+    "smoke": false,
+    "activation": false,
+    "billingChange": false,
+    "push": false,
+    "pullRequest": false,
+    "merge": false,
+    "deployment": false,
+    "externalMessages": false
+  },
+  "typeDefinitions": {
+    "digest": "64 lowercase hex characters",
+    "sha1": "40 lowercase hex characters",
+    "uint": "nonnegative safe integer milliseconds or revision as named",
+    "ref": "ASCII opaque identifier 1..256 chars; no secrets or local paths",
+    "https-origin": "exact approved HTTPS origin, no credentials/query/fragment",
+    "boolean-monotonic": "false->true only; never reset",
+    "immutableGrantBinding": {
+      "schemaVersion": "literal:1",
+      "resourceBindingDigest": "digest",
+      "approvedRunId": "ref",
+      "cohortRef": "ref",
+      "deploymentReference": "ref",
+      "deploymentTarget": "https-origin",
+      "gitCommitSha": "sha1",
+      "commandCardSha256": "digest",
+      "installationSha256": "digest",
+      "durableEvidenceSha256": "digest",
+      "durableServiceRef": "ref",
+      "credentialDigest": "digest",
+      "supplyReceiptSha256": "digest",
+      "userId": "id(users)",
+      "shopId": "ref",
+      "loginSessionId": "id(authSessions)",
+      "sessionId": "ref",
+      "route": "literal:POST /api/cad/user-import",
+      "windowStartMs": "uint",
+      "windowEndMs": "uint",
+      "grantDeadlineMs": "uint",
+      "validatorEnvelopeSha256": "digest",
+      "approvalRecordSha256": "digest",
+      "maxRuns": "literal:1",
+      "maxSessions": "literal:1",
+      "maxAttempts": "literal:1",
+      "maxRetries": "literal:0",
+      "conversionAuthorized": "literal:false",
+      "sandboxAuthorized": "literal:false",
+      "privateCredentialSupplyRef": "ref",
+      "productionAlias": "https-origin",
+      "sessionRef": "ref"
+    },
+    "authorityGenerations": {
+      "login": "uint",
+      "user": "uint",
+      "membership": "uint",
+      "uploadSession": "uint",
+      "hostPrincipal": "uint",
+      "grant": "uint"
+    }
+  },
+  "tables": {
+    "cadControlledUploadGrants": {
+      "fields": {
+        "grantKey": "digest",
+        "scopeKey": "digest",
+        "runKey": "digest",
+        "bindingDigest": "digest",
+        "binding": "object:immutableGrantBinding",
+        "installedByPrincipalId": "id(cadControlledUploadHostPrincipals)",
+        "installedAtMs": "uint"
+      },
+      "indexes": {
+        "by_grantKey": [
+          "grantKey"
+        ],
+        "by_scopeKey": [
+          "scopeKey"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadScopes": {
+      "fields": {
+        "scopeKey": "digest",
+        "approvedRunId": "ref",
+        "runKey": "digest",
+        "grantId": "id(cadControlledUploadGrants)",
+        "sessionKey": "digest",
+        "currentBindingDigest": "digest",
+        "revision": "uint",
+        "authorityGeneration": "uint",
+        "lastHostTimeMs": "uint",
+        "custodyEpochDigest": "digest",
+        "runSpent": "boolean-monotonic",
+        "revoked": "boolean-monotonic",
+        "permanentStop": "boolean-monotonic",
+        "stopReason": "null-or-enum:unknown,clock-regression,restore,duplicate,revoked,expired",
+        "grantHistoryDigests": "bounded-array:digest:max1"
+      },
+      "indexes": {
+        "by_scopeKey": [
+          "scopeKey"
+        ],
+        "by_runKey": [
+          "runKey"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadAttempts": {
+      "fields": {
+        "scopeId": "id(cadControlledUploadScopes)",
+        "grantId": "id(cadControlledUploadGrants)",
+        "runKey": "digest",
+        "sessionKey": "digest",
+        "requestNonceDigest": "digest",
+        "bindingDigest": "digest",
+        "revision": "uint",
+        "attemptSpent": "boolean-monotonic",
+        "rollbackArmed": "boolean-monotonic",
+        "fenceOpenedOnce": "boolean-monotonic",
+        "fenceOpen": "boolean",
+        "consumed": "boolean-monotonic",
+        "closed": "boolean-monotonic",
+        "revoked": "boolean-monotonic",
+        "unknown": "boolean-monotonic",
+        "deadlineMs": "uint",
+        "authorityGenerations": "object:authorityGenerations",
+        "recoveryState": "enum:pending,closed-revoked,verified,unknown",
+        "recoveryDueAtMs": "uint",
+        "lastReceiptSequence": "uint"
+      },
+      "indexes": {
+        "by_runKey": [
+          "runKey"
+        ],
+        "by_sessionKey": [
+          "sessionKey"
+        ],
+        "by_recoveryState_and_recoveryDueAtMs": [
+          "recoveryState",
+          "recoveryDueAtMs"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadSessionTombstones": {
+      "fields": {
+        "sessionKey": "digest",
+        "scopeId": "id(cadControlledUploadScopes)",
+        "runKey": "digest",
+        "bindingDigest": "digest",
+        "spent": "literal:true",
+        "consumed": "boolean-monotonic",
+        "revoked": "boolean-monotonic",
+        "createdAtMs": "uint"
+      },
+      "indexes": {
+        "by_sessionKey": [
+          "sessionKey"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadReceipts": {
+      "fields": {
+        "operationKey": "digest",
+        "scopeId": "id(cadControlledUploadScopes)",
+        "attemptId": "id(cadControlledUploadAttempts)",
+        "bindingDigest": "digest",
+        "requestNonceDigest": "digest",
+        "operation": "enum:claimRun,claimAttempt,armRollback,openBodyAdmissionFence,consumeAttemptBeforeBodyRead,markUnknown,closeBodyAdmissionFence,revokeSessionAndLateGrants",
+        "sequence": "uint",
+        "beforeRevision": "uint",
+        "afterRevision": "uint",
+        "authorityGeneration": "uint",
+        "principalGeneration": "uint",
+        "evaluatedAtMs": "uint",
+        "deadlineMs": "uint",
+        "outcome": "enum:committed-restrictive,committed-forward",
+        "resultDigest": "digest",
+        "custodyEpochDigest": "digest",
+        "commitOrdering": "null-or-resolved-int64-database-commitTs"
+      },
+      "indexes": {
+        "by_operationKey": [
+          "operationKey"
+        ],
+        "by_scopeId_and_sequence": [
+          "scopeId",
+          "sequence"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadEvidence": {
+      "fields": {
+        "evidenceKey": "digest",
+        "scopeId": "id(cadControlledUploadScopes)",
+        "bindingDigest": "digest",
+        "phase": "enum:baseline,post-rollback",
+        "verifierPrincipalId": "id(cadControlledUploadHostPrincipals)",
+        "verifierGeneration": "uint",
+        "readbackReceiptDigest": "digest",
+        "instrumentationEvidenceDigest": "digest",
+        "smokeEvidenceDigest": "digest",
+        "deploymentIdentityDigest": "digest",
+        "observedStartMs": "uint",
+        "observedEndMs": "uint",
+        "status": "literal:401",
+        "code": "literal:USER_SESSION_REQUIRED",
+        "controlledProofHeaders": "literal:absent",
+        "bodySubscriptions": "literal:0",
+        "bodyReads": "literal:0",
+        "independentCustodyRef": "ref"
+      },
+      "indexes": {
+        "by_evidenceKey": [
+          "evidenceKey"
+        ],
+        "by_scopeId_and_phase": [
+          "scopeId",
+          "phase"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    },
+    "cadControlledUploadHostPrincipals": {
+      "fields": {
+        "principalKey": "digest",
+        "verifiedIssuer": "ref",
+        "verifiedAudience": "ref",
+        "verifiedSubjectDigest": "digest",
+        "role": "enum:grant-custodian,writer,recovery,independent-reader,smoke-verifier",
+        "resourceBindingDigest": "digest",
+        "active": "boolean",
+        "generation": "uint",
+        "expiresAtMs": "uint",
+        "approvedPolicyDigest": "digest"
+      },
+      "indexes": {
+        "by_principalKey": [
+          "principalKey"
+        ],
+        "by_resourceBindingDigest_and_role": [
+          "resourceBindingDigest",
+          "role"
+        ]
+      },
+      "undeclaredFields": "reject",
+      "providerSystemFields": [
+        "_id",
+        "_creationTime"
+      ]
+    }
+  },
+  "bindingDigest": {
+    "domain": "controlled-binding-v1",
+    "encoding": "SHA256 UTF8 JSON array [domain, ...values] using immutableGrantBinding field insertion order; validated primitive values only",
+    "fields": [
+      "schemaVersion",
+      "resourceBindingDigest",
+      "approvedRunId",
+      "cohortRef",
+      "deploymentReference",
+      "deploymentTarget",
+      "gitCommitSha",
+      "commandCardSha256",
+      "installationSha256",
+      "durableEvidenceSha256",
+      "durableServiceRef",
+      "credentialDigest",
+      "supplyReceiptSha256",
+      "userId",
+      "shopId",
+      "loginSessionId",
+      "sessionId",
+      "route",
+      "windowStartMs",
+      "windowEndMs",
+      "grantDeadlineMs",
+      "validatorEnvelopeSha256",
+      "approvalRecordSha256",
+      "maxRuns",
+      "maxSessions",
+      "maxAttempts",
+      "maxRetries",
+      "conversionAuthorized",
+      "sandboxAuthorized",
+      "privateCredentialSupplyRef",
+      "productionAlias",
+      "sessionRef"
+    ]
+  },
+  "uniqueness": {
+    "scopeKey": [
+      "controlled-scope-v1",
+      "resourceBindingDigest",
+      "cohortRef"
+    ],
+    "runKey": [
+      "controlled-run-v1",
+      "scopeKey",
+      "approvedRunId"
+    ],
+    "sessionKey": [
+      "controlled-session-v1",
+      "resourceBindingDigest",
+      "sessionId"
+    ],
+    "operationKey": [
+      "controlled-operation-v1",
+      "runKey",
+      "operation",
+      "requestNonceDigest"
+    ],
+    "evidenceKey": [
+      "controlled-evidence-v1",
+      "runKey",
+      "phase"
+    ],
+    "principalKey": [
+      "controlled-principal-v1",
+      "verifiedIssuer",
+      "verifiedAudience",
+      "verifiedSubjectDigest",
+      "role",
+      "resourceBindingDigest"
+    ],
+    "grantKey": "bindingDigest",
+    "policy": "Permanent scope singleton assigns one approvedRunId and one session; no change of window/deployment/card or alternate cohort can bypass custodian approval. Never recreate a missing/restored scope without independent continuity. Transactional indexed take(2), duplicate rejection, shared scope CAS; indexes alone are not uniqueness constraints."
+  },
+  "transport": {
+    "candidate": "authenticated-service-HTTP-action-to-fixed-internal-functions",
+    "uploadCredentialIsHostAuth": false,
+    "internalRefsAreExternalCapability": false,
+    "principalPolicyQualified": false,
+    "roles": [
+      "grant-custodian",
+      "writer",
+      "recovery",
+      "independent-reader",
+      "smoke-verifier"
+    ],
+    "writerMaySubmitIndependentEvidence": false,
+    "clientForwardRetries": 0,
+    "secondUploads": 0,
+    "providerPureUncommittedConflictReexecution": "allowed by platform semantics; not an admitted retry; no external effects",
+    "roleSubjectsMustBeDistinctForIndependentVerification": true,
+    "roleOperations": {
+      "grant-custodian": [
+        "registerApprovedGrantAndScope"
+      ],
+      "writer": [
+        "claimRun",
+        "claimAttempt",
+        "armRollback",
+        "openBodyAdmissionFence",
+        "consumeAttemptBeforeBodyRead"
+      ],
+      "recovery": [
+        "markUnknown",
+        "closeBodyAdmissionFence",
+        "revokeSessionAndLateGrants",
+        "boundedRecoveryScan"
+      ],
+      "independent-reader": [
+        "readCommittedReceipt",
+        "readCurrentAuthority",
+        "readScopeAndSessionTombstone"
+      ],
+      "smoke-verifier": [
+        "recordVerifiedBaselineEvidence",
+        "recordVerifiedPostRollbackEvidence"
+      ]
+    }
+  },
+  "forwardChecks": [
+    "exact-immutable-approved-grant",
+    "host-principal-role-scope-generation",
+    "user-login-membership-upload-session-authority",
+    "scope-grant-session-not-revoked",
+    "stable-run-session-attempt-tombstones",
+    "expected-revision-and-request-nonce",
+    "host-clock-start-inclusive-end-exclusive",
+    "persistent-clock-high-water",
+    "rollback-before-fence-and-consume"
+  ],
+  "phases": [
+    "registerApprovedGrantAndScope",
+    "independent-baseline",
+    "claimRun",
+    "claimAttempt",
+    "armRollback",
+    "openBodyAdmissionFence",
+    "consumeAttemptBeforeBodyRead",
+    "independent-receipt-authority-readback",
+    "synchronous-time-revocation-stream-guard",
+    "bounded-iges-read",
+    "closeBodyAdmissionFence",
+    "revokeSessionAndLateGrants",
+    "independent-post-rollback-readback-and-smoke",
+    "proof-header-eligibility"
+  ],
+  "timeAndStreaming": {
+    "dbTransactionAtomicWithHttpStream": false,
+    "dateNowIsCommitTimestamp": false,
+    "nativeProviderTransactionIdAssumed": false,
+    "providerDateNow": "invocation-start frozen; never global-scope time",
+    "trustedClockQualified": false,
+    "revocationHandoffQualified": false,
+    "predicate": "trusted UTC upper bound strictly below min(windowEndMs, session expiry, grantDeadlineMs) after awaits, immediately before subscription and before each chunk; monotonic watchdog; unknown drift/regression denies",
+    "noAdmissionAfterDeadline": true,
+    "staleOrUnknownReceiptAdmits": false,
+    "unresolved": "strict immediate revocation and proxy/runtime buffering boundary; keep terminal barrier until proved"
+  },
+  "recovery": {
+    "availableAfterExpiry": true,
+    "availableAfterForwardStop": true,
+    "restrictiveOnly": true,
+    "spentOrConsumedMayReset": false,
+    "lostForwardResponse": "unknown-stop-no-resubmit; diagnostic readback cannot authorize read",
+    "recoveryRetries": "only separately approved finite idempotent restrictive recovery budget; never forward retry",
+    "backupRestore": "stop; verify independent custody epoch/checkpoint before any reuse; stale database cannot reissue grants"
+  },
+  "receiptVerification": {
+    "identity": "application-owned operationKey/sequence/revision; no invented native transaction id",
+    "sameTransactionReceiptWrite": true,
+    "independentChannel": "read-only separate principal; read committed receipt and current authority with full binding/nonce/epoch",
+    "booleanSelfAttestationAccepted": false,
+    "readbackAloneClosesStreamRace": false,
+    "commitOrdering": {
+      "candidate": "ctx.db.vars.commitTs / v.commitTs and snapshot timestamp",
+      "localPinnedTypesExposeCommitTs": true,
+      "pinnedVersion": "1.45.0",
+      "hostSupportQualified": false,
+      "usableInsideMutationForExpiry": false,
+      "comparableToWallClock": false,
+      "nativeTransactionIdentity": false,
+      "readback": "independent resolved commit value and compatible snapshot; never stale snapshot; null means no ordering claim"
+    }
+  },
+  "smoke": {
+    "performedNow": false,
+    "request": "empty unauthenticated POST /api/cad/user-import at exact approved deployment",
+    "requiredStatus": 401,
+    "requiredCode": "USER_SESSION_REQUIRED",
+    "statusProvesRevocationOrZeroReads": false,
+    "independentHostReadbackRequired": true,
+    "denialInstrumentationRequired": true,
+    "baselineAndPostRollbackRequired": true,
+    "failure": "unknown; no proof headers; no retry"
+  },
+  "headers": {
+    "deniedOrUnknown": "all absent",
+    "names": [
+      "X-ReversR-CAD-Controlled-Upload-Validation",
+      "X-ReversR-CAD-Controlled-Upload-Rollback",
+      "X-ReversR-CAD-Controlled-Command-Card-SHA256",
+      "X-ReversR-CAD-Controlled-Installation-SHA256"
+    ],
+    "futureEligibility": "same request valid IGES, independent verified close/revoke, real post-rollback smoke, exact binding; default barrier unchanged now"
+  },
+  "custody": {
+    "rawCredentialOrCadOrFileNamesOrBodyRetentionDays": 0,
+    "sanitizedDetailsProposedRetentionDays": 30,
+    "retentionApproved": false,
+    "tombstones": "retain until separate namespace-retirement design permanently rejects all replay; never clear for rollback/window/restart",
+    "publicArtifacts": "source only; no credential/session/raw-evidence values",
+    "sensitiveDigestLinkage": "least-privilege host roles; audit evidence outside public repo"
+  },
+  "acceptance": {
+    "status": "not-executed-host-unqualified",
+    "localTests": "source assertions only; no host behavior proof",
+    "crashBoundaries": [
+      "atomic-grant-scope-registration",
+      "baseline-readback",
+      "run-claim",
+      "attempt-claim",
+      "rollback-arm",
+      "fence-open",
+      "consume",
+      "receipt-readback",
+      "stream-subscribe",
+      "each-body-chunk",
+      "validator-complete",
+      "fence-close",
+      "session-revoke",
+      "smoke-evidence",
+      "header-write"
+    ],
+    "cases": [
+      {
+        "id": "independent-workers",
+        "stimulus": "Two isolated processes, separate clients, same approved run concurrently",
+        "requiredFutureObservation": "Exactly one run slot is spent; losing worker has zero body subscriptions and no proof headers",
+        "livePassed": false
+      },
+      {
+        "id": "restart",
+        "stimulus": "Restart writer after each committed phase with empty process memory",
+        "requiredFutureObservation": "Shared state denies another claim or read permit; recovery can close/revoke",
+        "livePassed": false
+      },
+      {
+        "id": "concurrency",
+        "stimulus": "Concurrent claim/consume/revoke transactions with competing nonces",
+        "requiredFutureObservation": "Serializable single winner; stale generations deny; consumed never resets",
+        "livePassed": false
+      },
+      {
+        "id": "duplicate-keys",
+        "stimulus": "Duplicate scope, grant, session, receipt or principal index entries",
+        "requiredFutureObservation": "Detect at most two; deny and stop scope; never select arbitrary row",
+        "livePassed": false
+      },
+      {
+        "id": "window-card-deployment-replay",
+        "stimulus": "Alter window/card/install/deployment hashes, retaining approved run or session",
+        "requiredFutureObservation": "Stable scope/run/session slots deny; no regrant or second attempt",
+        "livePassed": false
+      },
+      {
+        "id": "binding-mismatch",
+        "stimulus": "Mutate every immutable binding field independently",
+        "requiredFutureObservation": "No forward mutation/admission; no proof headers",
+        "livePassed": false
+      },
+      {
+        "id": "grant-forgery",
+        "stimulus": "Missing approval, edited grant, caller claims authority or adds fields",
+        "requiredFutureObservation": "Reject before claim; writer cannot install grant",
+        "livePassed": false
+      },
+      {
+        "id": "host-principal",
+        "stimulus": "Missing/revoked/expired/wrong-role host identity; upload bearer used as host auth",
+        "requiredFutureObservation": "Host operation denies; no privilege escalation or data leakage",
+        "livePassed": false
+      },
+      {
+        "id": "user-authority",
+        "stimulus": "Missing/revoked/expired login, membership, permission, upload session or grant",
+        "requiredFutureObservation": "Same-transaction denial; no body subscription",
+        "livePassed": false
+      },
+      {
+        "id": "exact-boundary",
+        "stimulus": "Host/route time at start-1, start, end-1, end, end+1",
+        "requiredFutureObservation": "Start inclusive/end exclusive; boundary eligibility never substitutes for other controls",
+        "livePassed": false
+      },
+      {
+        "id": "clock-regression",
+        "stimulus": "Regressing/nonfinite clock, stale global time, absent UTC error bound",
+        "requiredFutureObservation": "Persist/retain stop; no read permit; recovery remains restrictive",
+        "livePassed": false
+      },
+      {
+        "id": "late-response",
+        "stimulus": "Transaction starts before expiry, commits/responds after expiry or response exceeds freshness bound",
+        "requiredFutureObservation": "No subscription despite committed receipt; consumed/spent remain",
+        "livePassed": false
+      },
+      {
+        "id": "revocation-handoff",
+        "stimulus": "Revoke after readback but before subscription and during stream processing",
+        "requiredFutureObservation": "Strict handoff requirement must be proved; any unresolved race blocks qualification",
+        "livePassed": false
+      },
+      {
+        "id": "lost-response",
+        "stimulus": "Lose response after each forward mutation; reconnect transport",
+        "requiredFutureObservation": "No forward resubmit; readback/recovery only; no second upload",
+        "livePassed": false
+      },
+      {
+        "id": "crash-boundaries",
+        "stimulus": "Crash before/after every boundary enumerated below",
+        "requiredFutureObservation": "Before claim no permission; after claim spent slot/recovery survive; no duplicate body read or false headers",
+        "livePassed": false
+      },
+      {
+        "id": "close-failure",
+        "stimulus": "Throw, timeout, lost response, malformed/forged close receipt",
+        "requiredFutureObservation": "Unknown; no proof headers; retained tombstone and recovery duty",
+        "livePassed": false
+      },
+      {
+        "id": "revoke-failure",
+        "stimulus": "Throw, timeout, lost response, malformed/forged revoke receipt or late grant race",
+        "requiredFutureObservation": "Unknown; no headers; restrictive recovery does not regrant",
+        "livePassed": false
+      },
+      {
+        "id": "smoke-failure",
+        "stimulus": "Missing/forged/stale/wrong-target smoke, 401 without instrumentation or readback",
+        "requiredFutureObservation": "Reject evidence; no headers or live qualification",
+        "livePassed": false
+      },
+      {
+        "id": "receipt-forgery",
+        "stimulus": "Self-attested durability/atomic-expiry, fabricated provider txn id, mismatched nonce/revision/epoch",
+        "requiredFutureObservation": "Independent readback rejects; zero subscription",
+        "livePassed": false
+      },
+      {
+        "id": "denied-route",
+        "stimulus": "Every denial through actual composed startup route; include revoked synthetic authenticated request",
+        "requiredFutureObservation": "Body-stream subscription/read counters zero and four proof headers absent",
+        "livePassed": false
+      },
+      {
+        "id": "post-expiry-recovery",
+        "stimulus": "Expired window, forward stop, writer crash, failed close before revoke",
+        "requiredFutureObservation": "Recovery closes/revokes after expiry; no reset of spent/consumed state",
+        "livePassed": false
+      },
+      {
+        "id": "backup-restore",
+        "stimulus": "Restore pre-consumption database or change resource with old grant",
+        "requiredFutureObservation": "Qualification stops until independently verified continuity; no tombstone clearing/reissue",
+        "livePassed": false
+      },
+      {
+        "id": "internal-occ",
+        "stimulus": "Force provider conflict reexecution of uncommitted pure mutations",
+        "requiredFutureObservation": "Single committed spend; no external side effects, no client retry, deadline rechecked at stream guard",
+        "livePassed": false
+      },
+      {
+        "id": "privacy-retention",
+        "stimulus": "Hostile extra fields, logging hooks, retention/purge and tombstone scan",
+        "requiredFutureObservation": "No raw secrets/bodies/names; protected linkage, permanent replay denial after retirement",
+        "livePassed": false
+      },
+      {
+        "id": "headers-success-contract",
+        "stimulus": "Future qualified single IGES path then independently verified cleanup/smoke",
+        "requiredFutureObservation": "Only exact card/install hashes; no conversion; never treat 503 alone as admission proof",
+        "livePassed": false
+      }
+    ]
+  },
+  "nextBoundary": "Separately approved source implementation with barrier retained; host access/qualification and activation are separate later gates; no executable card or live-opening phrase.",
+  "unqualifiedGates": [
+    "resource-and-code-identity",
+    "host-principal-authenticated-channel",
+    "grant-custodian-authority",
+    "independent-reader-and-smoke-custody",
+    "trusted-clock-and-revocation-stream-handoff",
+    "durable-restore-checkpoint",
+    "recovery-budget-and-retention",
+    "independent-host-qualification-approval"
+  ],
+  "platformSources": [
+    "https://docs.convex.dev/database/advanced/occ",
+    "https://docs.convex.dev/functions/runtimes",
+    "https://docs.convex.dev/functions/internal-functions",
+    "https://docs.convex.dev/database/advanced/commit-timestamp"
+  ],
+  "sourceBindings": {
+    "offline/cad-convex/durableEngine.js": "7e0bc19cd65c89c23241b0fcb3c5c163be36440f3e14b9bd245e6a2497c3457f",
+    "offline/cad-convex/durableEngineAdapter.js": "fd03b38eff87476b75c5efea316bf6b0c1b892cf26ff618590b517b48451a26b",
+    "offline/cad-convex/uploadAdmissionDurableAdapter.js": "82ae9d9b0bd13e33bca4eaaff0c9ebf467636085f13c0d259973fb262c5354fe",
+    "offline/cad-convex/sharedUploadControls.js": "de53807a46b171b1cf06a83b2cf7f54532e90c488e931c1e8bddff96bbfba63e",
+    "convex/schema.ts": "d9daa2c91a2fae881bce598601b1db80e2eece4825e24584b5c2340ecca2c520",
+    "convex/cadDurableEngine.ts": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3",
+    "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
+    "server/cadControlledUploadDigestDriftRepair.js": "de9317d748bd83045b4d2680b57566948d5defa27c01af0ddf952d1b366d5b0d",
+    "server/cadControlledUploadObservableGateWiringRepair.js": "66b0a4fc74aab4a0de1e118a2ec2bc01421eff2a19fee7636d3b4b34b9150095",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
+    "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
+    "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
+    "docs/cad-auth-controlled-upload-durable-host-integration-design.md": "2b500c8818559f45ab3d6c7366d7cf6ba699763bfc4f2d96321759fe08855d96",
+    "package.json": "c064226d1132e869c2ecb30d5c9da882a134a39a1693d08aa694dfd6ecd101b5"
+  },
+  "registration": {
+    "operation": "registerApprovedGrantAndScope",
+    "principal": "grant-custodian",
+    "atomic": true,
+    "beforeIndependentBaseline": true,
+    "creates": [
+      "immutable grant",
+      "permanent unspent scope with sealed approved run/session assignment"
+    ],
+    "authoritySource": "independently approved source/custody records plus existing authoritative user/login/session rows; never caller assertions",
+    "callerAuthorityInitializationAllowed": false,
+    "baselineEvidence": "scopeId and preclaim scope readback digest exist before any attempt receipt"
+  },
+  "schemaInvariants": [
+    "windowStartMs < grantDeadlineMs <= windowEndMs; windowEndMs - windowStartMs <= 1800000; all timestamps finite safe integer milliseconds",
+    "Grant fields, grantKey, sealed scope run/session assignment and principal policy digest cannot be caller-rebound; changed identity requires separate approval and is unsupported by this single-run design",
+    "Session authority expiry caps grant/read deadline; generations must match exact existing authority records on every forward transaction",
+    "runSpent, attemptSpent, rollbackArmed, fenceOpenedOnce, consumed, closed, revoked, unknown and permanentStop cannot transition true->false",
+    "fenceOpen may become true once only after rollbackArmed and attemptSpent; close/revoke/unknown prohibit reopen",
+    "consume requires fenceOpen and not consumed/closed/revoked/unknown; tombstone consumed is changed atomically with attempt consumed",
+    "operationKey recomputed from stable runKey/operation/requestNonceDigest; exact duplicate is diagnostic readback only, never read permission",
+    "receipt sequence and revision monotonically increase; safe integer exhaustion denies; commit ordering stays int64 and is never coerced to wall-clock milliseconds",
+    "every custom index query bounded take(2) for singleton paths; recovery paginated with limit <=32; duplicate rows stop scope",
+    "evidence body counters require independently verified instrumentation digest; caller-submitted zeros or status alone do not qualify evidence"
+  ]
+}
