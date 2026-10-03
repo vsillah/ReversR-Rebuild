@@ -71,6 +71,20 @@ function deployedStartupWiredDefaultClosed(readSource = read) {
     && CONTROLLED_INTERNAL_UPLOAD_ACTIVATION_ENABLED === false;
 }
 
+function observableControlledBodyAdmissionProof(readSource = read) {
+  const route = readSource('server/cadUserUploadRouter.js').toString('utf8');
+  return /CONTROLLED_UPLOAD_VALIDATION_HEADER = 'X-ReversR-CAD-Controlled-Upload-Validation'/.test(route)
+    && /CONTROLLED_UPLOAD_ROLLBACK_HEADER = 'X-ReversR-CAD-Controlled-Upload-Rollback'/.test(route)
+    && /CONTROLLED_UPLOAD_COMMAND_CARD_HEADER = 'X-ReversR-CAD-Controlled-Command-Card-SHA256'/.test(route)
+    && /CONTROLLED_UPLOAD_INSTALLATION_HEADER = 'X-ReversR-CAD-Controlled-Installation-SHA256'/.test(route)
+    && /setControlledUploadValidationHeaders\(res, bodyGateDecision, cleanupDecision\)/.test(route)
+    && /bodyGateDecision\?\.code !== 'CONTROLLED_UPLOAD_BODY_ADMISSION_FENCE_OPEN'/.test(route)
+    && /cleanupDecision\?\.code !== 'CONTROLLED_UPLOAD_POST_ROLLBACK_FAIL_CLOSED_SMOKE_PASSED'/.test(route)
+    && /admissionOk: admission\?\.ok === true/.test(route)
+    && /if \(!admission\.ok\) return send\(res, admission\.code\);/.test(route)
+    && /return send\(res, 'USER_UPLOADS_DISABLED'\);/.test(route);
+}
+
 function expectedPacket(readSource = read) {
   const review = createControlledInternalUploadActivationReview();
   return Object.freeze({
@@ -103,6 +117,24 @@ function expectedPacket(readSource = read) {
     routeStillClosed: routeStillClosed(readSource),
     deployedStartupWiredDefaultClosed: deployedStartupWiredDefaultClosed(readSource),
     validatorEnvelopePreserved: validatorEnvelopePreserved(readSource),
+    observableControlledBodyAdmissionProof: Object.freeze({
+      required: true,
+      present: observableControlledBodyAdmissionProof(readSource),
+      terminalCodeRemains: 'USER_UPLOADS_DISABLED',
+      validationHeader: 'X-ReversR-CAD-Controlled-Upload-Validation',
+      validationHeaderValue: 'iges-body-validated',
+      rollbackHeader: 'X-ReversR-CAD-Controlled-Upload-Rollback',
+      rollbackHeaderValue: 'post-rollback-fail-closed-smoke-passed',
+      commandCardHeader: 'X-ReversR-CAD-Controlled-Command-Card-SHA256',
+      installationHeader: 'X-ReversR-CAD-Controlled-Installation-SHA256',
+      emittedOnlyAfterControlledGateOpen: true,
+      emittedOnlyAfterIgesValidationOk: true,
+      emittedOnlyAfterPostRollbackSmokePassed: true,
+      credentialValueInHeaderAuthorized: false,
+      cadBytesInHeaderAuthorized: false,
+      privateFileNameInHeaderAuthorized: false,
+      requestBodyInHeaderAuthorized: false,
+    }),
     receiptSanitizationProof: Object.freeze({
       rejectsCredentialValue: forbiddenKeyPresent({ credentialValue: 'PRIVATE_SENTINEL' }),
       rejectsRequestBody: forbiddenKeyPresent({ requestBody: 'CAD_SENTINEL' }),
@@ -146,6 +178,12 @@ function checkPacket(packet, readSource = read) {
     && packet?.routeStillClosed === true
     && packet?.deployedStartupWiredDefaultClosed === true
     && packet?.validatorEnvelopePreserved === true
+    && packet?.observableControlledBodyAdmissionProof?.present === true
+    && packet?.observableControlledBodyAdmissionProof?.terminalCodeRemains === 'USER_UPLOADS_DISABLED'
+    && packet?.observableControlledBodyAdmissionProof?.credentialValueInHeaderAuthorized === false
+    && packet?.observableControlledBodyAdmissionProof?.cadBytesInHeaderAuthorized === false
+    && packet?.observableControlledBodyAdmissionProof?.privateFileNameInHeaderAuthorized === false
+    && packet?.observableControlledBodyAdmissionProof?.requestBodyInHeaderAuthorized === false
     && packet?.receiptSanitizationProof?.rejectsCredentialValue === true
     && packet?.receiptSanitizationProof?.rejectsRequestBody === true
     && packet?.receiptSanitizationProof?.rejectsCadBytes === true
@@ -169,6 +207,8 @@ function checkPacket(packet, readSource = read) {
     routeStillClosed: packet?.routeStillClosed === true,
     deployedStartupWiredDefaultClosed: packet?.deployedStartupWiredDefaultClosed === true,
     validatorEnvelopePreserved: packet?.validatorEnvelopePreserved === true,
+    observableControlledBodyAdmissionProofPresent:
+      packet?.observableControlledBodyAdmissionProof?.present === true,
     productionUploadActivationAuthorized: packet?.authorizes?.productionUploadActivation === true,
     requestBodyAdmissionOrReadAuthorized: packet?.authorizes?.requestBodyAdmissionOrRead === true,
     privateLeakageDetected: !noPrivateLeakage,
@@ -206,6 +246,7 @@ module.exports = {
   checkPacket,
   deployedStartupWiredDefaultClosed,
   expectedPacket,
+  observableControlledBodyAdmissionProof,
   routeStillClosed,
   sourceBindings,
   validatorEnvelopePreserved,
