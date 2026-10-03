@@ -31,7 +31,9 @@ function extractSchema() {
   }
   const deps = { 'convex/server': require('convex/server'), 'convex/values': require('convex/values') };
   const auth = load(authPath, deps);
-  const schema = load('convex/schema.ts', { ...deps, '@convex-dev/auth/server': { authTables: auth.authTables } }).default;
+  const controlled = load('convex/cadControlledUploadSchema.ts', deps);
+  const schema = load('convex/schema.ts', { ...deps, '@convex-dev/auth/server': { authTables: auth.authTables },
+    './cadControlledUploadSchema': controlled }).default;
   // This SDK internal export format is version-pinned and explicitly checked by the model.
   const exported = JSON.parse(schema.export());
   const bindings = ['api.js', 'api.d.ts', 'server.js', 'server.d.ts', 'dataModel.d.ts'];

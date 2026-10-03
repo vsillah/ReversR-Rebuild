@@ -2,6 +2,7 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 import { authTables } from '@convex-dev/auth/server';
+import { controlledUploadTables } from './cadControlledUploadSchema';
 export const binding = {
   userId: v.id('users'), shopId: v.string(), loginSessionId: v.id('authSessions'),
   authMethod: v.union(v.literal('password'), v.literal('passkey'), v.literal('oidc')),
@@ -34,6 +35,7 @@ export const qualificationRecord = {
 };
 export default defineSchema({
   ...authTables,
+  ...controlledUploadTables,
   cadUserAuthority: defineTable({ userId: v.id('users'), enabled: v.boolean(), generation: v.number() })
     .index('by_userId', ['userId']),
   cadMemberships: defineTable({ userId: v.id('users'), shopId: v.string(), active: v.boolean(),

@@ -6,7 +6,7 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = 'docs/cad-auth-controlled-upload-durable-host-integration-design.json';
-const MANIFEST_SHA256 = 'fdacd789da0efe7262853b936ace104fc060fb0ab81018912c697532c1745c5e';
+const MANIFEST_SHA256 = 'f818308624803ffcff63aec1c387ee9e60d7ce913249110e8f203ea1eb464ae8';
 const SOURCES = Object.freeze([
   "offline/cad-convex/durableEngine.js",
   "offline/cad-convex/durableEngineAdapter.js",

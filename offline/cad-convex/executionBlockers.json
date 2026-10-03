@@ -395,12 +395,22 @@
     "compatibilityReceipt": null,
     "tableSources": [
       "convex/schema.ts",
-      "node_modules/@convex-dev/auth/src/server/implementation/types.ts"
+      "node_modules/@convex-dev/auth/src/server/implementation/types.ts",
+      "convex/cadControlledUploadSchema.ts"
     ],
     "requiredTableRows": [
+      "cadControlledUploadGrants",
+      "cadControlledUploadScopes",
+      "cadControlledUploadAttempts",
+      "cadControlledUploadSessionTombstones",
+      "cadControlledUploadReceipts",
+      "cadControlledUploadEvidence",
+      "cadControlledUploadHostPrincipals",
       "cadUserAuthority",
       "cadMemberships",
       "cadUploadSessions",
+      "cadQualificationLedgers",
+      "cadQualificationAuthority",
       "users",
       "authSessions",
       "authAccounts",
@@ -437,6 +447,104 @@
     "authVersion": "0.0.95",
     "tableRows": [
       {
+        "table": "cadControlledUploadGrants",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadScopes",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadAttempts",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadSessionTombstones",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadReceipts",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadEvidence",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadControlledUploadHostPrincipals",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
         "table": "cadUserAuthority",
         "currentValidatorHash": null,
         "proposedValidatorHash": null,
@@ -466,6 +574,34 @@
       },
       {
         "table": "cadUploadSessions",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadQualificationLedgers",
+        "currentValidatorHash": null,
+        "proposedValidatorHash": null,
+        "disabledValidatorHash": null,
+        "indexesBeforeAfter": null,
+        "runOwnedRecordSelector": null,
+        "retainedRecordShapeReceipt": null,
+        "forwardFixtureReceipt": null,
+        "rollbackFixtureReceipt": null,
+        "supportedRemovalReference": null,
+        "cleanupOrder": null,
+        "retainedProviderCopyDeadline": null
+      },
+      {
+        "table": "cadQualificationAuthority",
         "currentValidatorHash": null,
         "proposedValidatorHash": null,
         "disabledValidatorHash": null,
@@ -576,6 +712,9 @@
         "cleanupOrder": null,
         "retainedProviderCopyDeadline": null
       }
-    ]
+    ],
+    "currentInventorySourceOnly": true,
+    "historicalBaselineUnchanged": true,
+    "hostRollbackQualified": false
   }
 }

@@ -718,7 +718,7 @@
     "offline/cad-convex/durableEngineAdapter.js": "fd03b38eff87476b75c5efea316bf6b0c1b892cf26ff618590b517b48451a26b",
     "offline/cad-convex/uploadAdmissionDurableAdapter.js": "82ae9d9b0bd13e33bca4eaaff0c9ebf467636085f13c0d259973fb262c5354fe",
     "offline/cad-convex/sharedUploadControls.js": "de53807a46b171b1cf06a83b2cf7f54532e90c488e931c1e8bddff96bbfba63e",
-    "convex/schema.ts": "d9daa2c91a2fae881bce598601b1db80e2eece4825e24584b5c2340ecca2c520",
+    "convex/schema.ts": "69d659ca0742b4cb056010adda1250e5578ed8631d24751f305f892d324eafac",
     "convex/cadDurableEngine.ts": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3",
     "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
     "server/cadControlledUploadDigestDriftRepair.js": "de9317d748bd83045b4d2680b57566948d5defa27c01af0ddf952d1b366d5b0d",
@@ -753,5 +753,17 @@
     "receipt sequence and revision monotonically increase; safe integer exhaustion denies; commit ordering stays int64 and is never coerced to wall-clock milliseconds",
     "every custom index query bounded take(2) for singleton paths; recovery paginated with limit <=32; duplicate rows stop scope",
     "evidence body counters require independently verified instrumentation digest; caller-submitted zeros or status alone do not qualify evidence"
-  ]
+  ],
+  "sourceOnlySuccessor": {
+    "designCommit": "5535c2c4b52a0d9e6c483307e521f65e0a472148",
+    "kind": "disabled-source-implementation",
+    "changedBoundSources": [
+      "convex/schema.ts"
+    ],
+    "hostQualified": false,
+    "bodyAdmissionAuthorized": false,
+    "liveReady": false,
+    "costs": 0,
+    "approvalExtended": false
+  }
 }

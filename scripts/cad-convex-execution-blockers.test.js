@@ -74,8 +74,8 @@ test('time and cost worksheets preserve predecessor ceilings without claiming en
 test('rollback covers every local CAD table and requires expanded SDK auth schema proof', () => {
   const r = p.rollbackCompatibility;
   assert.equal(r.disabledSourceCandidate, p.baseCommit);
-  const schema = read('convex/schema.ts');
-  const tables = [...schema.matchAll(/(\w+): defineTable\(/g)].map(m => m[1]);
+  const { extractSchema } = require('./helpers/cad-convex-schema-export');
+  const tables = extractSchema().schema.tables.map(t => t.tableName).filter(name => name.startsWith('cad'));
   assert.ok(tables.length > 0);
   tables.forEach(table => assert.ok(r.requiredTableRows.includes(table), table));
   const sdk = read(r.tableSources[1]);
@@ -92,6 +92,12 @@ test('rollback covers every local CAD table and requires expanded SDK auth schem
     'retainedProviderCopyDeadline']) assert.ok(r.rowFields.includes(field));
   assert.equal(r.protectiveLimitsRetained, true); assert.equal(r.resourceDeletionAllowed, false);
   assert.equal(r.order.length, 6);
-  assert.match(read('convex/developmentAuth.ts'), /developmentAuthReviewed: boolean = false/);
-  assert.match(read('convex/auth.ts'), /developmentPassword\(\[\]\)/);
+  // Historical disabled literals predate reviewed development qualification.
+  // Pin the unchanged reviewed b4a310f source exactly; never relax an auth boolean.
+  assert.equal(createHash('sha256').update(read('convex/developmentAuth.ts')).digest('hex'),
+    '49df1dad3d8411f2438635f8bbb6280e1ccb72b28de2d9720a7425ddc0e011b8');
+  assert.equal(createHash('sha256').update(read('convex/auth.ts')).digest('hex'),
+    '4852c956f4354e1eb2fda5fb29d08ebc69c5c587d11c1f6672fa14de0f908ec0');
+  assert.match(read('server/cadControlledUploadObservableGateWiringRepair.js'), /controlledUploadRuntimeBlocked: true/);
+  assert.match(read('server/cadUserUploadRouter.js'), /const BODY_ADMISSION_AUTHORIZED = false/);
 });
