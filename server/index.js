@@ -12,8 +12,8 @@ const {
   createCadStartupLiveGateSessionService,
 } = require('./cadStartupLiveGateSourceInstallClosure');
 const {
-  createCadControlledUploadObservableGateActivationMount,
-} = require('./cadControlledUploadObservableGateWiringRepair');
+  createCadControlledUploadDigestDriftRepairActivationMount,
+} = require('./cadControlledUploadDigestDriftRepair');
 const { createSandboxRouter } = require('./cadSandboxRouter');
 const fs = require('fs/promises');
 const crypto = require('crypto');
@@ -65,7 +65,7 @@ app.use('/api/cad', createCadProductionExecutableRuntimeMount({
   executableRuntime: cadLiveGateCredentialClosure.executableRuntime
     || createCadProductionExecutionBinding(),
   controlledInternalUploadActivationMount: ({ baseRuntimeMount }) =>
-    createCadControlledUploadObservableGateActivationMount({ baseRuntimeMount }),
+    createCadControlledUploadDigestDriftRepairActivationMount({ baseRuntimeMount }),
 }));
 
 app.use(cors({

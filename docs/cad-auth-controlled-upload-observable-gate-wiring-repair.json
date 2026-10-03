@@ -121,8 +121,9 @@
     "commercialReadinessClaim": false
   },
   "sourceBindings": {
-    ".github/workflows/release-local-ci.yml": "869914f6a9db4bcc3199804ac76811418a5e4c6a31360d26826d038af2cd7842",
-    "server/index.js": "0b26ac6a6980c8845cf5e2107c26c2e58177f7efc4070ef9ca8fa3e41f92702a",
+    ".github/workflows/release-local-ci.yml": "f518711e39a5ad28cd1707446fd5794c570635c90e644fc3a74eafabfd423989",
+    "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
+    "server/cadControlledUploadDigestDriftRepair.js": "8eab9703d2dc0fdd177116887454cdd0b28717f3f19eb0191b717bcec10e2eb2",
     "server/cadControlledUploadObservableGateWiringRepair.js": "3d7cf3f38197ad063531f5d24ef0161c65db34408735394c37a95b097c78cb5b",
     "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
     "server/cadProductionExecutableRuntimeMountCompletion.js": "abe18d606098c7c724a98471acd6c5b6bfa17e3d7baaf86a84786246c86d7a2d",
@@ -134,8 +135,8 @@
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
     "docs/cad-auth-controlled-upload-observable-gate-wiring-repair.md": "3ec36497d475df322247c13589b8a452f842640aaa43621ea0b098753e392af9",
     "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "0ab350b3b825e7e4a6c7b84f1d6de7db77fca4c60ac7c4dd47e51f5bfb4f2968",
-    "docs/cad-auth-controlled-internal-upload-activation-implementation.json": "107fd99451dd9807847df1058cfd6c78b5665c4b7244583a50b2ba549fe1eed5",
-    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair-checker.js": "b35a2900578d955f12b40a41282d6e6f932b5d8c29f35b32e64af7e37a94bafb",
+    "docs/cad-auth-controlled-internal-upload-activation-implementation.json": "2622e786c6e07e1596f39101b1b8f9efba359a929a2c069d2ff84af2879ac75d",
+    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair-checker.js": "0bd8f6af96c86aa49462f9050f32f65178fdff2e80a212c8c6a6e04424c48fd6",
     "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair.test.js": "e0b35a50a92c3a524dea44e7471c78f2089429733fb547eaf6a9f90dec9bea63",
     "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "dff6f84be721a68855027c068fe38b325f5074f55cd888855f2bf060eb8f819e",
     "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "43d0970b94e43f2237c51ce1ac578c7b2e936664a5ecb3a1e16dd23523e9f5e3"

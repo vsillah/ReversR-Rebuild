@@ -38,11 +38,13 @@ jobs:
           node scripts/cad-auth-production-session-credential-acceptance-repair-checker.js
           node scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js
           node scripts/cad-auth-controlled-upload-observable-gate-wiring-repair-checker.js
+          node scripts/cad-auth-controlled-upload-digest-drift-repair-checker.js
           node --test scripts/cad-auth-credential-metadata-source-repair.test.js scripts/cad-auth-credential-closure-binding-repair.test.js scripts/cad-auth-live-gate-credential-closure.test.js
           node --test scripts/cad-auth-deployed-runtime-supply-path-closure.test.js scripts/cad-auth-startup-live-gate-source-install-closure.test.js
           node --test scripts/cad-auth-production-session-credential-acceptance-repair.test.js scripts/cad-upload-session.test.js
           node --test scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js scripts/cad-auth-controlled-internal-upload-activation-decision.test.js
           node --test scripts/cad-auth-controlled-upload-observable-gate-wiring-repair.test.js
+          node --test scripts/cad-auth-controlled-upload-digest-drift-repair.test.js
           node scripts/cad-auth-production-binding-source-install-checker.js
           node --test scripts/cad-auth-production-binding-source-install.test.js scripts/cad-auth-production-execution-binding-finalization.test.js scripts/cad-auth-live-opening-execution-gap-closure.test.js scripts/cad-auth-live-opening-executable-runtime-wiring.test.js scripts/cad-auth-final-live-opening-rebind-prep.test.js
 
