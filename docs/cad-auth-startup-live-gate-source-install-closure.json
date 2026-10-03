@@ -251,7 +251,7 @@
   ],
   "sourceBindings": {
     "server/cadStartupLiveGateSourceInstallClosure.js": "672383dd0617afc6c36481469fa623baf82a15624431d05bac8b4595acd7b569",
-    "server/index.js": "0b26ac6a6980c8845cf5e2107c26c2e58177f7efc4070ef9ca8fa3e41f92702a",
+    "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
     "server/cadLiveOpeningGateCredentialClosure.js": "0ea3363105b0a87a74d3f6423a083d97e8813d4f543d8a845eea63417eae20d1",
     "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "f7e9d990d39950f9281352f036b2811dd07cd873a03344fd28518f4567f26a78",
     "server/cadProductionCurrentDeploymentMetadata.js": "407c41abb3530579f783d9f74d35066a12bf96f779e68f71db6e9c238c68fbe6",
@@ -270,6 +270,6 @@
     "scripts/cad-auth-startup-live-gate-source-install-closure-checker.js": "ad520df7d54f934bd2369a6c7e6811c7a9f3123c2dd0c21d4ef9645934dd8fe1",
     "scripts/cad-auth-startup-live-gate-source-install-closure.test.js": "ef178bc4e425de518b22f9b5c0fbf1d4bf1d402c7873d004bbe505d4f51ec366",
     "docs/cad-auth-startup-live-gate-source-install-closure.md": "030190de8d0cd8444756d7c124c83cd2546bc527a2e10e8962fd27673846d2fe",
-    ".github/workflows/release-local-ci.yml": "869914f6a9db4bcc3199804ac76811418a5e4c6a31360d26826d038af2cd7842"
+    ".github/workflows/release-local-ci.yml": "f518711e39a5ad28cd1707446fd5794c570635c90e644fc3a74eafabfd423989"
   }
 }

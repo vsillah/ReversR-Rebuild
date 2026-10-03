@@ -17,6 +17,7 @@ const PACKET = 'docs/cad-auth-controlled-upload-observable-gate-wiring-repair.js
 const SOURCES = Object.freeze([
   '.github/workflows/release-local-ci.yml',
   'server/index.js',
+  'server/cadControlledUploadDigestDriftRepair.js',
   'server/cadControlledUploadObservableGateWiringRepair.js',
   'server/cadControlledInternalUploadActivation.js',
   'server/cadProductionExecutableRuntimeMountCompletion.js',
@@ -48,9 +49,9 @@ function deployedStartupObservableGateWired(readSource = read) {
     readSource('server/cadProductionExecutableRuntimeMountCompletion.js').toString('utf8');
   const source =
     readSource('server/cadControlledUploadObservableGateWiringRepair.js').toString('utf8');
-  return /createCadControlledUploadObservableGateActivationMount/.test(index)
+  return /createCadControlledUploadDigestDriftRepairActivationMount/.test(index)
     && /controlledInternalUploadActivationMount:\s*\(\{ baseRuntimeMount \}\)\s*=>/.test(index)
-    && /createCadControlledUploadObservableGateActivationMount\(\{ baseRuntimeMount \}\)/.test(index)
+    && /createCadControlledUploadDigestDriftRepairActivationMount\(\{ baseRuntimeMount \}\)/.test(index)
     && /typeof controlledInternalUploadActivationMount === 'function'/.test(completion)
     && /controlledInternalUploadActivationMount\(\{ baseRuntimeMount \}\)/.test(completion)
     && /createCadStartupActiveLiveOpeningWindow\(\{ now \}\)/.test(source)
