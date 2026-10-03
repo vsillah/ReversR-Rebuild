@@ -22,6 +22,8 @@ The bounded controlled upload activation on `2026-10-03T02:30:00Z` reached the d
 
 `server/cadProductionExecutableRuntimeMountCompletion.js` accepts that factory and composes the controlled activation route-body gate before the existing base gate.
 
+`server/cadUserUploadRouter.js` keeps `Date.now` as the production default, but now accepts a source-owned clock for focused validation. The observable gate route proof pins that clock to the approved proof window so local source-only validation stays stable after the bounded live window expires.
+
 ## Safety properties
 
 - Default production remains fail-closed.
