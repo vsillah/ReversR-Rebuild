@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.cad-controlled-host.json",
+  "files": ["../offline/cad-gcp/journal.ts"]
+}
