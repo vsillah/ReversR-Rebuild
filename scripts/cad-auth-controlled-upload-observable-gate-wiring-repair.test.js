@@ -24,6 +24,7 @@ const {
   BASE_VERCEL_DEPLOYMENT,
   createCadControlledUploadObservableGateActivationMount,
   createControlledUploadObservableGateActivationConfig,
+  createControlledUploadObservableGateAdapter,
   createControlledUploadObservableGateWiringRepairReview,
   createProofDeploymentMetadata,
 } = require('../server/cadControlledUploadObservableGateWiringRepair');
@@ -73,6 +74,15 @@ async function routeFixture(t, liveOpeningRuntimeMount) {
   const credential = `${['us', '1.'].join('')}${Buffer.alloc(32, 11).toString('base64url')}`;
   const credentialDigest = sha(credential);
   const app = express();
+  let bodySubscriptions = 0;
+  app.use((req, _res, next) => {
+    const on = req.on;
+    req.on = function (event, ...args) {
+      if (event === 'data' || event === 'readable') bodySubscriptions++;
+      return on.call(this, event, ...args);
+    };
+    next();
+  });
   app.use('/api/cad', createCadUserUploadRouter({
     corsOrigins: ['https://approved.example'],
     liveOpeningRuntimeMount,
@@ -100,6 +110,7 @@ async function routeFixture(t, liveOpeningRuntimeMount) {
     server.close();
   });
   return {
+    bodySubscriptions: () => bodySubscriptions,
     credential,
     url: `http://127.0.0.1:${server.address().port}/api/cad/user-import`,
   };
@@ -132,9 +143,9 @@ test('review proves approved window digests and stays source-only default-closed
   const review = createControlledUploadObservableGateWiringRepairReview();
 
   assert.equal(review.sourceOnly, true);
-  assert.equal(review.status, 'CONTROLLED_UPLOAD_OBSERVABLE_GATE_WIRING_READY_SOURCE_ONLY');
-  assert.equal(review.startupWiring.requestTimeCurrentDeploymentMetadata, true);
-  assert.equal(review.startupWiring.requestTimeActiveWindowBinding, true);
+  assert.equal(review.status, 'CONTROLLED_UPLOAD_OBSERVABLE_GATE_SOURCE_BOUND_RUNTIME_BLOCKED');
+  assert.equal(review.startupWiring.requestTimeCurrentDeploymentMetadata, false);
+  assert.equal(review.startupWiring.requestTimeActiveWindowBinding, false);
   assert.equal(review.startupWiring.defaultProductionClosed, true);
   assert.equal(review.startupWiring.approvedWindowCommandCardMatches, true);
   assert.equal(review.startupWiring.approvedWindowInstallationMatches, true);
@@ -150,7 +161,9 @@ test('source config resolves exact approved command-card and installation bindin
     ledger: ledger(),
   });
 
-  assert.equal(config.binding.ok, true);
+  assert.equal(config.binding.ok, false);
+  assert.equal(config.binding.sourceBindingAccepted, true);
+  assert.equal(config.controlledInternalUploadActivation.enabled, false);
   assert.equal(config.source.currentDeploymentReference, BASE_VERCEL_DEPLOYMENT);
   assert.equal(config.source.commandCardSha256, APPROVED_COMMAND_CARD_SHA256);
   assert.equal(config.source.installationSha256, APPROVED_INSTALLATION_SHA256);
@@ -175,10 +188,10 @@ test('missing current deployment metadata leaves controlled startup gate closed'
   });
 
   assert.equal(decision.bodyReadAuthorized, false);
-  assert.equal(decision.code, 'CONTROLLED_UPLOAD_ACTIVATION_DISABLED_DEFAULT');
+  assert.equal(decision.code, 'CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED');
 });
 
-test('production mount factory installs request-time controlled observable gate', async () => {
+test('production mount factory installs terminal default-closed controlled gate', async () => {
   let captured = null;
   const router = createCadProductionExecutableRuntimeMount({
     sessionService: Object.freeze({ lookupSession: async () => null }),
@@ -207,14 +220,14 @@ test('production mount factory installs request-time controlled observable gate'
 
   assert.equal(router.mounted, true);
   assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationMounted, true);
-  assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationEnabled, true);
-  assert.equal(bodyGateDecision.routeBodyGateAuthorized, true);
-  assert.equal(bodyGateDecision.commandCardSha256, APPROVED_COMMAND_CARD_SHA256);
-  assert.equal(bodyGateDecision.installationSha256, APPROVED_INSTALLATION_SHA256);
-  assert.equal(cleanup.rollbackVerified, true);
+  assert.equal(captured.liveOpeningRuntimeMount.controlledInternalUploadActivationEnabled, false);
+  assert.equal(bodyGateDecision.routeBodyGateAuthorized, false);
+  assert.equal(bodyGateDecision.commandCardSha256, undefined);
+  assert.equal(bodyGateDecision.installationSha256, undefined);
+  assert.notEqual(cleanup?.rollbackVerified, true);
 });
 
-test('route emits observable headers through deployed startup controlled gate', async t => {
+test('route withholds observable headers while durable host is absent', async t => {
   const controlledMount = createCadControlledUploadObservableGateActivationMount({
     deploymentMetadata: () => createProofDeploymentMetadata(),
     now,
@@ -235,19 +248,19 @@ test('route emits observable headers through deployed startup controlled gate', 
 
   assert.equal(response.status, 503);
   assert.equal(payload.code, 'USER_UPLOADS_DISABLED');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), 'iges-body-validated');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), 'post-rollback-fail-closed-smoke-passed');
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), APPROVED_COMMAND_CARD_SHA256);
-  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), APPROVED_INSTALLATION_SHA256);
+  assert.equal(fixture.bodySubscriptions(), 0);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_ROLLBACK_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), null);
+  assert.equal(response.headers.get(CONTROLLED_UPLOAD_INSTALLATION_HEADER), null);
   assert.doesNotMatch([...response.headers.values()].join('\n'), /contentBase64|synthetic-observable-validation|private-session-credential/i);
 });
 
-test('one-session and one-attempt fence prevents a second controlled header proof', async t => {
-  const sharedLedger = ledger();
+test('independent runtime instances remain blocked with separate local ledgers', async t => {
   const firstMount = createCadControlledUploadObservableGateActivationMount({
     deploymentMetadata: () => createProofDeploymentMetadata(),
     now,
-    ledger: sharedLedger,
+    ledger: ledger(),
     baseRuntimeMount: baseRuntimeMount(),
   });
   const first = await routeFixture(t, firstMount);
@@ -261,12 +274,12 @@ test('one-session and one-attempt fence prevents a second controlled header proo
     body: JSON.stringify(syntheticIgesBody()),
   });
   await firstResponse.json();
-  assert.equal(firstResponse.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), 'iges-body-validated');
+  assert.equal(firstResponse.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), null);
 
   const secondMount = createCadControlledUploadObservableGateActivationMount({
     deploymentMetadata: () => createProofDeploymentMetadata(),
     now,
-    ledger: sharedLedger,
+    ledger: ledger(),
     baseRuntimeMount: baseRuntimeMount(),
   });
   const second = await routeFixture(t, secondMount);
@@ -285,4 +298,55 @@ test('one-session and one-attempt fence prevents a second controlled header proo
   assert.equal(secondPayload.code, 'USER_UPLOADS_DISABLED');
   assert.equal(secondResponse.headers.get(CONTROLLED_UPLOAD_VALIDATION_HEADER), null);
   assert.equal(secondResponse.headers.get(CONTROLLED_UPLOAD_COMMAND_CARD_HEADER), null);
+});
+
+// These are adversarial synthetic fixtures, never live durable evidence.
+test('missing host dependencies and forged capabilities cannot install an adapter', async () => {
+  let calls = 0;
+  const forged = new Proxy({}, { get() { calls++; return async () => ({
+    ok: true, durable: true, expiryCheckedAtomically: true, closed: true,
+    revoked: true, failClosed: true, status: 401, bodyReads: 0,
+  }); } });
+  for (const dependencies of [undefined, {}, { runQuery: forged, runMutation: forged },
+    { sharedDurableTransactionalAdapter: forged, independentSmokeVerifier: forged },
+    { adapter: forged, reviewed: true, durable: true, expiryCheckedAtomically: true },
+    { ledger: ledger() }]) {
+    assert.equal(createControlledUploadObservableGateAdapter(dependencies), null);
+    const config = createControlledUploadObservableGateActivationConfig({
+      deploymentMetadata: createProofDeploymentMetadata(), now, ...dependencies,
+    });
+    assert.equal(config.controlledInternalUploadActivation.enabled, false);
+    const mount = createCadControlledUploadObservableGateActivationMount({
+      deploymentMetadata: createProofDeploymentMetadata(), now, ...dependencies,
+    });
+    const input = { principal, bodyAdmissionAuthorized: false,
+      admissionDecision: { bodyReadAuthorized: true } };
+    for (let request = 0; request < 2; request++) {
+      assert.equal((await mount.admissionSwitch.decide(input)).bodyReadAuthorized, false);
+      assert.equal((await mount.routeBodyGate.authorizeBodyRead(input)).bodyReadAuthorized, false);
+    }
+    assert.notEqual((await mount.routeBodyGate.afterBodyAdmission()).rollbackVerified, true);
+  }
+  assert.equal(calls, 0);
+});
+
+test('terminal missing-host barrier prevents legacy base gate fallback', async () => {
+  let calls = 0;
+  let captured;
+  const base = {
+    admissionSwitch: { decide: async () => { calls++; return { bodyReadAuthorized: true }; } },
+    routeBodyGate: { authorizeBodyRead: async () => { calls++; return { bodyReadAuthorized: true }; } },
+  };
+  createCadProductionExecutableRuntimeMount({
+    sessionService: { lookupSession: async () => null },
+    bootstrap: () => base,
+    controlledInternalUploadActivationMount: ({ baseRuntimeMount }) =>
+      createCadControlledUploadObservableGateActivationMount({ baseRuntimeMount }),
+    createRouter: options => { captured = options.liveOpeningRuntimeMount; return {}; },
+  });
+  const input = { principal, bodyAdmissionAuthorized: false,
+    admissionDecision: { code: 'LEGACY_OPEN', bodyReadAuthorized: true } };
+  assert.equal((await captured.admissionSwitch.decide(input)).bodyReadAuthorized, false);
+  assert.equal((await captured.routeBodyGate.authorizeBodyRead(input)).bodyReadAuthorized, false);
+  assert.equal(calls, 0);
 });

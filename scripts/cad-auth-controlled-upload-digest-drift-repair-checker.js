@@ -21,6 +21,8 @@ const PACKET = 'docs/cad-auth-controlled-upload-digest-drift-repair.json';
 const SOURCES = Object.freeze([
   '.github/workflows/release-local-ci.yml',
   'server/index.js',
+  'server/cadProductionExecutableRuntimeMountCompletion.js',
+  'docs/cad-auth-controlled-upload-durable-fence-repair.md',
   'server/cadControlledUploadDigestDriftRepair.js',
   'server/cadControlledUploadObservableGateWiringRepair.js',
   'server/cadControlledInternalUploadActivation.js',
@@ -77,13 +79,14 @@ function expectedPacket(readSource = read) {
     roadmap: 'Phase 7 controlled internal upload activation digest drift repair',
     status: review.status,
     purpose:
-      'repair the deployed startup/default controlled upload path so observable proof headers use the same source-owned deployment reference bound by the live activation approval phrase',
+      'preserve exact source-owned digest derivation while the missing reviewed durable host keeps runtime admission blocked',
     stoppedAttempt: Object.freeze({
       observedAtUtc: STOPPED_CONTROLLED_UPLOAD_DIGEST_DRIFT_ATTEMPT_UTC,
       terminalCode: 'USER_UPLOADS_DISABLED',
       observedCommandCardSha256: OBSERVED_DIGEST_DRIFT_COMMAND_CARD_SHA256,
       observedInstallationSha256: OBSERVED_DIGEST_DRIFT_INSTALLATION_SHA256,
-      postRollbackFailClosedSmokePassed: true,
+      postRollbackFailClosedSmokePassed: false,
+      historicalSmokeClaimUnverified: true,
     }),
     expectedReboundProof: Object.freeze({
       sourceOwnedDeploymentReference:
@@ -92,6 +95,16 @@ function expectedPacket(readSource = read) {
       commandCardSha256: APPROVED_DIGEST_DRIFT_REPAIR_COMMAND_CARD_SHA256,
       installationSha256: APPROVED_DIGEST_DRIFT_REPAIR_INSTALLATION_SHA256,
     }),
+    correctiveStop: Object.freeze({
+      observedAtUtc: '2026-10-03T11:03:13Z',
+      dispositionSha256: 'b7ce7caf8341ed7078cfba8c9b03b95c503d7b8c651bdbbbc500e256131292c8',
+      provenance: 'delegated task; private disposition not read',
+      baseCommit: '5f5a8e42a09503c02f68fb3880c2c807365b338e',
+      stoppedBeforeCredentialReadOrCredentialedUpload: true,
+    }),
+    runtimeBlocked: true,
+    liveDurabilityVerified: false,
+    independentSmokeVerified: false,
     review,
     serverStartupUsesDigestDriftRepair: serverStartupUsesDigestDriftRepair(readSource),
     authorizes: Object.freeze({
@@ -127,7 +140,7 @@ function checkPacket(packet, readSource = read) {
   } catch {
     matches = false;
   }
-  const resolved = packet?.status === 'CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_READY_SOURCE_ONLY'
+  const resolved = packet?.status === 'CONTROLLED_UPLOAD_DIGEST_DRIFT_SOURCE_BOUND_RUNTIME_BLOCKED'
     && packet?.review?.repair?.sourceOwnedDeploymentReferenceResolved === true
     && packet?.review?.repair?.commandCardDigestReboundToSourceOwnedReference === true
     && packet?.review?.repair?.installationDigestReboundToSourceOwnedReference === true
@@ -145,13 +158,20 @@ function checkPacket(packet, readSource = read) {
   const noPrivateLeakage =
     !/PRIVATE_SENTINEL|CAD_SENTINEL|\/Users\/|\.local\/|private-session-credential|contentBase64/i
       .test(serialized);
-  const ok = matches && resolved && closed && noPrivateLeakage;
+  const runtimeClosed = packet?.runtimeBlocked === true
+    && packet?.liveDurabilityVerified === false
+    && packet?.independentSmokeVerified === false
+    && (packet?.review?.binding || packet?.review?.controlledBinding)?.enabled === false;
+  const ok = matches && resolved && closed && runtimeClosed && noPrivateLeakage;
   return Object.freeze({
     ok,
     code: ok
       ? 'CAD_AUTH_CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_VALID_SOURCE_ONLY'
       : 'CAD_AUTH_CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_BLOCKED',
     resolved,
+    runtimeBlocked: true,
+    liveDurabilityVerified: false,
+    independentSmokeVerified: false,
     serverStartupUsesDigestDriftRepair:
       packet?.serverStartupUsesDigestDriftRepair === true,
     sourceOwnedDeploymentReferenceResolved:

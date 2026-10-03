@@ -69,7 +69,6 @@ function readSourceOwnedControlledUploadDeploymentMetadata({
 function createCadControlledUploadDigestDriftRepairActivationMount({
   deploymentMetadata = readCadProductionCurrentDeploymentMetadata,
   now = Date.now,
-  ledger,
   baseRuntimeMount,
 } = {}) {
   const readDeploymentMetadata = typeof deploymentMetadata === 'function'
@@ -80,7 +79,6 @@ function createCadControlledUploadDigestDriftRepairActivationMount({
       readDeploymentMetadata,
     }),
     now,
-    ledger,
     baseRuntimeMount,
   });
 }
@@ -88,14 +86,12 @@ function createCadControlledUploadDigestDriftRepairActivationMount({
 function createCadControlledUploadDigestDriftRepairReview({
   deploymentMetadata,
   now = () => Date.parse(DIGEST_DRIFT_REPAIR_WINDOW.proofNowUtc),
-  ledger = { runs: new Set(), attempts: new Set(), rollbacks: new Set(), fences: new Set(), revoked: new Set() },
 } = {}) {
   const sourceOwnedMetadata =
     createSourceOwnedControlledUploadDeploymentMetadata(deploymentMetadata);
   const config = createControlledUploadObservableGateActivationConfig({
     deploymentMetadata: sourceOwnedMetadata,
     now,
-    ledger,
   });
   const source = config.source || null;
   const sourceOwnedReferenceResolved =
@@ -109,7 +105,7 @@ function createCadControlledUploadDigestDriftRepairReview({
     artifact: 'cad-auth-controlled-upload-digest-drift-repair-review-v1',
     sourceOnly: true,
     status: source && sourceOwnedReferenceResolved && approvedDigestsResolved
-      ? 'CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_READY_SOURCE_ONLY'
+      ? 'CONTROLLED_UPLOAD_DIGEST_DRIFT_SOURCE_BOUND_RUNTIME_BLOCKED'
       : 'CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_BLOCKED',
     stoppedAttempt: Object.freeze({
       observedAtUtc: STOPPED_CONTROLLED_UPLOAD_DIGEST_DRIFT_ATTEMPT_UTC,
@@ -132,6 +128,9 @@ function createCadControlledUploadDigestDriftRepairReview({
       currentDeploymentReference: source?.currentDeploymentReference || null,
       openingWindow: source?.openingWindow || null,
     }),
+    runtimeBlocker: config.binding.code,
+    liveDurabilityVerified: false,
+    independentSmokeVerified: false,
     binding: config.binding,
     authorizes: Object.freeze({
       productionUploadActivation: false,

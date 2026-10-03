@@ -25,6 +25,8 @@ function composeControlledRuntimeMount({ baseRuntimeMount, controlledRuntimeMoun
         const controlledDecision = controlledSwitch?.decide
           ? await controlledSwitch.decide(input)
           : null;
+        // Missing reviewed durable host is terminal; a legacy gate cannot bypass it.
+        if (controlledRuntimeMount?.controlledUploadRuntimeBlocked === true) return controlledDecision;
         if (controlledDecision?.bodyReadAuthorized === true) return controlledDecision;
         if (baseSwitch?.decide) return baseSwitch.decide(input);
         return controlledDecision;
@@ -32,6 +34,9 @@ function composeControlledRuntimeMount({ baseRuntimeMount, controlledRuntimeMoun
     }),
     routeBodyGate: Object.freeze({
       async authorizeBodyRead(input = {}) {
+        if (controlledRuntimeMount?.controlledUploadRuntimeBlocked === true) {
+          return controlledGate.authorizeBodyRead(input);
+        }
         if (/^CONTROLLED_UPLOAD_/.test(input.admissionDecision?.code || '')) {
           const decision = controlledGate?.authorizeBodyRead
             ? await controlledGate.authorizeBodyRead(input)

@@ -1,8 +1,8 @@
 # CAD Auth controlled upload digest drift repair
 
-Status: source-only controlled upload digest repair ready for review. This packet does not activate production uploads.
+Status: source digest binding preserved; runtime blocked by the missing reviewed durable host. See [corrective repair](cad-auth-controlled-upload-durable-fence-repair.md).
 
-The bounded controlled upload activation on `2026-10-03T04:30:00Z` reached the expected disabled terminal `503 USER_UPLOADS_DISABLED`, emitted observable validation and rollback headers, and passed post-rollback fail-closed smoke. The run still stopped because the emitted command-card and installation SHA-256 values did not match the approval-bound values.
+The earlier packet recorded observable validation and rollback headers at `2026-10-03T04:31:50Z`. Those headers are not evidence of durable rollback or an independently executed smoke: the source adapter fabricated receipts from process-local Sets. Historical smoke and durability claims are unverified.
 
 ## Stopped result
 
@@ -10,11 +10,11 @@ The bounded controlled upload activation on `2026-10-03T04:30:00Z` reached the e
 - Terminal code: `USER_UPLOADS_DISABLED`
 - Observed command-card SHA-256: `ff66a1b3800b1f1e720b45005ad2ed2035d3c3bf275ee8ade34c7e0d54cb0641`
 - Observed installation SHA-256: `396b71444fc08db82c613983ba7b7288737c6ebbf5fa09e9b59056369302de08`
-- Post-rollback fail-closed smoke: passed
+- Historical post-rollback smoke claim: unverified; adapter receipt was fabricated
 
 ## Repair
 
-The deployed route was able to perform the controlled body-admission validation and rollback, but the controlled activation manifest could derive its digest identity from a provider deployment id. The approval phrase bound the source-owned deployment reference:
+The earlier controlled activation manifest could derive its digest identity from a provider deployment id. Durable rollback was not established. The approval phrase bound the source-owned deployment reference:
 
 `vercel-target:reversr-9hllbtpnc-vsillahs-projects.vercel.app@f42c2d8a4f489856582aa33962b795f78f610fc3`
 
@@ -37,4 +37,4 @@ The deployed route was able to perform the controlled body-admission validation 
 
 ## Next gate
 
-After this repair is reviewed, merged, deployed, and fail-closed smoked, the next gate is a source-only/no-live post-merge rebind refresh. It must verify the deployed startup route path resolves the observable controlled body-admission proof headers from reviewed source, recompute the current deployment binding, controlled activation manifest digest, command-card SHA-256, installation SHA-256, a fresh UTC activation window, and return the exact later live activation approval phrase without runtime activation.
+The source gate is unconditionally closed. Review the durable host requirements in the corrective repair before proposing any runtime integration. Deployment, production smoke, credential reads, session issuance, command-card issuance and activation are outside this local repair. No later activation phrase is issued here.

@@ -3,14 +3,15 @@
   "artifact": "cad-auth-controlled-upload-digest-drift-repair-packet-v1",
   "sourceOnly": true,
   "roadmap": "Phase 7 controlled internal upload activation digest drift repair",
-  "status": "CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_READY_SOURCE_ONLY",
-  "purpose": "repair the deployed startup/default controlled upload path so observable proof headers use the same source-owned deployment reference bound by the live activation approval phrase",
+  "status": "CONTROLLED_UPLOAD_DIGEST_DRIFT_SOURCE_BOUND_RUNTIME_BLOCKED",
+  "purpose": "preserve exact source-owned digest derivation while the missing reviewed durable host keeps runtime admission blocked",
   "stoppedAttempt": {
     "observedAtUtc": "2026-10-03T04:31:50Z",
     "terminalCode": "USER_UPLOADS_DISABLED",
     "observedCommandCardSha256": "ff66a1b3800b1f1e720b45005ad2ed2035d3c3bf275ee8ade34c7e0d54cb0641",
     "observedInstallationSha256": "396b71444fc08db82c613983ba7b7288737c6ebbf5fa09e9b59056369302de08",
-    "postRollbackFailClosedSmokePassed": true
+    "postRollbackFailClosedSmokePassed": false,
+    "historicalSmokeClaimUnverified": true
   },
   "expectedReboundProof": {
     "sourceOwnedDeploymentReference": "vercel-target:reversr-9hllbtpnc-vsillahs-projects.vercel.app@f42c2d8a4f489856582aa33962b795f78f610fc3",
@@ -22,11 +23,21 @@
     "commandCardSha256": "1ea310dd9d368b24982c39b9389ec34db1ae4838d0e51926800cc1b788fead04",
     "installationSha256": "239286c275c253c58580a86046cdb783eb76cdfc0134f272183f5cb9e791b830"
   },
+  "correctiveStop": {
+    "observedAtUtc": "2026-10-03T11:03:13Z",
+    "dispositionSha256": "b7ce7caf8341ed7078cfba8c9b03b95c503d7b8c651bdbbbc500e256131292c8",
+    "provenance": "delegated task; private disposition not read",
+    "baseCommit": "5f5a8e42a09503c02f68fb3880c2c807365b338e",
+    "stoppedBeforeCredentialReadOrCredentialedUpload": true
+  },
+  "runtimeBlocked": true,
+  "liveDurabilityVerified": false,
+  "independentSmokeVerified": false,
   "review": {
     "schemaVersion": 1,
     "artifact": "cad-auth-controlled-upload-digest-drift-repair-review-v1",
     "sourceOnly": true,
-    "status": "CONTROLLED_UPLOAD_DIGEST_DRIFT_REPAIR_READY_SOURCE_ONLY",
+    "status": "CONTROLLED_UPLOAD_DIGEST_DRIFT_SOURCE_BOUND_RUNTIME_BLOCKED",
     "stoppedAttempt": {
       "observedAtUtc": "2026-10-03T04:31:50Z",
       "terminalCode": "USER_UPLOADS_DISABLED",
@@ -49,11 +60,22 @@
         "startInclusiveExpiryExclusive": true
       }
     },
+    "runtimeBlocker": "CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED",
+    "liveDurabilityVerified": false,
+    "independentSmokeVerified": false,
     "binding": {
-      "ok": true,
-      "code": "CONTROLLED_UPLOAD_OBSERVABLE_GATE_SOURCE_READY_DEFAULT_CLOSED",
-      "enabled": true,
+      "ok": false,
+      "code": "CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED",
+      "enabled": false,
       "defaultClosed": true,
+      "activationEnabled": false,
+      "productionUploadActivationAuthorized": false,
+      "requestBodyAdmissionReadAuthorized": false,
+      "conversionAuthorized": false,
+      "sandboxDispatchAuthorized": false,
+      "privateCadUseAuthorized": false,
+      "effectsExecuted": 0,
+      "sourceBindingAccepted": true,
       "currentDeploymentReference": "vercel-target:reversr-9hllbtpnc-vsillahs-projects.vercel.app@f42c2d8a4f489856582aa33962b795f78f610fc3",
       "commandCardSha256": "1ea310dd9d368b24982c39b9389ec34db1ae4838d0e51926800cc1b788fead04",
       "installationSha256": "239286c275c253c58580a86046cdb783eb76cdfc0134f272183f5cb9e791b830",
@@ -61,13 +83,7 @@
         "startUtc": "2026-10-03T04:30:00Z",
         "expiresUtc": "2026-10-03T05:00:00Z",
         "startInclusiveExpiryExclusive": true
-      },
-      "productionUploadActivationAuthorized": false,
-      "requestBodyAdmissionReadAuthorized": false,
-      "conversionAuthorized": false,
-      "sandboxDispatchAuthorized": false,
-      "privateCadUseAuthorized": false,
-      "effectsExecuted": 0
+      }
     },
     "authorizes": {
       "productionUploadActivation": false,
@@ -112,14 +128,16 @@
   "sourceBindings": {
     ".github/workflows/release-local-ci.yml": "f518711e39a5ad28cd1707446fd5794c570635c90e644fc3a74eafabfd423989",
     "server/index.js": "64e2d87cd009189285fca4725e8c5bdafee3b210102f7389c507f20d0c4dc945",
-    "server/cadControlledUploadDigestDriftRepair.js": "8eab9703d2dc0fdd177116887454cdd0b28717f3f19eb0191b717bcec10e2eb2",
-    "server/cadControlledUploadObservableGateWiringRepair.js": "3d7cf3f38197ad063531f5d24ef0161c65db34408735394c37a95b097c78cb5b",
+    "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
+    "docs/cad-auth-controlled-upload-durable-fence-repair.md": "bbcce2dc87daa20e0999618fb06200aa567368e8cfcf16210729b12a246bdb32",
+    "server/cadControlledUploadDigestDriftRepair.js": "de9317d748bd83045b4d2680b57566948d5defa27c01af0ddf952d1b366d5b0d",
+    "server/cadControlledUploadObservableGateWiringRepair.js": "66b0a4fc74aab4a0de1e118a2ec2bc01421eff2a19fee7636d3b4b34b9150095",
     "server/cadControlledInternalUploadActivation.js": "f53b8264e7307ab7b7d1fe68230162293f4d16249d165416c8db0db1f61d72d3",
     "server/cadProductionCurrentDeploymentMetadata.js": "407c41abb3530579f783d9f74d35066a12bf96f779e68f71db6e9c238c68fbe6",
     "server/cadLiveOpeningCredentialClosureMetadataPolicy.js": "f7e9d990d39950f9281352f036b2811dd07cd873a03344fd28518f4567f26a78",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
-    "docs/cad-auth-controlled-upload-digest-drift-repair.md": "d89a21069229999eb1f5a7870eaa182cf2d27692069d4c63df4ffb833ac02861",
-    "scripts/cad-auth-controlled-upload-digest-drift-repair-checker.js": "928eab685ea1ad45819519c0d013a05f281588b3c52174e0c5fb6d3efc4f6220",
-    "scripts/cad-auth-controlled-upload-digest-drift-repair.test.js": "71c2382271c6878a34a5aa012b1a1711be4eb320a4549bf8a9579c7eb28cfa60"
+    "docs/cad-auth-controlled-upload-digest-drift-repair.md": "f1d7908a6bf0ad70f07d5c62dd2e53993ac71adbdcd0577e299203830afa2664",
+    "scripts/cad-auth-controlled-upload-digest-drift-repair-checker.js": "9986ae62120ea06b28acfe35a3a3a05467a717e72a17681ff56fb6f47bf32845",
+    "scripts/cad-auth-controlled-upload-digest-drift-repair.test.js": "a05609a5d3d0b3786e40d9dc1587fdf2dbbf60837032f8694b110666e8f22a26"
   }
 }

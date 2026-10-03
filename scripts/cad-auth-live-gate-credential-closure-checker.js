@@ -250,6 +250,9 @@ function expectedPacket(readSource = read) {
       'privateDataLeakageRisk',
       'runtimeCredentialsOrProviderConfigurationNeeded',
     ],
+    controlledUploadRuntimeBlocked: true,
+    controlledUploadRuntimeBlocker: 'CONTROLLED_UPLOAD_REVIEWED_DURABLE_HOST_REQUIRED',
+    controlledUploadLiveDurabilityVerified: false,
     sourceBindings: sourceBindings(readSource),
   };
 }
