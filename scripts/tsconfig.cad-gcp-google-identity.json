@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.cad-controlled-host.json",
+  "files": ["../offline/cad-gcp/googleIdentityFormat.ts", "../offline/cad-gcp/googleIdentityVerifier.ts", "../offline/cad-gcp/googleJwksTransport.ts"]
+}

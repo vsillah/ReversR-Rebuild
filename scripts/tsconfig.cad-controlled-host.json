@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "commonjs", "moduleResolution": "node",
+    "strict": true, "noEmit": true, "skipLibCheck": true,
+    "lib": ["ES2022", "DOM"], "types": ["node"], "ignoreDeprecations": "6.0"
+  },
+  "files": ["../convex/cadControlledUploadHost.ts", "../convex/cadControlledUploadStore.ts",
+    "../offline/cad-convex/controlledUploadHostModel.ts", "../offline/cad-convex/controlledUploadHostBridge.ts"]
+}

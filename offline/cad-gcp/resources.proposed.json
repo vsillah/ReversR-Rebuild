@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "PROPOSED_NOT_PROVISIONED",
+  "region": "us-east1",
+  "projectIdCandidate": "reversr-cad-custody",
+  "projectNumber": null,
+  "billingLink": null,
+  "organizationPolicyApproval": null,
+  "independentAdministratorApproval": null,
+  "resourceAvailabilityVerified": false,
+  "existingAccountOnly": true,
+  "excludedSharedProject": "amadutown-advisory-solutions",
+  "excludedSharedBucket": "ai-studio-bucket-329708734708-us-west1",
+  "convexHostCandidate": "wry-tapir-206",
+  "hostQualified": false,
+  "bodyAdmissionAuthorized": false,
+  "liveReady": false,
+  "costsIncurred": 0,
+  "spendingAuthorized": false,
+  "services": {
+    "journal": { "proposedName": "reversr-custody-journal", "actualUrl": null, "serviceAccountCandidate": "rrb-custody-journal" },
+    "reader": { "proposedName": "reversr-custody-reader", "actualUrl": null, "serviceAccountCandidate": "rrb-custody-reader" }
+  },
+  "buckets": {
+    "evidence": { "proposedName": "reversr-cad-custody-evidence", "actualResource": null, "storageClass": "STANDARD", "uniformAccess": true, "publicAccessPrevention": "enforced", "retentionSeconds": null, "lockAuthorized": false },
+    "anchors": { "proposedName": "reversr-cad-custody-anchors", "actualResource": null, "storageClass": "STANDARD", "uniformAccess": true, "publicAccessPrevention": "enforced", "retentionSeconds": null, "lockAuthorized": false }
+  },
+  "federation": {
+    "poolNameCandidate": "reversr-custody-workloads",
+    "vercelProviderNameCandidate": "reversr-vercel-writer",
+    "automationProviderNameCandidate": "reversr-protected-automation",
+    "actualPoolResource": null,
+    "actualProviderResources": null,
+    "exactAudience": null,
+    "actualIssuerMode": null,
+    "approvedAttributeMappings": null,
+    "approvedAttributeConditions": null,
+    "workflowRepositoryIds": null,
+    "workflowImmutableRefs": null,
+    "approvedDeploymentBindings": null,
+    "downloadableServiceAccountKeys": false,
+    "poolWideTrust": false,
+    "projectWideEditor": false,
+    "roleSelectionFromHeaders": false,
+    "proposalOnlyVercelConstraints": {
+      "issuerIfTeamMode": "https://oidc.vercel.com/vsillahs-projects",
+      "ownerId": "team_e1YXCCGoccmBLfbBfXGhwbd4",
+      "projectId": "prj_Geremoki2OhowX1579EolsuPWXPy",
+      "subject": "owner:vsillahs-projects:project:reversr:environment:production",
+      "environment": "production"
+    }
+  },
+  "roles": [
+    { "role": "writer", "serviceAccountCandidate": "rrb-custody-writer", "authenticatedSubject": null, "operations": ["reserve", "arm", "open", "consume"], "googlePermissions": ["run.routes.invoke"], "scope": "journal service only; fixed app policy required", "storageAccess": false },
+    { "role": "custody-runtime", "serviceAccountCandidate": "rrb-custody-journal", "authenticatedSubject": null, "operations": ["conditional-append"], "googlePermissions": ["storage.objects.create", "storage.objects.get"], "scope": "isolated exact buckets only; immutable payloads; no metadata edits or deletes", "storageAccess": true },
+    { "role": "independent-reader", "serviceAccountCandidate": "rrb-custody-reader", "authenticatedSubject": null, "operations": ["generation-readback", "fresh-high-water"], "googlePermissions": ["storage.objects.get", "storage.objects.list"], "scope": "isolated exact buckets only; no write permission; separate administration", "storageAccess": true },
+    { "role": "recovery", "serviceAccountCandidate": "rrb-custody-recovery", "authenticatedSubject": null, "operations": ["close", "revoke", "unknown"], "googlePermissions": ["run.routes.invoke"], "scope": "journal restrictive operations only; cannot manufacture approval", "storageAccess": false },
+    { "role": "grant-custodian", "serviceAccountCandidate": "rrb-custody-approval", "authenticatedSubject": null, "operations": ["submit-reviewed-approval"], "googlePermissions": ["run.routes.invoke"], "scope": "fixed approval operation, independent review required; cannot reset anchors", "storageAccess": false },
+    { "role": "smoke-verifier", "serviceAccountCandidate": "rrb-custody-smoke", "authenticatedSubject": null, "operations": ["submit-closed-smoke"], "googlePermissions": ["run.routes.invoke"], "scope": "fixed evidence operation, separate approved empty-request smoke only", "storageAccess": false }
+  ],
+  "qualificationLimits": { "durationMs": 3600000, "callers": 2, "serviceRequests": 1000, "storageOperations": 1000, "payloadBytes": 10485760, "recoveryRequests": 200, "recoveryOperations": 200, "recoveryPayloadBytes": 49152 },
+  "requiredUnboundPolicies": ["exact project number and resource identities", "billing and finite cost approval", "independent administrators", "namespace origin and epoch custody", "trust issuer audience claims and key policy", "service identity token exchange and least privilege impersonation", "fresh reader authentication nonce and clock policy", "all role subjects and separation", "source deployment card installation session evidence credential bindings", "irreversible retention lock and retirement approval", "persistent admission counters and independent quarantine", "rollback-first and post-rollback smoke acceptance", "trusted UTC and revocation-to-stream handoff"],
+  "retirement": { "evidenceDetailLifetimeSeconds": null, "anchorLifetime": "entire old-grant replay lifetime; enduring until independently enforced namespace retirement", "deletionApproved": false, "missingHistoryMeansUnused": false },
+  "execution": { "provisioningEnabled": false, "providerCallsEnabled": false, "credentialGenerationEnabled": false, "productionAdmissionEnabled": false }
+}

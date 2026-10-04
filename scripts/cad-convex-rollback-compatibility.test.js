@@ -17,16 +17,17 @@ function denied(data, code) {
   assert.equal(result.executable, false); assert.equal(result.liveReady, false);
   return result;
 }
-test('real SDK extraction expands every Auth/CAD validator and index with source provenance', () => {
+test('current SDK inventory includes additive tables while historical rollback remains unqualified', () => {
   const current = extractSchema();
-  assert.deepEqual(current.schema, baseline.schema);
-  assert.deepEqual(current.sourceHashes, baseline.sourceHashes);
+  assert.notDeepEqual(current.schema, baseline.schema);
+  assert.equal(baseline.schema.tables.length, 10); // preserve the historical three-CAD-table baseline
+  assert.equal(current.schema.tables.length, 19); // five prior CAD + seven new CAD + seven Auth
+  assert.ok(current.sourceHashes['convex/cadControlledUploadSchema.ts']);
   assert.deepEqual(current.schema.tables.map(t => t.tableName).sort(),
     [...blockers.rollbackCompatibility.requiredTableRows].sort());
   const report = run();
-  assert.equal(report.fixtureCompatible, true); assert.equal(report.tableCount, 10);
-  assert.equal(report.indexCount, 16); assert.equal(report.forwardRows, 22); assert.equal(report.rollbackRows, 22);
-  assert.equal(report.sameSchema, true); assert.equal(report.executable, false);
+  assert.equal(report.fixtureCompatible, false);
+  assert.equal(report.sameSchema, false); assert.equal(report.executable, false);
   assert.equal(report.liveReady, false); assert.equal(report.verifiedCloudRelease, null);
 });
 test('required field additions and type narrowing reject pre-run retained shapes', () => {
