@@ -32,6 +32,7 @@ jobs:
           env -i PATH="$PATH" node scripts/commercial-credit-gate-smoke.js
           env -i PATH="$PATH" node --test scripts/cad-user-upload-route.test.js
           env -i PATH="$PATH" node --test scripts/commercial-convex-transport.test.js
+          env -i PATH="$PATH" node --test scripts/inventory-api-harness.test.js
           env -i PATH="$PATH" node scripts/commercial-convex-codegen.js --check
           env -i PATH="$PATH" node node_modules/vitest/vitest.mjs run --config commercial-backend/vitest.config.ts
           env -i PATH="$PATH" node node_modules/typescript/bin/tsc --noEmit
