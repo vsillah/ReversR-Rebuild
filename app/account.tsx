@@ -29,7 +29,7 @@ export default function AccountScreen() {
   const [email, setEmail] = useState(profile.email);
   const [shopName, setShopName] = useState(profile.shopName);
   const [status, setStatus] = useState<string | null>(null);
-  useEffect(() => { setStatus(null); }, [auth.status]);
+  useEffect(() => { setStatus(null); }, [auth.status, account?.profile.id, account?.shop.id, error]);
   const [countdownNow, setCountdownNow] = useState(Date.now());
   const accountScrollRef = useRef<ScrollView>(null);
   const keyboardInset = useAndroidKeyboardInset(24);
@@ -104,7 +104,7 @@ export default function AccountScreen() {
         </View>
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={refreshAccount}
+          onPress={() => { setStatus(null); void refreshAccount(); }}
           disabled={loading || auth.status !== 'signed-in'}
           accessibilityRole="button"
           accessibilityLabel="Refresh account"
@@ -240,7 +240,7 @@ export default function AccountScreen() {
         </View>
       </View>
 
-      {(status || error) && <Text style={styles.statusText}>{status || error}</Text>}
+      {(error || status) && <Text accessibilityRole="alert" style={styles.statusText}>{error || status}</Text>}
     </ScrollView>
     </KeyboardAvoidingView>
   );

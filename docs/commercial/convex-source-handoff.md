@@ -92,3 +92,17 @@ In the integrated browser, use `owner@synthetic.invalid` and `synthetic-password
 7. Qualify cloud durability/concurrency, native billing and the nonintegrated admin/support paths separately. Run the approved Mark/customer rollout checks only after those applicable gates pass.
 
 Current scope ends at local source review. No expense was incurred.
+
+## Captain UI follow-up
+
+The current account error now takes priority over transient billing/save status. Status clears when auth state, account identity or error changes, and when refresh starts. This fixes the observed billing-denial → expired-session refresh sequence that previously hid the recovery instruction. The message uses an alert role. Sign in is the filled primary action; Create account remains secondary. Login card/input borders and radii match the existing compact sections.
+
+`qa/commercial/recovery-regression.mjs` exports `checkRecoveryMessages(tab)` for the CUA REPL. Pass a signed-in synthetic harness tab at port 5179. It exercises both Manage billing and Start Pro Shop checkout, asserts the initial provider denial, then asserts the session-expired message, absent stale billing message and unavailable credits, followed by clean recovery. Both cases passed against the rendered components. TypeScript and the isolated offline Expo export passed again. The shared IAB viewport was not changed during this follow-up. `qa-evidence/login-hierarchy.jpg` records the revised form; earlier mock screenshots predate this styling adjustment.
+
+The actual offline Expo package is now served at `http://127.0.0.1:5180/account` (session `53810`) from `/tmp/reversr-offline-expo.Cv4njl/output`. Start with:
+
+```sh
+env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp/reversr-offline-expo.Cv4njl EXPO_HOME=/tmp/reversr-offline-expo.Cv4njl node qa/commercial/serve-export.cjs /tmp/reversr-offline-expo.Cv4njl/output 5180
+```
+
+This loopback-only static server sets `connect-src 'self'` as an additional external-connection boundary. The build has no public backend configuration. The actual Expo `/account` route rendered default-unavailable through the real `_layout`, AuthProvider, icons and fonts; account, refresh, billing and save remained disabled as appropriate. Browser warning/error logs were empty. No authenticated/cloud behavior was exercised. `qa-evidence/expo-default-unavailable.jpg` is the packaged-route screenshot. The original mock QA server remains at port 5179, session `70815`.
