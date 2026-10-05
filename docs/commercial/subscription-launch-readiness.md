@@ -33,12 +33,25 @@ env -i PATH=/usr/local/bin:/usr/bin:/bin NODE_PATH=/Users/vambahsillah/Documents
 node --check server/commercialization.js
 node --check scripts/commercial-launch-readiness.test.js
 node --check scripts/fixtures/commercial-restart-check.js
+env -i PATH=/usr/local/bin:/usr/bin:/bin NODE_PATH=/Users/vambahsillah/Documents/ReversR-Workspace/ReversR-Rebuild/node_modules /usr/local/bin/node --test --test-name-pattern="real commercial accounts" scripts/cad-user-upload-route.test.js
+env -i PATH=/usr/local/bin:/usr/bin:/bin NODE_PATH=/Users/vambahsillah/Documents/ReversR-Workspace/ReversR-Rebuild/node_modules /usr/local/bin/node --test scripts/cad-user-upload-route.test.js
+node --check scripts/cad-user-upload-route.test.js
 git diff --check
 ```
 
 The dependency path reuses the existing installed Express/Stripe libraries read-only; it does not read the Captain checkout's environment or change its dependencies. The suite creates disposable local files, binds loopback only, blocks other sockets/TLS, mocks provider methods and uses the real Stripe SDK signature checker. Tests exercise registered Express account/billing/admin/invite routes and registered charge-wrapper routes calling the same credit gate used by `server/index.js`. A separate clean process re-registers the account handler and verifies file persistence and missing-Stripe denial.
 
-Final result: 29 tests passed, zero failed. JavaScript syntax and whitespace checks passed. No frontend build/typecheck was needed for these CommonJS-only changes. No complete AI/provider reconstruction, real end-user login, deployed payment flow, browser visual QA or production smoke was run.
+Final result: 29 commercial tests and all 7 CAD upload-route tests passed (36 unique tests, zero failures). The focused `real commercial accounts` rerun also passed (1 test, included in the 7). JavaScript syntax and whitespace checks passed. No frontend build/typecheck was needed for these CommonJS-only changes. No complete AI/provider reconstruction, real end-user login, deployed payment flow, browser visual QA or production smoke was run.
+
+## Captain QA follow-up: CAD boundary test compatibility
+
+The commercial patch added `async_hooks`, explicit local storage configuration and verified identity resolution. Captain QA found that the existing VM harness in `scripts/cad-user-upload-route.test.js` had neither those dependencies nor a model of exclusive file locks and atomic rename. Its old tester expectations also trusted caller headers.
+
+The follow-up changes only that test and this handoff. The VM now supplies `structuredClone`, `AsyncLocalStorage`, `app.locals`, an explicit synthetic local store path and an in-memory filesystem that models exclusive creation, temporary writes, rename and lock release. Stripe construction and unlisted dependencies still throw; the harness never imports the configured commercial module or writes its synthetic store to disk.
+
+The actual commercial `/api/me` handler runs against 13 cases: guest headers/body, an ordinary verified account, spoofed tester email/name, unverified email, verified tester email, spoofed/verified invite identity, spoofed/verified password grants, and spoofed/verified super-admin identity. Positive grants must produce the expected tester role/plan; spoofed grants must remain free. Each resulting account and a forged CAD-authority claim must fail session issuance. The mounted CAD request fixture still requires missing credentials to return `USER_SESSION_REQUIRED` and an unavailable synthetic credential to return `USER_AUTH_UNAVAILABLE`, while asserting zero body reads and zero conversions. Five missing/hosted configuration cases additionally prove denial before account creation.
+
+A targeted scripts search found two other fixtures that directly load the commercial source: `scripts/commercial-launch-readiness.test.js` and `scripts/fixtures/commercial-restart-check.js`; both already use the current contract and passed in the commercial rerun. `scripts/cad-readiness.test.js` replaces the commercial dependency with a forbidden-call stub and does not execute it. The remaining search hits were prose assertions, not loaders. No additional fixture changes were needed.
 
 ## Finite prioritized launch-gap checklist
 
