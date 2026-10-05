@@ -55,7 +55,9 @@ A targeted scripts search found two other fixtures that directly load the commer
 
 ## CI wiring
 
-`.github/workflows/release-local-ci.yml` now runs the 29 commercial tests and all 7 CAD upload-route safety tests immediately after `npm ci`, before the existing CAD checks and release evidence commands. Each command starts with `env -i PATH="$PATH"`; it inherits only the installed Node search path, without secrets, provider settings, `NODE_OPTIONS` or dotenv loading. The commercial launcher also sanitizes its child environment. Failure of either suite fails the workflow step. `scripts/local-release-ci.js` remains unchanged and was not executed for this source-only task.
+The separate `.github/workflows/commercial-source-ci.yml` runs on pull requests to `main`, with read-only contents permission and the existing Node 22/`npm ci` conventions. It runs the 29 commercial tests and all 7 CAD upload-route safety tests immediately after dependency installation. Each test command starts with `env -i PATH="$PATH"`; it inherits only the installed Node search path, without secrets, provider settings, `NODE_OPTIONS` or dotenv loading. The commercial launcher also sanitizes its child environment. Failure of either suite fails the workflow step.
+
+The digest-bound `.github/workflows/release-local-ci.yml` exactly matches the original base commit. The earlier local CI addition was removed in a follow-up commit; no CAD packets or runtime wiring were changed. `scripts/local-release-ci.js` remains unchanged and was not executed for this source-only task.
 
 The workflow YAML was parsed locally with the existing `yaml` package, and the parsed step order and exact sanitized commands were checked. Local suite results remain 29 commercial plus 7 CAD guard tests passing; no GitHub-hosted CI run has occurred because the branch has not been pushed.
 
