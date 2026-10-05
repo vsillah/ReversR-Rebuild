@@ -53,6 +53,12 @@ The actual commercial `/api/me` handler runs against 13 cases: guest headers/bod
 
 A targeted scripts search found two other fixtures that directly load the commercial source: `scripts/commercial-launch-readiness.test.js` and `scripts/fixtures/commercial-restart-check.js`; both already use the current contract and passed in the commercial rerun. `scripts/cad-readiness.test.js` replaces the commercial dependency with a forbidden-call stub and does not execute it. The remaining search hits were prose assertions, not loaders. No additional fixture changes were needed.
 
+## CI wiring
+
+`.github/workflows/release-local-ci.yml` now runs the 29 commercial tests and all 7 CAD upload-route safety tests immediately after `npm ci`, before the existing CAD checks and release evidence commands. Each command starts with `env -i PATH="$PATH"`; it inherits only the installed Node search path, without secrets, provider settings, `NODE_OPTIONS` or dotenv loading. The commercial launcher also sanitizes its child environment. Failure of either suite fails the workflow step. `scripts/local-release-ci.js` remains unchanged and was not executed for this source-only task.
+
+The workflow YAML was parsed locally with the existing `yaml` package, and the parsed step order and exact sanitized commands were checked. Local suite results remain 29 commercial plus 7 CAD guard tests passing; no GitHub-hosted CI run has occurred because the branch has not been pushed.
+
 ## Finite prioritized launch-gap checklist
 
 | Priority | Remaining gap and exact next evidence | Owner/decision needed |
