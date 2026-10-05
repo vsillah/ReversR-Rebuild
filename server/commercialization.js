@@ -1121,6 +1121,21 @@ const buildAccountResponse = (store, user, shop, accessGrant = null) => {
   };
 };
 
+const formatConvexAccount = (value) => ({
+  status: 'ok',
+  profile: { id: value.userId, name: value.name, email: value.email, role: value.owner ? 'owner' : 'member' },
+  shop: { id: value.shopId, name: value.shopName, billingOwnerUserId: value.owner ? value.userId : '' },
+  billing: { planId: value.planId, basePlanId: value.planId, planLabel: PLAN_CATALOG[value.planId].label,
+    subscriptionStatus: value.subscriptionStatus, currentPeriodEnd: value.currentPeriodEnd ? new Date(value.currentPeriodEnd).toISOString() : '',
+    hasStripeCustomer: value.hasStripeCustomer, billingLinks: buildBillingLinks(), owner: value.owner },
+  entitlements: { ...buildEntitlements(value.planId), monthlyCredits: value.limit, creditPeriod: value.period,
+    canManageTeam: false, canUseCadReviewQueue: false },
+  usage: { month: value.periodKey, periodKey: value.periodKey, period: value.period, usedCredits: value.usedCredits,
+    remainingCredits: Math.max(0, value.limit - value.usedCredits), monthlyCredits: value.limit, unlimitedCredits: false,
+    resetAt: new Date(value.resetAt).toISOString(), resetInSeconds: Math.max(0, Math.ceil((value.resetAt - Date.now()) / 1000)), events: [] },
+  plans: publicPlans(), creditCosts: CREDIT_COSTS, access: null, sessionExpiresAt: value.sessionExpiresAt,
+});
+
 const requireConfiguredStripe = () => {
   if (!stripe) {
     const error = new Error('Stripe billing is not configured. Set STRIPE_SECRET_KEY and Stripe price IDs on the API server.');
@@ -1338,6 +1353,9 @@ const resolveAuthenticatedGrant = async (req) => {
 };
 
 const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemediation, resolveIdentity } = {}) => {
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') {
+    return require('./commercialConvex').register(app, formatConvexAccount);
+  }
   app.locals.commercialResolveIdentity = resolveIdentity;
   const guestRoutes = new Set(['/api/me', '/api/usage', '/api/entitlements', '/api/commercial/profile']);
   const register = (method, route, handler) => app[method](route, async (req, res) => {
@@ -2527,6 +2545,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
 };
 
 const handleStripeWebhook = async (req, res) => {
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') return require('./commercialConvex').webhook(req, res);
   try {
     requireLocalCommercialStore();
     const stripeClient = requireConfiguredStripe();
@@ -2567,6 +2586,7 @@ const handleStripeWebhook = async (req, res) => {
 };
 
 const chargeCommercialCredits = async (req, res, feature) => {
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') return require('./commercialConvex').charge(req, res, feature);
   if (!Object.hasOwn(CREDIT_COSTS, feature)) {
     res.status(400).json({ status: 'error', error: 'Unknown commercial feature.' });
     return { ok: false };

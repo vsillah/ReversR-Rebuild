@@ -1,0 +1,42 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useCommercialAuth } from '../hooks/useCommercialAuth';
+import { useAppTheme } from '../hooks/useAppTheme';
+
+export function CommercialLogin() {
+  const auth = useCommercialAuth();
+  const { colors } = useAppTheme();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const run = async (create: boolean) => {
+    setBusy(true); setError('');
+    try { await auth.signIn(email.trim(), password, create); setPassword(''); }
+    catch { setError('Sign-in failed. Check your email and password, then try again.'); }
+    finally { setBusy(false); }
+  };
+  const styles = StyleSheet.create({ panel: { padding: 18, borderRadius: 16, borderWidth: 1, borderColor: colors.accent, gap: 12 },
+    title: { color: colors.text, fontSize: 20, fontWeight: '700' }, text: { color: colors.text, fontSize: 15, lineHeight: 22 },
+    input: { borderWidth: 1, borderColor: colors.accent, borderRadius: 10, padding: 12, color: colors.text, fontSize: 16 },
+    row: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+    button: { borderWidth: 1, borderColor: colors.accent, borderRadius: 10, padding: 12, minHeight: 46 }, error: { color: colors.danger, fontSize: 15, lineHeight: 22 } });
+  return <View style={styles.panel}>
+    <Text style={styles.title}>Account login</Text>
+    {auth.status === 'unavailable' ? <Text style={styles.text}>Account service is unavailable in this build. Your plan and credits cannot be loaded.</Text>
+      : auth.status === 'loading' ? <Text style={styles.text}>Checking your session…</Text>
+      : auth.status === 'signed-in' ? <TouchableOpacity accessibilityRole="button" accessibilityLabel="Sign out" style={styles.button} onPress={async () => {
+        setError(''); try { await auth.signOut(); setPassword(''); } catch { setError('Local account data cleared. Server sign-out could not be confirmed; retry when connected.'); }
+      }}><Text style={styles.text}>Sign out</Text></TouchableOpacity>
+      : <>
+        <Text style={styles.text}>Sign in to load your shop, subscription and credits. Your login email is separate from display profile details.</Text>
+        <TextInput accessibilityLabel="Login email" placeholder="Login email" placeholderTextColor={colors.gray[500]} autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail} style={styles.input} />
+        <TextInput accessibilityLabel="Account password" placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+        <View style={styles.row}>{[false, true].map(create => <TouchableOpacity key={String(create)} accessibilityRole="button" accessibilityLabel={create ? 'Create account' : 'Sign in'} disabled={busy || !email.trim() || password.length < 8} style={styles.button} onPress={() => run(create)}>
+          <Text style={styles.text}>{busy ? 'Please wait…' : create ? 'Create account' : 'Sign in'}</Text>
+        </TouchableOpacity>)}</View>
+        <Text style={styles.text}>Password reset is currently unavailable.</Text>
+      </>}
+    {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
+  </View>;
+}
