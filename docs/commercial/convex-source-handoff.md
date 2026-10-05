@@ -106,3 +106,9 @@ env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp/reversr-offline-expo.Cv4njl E
 ```
 
 This loopback-only static server sets `connect-src 'self'` as an additional external-connection boundary. The build has no public backend configuration. The actual Expo `/account` route rendered default-unavailable through the real `_layout`, AuthProvider, icons and fonts; account, refresh, billing and save remained disabled as appropriate. Browser warning/error logs were empty. No authenticated/cloud behavior was exercised. `qa-evidence/expo-default-unavailable.jpg` is the packaged-route screenshot. The original mock QA server remains at port 5179, session `70815`.
+
+## Deployment-scoped auth custody
+
+The auth storage namespace now encodes the exact deployment URL and issuer tuple as fixed-width hexadecimal characters with a commercial version prefix. This matters because the pinned SDK strips punctuation from namespaces: raw URL concatenation could otherwise collapse distinct hyphenated deployment names. Both access and refresh token keys remain distinct after that escaping. The provider is keyed by the same namespace so changing destinations remounts SDK auth state instead of carrying an old token reference forward. Existing memory-bridge invalidation and client disposal remain intact.
+
+There is no fallback or migration from the old shared namespace. A previously signed-in user must sign in again under the deployment-specific namespace. No real stored credentials or browser storage were inspected, copied or removed. Synthetic tests cover development/production endpoints, punctuation variants, issuer changes and the old namespace. All 17 commercial Convex/session/catalog tests and TypeScript pass after this correction (56 source tests across the full suites, plus the two browser recovery cases).

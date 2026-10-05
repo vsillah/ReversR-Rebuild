@@ -3,6 +3,7 @@ import { ConvexAuthProvider, useAuthActions, useAuthToken } from '@convex-dev/au
 import { ConvexReactClient, useConvexAuth } from 'convex/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { commercialSession, releaseCommercialAuth } from '../utils/commercialSession';
+import { commercialAuthStorageNamespace } from '../utils/commercialAuthStorage';
 
 type Auth = { status: 'unavailable' | 'loading' | 'signed-out' | 'signed-in';
   signIn: (email: string, password: string, create: boolean) => Promise<void>; signOut: () => Promise<void> };
@@ -24,8 +25,9 @@ export function CommercialAuthProvider({ children }: { children: React.ReactNode
     if (!client) commercialSession.clear();
     return () => releaseCommercialAuth(client);
   }, [client]);
-  if (!client) return <CommercialAuthContext.Provider value={unavailable}>{children}</CommercialAuthContext.Provider>;
-  return <ConvexAuthProvider client={client} storage={AsyncStorage} storageNamespace="reversrCommercial" shouldHandleCode={false}>
+  if (!client || !url || !issuer) return <CommercialAuthContext.Provider value={unavailable}>{children}</CommercialAuthContext.Provider>;
+  const namespace = commercialAuthStorageNamespace(url, issuer);
+  return <ConvexAuthProvider key={namespace} client={client} storage={AsyncStorage} storageNamespace={namespace} shouldHandleCode={false}>
     <AuthBridge>{children}</AuthBridge>
   </ConvexAuthProvider>;
 }
