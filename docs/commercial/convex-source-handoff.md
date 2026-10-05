@@ -42,7 +42,7 @@ node scripts/commercial-convex-codegen.js --check
 node node_modules/typescript/bin/tsc --noEmit --pretty false
 ```
 
-Results: 29 original commercial tests, 7 CAD denial tests, 3 real-SDK transport tests and 16 new official `convex-test`/session/catalog tests pass (55 total). Transport tests mock HTTP fetch and forbid outbound sockets. Backend tests deny fetch and replace Stripe provider I/O, retaining real signature verification. No live signup, token minting, payment, provider call, migration, upload or conversion ran. The official local Convex harness verifies registered functions and transaction rollback; it does not prove cloud OCC or host-restart durability.
+Results: 29 original commercial tests, 7 CAD denial tests, 3 real-SDK transport tests and 17 new official `convex-test`/session/catalog/auth-storage tests pass (56 total). Transport tests mock HTTP fetch and forbid outbound sockets. Backend tests deny fetch and replace Stripe provider I/O, retaining real signature verification. No live signup, token minting, payment, provider call, migration, upload or conversion ran. The official local Convex harness verifies registered functions and transaction rollback; it does not prove cloud OCC or host-restart durability.
 
 Offline Expo export passed with the installed local CLI:
 
@@ -83,7 +83,7 @@ In the integrated browser, use `owner@synthetic.invalid` and `synthetic-password
 
 ## Remaining decisions and rollout work
 
-1. Captain source QA, including dependency review and the unchanged root-codegen limitation. Keep this lane open.
+1. Captain final QA passed at `651fb42`; keep this lane and both local servers open for human review. The unchanged root-codegen limitation remains recorded above.
 2. Decide journey reservation/refund/result-replay rules, then implement server-owned journeys before workflow admission.
 3. Select an approved separate commercial deployment destination and later authorize its auth/provider configuration. Do not overwrite CAD.
 4. Add verified-email and password-recovery delivery and qualify real auth/session revocation before ordinary-customer rollout.
@@ -94,6 +94,10 @@ In the integrated browser, use `owner@synthetic.invalid` and `synthetic-password
 Current scope ends at local source review. No expense was incurred.
 
 ## Captain UI follow-up
+
+Captain independently confirmed all 56 tests, commercial codegen and TypeScript at `651fb42`. Mock-harness QA covered widths of 320, 390, 768 and 1280 pixels, with no horizontal overflow. Login, create account, sign-out, failed-save recovery, billing denial and delayed refresh after logout behaved as expected. The final Manage billing → expired session → Refresh recheck showed the session-expired recovery message and unavailable credits, with stale billing status absent. The harness retains the mock-auth, icon and native-bridge limits described above.
+
+Captain also independently inspected the actual packaged Expo `/account` route at port 5180: icons and fonts rendered correctly, account access remained default-unavailable, and browser warning/error logs were empty. This inspection does not qualify live authentication, payments or cloud persistence. The pre-existing root CAD codegen limitation remains unchanged.
 
 The current account error now takes priority over transient billing/save status. Status clears when auth state, account identity or error changes, and when refresh starts. This fixes the observed billing-denial → expired-session refresh sequence that previously hid the recovery instruction. The message uses an alert role. Sign in is the filled primary action; Create account remains secondary. Login card/input borders and radii match the existing compact sections.
 
