@@ -1,8 +1,10 @@
 import React, { useId, useState } from 'react';
-import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Platform, PointerEvent as NativePointerEvent, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useCommercialAuth } from '../hooks/useCommercialAuth';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { canSubmitCommercialLogin, commercialPasswordFeedback } from '../utils/commercialPasswordFeedback';
+import { useMomentaryPasswordReveal } from '../hooks/useMomentaryPasswordReveal';
 
 export function CommercialLogin() {
   const auth = useCommercialAuth();
@@ -14,7 +16,9 @@ export function CommercialLogin() {
   const passwordHelpId = useId();
   const passwordFeedback = commercialPasswordFeedback(password.length);
   const canSubmit = canSubmitCommercialLogin(email, password.length, busy);
+  const reveal = useMomentaryPasswordReveal(password.length === 0, busy, auth.status);
   const run = async (create: boolean) => {
+    reveal.mask();
     setBusy(true); setError('');
     try { await auth.signIn(email.trim(), password, create); setPassword(''); }
     catch { setError('Sign-in failed. Check your email and password, then try again.'); }
@@ -23,6 +27,8 @@ export function CommercialLogin() {
   const styles = StyleSheet.create({ panel: { padding: 16, borderRadius: 8, borderWidth: 1, borderColor: colors.gray[800], backgroundColor: colors.panel, gap: 12 },
     title: { color: colors.text, fontSize: 20, fontWeight: '700' }, text: { color: colors.text, fontSize: 15, lineHeight: 22 },
     input: { borderWidth: 1, borderColor: colors.gray[700], backgroundColor: colors.gray[800], borderRadius: 8, padding: 12, color: colors.text, fontSize: 16 },
+    passwordInput: { paddingRight: 56, minHeight: 48 },
+    eye: { position: 'absolute', right: 2, top: 2, width: 44, height: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 6 },
     row: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
     button: { borderWidth: 1, borderColor: colors.accent, borderRadius: 8, padding: 12, minHeight: 46 },
     primary: { backgroundColor: colors.primary, borderColor: colors.primary },
@@ -41,7 +47,27 @@ export function CommercialLogin() {
         <Text style={styles.text}>Sign in to load your shop, subscription and credits. Your login email is separate from display profile details.</Text>
         <TextInput accessibilityLabel="Login email" placeholder="Login email" placeholderTextColor={colors.gray[500]} autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail} style={styles.input} />
         <View style={{ gap: 6 }}>
-          <TextInput accessibilityLabel="Account password" accessibilityHint={passwordFeedback.text} {...(Platform.OS === 'web' ? { 'aria-describedby': passwordHelpId } : {})} placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+          <View>
+            <TextInput accessibilityLabel="Account password" accessibilityHint={passwordFeedback.text} {...(Platform.OS === 'web' ? { 'aria-describedby': passwordHelpId } : {})} placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry={!reveal.revealed} value={password} onChangeText={value => { if (!value) reveal.mask(); setPassword(value); }} style={[styles.input, styles.passwordInput]} />
+            <Pressable accessibilityRole="button" accessibilityLabel="Hold to show password" accessibilityHint="Hold to reveal. Release to hide." disabled={reveal.disabled}
+              onPressIn={Platform.OS === 'web' ? undefined : reveal.start} onPressOut={reveal.mask} onPress={reveal.mask}
+              onBlur={reveal.mask} onHoverOut={reveal.mask} onTouchCancel={reveal.mask}
+              {...(Platform.OS === 'web' ? {
+                title: 'Hold to show password',
+                onPointerDown: (event: NativePointerEvent) => { if (event.nativeEvent.button === 0 && event.nativeEvent.isPrimary !== false) reveal.start(); },
+                onPointerMove: (event: NativePointerEvent) => {
+                  const bounds = (event.currentTarget as unknown as HTMLElement).getBoundingClientRect();
+                  const { clientX, clientY } = event.nativeEvent;
+                  if (clientX < bounds.left || clientX > bounds.right || clientY < bounds.top || clientY > bounds.bottom) reveal.mask();
+                },
+                onPointerUp: reveal.mask, onPointerCancel: reveal.mask, onPointerLeave: reveal.mask,
+                onKeyDown: (event: React.KeyboardEvent) => { if (!event.repeat && (event.key === ' ' || event.key === 'Enter')) reveal.start(); },
+                onKeyUp: reveal.mask,
+              } : {})}
+              style={[styles.eye, reveal.disabled && styles.disabled]}>
+              <Ionicons name={reveal.revealed ? 'eye-off-outline' : 'eye-outline'} size={22} color={colors.accent} />
+            </Pressable>
+          </View>
           <Text nativeID={passwordHelpId} role="status" accessibilityLiveRegion="polite" style={styles.passwordHelp}>{passwordFeedback.text}</Text>
         </View>
         <View style={styles.row}>{[false, true].map(create => <TouchableOpacity key={String(create)} accessibilityRole="button" accessibilityLabel={create ? 'Create account' : 'Sign in'} disabled={!canSubmit} style={[styles.button, !create && styles.primary, !canSubmit && styles.disabled]} onPress={() => run(create)}>
