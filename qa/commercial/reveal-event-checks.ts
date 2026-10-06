@@ -18,6 +18,7 @@ export async function runRevealEventChecks() {
   const results: string[] = [];
   try {
     const target = eye.getBoundingClientRect();
+    assert(eye.closest('[title]')?.getAttribute('title') === 'Hold to show password', 'Eye tooltip did not survive rendering');
     assert(target.width >= 44 && target.height >= 44, 'Eye hit target is too small');
     assert(parseFloat(getComputedStyle(input).paddingRight) >= 56, 'Password text has no reserved eye space');
     await setLength(0); pointer('pointerdown'); await tick(); assert(masked(), 'Empty input revealed');

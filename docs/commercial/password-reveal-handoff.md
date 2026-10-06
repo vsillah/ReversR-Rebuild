@@ -40,3 +40,11 @@ Export: `/tmp/reversr-password-reveal-export.gaXTN8/output`.
 Log: `/tmp/reversr-password-reveal-export.gaXTN8/export.log`.
 
 Captain should serve this new export separately for actual `/account` review at 320/390/768/1440 widths. Existing user tabs/servers at 5181 and 5182 were not touched or reloaded. No viewport override was set. No real or synthetic auth submission, credential access, backend change, provider/payment call, push, PR, merge, deployment or activation occurred. Keep the visible lane open through Human QA.
+
+## Tooltip correction after Captain inspection
+
+Captain found that RN-web filtered the original Pressable `title`. A web-only native HTML `span` now supplies the inherited `title="Hold to show password"`. Its `display: contents` adds no layout box or keyboard target. The native branch is a fragment; the same eye Pressable, input, handlers and lifecycle guards remain intact.
+
+A fresh local mock-component render confirmed the nearest title-bearing ancestor's exact text and the unchanged 44×44 eye bounds. The checked-in rendered regression now asserts that title as well as geometry; all 19 event cases, real-hook lifecycle checks and the five focused reveal/feedback unit tests passed again. TypeScript passed. No auth action was submitted, and no existing 5181/5182/5183 page, server, form input or viewport was touched.
+
+The fresh `--clear` offline Expo export passed at `/tmp/reversr-password-tooltip-export.CcVDHh/output`; log: `/tmp/reversr-password-tooltip-export.CcVDHh/export.log`. It used the exact export command above with the directory prefix replaced by `/tmp/reversr-password-tooltip-export.CcVDHh`, including a new empty `home`, the same public deployment tuple and API base `http://127.0.0.1:5183`. This supersedes the earlier reveal export for Captain's next packaged-route tooltip check. Captain retains control of restarting its review server. This correction does not change the physical-hold/device QA limitations above.

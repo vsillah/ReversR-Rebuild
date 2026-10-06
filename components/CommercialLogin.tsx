@@ -6,6 +6,14 @@ import { useAppTheme } from '../hooks/useAppTheme';
 import { canSubmitCommercialLogin, commercialPasswordFeedback } from '../utils/commercialPasswordFeedback';
 import { useMomentaryPasswordReveal } from '../hooks/useMomentaryPasswordReveal';
 
+// RN-web filters title from Pressable. A native HTML ancestor supplies the
+// inherited browser tooltip without adding a layout box or a focus target.
+function PasswordEyeTooltip({ children }: { children: React.ReactNode }) {
+  return Platform.OS === 'web'
+    ? <span title="Hold to show password" style={{ display: 'contents' }}>{children}</span>
+    : <>{children}</>;
+}
+
 export function CommercialLogin() {
   const auth = useCommercialAuth();
   const { colors } = useAppTheme();
@@ -49,11 +57,10 @@ export function CommercialLogin() {
         <View style={{ gap: 6 }}>
           <View>
             <TextInput accessibilityLabel="Account password" accessibilityHint={passwordFeedback.text} {...(Platform.OS === 'web' ? { 'aria-describedby': passwordHelpId } : {})} placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry={!reveal.revealed} value={password} onChangeText={value => { if (!value) reveal.mask(); setPassword(value); }} style={[styles.input, styles.passwordInput]} />
-            <Pressable accessibilityRole="button" accessibilityLabel="Hold to show password" accessibilityHint="Hold to reveal. Release to hide." disabled={reveal.disabled}
+            <PasswordEyeTooltip><Pressable accessibilityRole="button" accessibilityLabel="Hold to show password" accessibilityHint="Hold to reveal. Release to hide." disabled={reveal.disabled}
               onPressIn={Platform.OS === 'web' ? undefined : reveal.start} onPressOut={reveal.mask} onPress={reveal.mask}
               onBlur={reveal.mask} onHoverOut={reveal.mask} onTouchCancel={reveal.mask}
               {...(Platform.OS === 'web' ? {
-                title: 'Hold to show password',
                 onPointerDown: (event: NativePointerEvent) => { if (event.nativeEvent.button === 0 && event.nativeEvent.isPrimary !== false) reveal.start(); },
                 onPointerMove: (event: NativePointerEvent) => {
                   const bounds = (event.currentTarget as unknown as HTMLElement).getBoundingClientRect();
@@ -66,7 +73,7 @@ export function CommercialLogin() {
               } : {})}
               style={[styles.eye, reveal.disabled && styles.disabled]}>
               <Ionicons name={reveal.revealed ? 'eye-off-outline' : 'eye-outline'} size={22} color={colors.accent} />
-            </Pressable>
+            </Pressable></PasswordEyeTooltip>
           </View>
           <Text nativeID={passwordHelpId} role="status" accessibilityLiveRegion="polite" style={styles.passwordHelp}>{passwordFeedback.text}</Text>
         </View>
