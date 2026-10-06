@@ -95,67 +95,109 @@ test('cookie CSRF validation precedes the disabled response', async t => {
 
 // Execute the actual commercial helpers with isolated synthetic JSON and env.
 // Never import the live commercial module: it captures provider configuration.
-async function commercialAccount({ env = {}, headers = {}, body = {}, grants = {} } = {}) {
+async function commercialAccount({ env = {}, headers = {}, body = {}, grants = {}, identity = null, expectedStatus = 200 } = {}) {
   const fs = require('node:fs');
   const path = require('node:path');
   const vm = require('node:vm');
-  let saved = JSON.stringify({ commercialAccessGrants: grants });
+  const storePath = '/synthetic-commercial/store.json';
+  // No disk writes: model the local lock and atomic-replacement contract in memory.
+  const files = new Map([[storePath, JSON.stringify({ commercialAccessGrants: grants })]]);
+  const missing = () => Object.assign(Error('Synthetic file missing'), { code: 'ENOENT' });
   const routes = new Map();
   const source = fs.readFileSync(path.join(__dirname, '../server/commercialization.js'), 'utf8');
-  const context = { module: { exports: {} }, Buffer, process: { env },
+  const context = { module: { exports: {} }, Buffer, structuredClone,
+    process: { env: { NODE_ENV: 'test', COMMERCIAL_STORE_MODE: 'local', COMMERCIAL_STORE_FILE: storePath, ...env } },
     require(id) {
       if (id === 'fs/promises') return {
-        async readFile() { return saved; }, async mkdir() {},
-        async writeFile(_path, value) { saved = value; },
+        async readFile(file) { if (!files.has(file)) throw missing(); return files.get(file); },
+        async mkdir() {},
+        async open(file, flags) {
+          assert.equal(flags, 'wx');
+          assert.ok(file === `${storePath}.lock` || (file.startsWith(`${storePath}.`) && file.endsWith('.tmp')));
+          if (files.has(file)) throw Object.assign(Error('Synthetic file exists'), { code: 'EEXIST' });
+          files.set(file, '');
+          return { async writeFile(value) { files.set(file, value); }, async sync() {}, async close() {} };
+        },
+        async rename(from, to) {
+          assert.equal(to, storePath);
+          if (!files.has(from)) throw missing();
+          files.set(to, files.get(from)); files.delete(from);
+        },
+        async unlink(file) { if (!files.delete(file)) throw missing(); },
+        async rm(file) { files.delete(file); },
       };
-      if (['os', 'path', 'crypto'].includes(id)) return require(`node:${id}`);
-      throw Error('Unexpected commercial dependency');
+      if (['os', 'path', 'crypto', 'async_hooks'].includes(id)) return require(`node:${id}`);
+      throw Error(`Unexpected commercial dependency: ${id}`);
     },
   };
   // Stripe's constructor remains forbidden even if the source starts calling it.
   const safeRequire = context.require;
   context.require = id => id === 'stripe' ? class { constructor() { throw Error('Provider forbidden'); } } : safeRequire(id);
   vm.runInNewContext(source, context);
-  context.module.exports.registerCommercialRoutes(new Proxy({}, {
-    get: (_target, method) => (route, handler) => routes.set(`${method} ${route}`, handler),
-  }));
-  let response;
-  await routes.get('get /api/me')({ get: key => headers[key], body }, {
-    json(value) { response = JSON.parse(JSON.stringify(value)); },
-    status() { throw Error('Unexpected commercial failure'); },
+  const app = { locals: {} };
+  for (const method of ['get', 'post', 'delete']) app[method] = (route, handler) => routes.set(`${method} ${route}`, handler);
+  context.module.exports.registerCommercialRoutes(app, {
+    // Reviewed synthetic principal, independent of every caller-controlled field.
+    resolveIdentity: async () => identity,
   });
-  assert.equal(response.status, 'ok');
-  assert.ok(JSON.parse(saved).users[response.profile.id], 'actual helper persisted a profile-derived account');
+  let response, status = 200;
+  await routes.get('get /api/me')({ app, get: key => headers[key], body }, {
+    json(value) { response = JSON.parse(JSON.stringify(value)); },
+    status(value) { status = value; return this; },
+  });
+  assert.equal(status, expectedStatus);
+  assert.equal(files.has(`${storePath}.lock`), false, 'local transaction releases its lock');
+  if (expectedStatus === 200) {
+    assert.equal(response.status, 'ok');
+    assert.ok(JSON.parse(files.get(storePath)).users[response.profile.id], 'actual helper persisted the isolated account');
+  } else {
+    assert.equal(response.status, 'error');
+    assert.equal(JSON.parse(files.get(storePath)).users, undefined, 'denial does not create accounts');
+  }
   return response;
 }
 
 test('real commercial accounts, tester grants and password grants never authorize upload issuance or admission', async t => {
-  const { pbkdf2Sync } = require('node:crypto');
+  const { pbkdf2Sync, createHash } = require('node:crypto');
   const { uploadSessionService } = require('../server/uploadSessionStore');
   const profileHeaders = { 'x-reversr-client-id': 'synthetic-client',
     'x-reversr-profile-email': 'tester@example.invalid',
     'x-reversr-profile-name': 'Synthetic Tester', 'x-reversr-shop-name': 'Synthetic Shop' };
   const password = 'synthetic-password';
   const salt = 'synthetic-salt';
+  const identity = { issuer: 'synthetic-reviewed-issuer', subject: 'synthetic-user',
+    email: 'tester@example.invalid', emailVerified: true };
+  const verifiedId = `user_${createHash('sha256').update(JSON.stringify([identity.issuer, identity.subject])).digest('hex').slice(0, 24)}`;
+  const inviteGrants = { invite: { grantId: 'invite', clientId: verifiedId,
+    active: true, createdByInviteId: 'synthetic-invite', mustResetPassword: false } };
+  const passwordGrants = { password: { grantId: 'password', email: identity.email, active: true,
+    mustResetPassword: false, passwordSalt: salt,
+    passwordHash: pbkdf2Sync(password, salt, 120000, 32, 'sha256').toString('hex') } };
+  const passwordHeaders = { ...profileHeaders, 'x-reversr-access-password': password };
+  const testerEnv = { COMMERCIAL_TESTER_EMAILS: identity.email };
+  const adminEnv = { COMMERCIAL_SUPER_ADMIN_EMAILS: identity.email, COMMERCIAL_SUPER_ADMIN_PASSWORD: password };
   const cases = [
-    { headers: profileHeaders },
-    { body: { profile: { email: 'body@example.invalid', name: 'Body Profile', shopName: 'Body Shop' } } },
-    { headers: profileHeaders, env: { COMMERCIAL_TESTER_EMAILS: 'tester@example.invalid' }, role: 'tester' },
-    { headers: profileHeaders, grants: { invite: { grantId: 'invite', clientId: 'synthetic-client',
-      active: true, createdByInviteId: 'synthetic-invite', mustResetPassword: false } }, role: 'tester' },
-    { headers: { ...profileHeaders, 'x-reversr-access-password': password },
-      grants: { password: { grantId: 'password', email: 'tester@example.invalid', active: true,
-        mustResetPassword: false, passwordSalt: salt,
-        passwordHash: pbkdf2Sync(password, salt, 120000, 32, 'sha256').toString('hex') } }, role: 'tester' },
-    { headers: { ...profileHeaders, 'x-reversr-access-password': password }, env: {
-      COMMERCIAL_SUPER_ADMIN_EMAILS: 'tester@example.invalid', COMMERCIAL_SUPER_ADMIN_PASSWORD: password,
-    }, role: 'super_admin' },
+    { label: 'guest headers', headers: profileHeaders },
+    { label: 'guest body', body: { profile: { email: 'body@example.invalid', name: 'Body Profile', shopName: 'Body Shop' } } },
+    { label: 'ordinary verified account', identity, headers: profileHeaders },
+    { label: 'spoofed tester email', headers: profileHeaders, env: testerEnv },
+    { label: 'spoofed tester name', identity, headers: profileHeaders, env: { COMMERCIAL_TESTER_PROFILE_NAMES: 'Synthetic Tester' } },
+    { label: 'unverified tester email', identity: { ...identity, emailVerified: false }, headers: profileHeaders, env: testerEnv },
+    { label: 'verified tester email', identity, headers: profileHeaders, env: testerEnv, role: 'tester' },
+    { label: 'spoofed invite identity', headers: { ...profileHeaders, 'x-reversr-client-id': verifiedId }, grants: inviteGrants },
+    { label: 'verified invite', identity, headers: profileHeaders, grants: inviteGrants, role: 'tester' },
+    { label: 'spoofed password grant', headers: passwordHeaders, grants: passwordGrants },
+    { label: 'verified password grant', identity, headers: passwordHeaders, grants: passwordGrants, role: 'tester' },
+    { label: 'spoofed super-admin email', headers: passwordHeaders, env: adminEnv },
+    { label: 'verified super-admin', identity, headers: passwordHeaders, env: adminEnv, role: 'super_admin' },
   ];
   const request = await fixture(t);
   const token = `us1.${Buffer.alloc(32, 7).toString('base64url')}`;
   for (const candidate of cases) {
     const account = await commercialAccount(candidate);
-    assert.equal(account.access?.role || null, candidate.role || null);
+    assert.equal(account.access?.role || null, candidate.role || null, candidate.label);
+    assert.equal(account.billing.planId, candidate.role ? 'tester' : 'free', candidate.label);
+    assert.equal(account.profile.id.startsWith(candidate.identity ? 'user_' : 'guest_'), true, candidate.label);
     for (const claimed of [account, { ...account, userId: account.profile.id, shopId: account.shop.id,
       authMethod: 'password', cadUploadAllowed: true, verified: true, expiresAt: Date.now() + 60000 }]) {
       assert.deepEqual(await uploadSessionService.issueSession(claimed), { ok: false, code: 'AUTH_UNAVAILABLE' });
@@ -166,5 +208,20 @@ test('real commercial accounts, tester grants and password grants never authoriz
     const supplied = await request({ ...candidate.headers, authorization: `Bearer ${token}` });
     assert.equal(supplied.status, 503);
     assert.equal(supplied.payload.code, 'USER_AUTH_UNAVAILABLE');
+  }
+});
+
+
+test('commercial VM honors default and hosted store denial before any account can affect CAD access', async () => {
+  for (const env of [
+    { COMMERCIAL_STORE_MODE: undefined },
+    { COMMERCIAL_STORE_FILE: undefined },
+    { NODE_ENV: 'production' },
+    { VERCEL: '1' },
+    { VERCEL_ENV: 'preview' },
+  ]) {
+    const response = await commercialAccount({ env, expectedStatus: 503 });
+    const { uploadSessionService } = require('../server/uploadSessionStore');
+    assert.deepEqual(await uploadSessionService.issueSession(response), { ok: false, code: 'AUTH_UNAVAILABLE' });
   }
 });

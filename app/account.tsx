@@ -7,8 +7,11 @@ import { CommercialPlanId, useCommercialization } from '../hooks/useCommercializ
 import { useAppTheme } from '../hooks/useAppTheme';
 import { formatCreditPeriod, formatJourneyCreditLabel, formatResetCountdown } from '../utils/commercialUsage';
 import { ensureFocusedFieldVisible } from '../utils/focusVisibility';
+import { CommercialLogin } from '../components/CommercialLogin';
+import { useCommercialAuth } from '../hooks/useCommercialAuth';
 
 export default function AccountScreen() {
+  const auth = useCommercialAuth();
   const { colors: Colors } = useAppTheme();
   const styles = createStyles(Colors);
   const {
@@ -26,6 +29,7 @@ export default function AccountScreen() {
   const [email, setEmail] = useState(profile.email);
   const [shopName, setShopName] = useState(profile.shopName);
   const [status, setStatus] = useState<string | null>(null);
+  useEffect(() => { setStatus(null); }, [auth.status, account?.profile.id, account?.shop.id, error]);
   const [countdownNow, setCountdownNow] = useState(Date.now());
   const accountScrollRef = useRef<ScrollView>(null);
   const keyboardInset = useAndroidKeyboardInset(24);
@@ -52,7 +56,7 @@ export default function AccountScreen() {
     : account?.usage.monthlyCredits
     ? Math.min(100, Math.round((account.usage.usedCredits / account.usage.monthlyCredits) * 100))
     : 0;
-  const usageLabel = usageIsUnlimited
+  const usageLabel = !account ? 'Credit balance unavailable' : usageIsUnlimited
     ? formatJourneyCreditLabel(account?.usage)
     : formatJourneyCreditLabel(account?.usage);
   const resetLabel = usageIsUnlimited
@@ -65,8 +69,8 @@ export default function AccountScreen() {
 
   const handleSaveProfile = async () => {
     setStatus(null);
-    await saveProfile({ name, email, shopName });
-    setStatus('Profile saved.');
+    try { await saveProfile({ name, email, shopName }); setStatus('Profile saved.'); }
+    catch (failure: any) { setStatus(failure?.message || 'Profile could not be saved. Sign in or refresh and retry.'); }
   };
 
   const handleBillingAction = async (action: () => Promise<void>) => {
@@ -100,8 +104,8 @@ export default function AccountScreen() {
         </View>
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={refreshAccount}
-          disabled={loading}
+          onPress={() => { setStatus(null); void refreshAccount(); }}
+          disabled={loading || auth.status !== 'signed-in'}
           accessibilityRole="button"
           accessibilityLabel="Refresh account"
         >
@@ -109,14 +113,17 @@ export default function AccountScreen() {
         </TouchableOpacity>
       </View>
 
+      <CommercialLogin />
+      {auth.status !== 'signed-in' && <Text style={styles.mutedText}>Refresh becomes available after you sign in.</Text>}
+
       <View style={styles.section}>
         <View style={styles.planHeader}>
           <View>
-            <Text style={styles.sectionTitle}>{account?.billing.planLabel || 'Free'}</Text>
+            <Text style={styles.sectionTitle}>{account?.billing.planLabel || (loading ? 'Loading account…' : 'Account unavailable')}</Text>
             <Text style={styles.mutedText}>
               {account?.billing.subscriptionStatus && account.billing.subscriptionStatus !== 'none'
                 ? account.billing.subscriptionStatus
-                : 'Free journey trial'}
+                : account ? 'Free journey trial' : 'Sign in or refresh to verify your plan.'}
             </Text>
           </View>
           <TouchableOpacity
@@ -141,7 +148,7 @@ export default function AccountScreen() {
           <View style={[styles.usageFill, { width: `${usagePercent}%` }]} />
         </View>
         <Text style={styles.helpText}>
-          One journey credit starts a reconstruction. Specs, sketches, BOMs, and exports in that journey do not spend additional credits. {resetLabel}.
+          {account ? `One journey credit starts a reconstruction. Specs, sketches, BOMs, and exports in that journey do not spend additional credits. ${resetLabel}.` : 'No subscription or credits are confirmed while account access is unavailable.'}
         </Text>
       </View>
 
@@ -157,10 +164,11 @@ export default function AccountScreen() {
           placeholder="Repair shop owner"
           placeholderTextColor={Colors.gray[500]}
         />
-        <Text style={styles.label}>Work email</Text>
+        <Text style={styles.label}>Login email (managed by account authentication)</Text>
         <TextInput
           style={styles.input}
           value={email}
+          editable={false}
           onChangeText={setEmail}
           onFocus={handleAccountFieldFocus}
           accessibilityLabel="Profile email"
@@ -182,7 +190,7 @@ export default function AccountScreen() {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={handleSaveProfile}
-          disabled={loading}
+          disabled={loading || !account}
           accessibilityRole="button"
           accessibilityLabel="Save commercial profile"
         >
@@ -193,7 +201,7 @@ export default function AccountScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Upgrade Options</Text>
         <Text style={styles.helpText}>
-          Stripe checkout is available only from this hosted web account page. Native tester builds show plan status and credits without external purchase links.
+          Web billing requires a signed-in shop owner. Team checkout is unavailable while seat setup is pending.
         </Text>
         <View style={styles.planGrid}>
           {plans.map(plan => (
@@ -219,12 +227,12 @@ export default function AccountScreen() {
                 <TouchableOpacity
                   style={styles.secondaryButton}
                   onPress={() => handleBillingAction(() => beginCheckout(plan.id as CommercialPlanId))}
-                  disabled={Platform.OS !== 'web' || loading}
+                  disabled={!isWebBillingAvailable || loading || (plan.id === 'team' && process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local')}
                   accessibilityRole="button"
                   accessibilityLabel={`Start ${plan.label} checkout`}
                 >
                   <Ionicons name="open-outline" size={16} color={Colors.accent} />
-                  <Text style={styles.secondaryButtonText}>Start Checkout</Text>
+                  <Text style={styles.secondaryButtonText}>{plan.id === 'team' && process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local' ? 'Team seat setup pending' : 'Start Checkout'}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -232,7 +240,7 @@ export default function AccountScreen() {
         </View>
       </View>
 
-      {(status || error) && <Text style={styles.statusText}>{status || error}</Text>}
+      {(error || status) && <Text accessibilityRole="alert" style={styles.statusText}>{error || status}</Text>}
     </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -281,6 +289,7 @@ const createStyles = (Colors: AppColors) => StyleSheet.create({
   },
   planHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 12,
@@ -299,6 +308,7 @@ const createStyles = (Colors: AppColors) => StyleSheet.create({
   },
   usageHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,

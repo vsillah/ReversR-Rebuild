@@ -1,12 +1,10 @@
 const http = require('http');
-const { spawn } = require('child_process');
+const { startInventoryApiFixture, token, credentialRef, fixtureSecret } = require('./fixtures/inventory-api-harness');
 
-const fixturePort = Number(process.env.INVENTORY_PREFLIGHT_FIXTURE_PORT || 3917);
-const apiPort = Number(process.env.INVENTORY_PREFLIGHT_API_PORT || 3013);
-const credentialRef = 'preflight-api-key';
-const fixtureSecret = 'preflight-secret';
+let fixturePort = Number(process.env.INVENTORY_PREFLIGHT_FIXTURE_PORT || 0);
+let apiPort = Number(process.env.INVENTORY_PREFLIGHT_API_PORT || 0);
 const fixturePath = '/machines.json';
-const fixtureUrl = `http://127.0.0.1:${fixturePort}${fixturePath}`;
+let fixtureUrl;
 
 const fixtureInventory = {
   machines: [
@@ -95,6 +93,7 @@ const fixtureInventory = {
 };
 
 let apiProcess;
+let apiFixture;
 let fixtureServer;
 let fixtureRequestCount = 0;
 let authorizedFixtureRequestCount = 0;
@@ -122,7 +121,7 @@ const readJson = async (response) => {
 const postJson = async (url, body) => {
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` },
     body: JSON.stringify(body),
   });
   return {
@@ -153,33 +152,17 @@ const startFixtureServer = () => new Promise((resolve, reject) => {
   });
 
   fixtureServer.once('error', reject);
-  fixtureServer.listen(fixturePort, '127.0.0.1', () => resolve());
+  fixtureServer.listen(fixturePort, '127.0.0.1', () => {
+    fixturePort = fixtureServer.address().port;
+    fixtureUrl = `http://127.0.0.1:${fixturePort}${fixturePath}`;
+    resolve();
+  });
 });
 
-const startApiServer = () => {
-  const env = {
-    ...process.env,
-    API_PORT: String(apiPort),
-    API_CORS_ORIGINS: 'https://reversr-rebuild.local',
-    API_REQUEST_BODY_LIMIT: '25mb',
-    ADMIN_API_TOKEN: 'preflight-admin-token',
-    INVENTORY_CONNECTOR_SECRETS_FILE: '',
-    INVENTORY_CONNECTOR_SECRETS_JSON: JSON.stringify({
-      [credentialRef]: {
-        headerName: 'X-API-Key',
-        value: fixtureSecret,
-      },
-    }),
-    INVENTORY_PRIVATE_NETWORK_ENABLED: 'false',
-    AI_INTEGRATIONS_GEMINI_API_KEY: '',
-    GEMINI_API_KEYS: '',
-  };
-
-  apiProcess = spawn(process.execPath, ['server/index.js'], {
-    cwd: process.cwd(),
-    env,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+const startApiServer = async () => {
+  apiFixture = await startInventoryApiFixture({ apiPort, fixturePort });
+  apiPort = apiFixture.port;
+  apiProcess = apiFixture.child;
 
   const captureLog = (chunk) => {
     const text = String(chunk).trim();
@@ -214,15 +197,7 @@ const waitForApi = async () => {
 
 const cleanup = async () => {
   const tasks = [];
-  if (apiProcess && apiProcess.exitCode == null) {
-    tasks.push(new Promise(resolve => {
-      apiProcess.once('exit', resolve);
-      apiProcess.kill('SIGTERM');
-      setTimeout(() => {
-        if (apiProcess.exitCode == null) apiProcess.kill('SIGKILL');
-      }, 2000).unref();
-    }));
-  }
+  if (apiFixture) tasks.push(apiFixture.close());
   if (fixtureServer) {
     tasks.push(new Promise(resolve => fixtureServer.close(resolve)));
   }
@@ -263,7 +238,8 @@ const analysis = {
 
 const run = async () => {
   await startFixtureServer();
-  startApiServer();
+  connector.sourceUrl = fixtureUrl;
+  await startApiServer();
 
   const health = await waitForApi();
   assert(health.status === 'ok', 'API health did not return ok.');

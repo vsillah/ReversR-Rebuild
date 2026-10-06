@@ -1,9 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { ErrorCode, ProductSubscription, Purchase, useIAP } from 'expo-iap';
 import { getApiBase } from '../utils/apiBase';
+import { commercialSession } from '../utils/commercialSession';
+import { useCommercialAuth } from './useCommercialAuth';
 
 export type CommercialPlanId = 'free' | 'pro_shop' | 'team' | 'tester';
 
@@ -62,6 +64,7 @@ export interface CommercialUsage {
 }
 
 export interface CommercialAccount {
+  sessionExpiresAt?: number;
   status: 'ok';
   profile: {
     id: string;
@@ -270,6 +273,10 @@ export const loadCommercialProfile = async (): Promise<CommercialProfile> => {
 };
 
 export const getCommercialRequestHeaders = async (extraHeaders: Record<string, string> = {}) => {
+  if (process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local') {
+    const token = commercialSession.get().token;
+    return { ...extraHeaders, ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  }
   const [clientId, profile, accessPassword] = await Promise.all([
     getCommercialClientId(),
     loadCommercialProfile(),
@@ -468,8 +475,19 @@ const verifyAndroidPlaySubscription = async ({
 };
 
 export function CommercialProvider({ children }: { children: React.ReactNode }) {
-  const androidIapAvailable = isAndroidIapModuleAvailable();
-  const [account, setAccount] = useState<CommercialAccount | null>(null);
+  const auth = useCommercialAuth();
+  const sessionState = useSyncExternalStore(commercialSession.subscribe, commercialSession.get, commercialSession.get);
+  const localMode = process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND === 'local';
+  const androidIapAvailable = localMode && isAndroidIapModuleAvailable();
+  const [accountRecord, setAccountRecord] = useState<{ value: CommercialAccount; generation: number } | null>(null);
+  const account = accountRecord?.generation === sessionState.generation ? accountRecord.value : null;
+  const setAccount = useCallback<React.Dispatch<React.SetStateAction<CommercialAccount | null>>>(next => {
+    const generation = commercialSession.get().generation;
+    setAccountRecord(previous => {
+      const value = typeof next === 'function' ? next(previous?.value || null) : next;
+      return value ? { value, generation } : null;
+    });
+  }, []);
   const [profile, setProfileState] = useState<CommercialProfile>(defaultProfile);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -486,6 +504,8 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
   const [androidBillingBridge, setAndroidBillingBridge] = useState<AndroidInAppBillingBridge | null>(null);
 
   const refreshAccount = useCallback(async () => {
+    const generation = commercialSession.get().generation;
+    if (!localMode && !commercialSession.get().token) { setAccount(null); setLoading(false); return; }
     setLoading(true);
     setError(null);
     try {
@@ -496,32 +516,47 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
         throw new Error(body.error || `Account request failed (${response.status})`);
       }
       const data = await response.json();
+      if (!commercialSession.isCurrent(generation)) return;
       setAccount(data);
+      setProfileState({ name: data.profile.name, email: data.profile.email, shopName: data.shop.name });
     } catch (requestError: any) {
+      if (!commercialSession.isCurrent(generation)) return;
+      setAccount(null);
       setError(requestError?.message || 'Unable to load commercial account.');
     } finally {
-      setLoading(false);
+      if (commercialSession.isCurrent(generation)) setLoading(false);
     }
-  }, []);
+  }, [localMode]);
 
   useEffect(() => {
+    setAccount(null); setProfileState(defaultProfile); setError(null); setLoading(false);
+    if (localMode || auth.status === 'signed-in') void refreshAccount();
+  }, [sessionState.generation, auth.status, localMode, refreshAccount]);
+
+  useEffect(() => {
+    if (!account?.sessionExpiresAt) return;
+    const timer = setTimeout(() => { setAccount(null); setError('Your session expired. Sign out and sign in again.'); }, Math.max(0, account.sessionExpiresAt - Date.now()));
+    return () => clearTimeout(timer);
+  }, [account?.sessionExpiresAt]);
+
+  useEffect(() => {
+    if (!localMode) return;
     loadCommercialProfile()
       .then(savedProfile => {
         setProfileState(savedProfile);
         return refreshAccount();
       })
       .catch(() => refreshAccount());
-  }, [refreshAccount]);
+  }, [refreshAccount, localMode]);
 
   const saveProfile = useCallback(async (nextProfile: CommercialProfile) => {
+    const generation = commercialSession.get().generation;
     const cleanProfile = {
       name: nextProfile.name.trim() || defaultProfile.name,
       email: nextProfile.email.trim().toLowerCase(),
       shopName: nextProfile.shopName.trim() || defaultProfile.shopName,
       avatarUri: nextProfile.avatarUri || '',
     };
-    await AsyncStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(cleanProfile));
-    setProfileState(cleanProfile);
     setLoading(true);
     setError(null);
     try {
@@ -535,15 +570,21 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
         const body = await response.json().catch(() => ({}));
         throw new Error(body.error || `Profile save failed (${response.status})`);
       }
-      setAccount(await response.json());
+      const data = await response.json();
+      if (!commercialSession.isCurrent(generation)) throw new Error('Session changed. Sign in again before saving.');
+      if (localMode) await AsyncStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(cleanProfile));
+      setProfileState({ name: data.profile.name, email: data.profile.email, shopName: data.shop.name });
+      setAccount(data);
     } catch (requestError: any) {
-      setError(requestError?.message || 'Unable to save profile.');
+      if (commercialSession.isCurrent(generation)) { setAccount(null); setError(requestError?.message || 'Unable to save profile.'); }
+      throw requestError;
     } finally {
-      setLoading(false);
+      if (commercialSession.isCurrent(generation)) setLoading(false);
     }
-  }, []);
+  }, [localMode]);
 
   const beginCheckout = useCallback(async (planId: CommercialPlanId) => {
+    const generation = commercialSession.get().generation;
     if (Platform.OS !== 'web') {
       throw new Error('Stripe checkout is managed on the ReversR web account page for mobile store compliance.');
     }
@@ -560,6 +601,7 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.url) throw new Error(data.error || 'Unable to start Stripe Checkout.');
+    if (!commercialSession.isCurrent(generation)) throw new Error('Session changed. Sign in again.');
     await Linking.openURL(data.url);
   }, []);
 
@@ -574,6 +616,7 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
   }, [androidBillingBridge, androidInAppBillingMessage]);
 
   const openBillingPortal = useCallback(async () => {
+    const generation = commercialSession.get().generation;
     if (Platform.OS !== 'web') {
       throw new Error('Billing is managed on the ReversR web account page for mobile store compliance.');
     }
@@ -585,10 +628,12 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.url) throw new Error(data.error || 'Unable to open billing portal.');
+    if (!commercialSession.isCurrent(generation)) throw new Error('Session changed. Sign in again.');
     await Linking.openURL(data.url);
   }, []);
 
   const activateAccessPassword = useCallback(async (password: string) => {
+    if (process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local') throw new Error('Tester grants are not integrated with this account backend.');
     const cleanPassword = password.trim();
     if (!cleanPassword) throw new Error('Enter the access password from the ReversR admin.');
     const headers = await getCommercialRequestHeaders({ 'Content-Type': 'application/json' });
@@ -606,6 +651,7 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const resetAccessPassword = useCallback(async (currentPassword: string, newPassword: string) => {
+    if (process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local') throw new Error('Tester grants are not integrated with this account backend.');
     const cleanCurrentPassword = currentPassword.trim();
     const cleanNewPassword = newPassword.trim();
     if (!cleanCurrentPassword || !cleanNewPassword) throw new Error('Enter the current and new access passwords.');
@@ -627,6 +673,7 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const redeemTesterInvite = useCallback(async (token: string) => {
+    if (process.env.EXPO_PUBLIC_COMMERCIAL_BACKEND !== 'local') throw new Error('Tester invites are not integrated with this account backend.');
     const cleanToken = token.trim();
     if (!cleanToken) throw new Error('Enter the tester invite code from ReversR admin.');
     const headers = await getCommercialRequestHeaders({ 'Content-Type': 'application/json' });
@@ -652,7 +699,7 @@ export function CommercialProvider({ children }: { children: React.ReactNode }) 
     profile,
     loading,
     error,
-    isWebBillingAvailable: Platform.OS === 'web',
+    isWebBillingAvailable: Platform.OS === 'web' && Boolean(account && account.shop.billingOwnerUserId === account.profile.id),
     isAndroidInAppBillingAvailable: Platform.OS === 'android' && androidInAppBillingStatus === 'ready',
     androidInAppBillingStatus,
     androidInAppBillingMessage,

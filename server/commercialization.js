@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const Stripe = require('stripe');
+const { AsyncLocalStorage } = require('async_hooks');
 
 const COMMERCIAL_STORE_FILE = process.env.COMMERCIAL_STORE_FILE || path.join(os.tmpdir(), 'reversr-commercial-store.json');
 const BILLING_RETURN_URL = process.env.BILLING_RETURN_URL || process.env.PUBLIC_APP_URL || 'https://reversr.vercel.app/account';
@@ -84,6 +85,7 @@ const DEFAULT_STORE = {
   shops: {},
   usageEvents: {},
   subscriptions: {},
+  stripeEvents: {},
   commercialAccessGrants: {},
   testerInvites: {},
   commercialConfig: {},
@@ -794,8 +796,6 @@ const findMatchingStoredGrant = (store, profile) => {
   return (
     grants.find(grant => grant.clientId && normalizeAccessValue(grant.clientId) === normalizeAccessValue(profile.clientId)) ||
     grants.find(grant => grant.email && normalizeAccessValue(grant.email) === normalizeAccessValue(profile.email)) ||
-    grants.find(grant => grant.profileName && normalizeAccessValue(grant.profileName) === normalizeAccessValue(profile.name)) ||
-    grants.find(grant => grant.shopName && normalizeAccessValue(grant.shopName) === normalizeAccessValue(profile.shopName)) ||
     null
   );
 };
@@ -809,10 +809,10 @@ const isClientBoundInviteGrant = (grant = {}, profile = {}) => (
 );
 
 const getCommercialAccessGrant = (profile, store = DEFAULT_STORE, accessPassword = '') => {
+  if (!profile.verified) return null;
   const superAdminEmails = listFromEnv('COMMERCIAL_SUPER_ADMIN_EMAILS', 'REVERSR_SUPER_ADMIN_EMAILS');
   const testerEmails = listFromEnv('COMMERCIAL_TESTER_EMAILS', 'REVERSR_TESTER_EMAILS');
   const testerClientIds = listFromEnv('COMMERCIAL_TESTER_CLIENT_IDS', 'REVERSR_TESTER_CLIENT_IDS');
-  const testerProfileNames = listFromEnv('COMMERCIAL_TESTER_PROFILE_NAMES', 'REVERSR_TESTER_PROFILE_NAMES');
 
   if (
     isAllowedValue(profile.email, superAdminEmails) &&
@@ -830,9 +830,7 @@ const getCommercialAccessGrant = (profile, store = DEFAULT_STORE, accessPassword
 
   if (
     isAllowedValue(profile.email, testerEmails) ||
-    isAllowedValue(profile.clientId, testerClientIds) ||
-    isAllowedValue(profile.name, testerProfileNames) ||
-    isAllowedValue(profile.shopName, testerProfileNames)
+    isAllowedValue(profile.clientId, testerClientIds)
   ) {
     return {
       type: 'tester',
@@ -898,36 +896,92 @@ const getPlanFromPriceId = (priceId = '') => {
   return match?.id || 'free';
 };
 
+// Local JSON is deliberately not a hosted persistence option. A production adapter
+// and verified end-user identity must be reviewed before removing this gate.
+const requireLocalCommercialStore = () => {
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.VERCEL_ENV
+      || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.K_SERVICE
+      || process.env.COMMERCIAL_STORE_MODE !== 'local'
+      || !process.env.COMMERCIAL_STORE_FILE || !path.isAbsolute(COMMERCIAL_STORE_FILE)) {
+    throw Object.assign(new Error('Commercial access is unavailable: production identity and durable storage are not integrated. Local development requires COMMERCIAL_STORE_MODE=local and an absolute COMMERCIAL_STORE_FILE.'), { statusCode: 503 });
+  }
+};
+
+const storeTransaction = new AsyncLocalStorage();
+let storeQueue = Promise.resolve();
+const withCommercialStore = (operation) => {
+  if (storeTransaction.getStore()) return operation();
+  const run = storeQueue.then(async () => {
+    requireLocalCommercialStore();
+    await fs.mkdir(path.dirname(COMMERCIAL_STORE_FILE), { recursive: true });
+    // Cross-process contention/crash residue fails closed; never steal a lock.
+    const lock = await fs.open(`${COMMERCIAL_STORE_FILE}.lock`, 'wx', 0o600);
+    try { return await storeTransaction.run(true, operation); }
+    finally {
+      await lock.close();
+      await fs.unlink(`${COMMERCIAL_STORE_FILE}.lock`);
+    }
+  });
+  storeQueue = run.catch(() => {});
+  return run;
+};
+
 const readJson = async (filePath, fallback) => {
   try {
     const raw = await fs.readFile(filePath, 'utf8');
-    return { ...fallback, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Invalid JSON store.');
+    return { ...structuredClone(fallback), ...parsed };
   } catch (error) {
-    if (error.code === 'ENOENT') return { ...fallback };
+    if (error.code === 'ENOENT') return structuredClone(fallback);
     throw error;
   }
 };
 
 const writeJson = async (filePath, value) => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
+  const temporary = `${filePath}.${crypto.randomUUID()}.tmp`;
+  try {
+    const handle = await fs.open(temporary, 'wx', 0o600);
+    try {
+      await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`);
+      await handle.sync();
+    } finally { await handle.close(); }
+    await fs.rename(temporary, filePath);
+  } finally { await fs.rm(temporary, { force: true }); }
 };
 
-const loadStore = async () => readJson(COMMERCIAL_STORE_FILE, DEFAULT_STORE);
+const loadStore = async () => {
+  const store = await readJson(COMMERCIAL_STORE_FILE, DEFAULT_STORE);
+  for (const key of Object.keys(DEFAULT_STORE)) {
+    if (!store[key] || typeof store[key] !== 'object' || Array.isArray(store[key])) {
+      throw new Error('Invalid commercial store structure.');
+    }
+  }
+  return store;
+};
 const saveStore = async (store) => writeJson(COMMERCIAL_STORE_FILE, store);
 
+const commercialIdentity = Symbol('server-verified-commercial-identity');
+const prepareCommercialIdentity = async (req) => {
+  if (Object.hasOwn(req, commercialIdentity)) return;
+  // This dependency exists for local qualification only. server/index.js supplies
+  // no resolver: caller headers/body can never establish a paid account.
+  const identity = await req.app?.locals?.commercialResolveIdentity?.(req);
+  req[commercialIdentity] = identity && typeof identity.subject === 'string' && identity.subject
+    && typeof identity.issuer === 'string' && identity.issuer ? identity : null;
+};
 const requestProfile = (req) => {
-  const headerClientId = String(req.get('x-reversr-client-id') || '').trim();
-  const email = String(req.get('x-reversr-profile-email') || req.body?.profile?.email || '').trim().toLowerCase();
-  const name = String(req.get('x-reversr-profile-name') || req.body?.profile?.name || '').trim();
-  const shopName = String(req.get('x-reversr-shop-name') || req.body?.profile?.shopName || '').trim();
-  const clientId = headerClientId || (email ? `email_${hashId(email)}` : 'anonymous');
-
+  const identity = req[commercialIdentity];
+  const clientId = identity
+    ? `user_${hashId(JSON.stringify([identity.issuer, identity.subject]))}`
+    : `guest_${hashId(String(req.get('x-reversr-client-id') || 'anonymous'))}`;
   return {
     clientId,
-    email,
-    name: name || (email ? email.split('@')[0] : 'Repair shop user'),
-    shopName: shopName || 'ReversR Repair Shop',
+    verified: Boolean(identity),
+    email: identity?.emailVerified === true ? String(identity.email || '').trim().toLowerCase() : '',
+    name: String(req.get('x-reversr-profile-name') || req.body?.profile?.name || 'Repair shop user').trim(),
+    shopName: String(req.get('x-reversr-shop-name') || req.body?.profile?.shopName || 'ReversR Repair Shop').trim(),
   };
 };
 
@@ -956,16 +1010,16 @@ const ensureAccount = async (req) => {
   const now = new Date().toISOString();
   const userId = profile.clientId;
   const existingUser = store.users[userId] || {};
-  const shopId = existingUser.shopId || `shop_${hashId(profile.email || profile.clientId)}`;
+  const shopId = existingUser.shopId || `shop_${hashId(profile.clientId)}`;
   const existingShop = store.shops[shopId] || {};
-  const existingPlanId = normalizeStoredPlanId(existingShop.planId || existingUser.planId || 'free');
+  const existingPlanId = profile.verified ? normalizeStoredPlanId(existingShop.planId || 'free') : 'free';
   const accessGrant = getCommercialAccessGrant(profile, store, requestAccessPassword(req));
 
   const user = {
     id: userId,
     name: profile.name || existingUser.name || 'Repair shop user',
     email: profile.email || existingUser.email || '',
-    role: accessGrant?.role || existingUser.role || 'owner',
+    role: accessGrant?.role || 'owner',
     activeShopId: shopId,
     shopId,
     createdAt: existingUser.createdAt || now,
@@ -977,10 +1031,13 @@ const ensureAccount = async (req) => {
     name: profile.shopName || existingShop.name || 'ReversR Repair Shop',
     billingOwnerUserId: existingShop.billingOwnerUserId || userId,
     planId: existingPlanId,
-    stripeCustomerId: existingShop.stripeCustomerId || '',
-    stripeSubscriptionId: existingShop.stripeSubscriptionId || '',
-    subscriptionStatus: existingShop.subscriptionStatus || 'none',
-    currentPeriodEnd: existingShop.currentPeriodEnd || '',
+    stripeCustomerId: profile.verified ? existingShop.stripeCustomerId || '' : '',
+    stripeSubscriptionId: profile.verified ? existingShop.stripeSubscriptionId || '' : '',
+    subscriptionStatus: profile.verified ? existingShop.subscriptionStatus || 'none' : 'none',
+    currentPeriodEnd: profile.verified ? existingShop.currentPeriodEnd || '' : '',
+    pendingCheckoutIntent: profile.verified ? existingShop.pendingCheckoutIntent || '' : '',
+    pendingCheckoutPlan: profile.verified ? existingShop.pendingCheckoutPlan || '' : '',
+    pendingCheckoutStartedAt: profile.verified ? existingShop.pendingCheckoutStartedAt || '' : '',
     createdAt: existingShop.createdAt || now,
     updatedAt: now,
   };
@@ -1063,6 +1120,21 @@ const buildAccountResponse = (store, user, shop, accessGrant = null) => {
   } : null,
   };
 };
+
+const formatConvexAccount = (value) => ({
+  status: 'ok',
+  profile: { id: value.userId, name: value.name, email: value.email, role: value.owner ? 'owner' : 'member' },
+  shop: { id: value.shopId, name: value.shopName, billingOwnerUserId: value.owner ? value.userId : '' },
+  billing: { planId: value.planId, basePlanId: value.planId, planLabel: PLAN_CATALOG[value.planId].label,
+    subscriptionStatus: value.subscriptionStatus, currentPeriodEnd: value.currentPeriodEnd ? new Date(value.currentPeriodEnd).toISOString() : '',
+    hasStripeCustomer: value.hasStripeCustomer, billingLinks: buildBillingLinks(), owner: value.owner },
+  entitlements: { ...buildEntitlements(value.planId), monthlyCredits: value.limit, creditPeriod: value.period,
+    canManageTeam: false, canUseCadReviewQueue: false },
+  usage: { month: value.periodKey, periodKey: value.periodKey, period: value.period, usedCredits: value.usedCredits,
+    remainingCredits: Math.max(0, value.limit - value.usedCredits), monthlyCredits: value.limit, unlimitedCredits: false,
+    resetAt: new Date(value.resetAt).toISOString(), resetInSeconds: Math.max(0, Math.ceil((value.resetAt - Date.now()) / 1000)), events: [] },
+  plans: publicPlans(), creditCosts: CREDIT_COSTS, access: null, sessionExpiresAt: value.sessionExpiresAt,
+});
 
 const requireConfiguredStripe = () => {
   if (!stripe) {
@@ -1194,7 +1266,7 @@ const ensureStripeCustomer = async (store, user, shop) => {
       reversrShopId: shop.id,
       shopName: shop.name,
     },
-  });
+  }, { idempotencyKey: `commercial-customer:${shop.id}` });
   shop.stripeCustomerId = customer.id;
   shop.updatedAt = new Date().toISOString();
   store.shops[shop.id] = shop;
@@ -1202,19 +1274,30 @@ const ensureStripeCustomer = async (store, user, shop) => {
   return customer.id;
 };
 
-const updateShopFromSubscription = async (subscription) => {
-  const store = await loadStore();
+const updateShopFromSubscription = (store, subscription) => {
   const customerId = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id;
   const shop = Object.values(store.shops).find(item => item.stripeCustomerId === customerId);
-  if (!shop) return null;
+  if (!shop || !store.users[shop.billingOwnerUserId]?.id?.startsWith('user_')) return null;
+  if (shop.stripeSubscriptionId !== subscription.id) {
+    // A late event for a replaced subscription must not restore its old plan.
+    if (store.subscriptions[subscription.id]?.shopId === shop.id) return shop;
+    const terminal = !shop.stripeSubscriptionId || ['canceled', 'incomplete_expired'].includes(shop.subscriptionStatus);
+    if (!terminal || !shop.pendingCheckoutIntent
+        || subscription.metadata?.reversrCheckoutIntent !== shop.pendingCheckoutIntent
+        || subscription.metadata?.reversrShopId !== shop.id) return null;
+    shop.pendingCheckoutIntent = '';
+    shop.pendingCheckoutPlan = '';
+    shop.pendingCheckoutStartedAt = '';
+  }
 
   const priceId = subscription.items?.data?.[0]?.price?.id || '';
   const planId = getPlanFromPriceId(priceId);
   shop.planId = subscription.status === 'active' || subscription.status === 'trialing' ? planId : 'free';
   shop.stripeSubscriptionId = subscription.id;
   shop.subscriptionStatus = subscription.status;
-  shop.currentPeriodEnd = subscription.current_period_end
-    ? new Date(subscription.current_period_end * 1000).toISOString()
+  const periodEnd = subscription.items?.data?.[0]?.current_period_end;
+  shop.currentPeriodEnd = periodEnd
+    ? new Date(periodEnd * 1000).toISOString()
     : '';
   shop.updatedAt = new Date().toISOString();
   store.shops[shop.id] = shop;
@@ -1227,7 +1310,6 @@ const updateShopFromSubscription = async (subscription) => {
     priceId,
     updatedAt: shop.updatedAt,
   };
-  await saveStore(store);
   return shop;
 };
 
@@ -1270,7 +1352,30 @@ const resolveAuthenticatedGrant = async (req) => {
   return { store, profile, grant };
 };
 
-const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemediation } = {}) => {
+const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemediation, resolveIdentity } = {}) => {
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') {
+    return require('./commercialConvex').register(app, formatConvexAccount);
+  }
+  app.locals.commercialResolveIdentity = resolveIdentity;
+  const guestRoutes = new Set(['/api/me', '/api/usage', '/api/entitlements', '/api/commercial/profile']);
+  const register = (method, route, handler) => app[method](route, async (req, res) => {
+    try {
+      await withCommercialStore(async () => {
+        await prepareCommercialIdentity(req);
+        if (!guestRoutes.has(route) && !route.startsWith('/api/admin/') && !req[commercialIdentity]) {
+          return res.status(401).json({ status: 'error', error: 'Verified account login is required.' });
+        }
+        // Purchase-token ownership/replay and lifecycle handling need a separate
+        // native billing review. Never let this legacy route bypass Stripe gates.
+        if (route === '/api/billing/google-play/subscription') {
+          return res.status(503).json({ status: 'error', error: 'Google Play subscription ownership is not integrated.' });
+        }
+        return handler(req, res);
+      });
+    } catch (error) {
+      if (!res.headersSent) res.status(error.statusCode || 503).json({ status: 'error', error: 'Commercial account operation unavailable.', canRetry: true });
+    }
+  });
   const requireCommercialAdmin = async (req, res) => {
     try {
       const store = await loadStore();
@@ -1287,7 +1392,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     return true;
   };
 
-  app.get('/api/me', async (req, res) => {
+  register('get', '/api/me', async (req, res) => {
     try {
       const { store, user, shop, accessGrant } = await ensureAccount(req);
       res.json(buildAccountResponse(store, user, shop, accessGrant));
@@ -1296,7 +1401,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/usage', async (req, res) => {
+  register('get', '/api/usage', async (req, res) => {
     try {
       const { store, shop, accessGrant } = await ensureAccount(req);
       res.json({ status: 'ok', usage: buildUsage(store, shop, new Date(), accessGrant), creditCosts: CREDIT_COSTS });
@@ -1305,7 +1410,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/entitlements', async (req, res) => {
+  register('get', '/api/entitlements', async (req, res) => {
     try {
       const { store, shop, accessGrant } = await ensureAccount(req);
       res.json({
@@ -1318,7 +1423,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/commercial/profile', async (req, res) => {
+  register('post', '/api/commercial/profile', async (req, res) => {
     try {
       const { store, user, shop, accessGrant } = await ensureAccount(req);
       res.json(buildAccountResponse(store, user, shop, accessGrant));
@@ -1327,7 +1432,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/support/issues', async (req, res) => {
+  register('post', '/api/support/issues', async (req, res) => {
     try {
       const profile = requestProfile(req);
       const title = truncateText(req.body?.title, 140);
@@ -1374,7 +1479,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/support/notifications', async (req, res) => {
+  register('get', '/api/support/notifications', async (req, res) => {
     try {
       const store = await loadStore();
       const profile = requestProfile(req);
@@ -1391,7 +1496,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/support/notifications/:notificationId/read', async (req, res) => {
+  register('post', '/api/support/notifications/:notificationId/read', async (req, res) => {
     try {
       const store = await loadStore();
       const profile = requestProfile(req);
@@ -1418,7 +1523,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/commercial/access/activate', async (req, res) => {
+  register('post', '/api/commercial/access/activate', async (req, res) => {
     try {
       const { store, profile, grant } = await resolveAuthenticatedGrant(req);
       const now = new Date().toISOString();
@@ -1450,7 +1555,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/commercial/access/reset-password', async (req, res) => {
+  register('post', '/api/commercial/access/reset-password', async (req, res) => {
     try {
       const newPassword = String(req.body?.newPassword || '');
       if (newPassword.length < 8) {
@@ -1496,7 +1601,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/commercial/credit-config', async (req, res) => {
+  register('get', '/api/admin/commercial/credit-config', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1514,7 +1619,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/commercial/credit-config', async (req, res) => {
+  register('post', '/api/admin/commercial/credit-config', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const planId = normalizeStoredPlanId(req.body?.planId || 'free');
@@ -1547,7 +1652,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/support/issues', async (req, res) => {
+  register('get', '/api/admin/support/issues', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1564,7 +1669,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/support/issues/:issueId', async (req, res) => {
+  register('get', '/api/admin/support/issues/:issueId', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1592,7 +1697,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/support/issues/:issueId/remediate', async (req, res) => {
+  register('post', '/api/admin/support/issues/:issueId/remediate', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1641,7 +1746,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/support/issues/:issueId/execute-remediation', async (req, res) => {
+  register('post', '/api/admin/support/issues/:issueId/execute-remediation', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1751,7 +1856,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/support/remediation-jobs', async (req, res) => {
+  register('get', '/api/admin/support/remediation-jobs', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1768,7 +1873,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/support/issues/:issueId/resolve', async (req, res) => {
+  register('post', '/api/admin/support/issues/:issueId/resolve', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1830,7 +1935,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/commercial/access-grants', async (req, res) => {
+  register('get', '/api/admin/commercial/access-grants', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1849,7 +1954,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/commercial/access-grants', async (req, res) => {
+  register('post', '/api/admin/commercial/access-grants', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const clientId = String(req.body?.clientId || '').trim();
@@ -1909,7 +2014,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.delete('/api/admin/commercial/access-grants/:grantId', async (req, res) => {
+  register('delete', '/api/admin/commercial/access-grants/:grantId', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const grantId = String(req.params.grantId || '').trim();
@@ -1932,7 +2037,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.get('/api/admin/commercial/tester-invites', async (req, res) => {
+  register('get', '/api/admin/commercial/tester-invites', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const store = await loadStore();
@@ -1951,7 +2056,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/commercial/tester-invites', async (req, res) => {
+  register('post', '/api/admin/commercial/tester-invites', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const requestedInvites = Array.isArray(req.body?.testers) && req.body.testers.length > 0
@@ -2016,7 +2121,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.delete('/api/admin/commercial/tester-invites/:inviteId', async (req, res) => {
+  register('delete', '/api/admin/commercial/tester-invites/:inviteId', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const inviteId = String(req.params.inviteId || '').trim();
@@ -2040,7 +2145,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/admin/commercial/tester-invites/:inviteId/send', async (req, res) => {
+  register('post', '/api/admin/commercial/tester-invites/:inviteId/send', async (req, res) => {
     if (!(await requireCommercialAdmin(req, res))) return;
     try {
       const inviteId = String(req.params.inviteId || '').trim();
@@ -2087,7 +2192,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/commercial/tester-invites/lookup', async (req, res) => {
+  register('post', '/api/commercial/tester-invites/lookup', async (req, res) => {
     try {
       const email = String(req.body?.email || '').trim().toLowerCase();
       const validationError = validateInviteEmail(email);
@@ -2153,7 +2258,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/commercial/tester-invites/redeem', async (req, res) => {
+  register('post', '/api/commercial/tester-invites/redeem', async (req, res) => {
     try {
       const token = String(req.body?.token || req.body?.activationCode || '').trim();
       if (!token) {
@@ -2260,7 +2365,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/billing/google-play/subscription', async (req, res) => {
+  register('post', '/api/billing/google-play/subscription', async (req, res) => {
     try {
       const requestedPlanId = normalizeStoredPlanId(req.body?.planId);
       const productId = String(req.body?.productId || '').trim();
@@ -2348,7 +2453,7 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/billing/checkout-session', async (req, res) => {
+  register('post', '/api/billing/checkout-session', async (req, res) => {
     try {
       const planId = normalizeStoredPlanId(req.body?.planId);
       const plan = PLAN_CATALOG[planId];
@@ -2366,10 +2471,25 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
       }
 
       const { store, user, shop } = await ensureAccount(req);
-      const customerId = await ensureStripeCustomer(store, user, shop);
       const stripeClient = requireConfiguredStripe();
-      const successUrl = req.body?.successUrl || `${BILLING_RETURN_URL}?checkout=success`;
-      const cancelUrl = req.body?.cancelUrl || BILLING_CANCEL_URL;
+      if (shop.stripeSubscriptionId && !['canceled', 'incomplete_expired'].includes(shop.subscriptionStatus)) {
+        return res.status(409).json({ status: 'error', error: 'Manage the existing subscription in the billing portal.' });
+      }
+      if (shop.pendingCheckoutPlan && shop.pendingCheckoutPlan !== plan.id) {
+        return res.status(409).json({ status: 'error', error: 'A different plan already has a pending checkout. Contact support to clear it.' });
+      }
+      if (shop.pendingCheckoutIntent && (!shop.pendingCheckoutStartedAt
+          || Date.now() - Date.parse(shop.pendingCheckoutStartedAt) >= 23 * 60 * 60 * 1000
+          || !Number.isFinite(Date.parse(shop.pendingCheckoutStartedAt)))) {
+        return res.status(409).json({ status: 'error', error: 'An earlier checkout needs reconciliation. Contact support before retrying.' });
+      }
+      const customerId = await ensureStripeCustomer(store, user, shop);
+      shop.pendingCheckoutStartedAt ||= new Date().toISOString();
+      shop.pendingCheckoutIntent ||= crypto.randomUUID();
+      shop.pendingCheckoutPlan = plan.id;
+      await saveStore(store);
+      const successUrl = `${BILLING_RETURN_URL}?checkout=success`;
+      const cancelUrl = BILLING_CANCEL_URL;
       const session = await stripeClient.checkout.sessions.create({
         mode: 'subscription',
         customer: customerId,
@@ -2381,15 +2501,17 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
           reversrUserId: user.id,
           reversrShopId: shop.id,
           planId: plan.id,
+          reversrCheckoutIntent: shop.pendingCheckoutIntent,
         },
         subscription_data: {
           metadata: {
             reversrUserId: user.id,
             reversrShopId: shop.id,
             planId: plan.id,
+            reversrCheckoutIntent: shop.pendingCheckoutIntent,
           },
         },
-      });
+      }, { idempotencyKey: `commercial-checkout:${shop.id}:${shop.pendingCheckoutIntent}` });
 
       res.json({ status: 'ok', url: session.url, sessionId: session.id });
     } catch (error) {
@@ -2401,14 +2523,15 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
     }
   });
 
-  app.post('/api/billing/portal-session', async (req, res) => {
+  register('post', '/api/billing/portal-session', async (req, res) => {
     try {
       const { store, user, shop } = await ensureAccount(req);
-      const customerId = await ensureStripeCustomer(store, user, shop);
+      if (!shop.stripeCustomerId) return res.status(409).json({ status: 'error', error: 'No billing account exists yet.' });
+      const customerId = shop.stripeCustomerId;
       const stripeClient = requireConfiguredStripe();
       const session = await stripeClient.billingPortal.sessions.create({
         customer: customerId,
-        return_url: req.body?.returnUrl || BILLING_RETURN_URL,
+        return_url: BILLING_RETURN_URL,
       });
       res.json({ status: 'ok', url: session.url });
     } catch (error) {
@@ -2422,72 +2545,86 @@ const registerCommercialRoutes = (app, { requireAdmin, generateSupportIssueRemed
 };
 
 const handleStripeWebhook = async (req, res) => {
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') return require('./commercialConvex').webhook(req, res);
   try {
+    requireLocalCommercialStore();
     const stripeClient = requireConfiguredStripe();
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      return res.status(503).json({ status: 'error', error: 'STRIPE_WEBHOOK_SECRET is not configured.' });
-    }
-
-    const signature = req.headers['stripe-signature'];
-    const event = stripeClient.webhooks.constructEvent(req.body, signature, webhookSecret);
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      if (session.subscription) {
-        const subscription = await stripeClient.subscriptions.retrieve(session.subscription);
-        await updateShopFromSubscription(subscription);
-      }
-    }
-
-    if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
-      await updateShopFromSubscription(event.data.object);
-    }
-
-    if (event.type === 'customer.subscription.deleted') {
-      const subscription = event.data.object;
+    if (!webhookSecret) return res.status(503).json({ status: 'error', error: 'Stripe webhook is not configured.' });
+    let event;
+    try {
+      event = stripeClient.webhooks.constructEvent(req.body, req.headers['stripe-signature'], webhookSecret);
+    } catch (_) { return res.status(400).json({ status: 'error', error: 'Invalid Stripe signature.' }); }
+    await withCommercialStore(async () => {
       const store = await loadStore();
-      const shop = Object.values(store.shops).find(item => item.stripeSubscriptionId === subscription.id);
-      if (shop) {
-        shop.planId = 'free';
-        shop.subscriptionStatus = subscription.status || 'deleted';
-        shop.updatedAt = new Date().toISOString();
-        store.shops[shop.id] = shop;
-        await saveStore(store);
+      if (store.stripeEvents[event.id]) return;
+      const object = event.data.object;
+      const idOf = value => typeof value === 'string' ? value : value?.id;
+      let subscriptionId;
+      if (event.type.startsWith('customer.subscription.')) subscriptionId = object.id;
+      else if (event.type === 'checkout.session.completed') subscriptionId = idOf(object.subscription);
+      else if (['invoice.paid', 'invoice.payment_succeeded', 'invoice.payment_failed'].includes(event.type)) {
+        subscriptionId = idOf(object.parent?.subscription_details?.subscription);
       }
-    }
-
-    if (event.type === 'invoice.payment_failed') {
-      const invoice = event.data.object;
-      const store = await loadStore();
-      const shop = Object.values(store.shops).find(item => item.stripeCustomerId === invoice.customer);
-      if (shop) {
-        shop.subscriptionStatus = 'past_due';
-        shop.updatedAt = new Date().toISOString();
-        store.shops[shop.id] = shop;
-        await saveStore(store);
+      if (subscriptionId) {
+        // Delivery order (including events created in the same second) is not a
+        // lifecycle clock. Reconcile current provider state under the same lock.
+        const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
+        if (subscription.id !== subscriptionId) throw new Error('Subscription identity mismatch.');
+        const shop = updateShopFromSubscription(store, subscription);
+        if (!shop) throw new Error('Subscription has no established account binding.');
       }
-    }
-
+      store.stripeEvents[event.id] = { type: event.type, processedAt: new Date().toISOString() };
+      await saveStore(store);
+    });
     res.json({ received: true });
-  } catch (error) {
-    res.status(400).json({ status: 'error', error: error.message || 'Invalid Stripe webhook.' });
+  } catch (_) {
+    // Storage/provider failures must remain retryable and must not acknowledge
+    // an event before its entitlement change and receipt have both committed.
+    res.status(503).json({ status: 'error', error: 'Stripe reconciliation unavailable.' });
   }
 };
 
 const chargeCommercialCredits = async (req, res, feature) => {
-  const credits = CREDIT_COSTS[feature] ?? 0;
-  if (credits <= 0) return { ok: true, credits: 0 };
+  if (process.env.COMMERCIAL_BACKEND && process.env.COMMERCIAL_BACKEND !== 'local') return require('./commercialConvex').charge(req, res, feature);
+  if (!Object.hasOwn(CREDIT_COSTS, feature)) {
+    res.status(400).json({ status: 'error', error: 'Unknown commercial feature.' });
+    return { ok: false };
+  }
+  try {
+    return await withCommercialStore(async () => {
+      await prepareCommercialIdentity(req);
+      return debitCommercialCredits(req, res, feature);
+    });
+  } catch (_) {
+    res.status(503).json({ status: 'error', error: 'Commercial credit storage unavailable.', canRetry: true });
+    return { ok: false };
+  }
+};
 
+const debitCommercialCredits = async (req, res, feature) => {
+  const credits = CREDIT_COSTS[feature] ?? 0;
   const { store, user, shop, accessGrant } = await ensureAccount(req);
+  if (accessGrant?.requiresPasswordReset) {
+    res.status(403).json({ status: 'error', code: 'COMMERCIAL_PASSWORD_RESET_REQUIRED', error: 'Reset the starter password before starting a reconstruction.' });
+    return { ok: false };
+  }
+  if (credits <= 0) return { ok: true, credits: 0 };
   const effectivePlanId = effectivePlanIdFor(shop, accessGrant);
   const entitlements = buildEntitlements(effectivePlanId, store);
   const usage = buildUsage(store, shop, new Date(), accessGrant);
   const idempotencyKey = String(req.get('x-reversr-idempotency-key') || '').trim();
   const activePeriodKey = usage.periodKey || usage.month;
-  const eventKey = idempotencyKey || `${shop.id}:${feature}:${hashId(JSON.stringify(req.body || {}))}:${activePeriodKey}`;
+  const requestHash = hashId(JSON.stringify(req.body || {}));
+  const eventKey = hashId(JSON.stringify([shop.id, feature, usage.period, activePeriodKey, accessGrant?.type || 'standard', idempotencyKey || crypto.randomUUID()]));
   const existingEvent = store.usageEvents[eventKey];
-  if (existingEvent) return { ok: true, credits: existingEvent.credits, usage, event: existingEvent };
+  if (existingEvent) {
+    if (existingEvent.requestHash !== requestHash) {
+      res.status(409).json({ status: 'error', error: 'Idempotency key was already used for a different request.' });
+      return { ok: false };
+    }
+    return { ok: true, credits: existingEvent.credits, usage, event: existingEvent };
+  }
 
   if (!usage.unlimitedCredits && usage.remainingCredits < credits) {
     res.status(402).json({
@@ -2506,6 +2643,7 @@ const chargeCommercialCredits = async (req, res, feature) => {
 
   const event = {
     id: eventKey,
+    requestHash,
     userId: user.id,
     shopId: shop.id,
     feature,

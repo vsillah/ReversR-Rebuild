@@ -25,6 +25,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AppColors } from '../constants/theme';
 import { AppThemeProvider, useAppTheme } from '../hooks/useAppTheme';
 import { CommercialProvider } from '../hooks/useCommercialization';
+import { CommercialAuthProvider } from '../hooks/useCommercialAuth';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -53,9 +54,9 @@ export default function RootLayout() {
 
   return (
     <AppThemeProvider>
-      <CommercialProvider>
+      <CommercialAuthProvider><CommercialProvider>
         <ThemedRootLayout />
-      </CommercialProvider>
+      </CommercialProvider></CommercialAuthProvider>
     </AppThemeProvider>
   );
 }
