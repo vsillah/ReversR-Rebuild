@@ -154,6 +154,7 @@ export default function AccountScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Profile</Text>
+        {auth.status === 'signed-out' && <Text style={styles.mutedText}>Create an account above, then edit your name and shop name here. Already have an account? Sign in.</Text>}
         <Text style={styles.label}>Name</Text>
         <TextInput
           style={styles.input}

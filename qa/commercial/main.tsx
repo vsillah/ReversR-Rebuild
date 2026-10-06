@@ -5,6 +5,13 @@ import { CommercialProvider } from '../../hooks/useCommercialization';
 import { AppThemeProvider } from '../../hooks/useAppTheme';
 import { MockAuth } from './mockAuth';
 import { PLAN_CATALOG, CREDIT_COSTS } from './mockCatalog';
+import { runRevealEventChecks } from './reveal-event-checks';
+import { RevealHookProbe } from './reveal-hook-probe';
+
+function RevealChecks() {
+  const [result, setResult] = React.useState('');
+  return <div><button onClick={() => { setResult('Running local event checks…'); void runRevealEventChecks().then(setResult).catch(error => setResult(error.message)); }}>Run local reveal event checks</button><output>{result}</output><RevealHookProbe /></div>;
+}
 
 let expired = false, failSave = false, slow = false;
 window.addEventListener('qa-expire', () => { expired = true; });
@@ -28,5 +35,5 @@ window.fetch = async (input, init) => {
     plans: Object.values(PLAN_CATALOG), creditCosts: CREDIT_COSTS, access: null });
 };
 createRoot(document.getElementById('root')!).render(<MockAuth><AppThemeProvider><CommercialProvider>
-  <div style={{ maxWidth: 1100, margin: 'auto', minHeight: '100vh' }}><AccountScreen /></div>
+  <div style={{ maxWidth: 1100, margin: 'auto', minHeight: '100vh' }}>{new URLSearchParams(location.search).has('reveal-checks') && <RevealChecks />}<AccountScreen /></div>
 </CommercialProvider></AppThemeProvider></MockAuth>);
