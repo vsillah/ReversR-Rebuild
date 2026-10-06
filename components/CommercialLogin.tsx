@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useId, useState } from 'react';
+import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCommercialAuth } from '../hooks/useCommercialAuth';
 import { useAppTheme } from '../hooks/useAppTheme';
+import { canSubmitCommercialLogin, commercialPasswordFeedback } from '../utils/commercialPasswordFeedback';
 
 export function CommercialLogin() {
   const auth = useCommercialAuth();
@@ -10,6 +11,9 @@ export function CommercialLogin() {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const passwordHelpId = useId();
+  const passwordFeedback = commercialPasswordFeedback(password.length);
+  const canSubmit = canSubmitCommercialLogin(email, password.length, busy);
   const run = async (create: boolean) => {
     setBusy(true); setError('');
     try { await auth.signIn(email.trim(), password, create); setPassword(''); }
@@ -24,6 +28,7 @@ export function CommercialLogin() {
     primary: { backgroundColor: colors.primary, borderColor: colors.primary },
     primaryText: { color: '#ffffff', fontWeight: '700' },
     disabled: { opacity: 0.5 },
+    passwordHelp: { color: passwordFeedback.state === 'met' ? colors.success : passwordFeedback.state === 'unmet' ? colors.danger : colors.mutedText, fontSize: 13, lineHeight: 18 },
     error: { color: colors.danger, fontSize: 15, lineHeight: 22 } });
   return <View style={styles.panel}>
     <Text style={styles.title}>Account login</Text>
@@ -35,8 +40,11 @@ export function CommercialLogin() {
       : <>
         <Text style={styles.text}>Sign in to load your shop, subscription and credits. Your login email is separate from display profile details.</Text>
         <TextInput accessibilityLabel="Login email" placeholder="Login email" placeholderTextColor={colors.gray[500]} autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail} style={styles.input} />
-        <TextInput accessibilityLabel="Account password" placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
-        <View style={styles.row}>{[false, true].map(create => <TouchableOpacity key={String(create)} accessibilityRole="button" accessibilityLabel={create ? 'Create account' : 'Sign in'} disabled={busy || !email.trim() || password.length < 8} style={[styles.button, !create && styles.primary, (busy || !email.trim() || password.length < 8) && styles.disabled]} onPress={() => run(create)}>
+        <View style={{ gap: 6 }}>
+          <TextInput accessibilityLabel="Account password" accessibilityHint={passwordFeedback.text} {...(Platform.OS === 'web' ? { 'aria-describedby': passwordHelpId } : {})} placeholder="Password" placeholderTextColor={colors.gray[500]} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+          <Text nativeID={passwordHelpId} role="status" accessibilityLiveRegion="polite" style={styles.passwordHelp}>{passwordFeedback.text}</Text>
+        </View>
+        <View style={styles.row}>{[false, true].map(create => <TouchableOpacity key={String(create)} accessibilityRole="button" accessibilityLabel={create ? 'Create account' : 'Sign in'} disabled={!canSubmit} style={[styles.button, !create && styles.primary, !canSubmit && styles.disabled]} onPress={() => run(create)}>
           <Text style={[styles.text, !create && styles.primaryText]}>{busy ? 'Please wait…' : create ? 'Create account' : 'Sign in'}</Text>
         </TouchableOpacity>)}</View>
         <Text style={styles.text}>Password reset is currently unavailable.</Text>
