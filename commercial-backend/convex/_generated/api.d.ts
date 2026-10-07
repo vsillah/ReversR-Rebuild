@@ -14,6 +14,7 @@ import type * as auth from "../auth.js";
 import type * as billing from "../billing.js";
 import type * as billingState from "../billingState.js";
 import type * as catalog from "../catalog.js";
+import type * as commercialPassword from "../commercialPassword.js";
 import type * as configuration from "../configuration.js";
 import type * as http from "../http.js";
 import type * as ledger from "../ledger.js";
@@ -33,6 +34,7 @@ import type * as session from "../session.js";
 "billing": typeof billing,
 "billingState": typeof billingState,
 "catalog": typeof catalog,
+"commercialPassword": typeof commercialPassword,
 "configuration": typeof configuration,
 "http": typeof http,
 "ledger": typeof ledger,

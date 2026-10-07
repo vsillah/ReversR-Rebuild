@@ -5,6 +5,7 @@ import { useCommercialAuth } from '../hooks/useCommercialAuth';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { canSubmitCommercialLogin, commercialPasswordFeedback } from '../utils/commercialPasswordFeedback';
 import { useMomentaryPasswordReveal } from '../hooks/useMomentaryPasswordReveal';
+import { commercialAuthFailureMessage } from '../utils/commercialAuthRejection';
 
 // RN-web filters title from Pressable. A native HTML ancestor supplies the
 // inherited browser tooltip without adding a layout box or a focus target.
@@ -29,7 +30,7 @@ export function CommercialLogin() {
     reveal.mask();
     setBusy(true); setError('');
     try { await auth.signIn(email.trim(), password, create); setPassword(''); }
-    catch { setError('Sign-in failed. Check your email and password, then try again.'); }
+    catch (failure) { setError(commercialAuthFailureMessage(failure)); }
     finally { setBusy(false); }
   };
   const styles = StyleSheet.create({ panel: { padding: 16, borderRadius: 8, borderWidth: 1, borderColor: colors.gray[800], backgroundColor: colors.panel, gap: 12 },
