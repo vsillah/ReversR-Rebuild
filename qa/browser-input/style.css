@@ -1,0 +1,1 @@
+body{font:16px system-ui;background:#101827;color:#eef3fa;margin:0}main{max-width:620px;margin:40px auto;padding:24px}label{display:block;margin:18px 0}input,select{display:block;box-sizing:border-box;width:100%;padding:12px;margin-top:8px;font:inherit}input:focus{outline:3px solid #59b8ff}button{padding:12px}#diagnostics{font-family:monospace}
