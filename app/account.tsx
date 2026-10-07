@@ -93,7 +93,7 @@ export default function AccountScreen() {
       style={styles.screen}
       contentContainerStyle={[styles.content, { paddingBottom: 20 + keyboardInset }]}
       keyboardShouldPersistTaps="handled"
-      keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+      keyboardDismissMode={Platform.OS === 'web' ? 'none' : Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
       automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
       {...accountFocusVisibilityProps}
     >

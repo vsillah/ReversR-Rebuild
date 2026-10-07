@@ -3,6 +3,10 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 export const csp = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'none'; img-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'";
 const files = { '/': ['index.html','text/html'], '/react':['react.html','text/html'], '/rnw':['react.html','text/html'], '/react-fixture.js':['.generated/react-fixture.js','application/javascript'], '/fixture.js':['fixture.js','application/javascript'], '/style.css':['style.css','text/css'] };
+files['/account']=['account.html','text/html'];
+files['/account-fixture.js']=['.generated/account-fixture.js','application/javascript'];
+files['/account-before']=['account-before.html','text/html'];
+files['/account-before.js']=['.generated/account-before.js','application/javascript'];
 export function createFixtureServer() {
   return http.createServer(async (req,res) => {
     res.setHeader('Content-Security-Policy',csp); res.setHeader('Cache-Control','no-store');

@@ -14,7 +14,7 @@ test('standalone server is loopback-bound, blocks egress/forms, and exposes only
     });req.on('error',reject);req.end();
   });
   try {
-    for (const path of ['/','/fixture.js','/style.css']) {
+    for (const path of ['/','/fixture.js','/style.css','/account','/account-before']) {
       const response=await request(path); assert.equal(response.status,200);
       assert.equal(response.headers['content-security-policy'],csp);
       assert.ok(csp.includes("connect-src 'none'"));assert.ok(csp.includes("form-action 'none'"));
@@ -24,5 +24,8 @@ test('standalone server is loopback-bound, blocks egress/forms, and exposes only
     assert.equal((await request('/','GET','outside.invalid')).status,403);
     assert.equal((await request('/../../package.json')).status,404);
     assert.equal((await request('/api/me')).status,404);
+    const bundle=await request('/account-fixture.js');
+    assert.equal(bundle.status,200);assert.equal(bundle.headers['content-security-policy'],csp);
+    assert.equal((await request('/account-before.js')).status,200);
   } finally {await new Promise(resolve=>server.close(resolve));}
 });
