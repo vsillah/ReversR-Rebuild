@@ -44,6 +44,11 @@ function fixture(options = {}) {
           },
           fill: async value => {
             events.push('fill'); fills++;
+            if (options.internalSwap) {
+              // Model the driver losing its target during its own focus/dispatch.
+              document.activeElement = null;
+              generation++;
+            }
             if (acquired !== generation || options.stale) throw new Error('target token mismatch');
             if (options.failFill === 'before') throw new Error('private pre-effect failure');
             node.value = options.mismatch ? 'never-emit-mismatch' : value;
@@ -103,6 +108,7 @@ for (const [name, options, reason, fills] of [
   ['before effect', { failFill: 'before' }, 'FILL_UNCONFIRMED', 1],
   ['partial effect', { failFill: 'after' }, 'FILL_UNCONFIRMED', 1],
   ['stale reacquisition', { stale: true }, 'FILL_UNCONFIRMED', 1],
+  ['internal fill target swap', { internalSwap: true }, 'FILL_UNCONFIRMED', 1],
   ['mismatch', { mismatch: true }, 'VALUE_UNCONFIRMED', 1],
 ]) test(`stops without retries or Save: ${name}`, async () => {
   const f = fixture(options);
@@ -120,7 +126,12 @@ for (const [name, options, reason, fills] of [
 
 test('only enumerated synthetic profile operations are accepted; no credential or arbitrary-value path', async () => {
   for (const bad of [null, { ...request, account: 'C' }, { ...request, field: 'Login email' },
-    { ...request, field: 'Account password' }, { ...request, value: 'unapproved' }, { ...request, phase: 'retry' }]) {
+    { ...request, field: 'Account password' }, { ...request, field: { toString: () => 'name' } },
+    { ...request, field: new String('name') }, { ...request, field: ['name'] },
+    { ...request, [Symbol('extra')]: true },
+    Object.defineProperty({ ...request }, 'extra', { value: true }),
+    Object.assign(Object.create({ account: 'A' }), { field: 'name', phase: 'edit' }),
+    { ...request, value: 'unapproved' }, { ...request, phase: 'retry' }]) {
     const f = fixture();
     assert.deepEqual(await createSyntheticProfileInputChecker(f.tab)(bad), { ok: false, reason: 'INVALID_REQUEST' });
     assert.deepEqual(f.events, []);

@@ -23,8 +23,9 @@ export function createSyntheticProfileInputChecker(tab) {
     consumed = true;
     let reason = 'INVALID_REQUEST';
     try {
-      if (!request || Object.keys(request).sort().join(',') !== 'account,field,phase'
-          || !['A', 'B'].includes(request.account) || !Object.hasOwn(labels, request.field)
+      if (!request || typeof request !== 'object' || Array.isArray(request)
+          || Reflect.ownKeys(request).length !== 3 || Object.keys(request).sort().join(',') !== 'account,field,phase'
+          || !['A', 'B'].includes(request.account) || !['name', 'shop'].includes(request.field)
           || !['edit', 'restore'].includes(request.phase)) return { ok: false, reason };
       const label = labels[request.field];
       const base = `Synthetic Qualification ${request.field === 'shop' ? 'Shop ' : ''}${request.account}`;
