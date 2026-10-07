@@ -4,6 +4,7 @@ import { ConvexReactClient, useConvexAuth } from 'convex/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { commercialSession, releaseCommercialAuth } from '../utils/commercialSession';
 import { commercialAuthStorageNamespace } from '../utils/commercialAuthStorage';
+import { signInCommercialAccount } from '../utils/commercialAuthRejection';
 
 type Auth = { status: 'unavailable' | 'loading' | 'signed-out' | 'signed-in';
   signIn: (email: string, password: string, create: boolean) => Promise<void>; signOut: () => Promise<void> };
@@ -44,7 +45,7 @@ function AuthBridge({ children }: { children: React.ReactNode }) {
     status: isLoading ? 'loading' : isAuthenticated && !suppressed ? 'signed-in' : 'signed-out',
     signIn: async (email, password, create) => {
       commercialSession.clear();
-      await actions.signIn('password', { email, password, flow: create ? 'signUp' : 'signIn' });
+      await signInCommercialAccount(actions.signIn, email, password, create);
       setSuppressed(false);
     },
     signOut: async () => {
