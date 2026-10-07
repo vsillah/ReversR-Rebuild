@@ -50,6 +50,45 @@ Captain reported 41 passing focused tests: the 35 above plus six existing browse
 
 Captain's final visual review passed at 1280, 768 and 390px: no overlap or horizontal overflow; readonly email and Free/5 credits visible; manual mobile scrolling exposed Save fully. At each width, actual AccountScreen name/shop edits followed by Save (count 1) and Refresh (count 1) retained both fields. Save showed its notice and Refresh cleared it. These are actual UI handlers calling memory stubs, not backend/session qualification. Captain approved the scoped local commit after this review.
 
+## Human QA approval — 2026-10-07
+
+Vambah explicitly approved: "Okay, Human QA approved" (relayed by Captain). The reviewed head was `821b92b746f74c723d4f637810953ddaebdf72a6` on `codex/commercial-web-account-focus-repair`, at `http://127.0.0.1:5194/account`.
+
+This accepts local synthetic typing and the actual AccountScreen Save/Refresh handlers operating against in-memory fixture stubs. It does not qualify live sessions, real persistence, account isolation, billing or native device UI. Approval authorizes this local documentation record only; it does not authorize publishing, push, PR, deployment or live/provider execution. Product source and the strict checker remain byte-identical to the reviewed head.
+
+## Cumulative bundle review
+
+Reviewed all 24 changed files against local main reference `f8a99e93e1c9e195bbee62fc3e0c09871a491a8a`: one product file with the single web-only prop change, three reports, 18 fixture/support files and two checker files. Manual source review plus a credential-pattern/non-example-email/artifact-path scan found no unexpected files or private values. Only static synthetic identities and example email addresses occur in fixture data; local paths and commit hashes document provenance. No generated bundles, screenshots, logs, PID files, environment files or private qualification artifacts are tracked in this bundle. The scan is a bounded review, not a guarantee against every possible secret format.
+
+Complete repository-relative manifest:
+
+```text
+app/account.tsx
+docs/commercial/browser-input-checker-repair.md
+docs/commercial/browser-input-local-diagnosis.md
+docs/commercial/web-account-focus-repair.md
+qa/browser-input/.gitignore
+qa/browser-input/account-before.html
+qa/browser-input/account-build.test.mjs
+qa/browser-input/account-diagnose.mjs
+qa/browser-input/account-fixture.jsx
+qa/browser-input/account-platform.test.mjs
+qa/browser-input/account-stubs.jsx
+qa/browser-input/account.html
+qa/browser-input/build-account.mjs
+qa/browser-input/build.mjs
+qa/browser-input/diagnose.mjs
+qa/browser-input/fixture.js
+qa/browser-input/index.html
+qa/browser-input/react-fixture.jsx
+qa/browser-input/react.html
+qa/browser-input/server.mjs
+qa/browser-input/server.test.mjs
+qa/browser-input/style.css
+scripts/commercial-browser-input-checker.mjs
+scripts/commercial-browser-input-checker.test.mjs
+```
+
 ## Boundaries and next gate
 
-This scope contains no push, PR, deployment, production/provider requests, private qualification-file reads, credentials, live accounts, CAD or payment work. Settings, History, Workflow and PhaseFour remain untouched. Real authentication, persistence, account isolation, billing and native keyboard behavior are unqualified. Human QA uses the repaired local route. The fixture is retained as a detached loopback-only process; its PID is recorded in ignored `qa/browser-input/.generated/account-server.pid` and the lane closeout. Stop it with `kill <recorded PID>` after confirming that PID still identifies this fixture server. Any later integration or live qualification requires its own authorization.
+This scope contains no push, PR, deployment, production/provider requests, private qualification-file reads, credentials, live accounts, CAD or payment work. Settings, History, Workflow and PhaseFour remain untouched. Real authentication, persistence, account isolation, billing and native keyboard behavior are unqualified. Local Human QA is complete. The fixture is retained as a detached loopback-only process; its PID is recorded in ignored `qa/browser-input/.generated/account-server.pid` and the lane closeout. Stop it with `kill <recorded PID>` after confirming that PID still identifies this fixture server. Any later integration or live qualification requires its own authorization. The development lane remains open.
