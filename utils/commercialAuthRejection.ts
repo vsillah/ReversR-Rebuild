@@ -39,8 +39,12 @@ export async function inspectCommercialSignInRejection(
   let value: unknown;
   try { value = await action(); }
   catch (error) {
-    const data = error && typeof error === 'object' && 'data' in error ? error.data : undefined;
-    return { outcome: isCommercialSignInRejection(data) ? 'confirmed_sign_in_rejection' : 'unclassified_rejection',
+    // Convex's installed SDK uses this global symbol across realms/package copies.
+    // An Error name or attached data alone is not an application-error envelope.
+    const branded = error !== null && typeof error === 'object'
+      && (error as Record<symbol, unknown>)[Symbol.for('ConvexError')] === true;
+    const data = branded && 'data' in error ? error.data : undefined;
+    return { outcome: branded && isCommercialSignInRejection(data) ? 'confirmed_sign_in_rejection' : 'unclassified_rejection',
       sdkOutcome: 'rejected', exactInternalCauseEstablished: false } as const;
   }
   onResolution(value); // Caller retains any unexpected tokens privately for cleanup.

@@ -1,6 +1,8 @@
 import { expect, test } from 'vitest';
 import { ConvexHttpClient } from 'convex/browser';
 import { makeFunctionReference } from 'convex/server';
+import { ConvexError } from 'convex/values';
+import { runInNewContext } from 'node:vm';
 import { commercialAuthRequest, commercialAuthFailureMessage, commercialSignInRejection,
   inspectCommercialSignInRejection, isCommercialSignInRejection, signInCommercialAccount } from '../../utils/commercialAuthRejection';
 
@@ -29,6 +31,35 @@ test('frontend action integration rejects unresolved sign-in and propagates only
   const typed = { data: commercialSignInRejection(), message: 'private-fixture' };
   await expect(signInCommercialAccount(async () => { throw typed; }, 'offline@synthetic.invalid', 'offline-password', false)).rejects.toBe(typed);
   expect(commercialAuthFailureMessage(typed)).not.toContain('private-fixture');
+});
+
+test('exact payload on ordinary, transport and non-error throws is not application-error evidence', async () => {
+  for (const error of [
+    Object.assign(new Error('private-runtime'), { data: commercialSignInRejection() }),
+    Object.assign(new TypeError('private-transport'), { data: commercialSignInRejection() }),
+    { data: commercialSignInRejection() },
+    { name: 'ConvexError', data: commercialSignInRejection() },
+    { [Symbol.for('ConvexError')]: false, data: commercialSignInRejection() },
+    { [Symbol('ConvexError')]: true, data: commercialSignInRejection() },
+  ]) {
+    const result = await inspectCommercialSignInRejection(async () => { throw error; }, () => {});
+    expect(result.outcome).toBe('unclassified_rejection');
+    expect(JSON.stringify(result)).not.toContain('private-');
+  }
+});
+
+test('SDK global brand survives a foreign Error prototype without accepting malformed data', async () => {
+  const ForeignError = runInNewContext('Error');
+  const error = new ConvexError(commercialSignInRejection());
+  Object.setPrototypeOf(error, ForeignError.prototype);
+  expect(error instanceof ConvexError).toBe(false);
+  expect(error instanceof Error).toBe(false);
+  expect(error[Symbol.for('ConvexError') as keyof typeof error]).toBe(true);
+  expect((await inspectCommercialSignInRejection(async () => { throw error; }, () => {})).outcome)
+    .toBe('confirmed_sign_in_rejection');
+  const malformed = new ConvexError({ ...commercialSignInRejection(), extra: true });
+  expect((await inspectCommercialSignInRejection(async () => { throw malformed; }, () => {})).outcome)
+    .toBe('unclassified_rejection');
 });
 
 test('redaction, message spoofing, network failure and null resolution cannot pass', async () => {

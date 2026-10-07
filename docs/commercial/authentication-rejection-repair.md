@@ -32,6 +32,8 @@ Production code has no `.options`, `._handler`, direct `auth:store`, custom hash
 
 `utils/commercialAuthRejection.ts` exports `inspectCommercialSignInRejection(action, onResolution)`. A later authorized checker should call the new provider and accept only `confirmed_sign_in_rejection`. The required resolution callback retains any unexpected tokens privately for cleanup; the diagnostic returns no tokens, messages or account values. Every result explicitly records `exactInternalCauseEstablished: false`.
 
+Qualification also requires the installed SDK's global error brand, `Symbol.for('ConvexError') === true`, as well as the exact payload. Ordinary errors, transport errors and plain objects carrying matching `.data` are inconclusive. The global symbol preserves cross-realm/package-copy handling without relying on `instanceof`. This identifies the SDK envelope; it is not cryptographic provenance. Same-process code could deliberately forge the symbol, so the checker must remain attached to the trusted SDK call without an untrusted intermediary manufacturing errors.
+
 Do not reuse the old message-regex `wrong_password_denied` pass criterion, rename old failed receipts, or treat throttling as proved mismatch. Existing private operational scripts and historical receipts were not changed. A later live checker needs fresh source/deployment bindings and authorization; this commit authorizes no execution.
 
 ## Offline validation
@@ -49,5 +51,7 @@ node scripts/commercial-convex-codegen.js --check
 Results: 30 Vitest tests (including eight new contract/composition tests), 29 commercial regressions and 14 route/transport/fixture tests pass. TypeScript and commercial generated bindings pass. Fixtures use synthetic accounts in ephemeral local Convex-test storage, forbidden provider fetch or explicitly supplied fake SDK fetch. No live account, customer data, credential custody, signing keys or provider was used. Installed dependencies are unchanged.
 
 Source review covered strict inputs, error translation, unchanged assembly gating, official provider/session reuse, safe frontend feedback, exact checker matching and generated API scope. The test-only fixture uses a synthetic typed context and public helper to avoid token generation. Captain's separate private compatibility probe remains separate from production code.
+
+Captain brand-check follow-up: six focused tests pass with `node node_modules/vitest/vitest.mjs run --config commercial-backend/vitest.config.ts commercial-backend/tests/auth-rejection-contract.test.ts` under the same clean environment prefix. These retain the installed-SDK envelope test and add ordinary Error, TypeError, plain-object, false/lookalike-symbol and foreign-prototype cases. TypeScript and diff checks pass. Unchanged backend/transport suites were not rerun for this classifier-only follow-up.
 
 Not tested: live redaction, token minting, cloud durability, production session revocation, rendered UI, or a frontend export. The existing unrelated root CAD generated-binding limitation remains outside scope. Next is Captain source review; runtime remains outside this task.
