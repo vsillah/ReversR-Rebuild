@@ -24,7 +24,10 @@ export function createVolatileCadCustody(): {
   isEmpty(): boolean;
 };
 export function createMemoryQualificationStateStore(initial?: unknown): { read(): SyntheticQualificationState | null; write(value: unknown): SyntheticQualificationState };
-export function createSessionQualificationStateStore(storage: Storage, key?: string): { read(): SyntheticQualificationState | null; write(value: unknown): SyntheticQualificationState };
+export function createDurableQualificationStateStore(storage: Pick<Storage, 'getItem' | 'setItem'>, key?: string): { read(): SyntheticQualificationState | null; write(value: unknown): SyntheticQualificationState };
+export function createBrowserSyntheticAccountSessionAdapter(): { authenticate(): Promise<Readonly<Record<string, string>>> };
+export function createBrowserSyntheticUploadSessionAdapter(): { issue(principal: unknown): Promise<Readonly<Record<string, string | number>>> };
+export function createDeterministicSyntheticInspectionAdapter(): { convert(input: Record<string, unknown>): Promise<Readonly<Record<string, unknown>>> };
 export function createSyntheticIgsQualificationPipeline(options?: Record<string, unknown>): {
   status(): SyntheticQualificationState;
   run(options?: { signal?: AbortSignal }): Promise<Readonly<{

@@ -1,7 +1,8 @@
+const { IGES_SOURCE_MAX_BYTES, inspectIgesSource } = require('./igesAdmission');
 const QUALIFICATION_QUERY_KEY = 'cadQualification';
 const QUALIFICATION_QUERY_VALUE = 'synthetic-igs-v1';
-const QUALIFICATION_STATE_KEY = 'reversr:synthetic-igs-qualification:v1';
-const MAX_SOURCE_BYTES = 256 * 1024;
+const QUALIFICATION_STATE_KEY = 'reversr:synthetic-igs-qualification:v2';
+const MAX_SOURCE_BYTES = IGES_SOURCE_MAX_BYTES;
 
 const cubePositions = Object.freeze([
   -5, 0, -5, 5, 0, -5, 5, 10, -5, -5, 10, -5,
@@ -67,36 +68,15 @@ function createSyntheticIgsSource() {
 }
 
 function validateSyntheticIgsUpload(source) {
-  if (!source || typeof source !== 'object' || Array.isArray(source)
-    || typeof source.fileName !== 'string' || !/\.(igs|iges)$/i.test(source.fileName)) {
-    return closed('IGS_ONLY', 'Only .igs or .iges input is accepted.');
-  }
-  if (!(source.bytes instanceof Uint8Array) || source.bytes.byteLength < 1) {
-    return closed('SOURCE_MALFORMED', 'The generated IGS source is empty or malformed.');
-  }
-  if (source.bytes.byteLength > MAX_SOURCE_BYTES) {
-    return closed('SOURCE_TOO_LARGE', 'The generated IGS source exceeds the local qualification limit.');
-  }
-  if (source.bytes.some(value => value > 126 || (value < 32 && value !== 10 && value !== 13))) {
-    return closed('SOURCE_MALFORMED', 'The generated IGS source is not bounded ASCII.');
-  }
-  let text;
-  try { text = new TextDecoder('utf-8', { fatal: true }).decode(source.bytes); }
-  catch { return closed('SOURCE_MALFORMED'); }
-  const rows = text.replace(/\r?\n$/, '').split(/\r?\n/);
-  if (!rows.length || rows.some(row => row.length !== 80 || !/^[SGDPT][ 0-9]{7}$/.test(row.slice(72)))) {
-    return closed('SOURCE_MALFORMED', 'The generated IGS record layout is malformed.');
-  }
-  const sections = rows.map(row => row[72]).join('');
-  if (!/^S+G+D+P+T$/.test(sections)) return closed('SOURCE_MALFORMED', 'The generated IGS section order is malformed.');
-  const directory = rows.filter(row => row[72] === 'D');
-  if (!directory.length || directory.length % 2) return closed('SOURCE_MALFORMED', 'The generated IGS directory is malformed.');
-  for (let index = 0; index < directory.length; index += 2) {
-    if (Number(directory[index].slice(0, 8)) === 416) {
-      return closed('EXTERNAL_REFERENCE_UNSUPPORTED', 'External-reference IGES sources are not accepted.');
-    }
-  }
-  return Object.freeze({ ok: true, code: 'IGS_VALIDATED', bytes: source.bytes.byteLength });
+  const inspection = inspectIgesSource(source);
+  if (inspection.ok) return Object.freeze({ ...inspection, message: 'Shared IGES admission passed.' });
+  const messages = {
+    extension: 'Only .igs or .iges input is accepted.',
+    size: 'The generated IGS source exceeds the local qualification limit.',
+    'external-reference': 'External-reference IGES sources are not accepted.',
+  };
+  return Object.freeze({ ...inspection,
+    message: messages[inspection.reason] || 'The generated IGS source is malformed.' });
 }
 
 async function sha256Hex(bytes) {
@@ -133,7 +113,7 @@ function createVolatileCadCustody() {
   });
 }
 
-function createSyntheticAccountSessionAdapter() {
+function createBrowserSyntheticAccountSessionAdapter() {
   let used = false;
   return Object.freeze({
     async authenticate() {
@@ -144,7 +124,7 @@ function createSyntheticAccountSessionAdapter() {
   });
 }
 
-function createSyntheticUploadSessionAdapter() {
+function createBrowserSyntheticUploadSessionAdapter() {
   let used = false;
   return Object.freeze({
     async issue(principal) {
@@ -157,7 +137,7 @@ function createSyntheticUploadSessionAdapter() {
   });
 }
 
-function createSyntheticInspectionConverter() {
+function createDeterministicSyntheticInspectionAdapter() {
   let used = false;
   return Object.freeze({
     async convert({ source, uploadSession, signal }) {
@@ -173,12 +153,12 @@ function createSyntheticInspectionConverter() {
       const stlSha256 = await sha256Hex(new TextEncoder().encode(stl));
       return Object.freeze({
         fixture: Object.freeze({
-          fixtureName: 'Synthetic authenticated IGS result',
+          fixtureName: 'Synthetic session IGS result',
           sourceFileName: 'Generated synthetic IGS source',
           sourceAssetUrl: '',
           referenceImageUrl: '',
           referenceImages: Object.freeze([]),
-          sourcePackage: 'ReversR offline qualification adapter',
+          sourcePackage: 'ReversR deterministic synthetic inspection adapter',
           sourceLicense: 'Generated synthetic fixture',
           format: 'IGES',
           bytes: source.bytes.byteLength,
@@ -193,7 +173,7 @@ function createSyntheticInspectionConverter() {
           meshes: 1,
           vertices: 8,
           triangles: 12,
-          sourceConfidence: 'Synthetic inspection only',
+          sourceConfidence: 'Deterministic synthetic inspection only · real IGES geometry converter unqualified',
           previewGeometry: Object.freeze({
             kind: 'mesh',
             sha256: stlSha256,
@@ -206,13 +186,23 @@ function createSyntheticInspectionConverter() {
             sha256: stlSha256,
             fileName: 'reversr-synthetic-inspection-mesh-mm.stl',
           }),
+          qualificationProvenance: Object.freeze({
+            kind: 'synthetic-igs-local',
+            accountSessionAdapter: 'browser-only-synthetic',
+            uploadSessionAdapter: 'browser-only-synthetic',
+            conversionAdapter: 'deterministic-fixed-cube-synthetic',
+            productionAuthenticationQualified: false,
+            realGeometryConverterQualified: false,
+          }),
           warnings: Object.freeze([
             'Generated synthetic input only; no private or proprietary CAD was used.',
+            'Browser-only account and upload-session adapters are not production authentication.',
+            'The fixed-cube inspection adapter is not a real IGES geometry converter.',
             'Inspection preview and STL are not dimensional or manufacturing certification.',
             'Production upload, hosted conversion, and provider dispatch remain disabled.',
           ]),
         }),
-        output: Object.freeze({ kind: 'inspection-preview-stl', meshCount: 1, triangleCount: 12, stlSha256 }),
+        output: Object.freeze({ kind: 'deterministic-synthetic-inspection-preview-stl', meshCount: 1, triangleCount: 12, stlSha256 }),
       });
     },
   });
@@ -224,20 +214,30 @@ function safeTerminalState(value) {
     || !['processing', 'ready', 'error'].includes(value.status)
     || typeof value.code !== 'string' || !/^[A-Z0-9_]{3,80}$/.test(value.code)
     || typeof value.runRef !== 'string' || !/^synthetic-run-[a-z0-9-]{1,64}$/.test(value.runRef)
-    || typeof value.cleanupVerified !== 'boolean' || typeof value.unknownOutcome !== 'boolean') return null;
+    || typeof value.cleanupVerified !== 'boolean' || typeof value.unknownOutcome !== 'boolean'
+    || (value.status === 'processing' && (value.cleanupVerified !== false || value.unknownOutcome !== false))
+    || (value.status === 'ready' && (value.code !== 'SYNTHETIC_IGS_QUALIFIED'
+      || value.cleanupVerified !== true || value.unknownOutcome !== false))) return null;
   return Object.freeze({ schemaVersion: 1, status: value.status, code: value.code,
     runRef: value.runRef, attemptConsumed: true, cleanupVerified: value.cleanupVerified,
     unknownOutcome: value.unknownOutcome });
 }
 
-function createSessionQualificationStateStore(storage, key = QUALIFICATION_STATE_KEY) {
+function corruptDurableState() {
+  return Object.freeze({ schemaVersion: 1, status: 'error', code: 'CORRUPT_DURABLE_STATE_NO_RETRY',
+    runRef: 'synthetic-run-durable-state', attemptConsumed: true, cleanupVerified: false, unknownOutcome: true });
+}
+
+function createDurableQualificationStateStore(storage, key = QUALIFICATION_STATE_KEY) {
   return Object.freeze({
     read() {
       try {
-        const raw = storage?.getItem?.(key);
-        return raw ? safeTerminalState(JSON.parse(raw)) : null;
-      } catch { return Object.freeze({ schemaVersion: 1, status: 'error', code: 'STATE_UNREADABLE_NO_RETRY',
-        runRef: 'synthetic-run-storage', attemptConsumed: true, cleanupVerified: false, unknownOutcome: true }); }
+        if (typeof storage?.getItem !== 'function') return corruptDurableState();
+        const raw = storage.getItem(key);
+        if (raw === null) return null;
+        const safe = safeTerminalState(JSON.parse(raw));
+        return safe || corruptDurableState();
+      } catch { return corruptDurableState(); }
     },
     write(value) {
       const safe = safeTerminalState(value);
@@ -262,9 +262,9 @@ function createRunRef(randomId) {
 function createSyntheticIgsQualificationPipeline({
   stateStore = createMemoryQualificationStateStore(),
   custody = createVolatileCadCustody(),
-  accountSession = createSyntheticAccountSessionAdapter(),
-  uploadSession = createSyntheticUploadSessionAdapter(),
-  converter = createSyntheticInspectionConverter(),
+  accountSession = createBrowserSyntheticAccountSessionAdapter(),
+  uploadSession = createBrowserSyntheticUploadSessionAdapter(),
+  converter = createDeterministicSyntheticInspectionAdapter(),
   sourceFactory = createSyntheticIgsSource,
   randomId,
 } = {}) {
@@ -277,7 +277,7 @@ function createSyntheticIgsQualificationPipeline({
     return safe;
   };
   if (persisted?.status === 'processing') {
-    const recovered = { ...persisted, status: 'error', code: 'RESTARTED_AFTER_INFLIGHT_NO_RETRY', cleanupVerified: custody.isEmpty(), unknownOutcome: true };
+    const recovered = { ...persisted, status: 'error', code: 'RESTARTED_AFTER_INFLIGHT_NO_RETRY', cleanupVerified: false, unknownOutcome: true };
     try { persist(recovered); } catch { persisted = Object.freeze({ ...recovered, code: 'STATE_PERSISTENCE_UNAVAILABLE' }); }
   }
   let running = false;
@@ -327,7 +327,7 @@ function createSyntheticIgsQualificationPipeline({
         catch { persisted = Object.freeze({ ...persisted, status: 'error', code: 'STATE_PERSISTENCE_UNAVAILABLE', cleanupVerified: false, unknownOutcome: true }); }
         return closed('CLEANUP_UNKNOWN_NO_RETRY', 'Cleanup could not be verified. This session is closed with no retry.');
       }
-      if (failure || !conversion?.fixture || conversion?.output?.kind !== 'inspection-preview-stl') {
+      if (failure || !conversion?.fixture || conversion?.output?.kind !== 'deterministic-synthetic-inspection-preview-stl') {
         const code = failure || 'CONVERSION_OUTPUT_REJECTED_NO_RETRY';
         try { persist({ ...persisted, status: 'error', code, cleanupVerified: true, unknownOutcome: true }); }
         catch { persisted = Object.freeze({ ...persisted, status: 'error', code: 'STATE_PERSISTENCE_UNAVAILABLE', cleanupVerified: true, unknownOutcome: true }); }
@@ -339,8 +339,11 @@ function createSyntheticIgsQualificationPipeline({
         return closed('STATE_PERSISTENCE_UNAVAILABLE', 'The terminal state could not be persisted. Cleanup was verified and this session cannot retry.');
       }
       return Object.freeze({ ok: true, code: persisted.code, fixture: conversion.fixture,
-        receipt: Object.freeze({ schemaVersion: 1, runRef, accountSession: 'verified-synthetic', uploadSession: 'one-attempt-consumed',
-          validation: 'iges-only-passed', conversion: 'inspection-preview-stl-only', cleanup: 'verified', retries: 0 }) });
+        receipt: Object.freeze({ schemaVersion: 1, runRef,
+          accountSessionAdapter: 'browser-only-synthetic', uploadSessionAdapter: 'browser-only-synthetic-one-attempt',
+          productionAuthentication: 'unqualified', validation: 'shared-iges-admission-passed',
+          conversionAdapter: 'deterministic-fixed-cube-synthetic', realGeometryConverter: 'unqualified',
+          cleanup: 'verified', retries: 0 }) });
     },
   });
 }
@@ -351,12 +354,12 @@ module.exports = {
   QUALIFICATION_QUERY_VALUE,
   QUALIFICATION_STATE_KEY,
   createMemoryQualificationStateStore,
-  createSessionQualificationStateStore,
-  createSyntheticAccountSessionAdapter,
+  createBrowserSyntheticAccountSessionAdapter,
+  createBrowserSyntheticUploadSessionAdapter,
+  createDeterministicSyntheticInspectionAdapter,
+  createDurableQualificationStateStore,
   createSyntheticIgsQualificationPipeline,
   createSyntheticIgsSource,
-  createSyntheticInspectionConverter,
-  createSyntheticUploadSessionAdapter,
   createVolatileCadCustody,
   inspectSyntheticIgsQualification,
   validateSyntheticIgsUpload,

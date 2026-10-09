@@ -1,5 +1,6 @@
 const crypto = require('node:crypto');
-const LIMITS = Object.freeze({ inputBytes: 256 * 1024, jsonBytes: 384 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
+const { IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource } = require('../utils/igesAdmission');
+const LIMITS = Object.freeze({ inputBytes: IGES_SOURCE_MAX_BYTES, jsonBytes: 384 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
 const ERRORS = Object.freeze({
   DISABLED: [503, 'Hosted CAD import remains disabled pending executor qualification and operator configuration.'],
   UNAUTHORIZED: [401, 'A valid operator CAD access token is required.'],
@@ -23,25 +24,14 @@ function upload(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) fail('NO_SOURCE');
   if (typeof body.contentBase64 !== 'string' || !body.contentBase64) fail('NO_SOURCE');
   if (Object.keys(body).sort().join(',') !== 'contentBase64,fileName') fail('MALFORMED');
-  if (typeof body.fileName !== 'string' || body.fileName.length > 120 || !/^[A-Za-z0-9][A-Za-z0-9 _().-]*$/.test(body.fileName) || body.fileName.includes('..')) fail('MALFORMED');
-  if (!/\.(igs|iges)$/i.test(body.fileName)) fail('UNSUPPORTED');
+  const fileNameInspection = inspectIgesFileName(body.fileName);
+  if (!fileNameInspection.ok) fail(fileNameInspection.code);
   if (body.contentBase64.length > Math.ceil(LIMITS.inputBytes / 3) * 4) fail('TOO_LARGE');
   if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body.contentBase64)) fail('MALFORMED');
   const bytes = Buffer.from(body.contentBase64, 'base64');
-  if (!bytes.length) fail('NO_SOURCE');
-  if (bytes.length > LIMITS.inputBytes) fail('TOO_LARGE');
-  if (bytes.toString('base64') !== body.contentBase64 || bytes.some(x => x > 126 || (x < 32 && x !== 10 && x !== 13))) fail('MALFORMED');
-  const rows = bytes.toString('ascii').trimEnd().split(/\r?\n/);
-  const sections = rows.map(row => row[72]).join('');
-  if (rows.some(row => row.length !== 80 || !/^[SGDPT][ 0-9]{7}$/.test(row.slice(72))) || !/^S+G+D+P+T$/.test(sections)) fail('MALFORMED');
-  // In-file subfigure assemblies and transformation matrices may be handled by
-  // the fixed OCCT reader. External references remain a separate source-
-  // resolution gate because they can imply additional files outside this upload.
-  const directory = rows.filter(row => row[72] === 'D');
-  if (directory.length % 2) fail('MALFORMED');
-  for (let i = 0; i < directory.length; i += 2) {
-    if (Number(directory[i].slice(0, 8)) === 416) fail('UNSUPPORTED');
-  }
+  if (bytes.toString('base64') !== body.contentBase64) fail('MALFORMED');
+  const inspection = inspectIgesSource({ fileName: body.fileName, bytes });
+  if (!inspection.ok) fail(inspection.code);
   return { bytes, sha256: crypto.createHash('sha256').update(bytes).digest('hex') };
 }
 function meshPayload(meshes) {

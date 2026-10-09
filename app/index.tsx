@@ -1825,7 +1825,10 @@ export default function HomeScreen() {
             key={context.id}
             initialMode={entryMode}
             onPublicIgsReady={(fixture) => {
-              setIntegratedIgsPreview({ enabled: true, code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE', fixture });
+              const code = fixture.qualificationProvenance?.kind === 'synthetic-igs-local'
+                ? 'CAD_TEST_PREVIEW_SYNTHETIC_IGS'
+                : 'CAD_TEST_PREVIEW_PUBLIC_CUBE';
+              setIntegratedIgsPreview({ enabled: true, code, fixture });
               navigateCadPhase(3);
               setCadHighestPhase(3);
             }}

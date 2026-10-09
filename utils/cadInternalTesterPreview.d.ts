@@ -47,6 +47,14 @@ export type CadInternalTesterFixture = {
     sha256: string;
     fileName: string;
   };
+  qualificationProvenance?: {
+    kind: 'synthetic-igs-local';
+    accountSessionAdapter: 'browser-only-synthetic';
+    uploadSessionAdapter: 'browser-only-synthetic';
+    conversionAdapter: 'deterministic-fixed-cube-synthetic';
+    productionAuthenticationQualified: false;
+    realGeometryConverterQualified: false;
+  };
   warnings: readonly string[];
 };
 
@@ -54,7 +62,7 @@ export type CadInternalTesterPreview =
   | { enabled: false; code: string }
   | {
       enabled: true;
-      code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER' | 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT';
+      code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER' | 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT' | 'CAD_TEST_PREVIEW_SYNTHETIC_IGS';
       fixture: CadInternalTesterFixture;
     };
 

@@ -87,7 +87,7 @@
     "iges:contact-shadow:test": "node scripts/iges-contact-shadow-test.js",
     "cad:fixtures:qualify": "node scripts/cad-fixture-qualification.js",
     "igs:import:test": "node --test scripts/igs-import-journey.test.js",
-    "igs:private-qualification:test": "node --test scripts/igs-private-pipeline-qualification.test.js",
+    "igs:private-qualification:test": "node --test scripts/igs-private-pipeline-qualification.test.js scripts/iges-admission-parity.test.js",
     "cad:convex:codegen": "node scripts/cad-convex-codegen.js",
     "cad:convex:codegen:check": "node scripts/cad-convex-codegen.js --check"
   },

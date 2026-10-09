@@ -58,7 +58,9 @@ test('integrated import preserves privacy and production fail-closed boundaries'
   assert.match(route, /Live CAD upload remains disabled/);
   assert.match(phaseOne, /PublicIgsImportPanel/);
   assert.match(home, /navigateCadPhase\(3\)/);
-  assert.match(home, /setIntegratedIgsPreview\(\{ enabled: true, code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE', fixture \}\)/);
+  assert.match(home, /fixture\.qualificationProvenance\?\.kind === 'synthetic-igs-local'/);
+  assert.match(home, /'CAD_TEST_PREVIEW_SYNTHETIC_IGS'/);
+  assert.match(home, /'CAD_TEST_PREVIEW_PUBLIC_CUBE'/);
   assert.match(home, /url\.searchParams\.get\('cadPhase'\) !== phaseName/);
   assert.match(home, /\[activeCadPreview\.enabled, cadPhase, context\.id, context\.phase, showHistory, started, welcomeIntroVisible\]/);
   assert.match(home, /activeCadPreview\.enabled \? `cad-review:\$\{cadPhase\}` : context\.phase/);

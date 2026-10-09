@@ -5,7 +5,7 @@ import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 import {
-  createSessionQualificationStateStore,
+  createDurableQualificationStateStore,
   createSyntheticIgsQualificationPipeline,
   inspectSyntheticIgsQualification,
   type SyntheticQualificationState,
@@ -34,7 +34,7 @@ export default function SyntheticIgsQualificationPanel({ disabled = false, onBus
   const pipeline = useRef<ReturnType<typeof createSyntheticIgsQualificationPipeline> | null>(null);
   if (enabled && !pipeline.current && typeof window !== 'undefined') {
     pipeline.current = createSyntheticIgsQualificationPipeline({
-      stateStore: createSessionQualificationStateStore(window.sessionStorage),
+      stateStore: createDurableQualificationStateStore(window.localStorage),
     });
   }
   const [state, setState] = useState<SyntheticQualificationState>(() => pipeline.current?.status() ?? idleState);
@@ -59,12 +59,12 @@ export default function SyntheticIgsQualificationPanel({ disabled = false, onBus
   };
 
   const statusMessage = state.status === 'processing'
-    ? 'Verifying the synthetic account and upload session, validating IGS, generating inspection output, then deleting the volatile source.'
+    ? 'Checking browser-only synthetic account and upload-session adapters, validating IGS, generating deterministic inspection output, then deleting the volatile source.'
     : state.status === 'ready'
-      ? 'Synthetic IGS qualification passed. Cleanup was verified.'
+      ? 'Synthetic IGS inspection qualified. Cleanup was verified; production authentication and the real geometry converter remain unqualified.'
       : state.status === 'error'
-        ? `Stopped safely: ${state.code.replaceAll('_', ' ').toLowerCase()}. This session cannot retry.`
-        : 'Runs once in this browser tab with generated data only. No network, production route, provider, or private CAD is used.';
+        ? `Stopped safely: ${state.code.replaceAll('_', ' ').toLowerCase()}. This browser cannot retry${state.unknownOutcome ? '; the prior outcome is unknown' : ''}.`
+        : 'Runs once in this browser with generated data only. Browser adapters are not production authentication; the real geometry converter remains unqualified.';
 
   return <View testID="synthetic-igs-qualification-panel" style={{ gap: Spacing.sm, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md, backgroundColor: colors.surface }}>
     <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
@@ -77,16 +77,16 @@ export default function SyntheticIgsQualificationPanel({ disabled = false, onBus
     {state.status === 'idle' ? <TouchableOpacity
       testID="run-synthetic-igs-qualification"
       accessibilityRole="button"
-      accessibilityLabel="Run one-attempt local synthetic authenticated IGS qualification"
+      accessibilityLabel="Run one-attempt browser-only synthetic IGS inspection qualification"
       disabled={disabled}
       onPress={() => { void run(); }}
       style={{ minHeight: 44, borderRadius: Radii.md, backgroundColor: colors.primary, opacity: disabled ? 0.55 : 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: Spacing.md }}
     >
-      <Text style={[Typography.bodyStrong, { color: colors.onPrimary }]}>Run synthetic authenticated IGS</Text>
+      <Text style={[Typography.bodyStrong, { color: colors.onPrimary }]}>Run browser-only synthetic IGS</Text>
     </TouchableOpacity> : null}
     {state.status !== 'idle' ? <View testID={`synthetic-igs-status-${state.status}`} accessibilityLiveRegion="polite" style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
       <Ionicons name={state.status === 'ready' ? 'checkmark-circle-outline' : state.status === 'error' ? 'alert-circle-outline' : 'sync-outline'} size={18} color={state.status === 'ready' ? colors.success : state.status === 'error' ? colors.danger : colors.primary} />
-      <Text style={[Typography.caption, { color: colors.mutedText, flex: 1 }]}>One session · one attempt · zero retries · cleanup {state.cleanupVerified ? 'verified' : 'pending'}</Text>
+      <Text style={[Typography.caption, { color: colors.mutedText, flex: 1 }]}>One browser · one attempt · zero retries · cleanup {state.cleanupVerified ? 'verified' : state.unknownOutcome ? 'unknown' : 'pending'}</Text>
     </View> : null}
   </View>;
 }
