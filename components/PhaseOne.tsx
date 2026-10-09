@@ -26,11 +26,11 @@ import {
   getSampleSetForConnector,
   loadInventoryConnector,
 } from '../utils/inventoryConnector';
-import CadImportPanel from './CadImportPanel';
+import PublicIgsImportPanel from './PublicIgsImportPanel';
 import { INPUT_MODES, InputMode } from '../utils/inputModes';
 import AlertModal from './AlertModal';
 import LoadingOverlay, { LoadingStep } from './LoadingOverlay';
-import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
+import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 
 const SCAN_STEPS: LoadingStep[] = [
   { id: 'capture', label: 'Capturing input...' },
@@ -48,8 +48,7 @@ interface Props {
   initialImage?: string | null;
   mockAnalysis?: AnalysisResult | null;
   inventoryRefreshKey?: number;
-  cadInternalPreview?: CadInternalTesterPreview;
-  onOpenCadInternalPreview?: () => void;
+  onPublicIgsReady: (fixture: CadInternalTesterFixture) => void;
 }
 
 type PhaseOneAlert = {
@@ -69,8 +68,7 @@ export default function PhaseOne({
   initialImage,
   mockAnalysis,
   inventoryRefreshKey = 0,
-  cadInternalPreview,
-  onOpenCadInternalPreview,
+  onPublicIgsReady,
 }: Props) {
   const { colors: Colors } = useAppTheme();
   const { refreshAccount } = useCommercialization();
@@ -358,10 +356,7 @@ export default function PhaseOne({
 
         <View style={styles.contentArea}>
           {inputMode === 'import' && (
-            <CadImportPanel
-              internalPreview={cadInternalPreview}
-              onOpenInternalPreview={onOpenCadInternalPreview}
-            />
+            <PublicIgsImportPanel onReady={onPublicIgsReady} />
           )}
           {inputMode === 'type' && (
             <View style={styles.typeContent}>

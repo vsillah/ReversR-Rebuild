@@ -1,22 +1,22 @@
-const PILOT_ACCEPT = '.igs,.iges';
-const PILOT_MAX_BYTES = 2 * 1024 * 1024;
+const IGS_FILE_ACCEPT = '.igs,.iges';
+const IGS_MAX_BYTES = 2 * 1024 * 1024;
 const PUBLIC_CUBE_SHA256 = '5bc09d9b7a163ed8052af1fffebf953e000dc0d48cd7d700c064dacce1f2e7b3';
 const PUBLIC_CUBE_BYTES = 11562;
 
-function validatePilotFileMetadata(file) {
+function validateIgsFileMetadata(file) {
   if (!file || typeof file.name !== 'string') {
-    return { ok: false, code: 'FILE_REQUIRED', message: 'Choose the included public IGES sample or another approved synthetic IGES fixture.' };
+    return { ok: false, code: 'FILE_REQUIRED', message: 'Choose an approved public .igs file.' };
   }
   if (!/\.(igs|iges)$/i.test(file.name)) {
-    return { ok: false, code: 'IGES_ONLY', message: 'This pilot accepts IGES files only (.igs or .iges).' };
+    return { ok: false, code: 'IGS_ONLY', message: 'Import supports the approved .igs file only.' };
   }
   if (!Number.isSafeInteger(file.size) || file.size <= 0) {
-    return { ok: false, code: 'EMPTY_FILE', message: 'The selected IGES file is empty or has an invalid size.' };
+    return { ok: false, code: 'EMPTY_FILE', message: 'The selected IGS file is empty or has an invalid size.' };
   }
-  if (file.size > PILOT_MAX_BYTES) {
-    return { ok: false, code: 'FILE_TOO_LARGE', message: 'The pilot fixture must be 2 MB or smaller.' };
+  if (file.size > IGS_MAX_BYTES) {
+    return { ok: false, code: 'FILE_TOO_LARGE', message: 'The approved .igs file must be 2 MB or smaller.' };
   }
-  return { ok: true, code: 'METADATA_VALID', message: 'IGES metadata accepted for local verification.' };
+  return { ok: true, code: 'METADATA_VALID', message: 'IGS file metadata accepted for local verification.' };
 }
 
 async function sha256Hex(buffer) {
@@ -27,8 +27,8 @@ async function sha256Hex(buffer) {
   return Array.from(new Uint8Array(digest), value => value.toString(16).padStart(2, '0')).join('');
 }
 
-async function verifyPublicPilotFixture(file) {
-  const validation = validatePilotFileMetadata(file);
+async function verifyPublicIgsFixture(file) {
+  const validation = validateIgsFileMetadata(file);
   if (!validation.ok) return validation;
   const buffer = await file.arrayBuffer();
   const digest = await sha256Hex(buffer);
@@ -36,7 +36,7 @@ async function verifyPublicPilotFixture(file) {
     return {
       ok: false,
       code: 'FIXTURE_NOT_APPROVED',
-      message: 'This local pilot is limited to the included public synthetic fixture. No file contents were uploaded or retained.',
+      message: 'This import is limited to the included public synthetic .igs file. No file contents were uploaded or retained.',
     };
   }
   return { ok: true, code: 'PUBLIC_FIXTURE_VERIFIED', digest };
@@ -62,7 +62,7 @@ function createPublicCubeDerivedStl() {
   return `solid reversr_public_cube_inspection_mesh_mm\n${facets}\nendsolid reversr_public_cube_inspection_mesh_mm\n`;
 }
 
-function nextPilotState(state, event) {
+function nextIgsImportState(state, event) {
   if (event.type === 'RESET') return { status: 'idle', message: '' };
   if (event.type === 'SELECT') return { status: 'queued', message: 'Public fixture queued for local verification.' };
   if (event.type === 'PROCESS') return { status: 'processing', message: 'Building the deterministic inspection mesh in this browser.' };
@@ -72,12 +72,12 @@ function nextPilotState(state, event) {
 }
 
 module.exports = {
-  PILOT_ACCEPT,
-  PILOT_MAX_BYTES,
+  IGS_FILE_ACCEPT,
+  IGS_MAX_BYTES,
   PUBLIC_CUBE_BYTES,
   PUBLIC_CUBE_SHA256,
   createPublicCubeDerivedStl,
-  nextPilotState,
-  validatePilotFileMetadata,
-  verifyPublicPilotFixture,
+  nextIgsImportState,
+  validateIgsFileMetadata,
+  verifyPublicIgsFixture,
 };

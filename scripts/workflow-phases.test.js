@@ -19,4 +19,6 @@ test('CAD review rail follows selected review phase while build stays locked', (
   assert.deepEqual(getCadReviewPhaseStates({selectedPhase:2}), ['complete','active','complete','locked']);
   assert.deepEqual(getCadReviewPhaseStates({selectedPhase:3}), ['complete','complete','active','locked']);
   assert.deepEqual(getCadReviewPhaseStates({selectedPhase:4}), ['complete','complete','complete','locked']);
+  assert.deepEqual(getCadReviewPhaseStates({selectedPhase:2,highestReachedPhase:2}), ['complete','active','locked','locked']);
+  assert.deepEqual(getCadReviewPhaseStates({selectedPhase:2,highestReachedPhase:3}), ['complete','active','complete','locked']);
 });
