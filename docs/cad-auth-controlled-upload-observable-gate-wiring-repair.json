@@ -95,6 +95,22 @@
   "routeVerifierClockInjectable": true,
   "routeStillDefaultClosed": true,
   "validatorEnvelopePreserved": true,
+  "reviewedSharedValidator": {
+    "path": "utils/igesAdmission.js",
+    "sha256": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
+    "sourceBound": true,
+    "workerContractImportsSharedValidator": true,
+    "workerContractUsesSharedFileNameInspection": true,
+    "workerContractUsesSharedSourceInspection": true,
+    "sourceLimitDerivedFromSharedValidator": true,
+    "exactPayloadKeysPreserved": true,
+    "acceptedMimeTypesPreserved": true,
+    "igesExtensionsOnly": true,
+    "externalReferencesRejected": true,
+    "sharedExportsPreserved": true,
+    "envelopeMatchesExpected": true,
+    "preserved": true
+  },
   "laterLiveGateRequirements": {
     "exactCurrentDeploymentBinding": true,
     "exactControlledManifest": true,
@@ -141,14 +157,15 @@
     "server/cadStartupLiveGateSourceInstallClosure.js": "672383dd0617afc6c36481469fa623baf82a15624431d05bac8b4595acd7b569",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
     "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
-    "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
+    "server/cadWorkerContract.js": "d22691abd28f076aae8e7230472bf0617374971ff169eb6e80fb90e478e25fe3",
+    "utils/igesAdmission.js": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
     "docs/cad-auth-controlled-upload-observable-gate-wiring-repair.md": "6551aae39b7e00a097611abec5dc60371a6e345e1fe6da65a8340ebc609091df",
     "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "0ab350b3b825e7e4a6c7b84f1d6de7db77fca4c60ac7c4dd47e51f5bfb4f2968",
-    "docs/cad-auth-controlled-internal-upload-activation-implementation.json": "22d50032276e8874535e18d7f6afe326b31ac7ff6be12e79bae38faa37e567ad",
-    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair-checker.js": "4a4c216ba8eddc3bac189e83e9128cb99f2e379de4c0b8a17d6bd1f3829cd4c6",
-    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair.test.js": "a26f4b972aae1800b4cd5c944bb621173c47c528288680859d3986933dabd0fd",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "dff6f84be721a68855027c068fe38b325f5074f55cd888855f2bf060eb8f819e",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "be977c19fc58e201de60bc507cf700faec34f1d477befce1841bd1ea34014295"
+    "docs/cad-auth-controlled-internal-upload-activation-implementation.json": "ac2318a7bfe18a55992e79462fe93bb5b3ab4ab210dd5e2f0e7f34da81cddbd1",
+    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair-checker.js": "94ca73365b72e9125b79a1bbe5edc15bfd05cd6c5938337292d22565bfe3b82e",
+    "scripts/cad-auth-controlled-upload-observable-gate-wiring-repair.test.js": "b8d7c34daa71b169921264d3aa0391f512289b42077f9782aecf80513916b71c",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "2faea4de6301ec69e8599377b2f2fc2472600c8cacae472c199053c9ad27617b",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "1377b89f0b4133219f174fd5101cdb1d192fc1d1362c752247495b8ba0a71595"
   }
 }

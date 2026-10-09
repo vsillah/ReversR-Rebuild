@@ -41,8 +41,14 @@ test('phase 7 decision allows only a later bounded internal body-validation gate
 test('validator envelope matches current IGES-only admission validator', () => {
   const packet = checker.expectedPacket();
   const validator = packet.controlledInternalActivationDecision.validatorEnvelope;
-  const admissionSource = fs.readFileSync('server/cadUserUploadAdmission.js', 'utf8');
-  const workerContract = fs.readFileSync('server/cadWorkerContract.js', 'utf8');
+  const sharedValidator = checker.reviewedSharedValidator();
+  const readSource = candidate => fs.readFileSync(candidate);
+  const replaceSource = (target, search, replacement) => candidate => {
+    const source = readSource(candidate);
+    return candidate === target
+      ? Buffer.from(source.toString('utf8').replace(search, replacement))
+      : source;
+  };
 
   assert.equal(validator.currentValidator, 'server/cadUserUploadAdmission.js');
   assert.equal(validator.acceptedContainer, 'application/json');
@@ -53,9 +59,30 @@ test('validator envelope matches current IGES-only admission validator', () => {
   assert.equal(validator.requestLimitBytes, 393216);
   assert.equal(validator.stepStpAuthorized, false);
   assert.equal(validator.externalReferencesAuthorized, false);
-  assert.match(admissionSource, /Object\.keys\(body\)\.sort\(\)\.join\(','\) !== 'contentBase64,fileName,mimeType'/);
-  assert.match(workerContract, /LIMITS = Object\.freeze\(\{ inputBytes: 256 \* 1024, jsonBytes: 384 \* 1024/);
-  assert.match(workerContract, /!\s*\/\\\.\(igs\|iges\)\$\/i\.test\(body\.fileName\)/);
+  assert.equal(sharedValidator.path, 'utils/igesAdmission.js');
+  assert.equal(sharedValidator.workerContractImportsSharedValidator, true);
+  assert.equal(sharedValidator.sourceLimitDerivedFromSharedValidator, true);
+  assert.equal(sharedValidator.igesExtensionsOnly, true);
+  assert.equal(sharedValidator.externalReferencesRejected, true);
+  assert.equal(sharedValidator.preserved, true);
+  assert.equal(
+    packet.reviewedSharedValidator.sha256,
+    packet.sourceBindings['utils/igesAdmission.js'],
+  );
+  assert.match(
+    packet.sourceBindings['scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js'],
+    /^[a-f0-9]{64}$/,
+  );
+  assert.equal(checker.reviewedSharedValidator(replaceSource(
+    'server/cadWorkerContract.js',
+    "require('../utils/igesAdmission')",
+    "require('../utils/igesAdmission-copy')",
+  )).preserved, false);
+  assert.equal(checker.reviewedSharedValidator(replaceSource(
+    'utils/igesAdmission.js',
+    '/\\.(igs|iges)$/i',
+    '/\\.(igs|iges|step|stp)$/i',
+  )).preserved, false);
 });
 
 test('productization remains a separate future decision', () => {

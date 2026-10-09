@@ -205,6 +205,22 @@
   "routeStillClosed": true,
   "deployedStartupWiredDefaultClosed": true,
   "validatorEnvelopePreserved": true,
+  "reviewedSharedValidator": {
+    "path": "utils/igesAdmission.js",
+    "sha256": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
+    "sourceBound": true,
+    "workerContractImportsSharedValidator": true,
+    "workerContractUsesSharedFileNameInspection": true,
+    "workerContractUsesSharedSourceInspection": true,
+    "sourceLimitDerivedFromSharedValidator": true,
+    "exactPayloadKeysPreserved": true,
+    "acceptedMimeTypesPreserved": true,
+    "igesExtensionsOnly": true,
+    "externalReferencesRejected": true,
+    "sharedExportsPreserved": true,
+    "envelopeMatchesExpected": true,
+    "preserved": true
+  },
   "observableControlledBodyAdmissionProof": {
     "required": true,
     "present": true,
@@ -258,13 +274,14 @@
     "server/cadProductionExecutableRuntimeMountCompletion.js": "0487b690b87865844c5efd29622f858a84db5338d752ab86c759a116c47c71e5",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
     "server/cadUserUploadAdmission.js": "b7f6cdf025cea74cf6955bf99c0ee5a33f856c50daeaf58098a002047818f915",
-    "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
+    "server/cadWorkerContract.js": "d22691abd28f076aae8e7230472bf0617374971ff169eb6e80fb90e478e25fe3",
+    "utils/igesAdmission.js": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
     "docs/cad-auth-controlled-internal-upload-activation-implementation.md": "0ab350b3b825e7e4a6c7b84f1d6de7db77fca4c60ac7c4dd47e51f5bfb4f2968",
-    "docs/cad-auth-controlled-internal-upload-activation-decision.json": "f18e3ef4b74ecfc96878d56d6d3ea0e34d76f2a23bb31020fe9fb4ea79a53c1a",
+    "docs/cad-auth-controlled-internal-upload-activation-decision.json": "30be5675533b28b0e9bfb4cc92084f85246c54fd77a81c3e67dcdf70f3492733",
     "docs/cad-auth-controlled-internal-upload-activation-decision.md": "5061065f2606ebe4abee4a6d6acd750e83aea368aa83b5ecf349fb61d80a368e",
     "docs/cad-production-upload-activation-scope.md": "4cda1730305906916c56da89896b9937f941b49b7a9de20780e1c7c558fb7a98",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "dff6f84be721a68855027c068fe38b325f5074f55cd888855f2bf060eb8f819e",
-    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "be977c19fc58e201de60bc507cf700faec34f1d477befce1841bd1ea34014295"
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "2faea4de6301ec69e8599377b2f2fc2472600c8cacae472c199053c9ad27617b",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation.test.js": "1377b89f0b4133219f174fd5101cdb1d192fc1d1362c752247495b8ba0a71595"
   }
 }

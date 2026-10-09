@@ -1,5 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const express = require('express');
 const { once } = require('node:events');
 const { createHash } = require('node:crypto');
@@ -28,6 +29,7 @@ const {
   createControlledUploadObservableGateWiringRepairReview,
   createProofDeploymentMetadata,
 } = require('../server/cadControlledUploadObservableGateWiringRepair');
+const checker = require('./cad-auth-controlled-upload-observable-gate-wiring-repair-checker');
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const now = () => Date.parse(APPROVED_CONTROLLED_WINDOW.proofNowUtc);
@@ -38,6 +40,37 @@ const principal = Object.freeze({
   shopId: 'source-owned-internal-shop',
   sessionId: SESSION_REF,
   cadUploadAllowed: true,
+});
+
+test('observable gate checker binds and reuses the reviewed shared IGES validator', () => {
+  const packet = checker.expectedPacket();
+  const sharedValidator = checker.reviewedSharedValidator();
+  const readSource = candidate => fs.readFileSync(candidate);
+  const replaceSource = (target, search, replacement) => candidate => {
+    const source = readSource(candidate);
+    return candidate === target
+      ? Buffer.from(source.toString('utf8').replace(search, replacement))
+      : source;
+  };
+
+  assert.equal(checker.validatorEnvelopePreserved(), true);
+  assert.equal(sharedValidator.path, 'utils/igesAdmission.js');
+  assert.equal(sharedValidator.preserved, true);
+  assert.equal(
+    packet.reviewedSharedValidator.sha256,
+    packet.sourceBindings['utils/igesAdmission.js'],
+  );
+  assert.equal(checker.checkPacket(packet).ok, true);
+  assert.equal(checker.validatorEnvelopePreserved(replaceSource(
+    'server/cadWorkerContract.js',
+    "require('../utils/igesAdmission')",
+    "require('../utils/igesAdmission-copy')",
+  )), false);
+  assert.equal(checker.validatorEnvelopePreserved(replaceSource(
+    'utils/igesAdmission.js',
+    '/\\.(igs|iges)$/i',
+    '/\\.(igs|iges|step|stp)$/i',
+  )), false);
 });
 
 function ledger() {

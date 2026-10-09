@@ -11,6 +11,9 @@ const {
   CONTROLLED_UPLOAD_OBSERVABLE_GATE_PROOF_SOURCE_COMMIT,
   createControlledUploadObservableGateWiringRepairReview,
 } = require('../server/cadControlledUploadObservableGateWiringRepair');
+const {
+  reviewedSharedValidator,
+} = require('./cad-auth-controlled-internal-upload-activation-implementation-checker');
 
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-controlled-upload-observable-gate-wiring-repair.json';
@@ -27,6 +30,7 @@ const SOURCES = Object.freeze([
   'server/cadUserUploadRouter.js',
   'server/cadUserUploadAdmission.js',
   'server/cadWorkerContract.js',
+  'utils/igesAdmission.js',
   'server/uploadSession.js',
   'docs/cad-auth-controlled-upload-observable-gate-wiring-repair.md',
   'docs/cad-auth-controlled-internal-upload-activation-implementation.md',
@@ -92,12 +96,7 @@ function routeStillDefaultClosed(readSource = read) {
 }
 
 function validatorEnvelopePreserved(readSource = read) {
-  const admission = readSource('server/cadUserUploadAdmission.js').toString('utf8');
-  const contract = readSource('server/cadWorkerContract.js').toString('utf8');
-  return /Object\.keys\(body\)\.sort\(\)\.join\(','\) !== 'contentBase64,fileName,mimeType'/.test(admission)
-    && /\['model\/iges', 'application\/iges', 'application\/octet-stream'\]/.test(admission)
-    && /LIMITS = Object\.freeze\(\{ inputBytes: 256 \* 1024, jsonBytes: 384 \* 1024/.test(contract)
-    && /!\s*\/\\\.\(igs\|iges\)\$\/i\.test\(body\.fileName\)/.test(contract);
+  return reviewedSharedValidator(readSource).preserved;
 }
 
 function durableHostBarrierPreserved(readSource = read) {
@@ -113,6 +112,7 @@ function durableHostBarrierPreserved(readSource = read) {
 
 function expectedPacket(readSource = read) {
   const review = createControlledUploadObservableGateWiringRepairReview();
+  const sharedValidatorReview = reviewedSharedValidator(readSource);
   return Object.freeze({
     schemaVersion: 1,
     artifact: 'cad-auth-controlled-upload-observable-gate-wiring-repair-packet-v1',
@@ -143,7 +143,8 @@ function expectedPacket(readSource = read) {
     observableProofHeadersPreserved: observableProofHeadersPreserved(readSource),
     routeVerifierClockInjectable: routeVerifierClockInjectable(readSource),
     routeStillDefaultClosed: routeStillDefaultClosed(readSource),
-    validatorEnvelopePreserved: validatorEnvelopePreserved(readSource),
+    validatorEnvelopePreserved: sharedValidatorReview.preserved,
+    reviewedSharedValidator: sharedValidatorReview,
     laterLiveGateRequirements: Object.freeze({
       exactCurrentDeploymentBinding: true,
       exactControlledManifest: true,
@@ -196,6 +197,18 @@ function checkPacket(packet, readSource = read) {
     && packet?.routeVerifierClockInjectable === true
     && packet?.routeStillDefaultClosed === true
     && packet?.validatorEnvelopePreserved === true
+    && packet?.reviewedSharedValidator?.path === 'utils/igesAdmission.js'
+    && packet?.reviewedSharedValidator?.sourceBound === true
+    && packet?.reviewedSharedValidator?.workerContractImportsSharedValidator === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedFileNameInspection === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedSourceInspection === true
+    && packet?.reviewedSharedValidator?.sourceLimitDerivedFromSharedValidator === true
+    && packet?.reviewedSharedValidator?.exactPayloadKeysPreserved === true
+    && packet?.reviewedSharedValidator?.acceptedMimeTypesPreserved === true
+    && packet?.reviewedSharedValidator?.igesExtensionsOnly === true
+    && packet?.reviewedSharedValidator?.externalReferencesRejected === true
+    && packet?.reviewedSharedValidator?.envelopeMatchesExpected === true
+    && packet?.reviewedSharedValidator?.preserved === true
     && packet?.laterLiveGateRequirements?.requestBodyAdmissionNow === false;
   const closed = packet?.authorizes?.productionUploadActivation === false
     && packet?.authorizes?.requestBodyAdmissionOrRead === false
@@ -270,6 +283,7 @@ module.exports = {
   expectedPacket,
   durableHostBarrierPreserved,
   observableProofHeadersPreserved,
+  reviewedSharedValidator,
   routeVerifierClockInjectable,
   routeStillDefaultClosed,
   sourceBindings,

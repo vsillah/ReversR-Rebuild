@@ -337,12 +337,29 @@ test('independent expiry and sanitized receipt checks stop before body admission
 
 test('route source remains closed and checker binds deterministic source packet', () => {
   const packet = checker.expectedPacket();
+  const sharedValidator = checker.reviewedSharedValidator();
 
   assert.equal(checker.routeStillClosed(), true);
   assert.equal(checker.deployedStartupWiredDefaultClosed(), true);
   assert.equal(checker.validatorEnvelopePreserved(), true);
+  assert.equal(sharedValidator.path, 'utils/igesAdmission.js');
+  assert.match(sharedValidator.sha256, /^[a-f0-9]{64}$/);
+  assert.equal(sharedValidator.workerContractImportsSharedValidator, true);
+  assert.equal(sharedValidator.workerContractUsesSharedFileNameInspection, true);
+  assert.equal(sharedValidator.workerContractUsesSharedSourceInspection, true);
+  assert.equal(sharedValidator.sourceLimitDerivedFromSharedValidator, true);
+  assert.equal(sharedValidator.exactPayloadKeysPreserved, true);
+  assert.equal(sharedValidator.acceptedMimeTypesPreserved, true);
+  assert.equal(sharedValidator.igesExtensionsOnly, true);
+  assert.equal(sharedValidator.externalReferencesRejected, true);
+  assert.equal(sharedValidator.envelopeMatchesExpected, true);
+  assert.equal(sharedValidator.preserved, true);
   assert.equal(packet.implementationResolved, true);
   assert.equal(packet.deployedStartupWiredDefaultClosed, true);
+  assert.equal(
+    packet.reviewedSharedValidator.sha256,
+    packet.sourceBindings['utils/igesAdmission.js'],
+  );
   assert.equal(packet.authorizes.productionUploadActivation, false);
   assert.equal(packet.authorizes.requestBodyAdmissionOrRead, false);
   assert.equal(checker.checkPacket(packet).ok, true);
@@ -360,6 +377,40 @@ test('route source remains closed and checker binds deterministic source packet'
       Buffer.from(candidate === file ? 'drift' : ''),
     ])).ok, false, file);
   }
+});
+
+test('checker fails closed if the shared IGES import or exact envelope weakens', () => {
+  const readSource = candidate => fs.readFileSync(candidate);
+  const replaceSource = (target, search, replacement) => candidate => {
+    const source = readSource(candidate);
+    return candidate === target
+      ? Buffer.from(source.toString('utf8').replace(search, replacement))
+      : source;
+  };
+
+  assert.equal(checker.validatorEnvelopePreserved(replaceSource(
+    'server/cadWorkerContract.js',
+    "require('../utils/igesAdmission')",
+    "require('../utils/igesAdmission-copy')",
+  )), false);
+  assert.equal(checker.validatorEnvelopePreserved(replaceSource(
+    'utils/igesAdmission.js',
+    '/\\.(igs|iges)$/i',
+    '/\\.(igs|iges|step|stp)$/i',
+  )), false);
+  assert.equal(checker.validatorEnvelopePreserved(replaceSource(
+    'utils/igesAdmission.js',
+    "=== 416) return rejection('UNSUPPORTED', 'external-reference');",
+    "=== -1) return rejection('UNSUPPORTED', 'external-reference');",
+  )), false);
+  assert.equal(checker.validatorEnvelopePreserved(
+    readSource,
+    {
+      ...checker.EXPECTED_VALIDATOR_ENVELOPE,
+      acceptedFileExtensions: ['igs', 'iges', 'step'],
+      stepStpAuthorized: true,
+    },
+  ), false);
 });
 
 test('production startup mount wires controlled activation and remains default-closed', async () => {

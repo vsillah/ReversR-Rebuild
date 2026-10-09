@@ -40,6 +40,22 @@
     "realUsersAuthorized": false,
     "commercialReadinessClaimed": false
   },
+  "reviewedSharedValidator": {
+    "path": "utils/igesAdmission.js",
+    "sha256": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
+    "sourceBound": true,
+    "workerContractImportsSharedValidator": true,
+    "workerContractUsesSharedFileNameInspection": true,
+    "workerContractUsesSharedSourceInspection": true,
+    "sourceLimitDerivedFromSharedValidator": true,
+    "exactPayloadKeysPreserved": true,
+    "acceptedMimeTypesPreserved": true,
+    "igesExtensionsOnly": true,
+    "externalReferencesRejected": true,
+    "sharedExportsPreserved": true,
+    "envelopeMatchesExpected": true,
+    "preserved": true
+  },
   "controlledInternalActivationDecision": {
     "phase": "7.1-controlled-internal-upload-activation-decision",
     "decisionType": "prepare-source-only-controls-before-any-live-upload-activation",
@@ -168,8 +184,10 @@
     "server/cadInternalProductionAdmissionSwitch.js": "70b3ab68d9aa43aa33959a3d62c31013f09878a161790838d089543261338ba9",
     "server/cadLiveOpeningRuntimeActivation.js": "2c9a1e87c5210069953c40813440ff11f9d9f8e34075df01db5c127b7a0fb458",
     "server/uploadSession.js": "2fec705d35696f895eddd707b7604e2f68719c6e35202ef52ee10265303fd1cf",
-    "server/cadWorkerContract.js": "e8127ec7b6fde68e630ce23c9e897fd85ef9c3932c798fa2214fa1866044667f",
-    "scripts/cad-auth-controlled-internal-upload-activation-decision-checker.js": "5fb6768c4e8f39438228b44bccd0366165a76ab27bdeca89ad72e498a28da5b8",
-    "scripts/cad-auth-controlled-internal-upload-activation-decision.test.js": "7a9d1d18222e0e8f3205338779d4155563581d1a00ce38ce713b2a4aa6a59367"
+    "server/cadWorkerContract.js": "d22691abd28f076aae8e7230472bf0617374971ff169eb6e80fb90e478e25fe3",
+    "utils/igesAdmission.js": "0189cbf6d56f9c9268f85820e64a772a880e35fc669ed4cad79daa13b8221f09",
+    "scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js": "2faea4de6301ec69e8599377b2f2fc2472600c8cacae472c199053c9ad27617b",
+    "scripts/cad-auth-controlled-internal-upload-activation-decision-checker.js": "d088f4dad4f4c4d4d7c88acc6eefa5cdd213d68b74ba9ad1e2e654f885db331c",
+    "scripts/cad-auth-controlled-internal-upload-activation-decision.test.js": "c34b86585e18ce636379af02b02972848d3bbc8f8787c6db004872739945a405"
   }
 }
