@@ -17,7 +17,7 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const canDownloadSource = Boolean(fixture.sourceAssetUrl);
-  const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256;
+  const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
   const openAsset = (url: string) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -35,10 +35,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   };
   const downloadDerivedMesh = () => {
     if (!canDownloadDerived || Platform.OS !== 'web' || typeof document === 'undefined') return;
-    const href = URL.createObjectURL(new Blob([createPublicCubeDerivedStl()], { type: 'model/stl' }));
+    const content = fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
+    const href = URL.createObjectURL(new Blob([content], { type: 'model/stl' }));
     const link = document.createElement('a');
     link.href = href;
-    link.download = 'reversr-public-cube-derived-inspection-mesh-mm.stl';
+    link.download = fixture.derivedInspectionStl?.fileName ?? 'reversr-public-cube-derived-inspection-mesh-mm.stl';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
     link.click();

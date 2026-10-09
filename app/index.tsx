@@ -61,7 +61,7 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
-import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, PUBLIC_CUBE_RESULT, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
+import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -1824,8 +1824,8 @@ export default function HomeScreen() {
           <PhaseOne
             key={context.id}
             initialMode={entryMode}
-            onPublicIgsReady={() => {
-              setIntegratedIgsPreview({ enabled: true, code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE', fixture: PUBLIC_CUBE_RESULT });
+            onPublicIgsReady={(fixture) => {
+              setIntegratedIgsPreview({ enabled: true, code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE', fixture });
               navigateCadPhase(3);
               setCadHighestPhase(3);
             }}

@@ -42,6 +42,11 @@ export type CadInternalTesterFixture = {
       indices: readonly number[];
     }[];
   };
+  derivedInspectionStl?: {
+    content: string;
+    sha256: string;
+    fileName: string;
+  };
   warnings: readonly string[];
 };
 
