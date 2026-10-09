@@ -6,7 +6,9 @@ const ts = require('typescript');
 const root = path.resolve(__dirname, '../..');
 const files = [
   'offline/cad-convex/controlledUploadHostModel.ts', 'offline/cad-convex/controlledUploadHostBridge.ts',
-  'convex/cadControlledUploadStore.ts', 'convex/cadControlledUploadHost.ts', 'convex/cadControlledUploadSchema.ts',
+  'offline/cad-convex/controlledUploadAuthorityContinuity.ts',
+  'convex/cadControlledUploadStore.ts', 'convex/cadControlledUploadContinuityStore.ts',
+  'convex/cadControlledUploadHost.ts', 'convex/cadControlledUploadSchema.ts',
 ];
 const cache = new Map();
 function load(file) {

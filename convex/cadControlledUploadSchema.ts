@@ -18,11 +18,49 @@ export const grantBindingFields = {
 export const grantBinding = v.object(grantBindingFields);
 export const authorityGenerations = v.object({ login: v.number(), user: v.number(),
   membership: v.number(), uploadSession: v.number(), hostPrincipal: v.number(), grant: v.number() });
+export const continuityIdentity = v.object({
+  bindingDigest: v.string(), scopeKey: v.string(), runKey: v.string(), sessionKey: v.string(),
+  userId: v.string(), loginSessionId: v.string(), userAuthorityId: v.string(), membershipId: v.string(),
+  uploadRowId: v.string(), shopId: v.string(), sessionId: v.string(), credentialDigest: v.string(),
+  sessionRef: v.string(),
+});
+export const continuityEvidenceEnvelope = v.object({
+  schemaVersion: v.literal(1), identity: continuityIdentity, rowDigest: v.string(),
+  authorityGenerations, epoch: v.number(), epochDigest: v.string(), sequence: v.number(),
+  scopeRevision: v.number(), observedAtMs: v.number(), expiresAtMs: v.number(), approvalDigest: v.string(),
+  custodySubjectDigest: v.string(), writerSubjectDigest: v.string(), recoverySubjectDigest: v.string(),
+  custodianSubjectDigest: v.string(), writerPrincipalDigest: v.string(), custodianPrincipalDigest: v.string(),
+  requestNonceDigest: v.string(), evidenceDigest: v.string(),
+});
+export const continuityAnchor = v.object({
+  resourceBindingDigest: v.string(), scopeKey: v.string(), epoch: v.number(), epochDigest: v.string(),
+  minimumSequence: v.number(), minimumScopeRevision: v.number(), lastTrustedTimeMs: v.number(),
+  authorityGenerations,
+});
+export const independentContinuityEvidence = v.object({
+  envelope: continuityEvidenceEnvelope,
+  anchor: continuityAnchor,
+});
 export const operation = v.union(v.literal('claimRun'), v.literal('claimAttempt'),
   v.literal('armRollback'), v.literal('openBodyAdmissionFence'), v.literal('consumeAttemptBeforeBodyRead'),
   v.literal('markUnknown'), v.literal('closeBodyAdmissionFence'), v.literal('revokeSessionAndLateGrants'));
 export const role = v.union(v.literal('grant-custodian'), v.literal('writer'), v.literal('recovery'),
   v.literal('independent-reader'), v.literal('smoke-verifier'));
+export const stopReason = v.union(v.literal('unknown'), v.literal('clock-regression'), v.literal('restore'),
+  v.literal('duplicate'), v.literal('revoked'), v.literal('expired'));
+export const sourceClosedResult = v.object({
+  code: v.string(), sourceOnly: v.literal(true), modelAccepted: v.boolean(), hostQualified: v.literal(false),
+  bodyAdmissionAuthorized: v.literal(false), liveReady: v.literal(false), costs: v.literal(0),
+  candidateWritten: v.optional(v.boolean()), metadataMatches: v.optional(v.boolean()),
+  statePresent: v.optional(v.boolean()), receiptPresent: v.optional(v.boolean()), revision: v.optional(v.number()),
+  resultDigest: v.optional(v.string()), runSpent: v.optional(v.boolean()), attemptSpent: v.optional(v.boolean()),
+  rollbackArmed: v.optional(v.boolean()), fenceOpenedOnce: v.optional(v.boolean()), fenceOpen: v.optional(v.boolean()),
+  consumed: v.optional(v.boolean()), closed: v.optional(v.boolean()), revoked: v.optional(v.boolean()),
+  unknown: v.optional(v.boolean()), permanentStop: v.optional(v.boolean()),
+  recoveryState: v.optional(v.union(v.literal('pending'), v.literal('closed-revoked'),
+    v.literal('verified'), v.literal('unknown'))),
+  stopReason: v.optional(stopReason),
+});
 export const grantFields = { grantKey: v.string(), scopeKey: v.string(), runKey: v.string(),
   bindingDigest: v.string(), binding: grantBinding,
   installedByPrincipalId: v.id('cadControlledUploadHostPrincipals'), installedAtMs: v.number() };

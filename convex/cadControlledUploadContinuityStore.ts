@@ -1,4 +1,6 @@
-// Unregistered transaction candidates. No registered handler imports this file.
+// Continuity operations exposed only by internal-only host functions. The fixed
+// independent verifiers still return null, so registration and forward authority
+// projection remain fail-closed.
 import type { DatabaseReader, DatabaseWriter } from './_generated/server';
 import { closed, digest, exact, hash, keys, plain, uint, validBinding, validSnapshot } from '../offline/cad-convex/controlledUploadHostModel';
 import type { Attempt, Binding, Principal, Receipt, Snapshot, Tombstone } from '../offline/cad-convex/controlledUploadHostModel';

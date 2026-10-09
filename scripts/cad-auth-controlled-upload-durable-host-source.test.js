@@ -156,11 +156,28 @@ test('synthetic indexed duplicate/corrupt records and overlapping host identitie
   await assert.rejects(store.readCandidatePrincipal(syntheticDb(rows).db, writer.principalKey), /ROLE_OVERLAP/);
 });
 
-test('all registered internal handlers and verifier contracts unconditionally deny without touching context or hostile inputs', async () => {
-  let touches = 0; const hostile = new Proxy({}, { get() { touches++; throw Error('NO_IO'); } });
-  for (const entry of Object.values(host)) { const r = await entry.handler(hostile, hostile); closed(r); assert.equal(r.modelAccepted, false); }
-  for (const verify of Object.values(bridge)) { const r = verify(hostile, { enabled: true, qualified: true }); closed(r); assert.equal(r.modelAccepted, false); }
-  assert.equal(touches, 0);
+test('registered internal handlers preserve complete validators and independent-verifier denial', async () => {
+  assert.deepEqual(Object.keys(host).sort(), [
+    'persistRestriction', 'projectAuthenticatedAuthority', 'readReceipt', 'readState',
+    'recordIndependentSmoke', 'registerApprovedGrantAndScope', 'transact',
+  ]);
+  for (const entry of Object.values(host)) {
+    assert.equal(typeof entry.handler, 'function'); assert.ok(entry.args); assert.ok(entry.returns);
+  }
+  const f = await fixture();
+  const evidence = { envelope: {}, anchor: {} };
+  const noReads = new Proxy({}, { get() { throw Error('NO_DB_READ'); } });
+  const register = await host.registerApprovedGrantAndScope.handler({ db: noReads }, {
+    binding: f.binding, principalKey: '1'.repeat(64), evidence, requestNonceDigest: '2'.repeat(64),
+  });
+  const projected = await host.projectAuthenticatedAuthority.handler({ db: noReads }, {
+    binding: f.binding, principalKey: '1'.repeat(64), evidence,
+  });
+  const smoke = await host.recordIndependentSmoke.handler(noReads, { evidenceKey: '3'.repeat(64) });
+  for (const result of [register, projected, smoke]) { closed(result); assert.equal(result.modelAccepted, false); }
+  for (const verify of Object.values(bridge)) {
+    const result = verify({ enabled: true, qualified: true }); closed(result); assert.equal(result.modelAccepted, false);
+  }
 });
 
 test('seven additive tables and indexes exactly match design inventory; prior tables remain visible', () => {
