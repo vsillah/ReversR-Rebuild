@@ -50,6 +50,7 @@ test('integrated import preserves privacy and production fail-closed boundaries'
   const route = fs.readFileSync('components/PublicIgsImportPanel.tsx', 'utf8');
   const viewer = fs.readFileSync('components/CadFixtureViewer.tsx', 'utf8');
   const home = fs.readFileSync('app/index.tsx', 'utf8');
+  const welcome = fs.readFileSync('components/WelcomeScreen.tsx', 'utf8');
   const phaseOne = fs.readFileSync('components/PhaseOne.tsx', 'utf8');
   const workflow = fs.readFileSync('components/CadWorkflow.tsx', 'utf8');
   assert.doesNotMatch(route, /console\.|localStorage|AsyncStorage|\/api\/cad\/user-import|fetch\([^)]*api/);
@@ -58,6 +59,10 @@ test('integrated import preserves privacy and production fail-closed boundaries'
   assert.match(route, /Live CAD upload remains disabled/);
   assert.match(phaseOne, /PublicIgsImportPanel/);
   assert.match(home, /navigateCadPhase\(3\)/);
+  assert.doesNotMatch(home, /PHASE_STEP_HINTS|subLabels=\{PHASE_STEP_HINTS\}|3D review, references, dimensions, and issues/);
+  assert.match(welcome, /subLabels=\{PHASE_STEP_SUBLABELS\}/);
+  assert.match(home, /progressBar:\s*\{[\s\S]*?paddingVertical: Spacing\.sm/);
+  assert.match(home, /phaseStepperCard:\s*\{[\s\S]*?paddingVertical: Spacing\.sm/);
   assert.match(home, /fixture\.qualificationProvenance\?\.kind === 'synthetic-igs-local'/);
   assert.match(home, /'CAD_TEST_PREVIEW_SYNTHETIC_IGS'/);
   assert.match(home, /'CAD_TEST_PREVIEW_PUBLIC_CUBE'/);

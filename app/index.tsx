@@ -102,12 +102,6 @@ const createEmptyContext = (): MutationContext => {
 
 const PHASE_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
 const PHASE_STEP_LABELS = ['Input', 'Inventory', 'Design', 'Build'];
-const PHASE_STEP_HINTS = [
-  'Import, scan, describe, or try a sample',
-  'Components, units, and metadata',
-  '3D review, references, dimensions, and issues',
-  'Outputs, BOM, and manufacturing preparation',
-];
 const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   1: 'search',
   2: 'repeat-sharp',
@@ -1792,7 +1786,6 @@ export default function HomeScreen() {
           <View style={[styles.phaseStepperCard, desktopWorkspace && { borderWidth: 0, paddingVertical: Spacing.xs, backgroundColor: 'transparent', boxShadow: 'none' }]}>
             <HorizontalStepper
               steps={PHASE_STEP_LABELS}
-              subLabels={PHASE_STEP_HINTS}
               currentStep={activeCadPreview.enabled ? cadPhase : context.phase}
               phaseStates={activeCadPreview.enabled ? getCadReviewPhaseStates({ selectedPhase: cadPhase, highestReachedPhase: integratedIgsPreview ? cadHighestPhase : undefined }) : undefined}
               selectedStep={activeCadPreview.enabled ? cadPhase : undefined}
@@ -2241,8 +2234,7 @@ const createStyles = (Colors: AppColors) => {
   },
   progressBar: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   phaseStepperCard: {
     borderRadius: Radii.lg,
@@ -2250,7 +2242,7 @@ const createStyles = (Colors: AppColors) => {
     borderColor: Colors.border,
     backgroundColor: Colors.panel,
     paddingHorizontal: Spacing.xs,
-    paddingVertical: Spacing.lg,
+    paddingVertical: Spacing.sm,
     ...shadows.card,
   },
   content: {
