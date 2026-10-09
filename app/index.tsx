@@ -61,7 +61,7 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
-import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, PUBLIC_CUBE_RESULT, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
+import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -102,12 +102,6 @@ const createEmptyContext = (): MutationContext => {
 
 const PHASE_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
 const PHASE_STEP_LABELS = ['Input', 'Inventory', 'Design', 'Build'];
-const PHASE_STEP_HINTS = [
-  'Import, scan, describe, or try a sample',
-  'Components, units, and metadata',
-  '3D review, references, dimensions, and issues',
-  'Outputs, BOM, and manufacturing preparation',
-];
 const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   1: 'search',
   2: 'repeat-sharp',
@@ -1792,7 +1786,6 @@ export default function HomeScreen() {
           <View style={[styles.phaseStepperCard, desktopWorkspace && { borderWidth: 0, paddingVertical: Spacing.xs, backgroundColor: 'transparent', boxShadow: 'none' }]}>
             <HorizontalStepper
               steps={PHASE_STEP_LABELS}
-              subLabels={PHASE_STEP_HINTS}
               currentStep={activeCadPreview.enabled ? cadPhase : context.phase}
               phaseStates={activeCadPreview.enabled ? getCadReviewPhaseStates({ selectedPhase: cadPhase, highestReachedPhase: integratedIgsPreview ? cadHighestPhase : undefined }) : undefined}
               selectedStep={activeCadPreview.enabled ? cadPhase : undefined}
@@ -1824,8 +1817,11 @@ export default function HomeScreen() {
           <PhaseOne
             key={context.id}
             initialMode={entryMode}
-            onPublicIgsReady={() => {
-              setIntegratedIgsPreview({ enabled: true, code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE', fixture: PUBLIC_CUBE_RESULT });
+            onPublicIgsReady={(fixture) => {
+              const code = fixture.qualificationProvenance?.kind === 'synthetic-igs-local'
+                ? 'CAD_TEST_PREVIEW_SYNTHETIC_IGS'
+                : 'CAD_TEST_PREVIEW_PUBLIC_CUBE';
+              setIntegratedIgsPreview({ enabled: true, code, fixture });
               navigateCadPhase(3);
               setCadHighestPhase(3);
             }}
@@ -2238,8 +2234,7 @@ const createStyles = (Colors: AppColors) => {
   },
   progressBar: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   phaseStepperCard: {
     borderRadius: Radii.lg,
@@ -2247,7 +2242,7 @@ const createStyles = (Colors: AppColors) => {
     borderColor: Colors.border,
     backgroundColor: Colors.panel,
     paddingHorizontal: Spacing.xs,
-    paddingVertical: Spacing.lg,
+    paddingVertical: Spacing.sm,
     ...shadows.card,
   },
   content: {

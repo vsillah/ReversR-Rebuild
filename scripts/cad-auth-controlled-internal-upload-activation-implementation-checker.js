@@ -13,6 +13,23 @@ const {
 
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-controlled-internal-upload-activation-implementation.json';
+const SHARED_IGES_VALIDATOR = 'utils/igesAdmission.js';
+const EXPECTED_VALIDATOR_ENVELOPE = Object.freeze({
+  currentValidator: 'server/cadUserUploadAdmission.js',
+  acceptedContainer: 'application/json',
+  requiredPayloadKeys: Object.freeze(['contentBase64', 'fileName', 'mimeType']),
+  acceptedMimeTypes: Object.freeze([
+    'model/iges',
+    'application/iges',
+    'application/octet-stream',
+  ]),
+  acceptedFileExtensions: Object.freeze(['igs', 'iges']),
+  sourceLimitBytes: 262144,
+  requestLimitBytes: 393216,
+  timeoutMs: 10000,
+  stepStpAuthorized: false,
+  externalReferencesAuthorized: false,
+});
 const SOURCES = Object.freeze([
   '.github/workflows/release-local-ci.yml',
   'server/index.js',
@@ -21,6 +38,7 @@ const SOURCES = Object.freeze([
   'server/cadUserUploadRouter.js',
   'server/cadUserUploadAdmission.js',
   'server/cadWorkerContract.js',
+  SHARED_IGES_VALIDATOR,
   'server/uploadSession.js',
   'docs/cad-auth-controlled-internal-upload-activation-implementation.md',
   'docs/cad-auth-controlled-internal-upload-activation-decision.json',
@@ -46,15 +64,45 @@ function routeStillClosed(readSource = read) {
     && /return send\(res, 'USER_UPLOADS_DISABLED'\);/.test(route);
 }
 
-function validatorEnvelopePreserved(readSource = read) {
+function reviewedSharedValidator(readSource = read, validatorEnvelope = VALIDATOR_ENVELOPE) {
   const admission = readSource('server/cadUserUploadAdmission.js').toString('utf8');
   const contract = readSource('server/cadWorkerContract.js').toString('utf8');
-  return /Object\.keys\(body\)\.sort\(\)\.join\(','\) !== 'contentBase64,fileName,mimeType'/.test(admission)
-    && /\['model\/iges', 'application\/iges', 'application\/octet-stream'\]/.test(admission)
-    && /LIMITS = Object\.freeze\(\{ inputBytes: 256 \* 1024, jsonBytes: 384 \* 1024/.test(contract)
-    && /!\s*\/\\\.\(igs\|iges\)\$\/i\.test\(body\.fileName\)/.test(contract)
-    && VALIDATOR_ENVELOPE.stepStpAuthorized === false
-    && VALIDATOR_ENVELOPE.externalReferencesAuthorized === false;
+  const sharedValidator = readSource(SHARED_IGES_VALIDATOR).toString('utf8');
+  const evidence = {
+    path: SHARED_IGES_VALIDATOR,
+    sha256: sha(readSource(SHARED_IGES_VALIDATOR)),
+    sourceBound: SOURCES.includes(SHARED_IGES_VALIDATOR),
+    workerContractImportsSharedValidator:
+      contract.includes("require('../utils/igesAdmission')")
+      && contract.includes('IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource'),
+    workerContractUsesSharedFileNameInspection:
+      contract.includes('inspectIgesFileName(body.fileName)'),
+    workerContractUsesSharedSourceInspection:
+      contract.includes('inspectIgesSource({ fileName: body.fileName, bytes })'),
+    sourceLimitDerivedFromSharedValidator:
+      contract.includes('inputBytes: IGES_SOURCE_MAX_BYTES')
+      && sharedValidator.includes('const IGES_SOURCE_MAX_BYTES = 256 * 1024;'),
+    exactPayloadKeysPreserved:
+      admission.includes("Object.keys(body).sort().join(',') !== 'contentBase64,fileName,mimeType'"),
+    acceptedMimeTypesPreserved:
+      admission.includes("['model/iges', 'application/iges', 'application/octet-stream']"),
+    igesExtensionsOnly:
+      sharedValidator.includes("if (!/\\.(igs|iges)$/i.test(fileName)) return rejection('UNSUPPORTED', 'extension');"),
+    externalReferencesRejected:
+      sharedValidator.includes("=== 416) return rejection('UNSUPPORTED', 'external-reference');"),
+    sharedExportsPreserved:
+      sharedValidator.includes('module.exports = { IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource };'),
+    envelopeMatchesExpected: isDeepStrictEqual(validatorEnvelope, EXPECTED_VALIDATOR_ENVELOPE),
+  };
+  return Object.freeze({
+    ...evidence,
+    preserved: Object.values(evidence).every(value => value === true
+      || typeof value === 'string'),
+  });
+}
+
+function validatorEnvelopePreserved(readSource = read, validatorEnvelope = VALIDATOR_ENVELOPE) {
+  return reviewedSharedValidator(readSource, validatorEnvelope).preserved;
 }
 
 function deployedStartupWiredDefaultClosed(readSource = read) {
@@ -87,6 +135,7 @@ function observableControlledBodyAdmissionProof(readSource = read) {
 
 function expectedPacket(readSource = read) {
   const review = createControlledInternalUploadActivationReview();
+  const sharedValidatorReview = reviewedSharedValidator(readSource);
   return Object.freeze({
     schemaVersion: 1,
     artifact: 'cad-auth-controlled-internal-upload-activation-implementation-packet-v1',
@@ -116,7 +165,8 @@ function expectedPacket(readSource = read) {
       && review.authorizes?.requestBodyAdmissionOrRead === false,
     routeStillClosed: routeStillClosed(readSource),
     deployedStartupWiredDefaultClosed: deployedStartupWiredDefaultClosed(readSource),
-    validatorEnvelopePreserved: validatorEnvelopePreserved(readSource),
+    validatorEnvelopePreserved: sharedValidatorReview.preserved,
+    reviewedSharedValidator: sharedValidatorReview,
     observableControlledBodyAdmissionProof: Object.freeze({
       required: true,
       present: observableControlledBodyAdmissionProof(readSource),
@@ -178,6 +228,20 @@ function checkPacket(packet, readSource = read) {
     && packet?.routeStillClosed === true
     && packet?.deployedStartupWiredDefaultClosed === true
     && packet?.validatorEnvelopePreserved === true
+    && packet?.reviewedSharedValidator?.path === SHARED_IGES_VALIDATOR
+    && /^[a-f0-9]{64}$/.test(packet?.reviewedSharedValidator?.sha256 || '')
+    && packet?.reviewedSharedValidator?.sourceBound === true
+    && packet?.reviewedSharedValidator?.workerContractImportsSharedValidator === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedFileNameInspection === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedSourceInspection === true
+    && packet?.reviewedSharedValidator?.sourceLimitDerivedFromSharedValidator === true
+    && packet?.reviewedSharedValidator?.exactPayloadKeysPreserved === true
+    && packet?.reviewedSharedValidator?.acceptedMimeTypesPreserved === true
+    && packet?.reviewedSharedValidator?.igesExtensionsOnly === true
+    && packet?.reviewedSharedValidator?.externalReferencesRejected === true
+    && packet?.reviewedSharedValidator?.sharedExportsPreserved === true
+    && packet?.reviewedSharedValidator?.envelopeMatchesExpected === true
+    && packet?.reviewedSharedValidator?.preserved === true
     && packet?.observableControlledBodyAdmissionProof?.present === true
     && packet?.observableControlledBodyAdmissionProof?.terminalCodeRemains === 'USER_UPLOADS_DISABLED'
     && packet?.observableControlledBodyAdmissionProof?.credentialValueInHeaderAuthorized === false
@@ -241,13 +305,16 @@ if (require.main === module) {
 }
 
 module.exports = {
+  EXPECTED_VALIDATOR_ENVELOPE,
   PACKET,
+  SHARED_IGES_VALIDATOR,
   SOURCES,
   checkPacket,
   deployedStartupWiredDefaultClosed,
   expectedPacket,
   observableControlledBodyAdmissionProof,
   routeStillClosed,
+  reviewedSharedValidator,
   sourceBindings,
   validatorEnvelopePreserved,
 };

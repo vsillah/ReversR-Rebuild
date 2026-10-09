@@ -3,6 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
+const {
+  EXPECTED_VALIDATOR_ENVELOPE,
+  reviewedSharedValidator,
+} = require('./cad-auth-controlled-internal-upload-activation-implementation-checker');
 
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-controlled-internal-upload-activation-decision.json';
@@ -18,6 +22,8 @@ const SOURCES = Object.freeze([
   'server/cadLiveOpeningRuntimeActivation.js',
   'server/uploadSession.js',
   'server/cadWorkerContract.js',
+  'utils/igesAdmission.js',
+  'scripts/cad-auth-controlled-internal-upload-activation-implementation-checker.js',
   'scripts/cad-auth-controlled-internal-upload-activation-decision-checker.js',
   'scripts/cad-auth-controlled-internal-upload-activation-decision.test.js',
 ]);
@@ -31,6 +37,7 @@ function sourceBindings(readSource = read) {
 }
 
 function expectedPacket(readSource = read) {
+  const sharedValidatorReview = reviewedSharedValidator(readSource);
   return Object.freeze({
     schemaVersion: 1,
     artifact: 'cad-auth-controlled-internal-upload-activation-decision-v1',
@@ -75,6 +82,7 @@ function expectedPacket(readSource = read) {
       realUsersAuthorized: false,
       commercialReadinessClaimed: false,
     }),
+    reviewedSharedValidator: sharedValidatorReview,
     controlledInternalActivationDecision: Object.freeze({
       phase: '7.1-controlled-internal-upload-activation-decision',
       decisionType: 'prepare-source-only-controls-before-any-live-upload-activation',
@@ -99,18 +107,7 @@ function expectedPacket(readSource = read) {
         privateCadAuthorized: false,
         realUsersAuthorized: false,
       }),
-      validatorEnvelope: Object.freeze({
-        currentValidator: 'server/cadUserUploadAdmission.js',
-        acceptedContainer: 'application/json',
-        requiredPayloadKeys: Object.freeze(['contentBase64', 'fileName', 'mimeType']),
-        acceptedMimeTypes: Object.freeze(['model/iges', 'application/iges', 'application/octet-stream']),
-        acceptedFileExtensions: Object.freeze(['igs', 'iges']),
-        sourceLimitBytes: 262144,
-        requestLimitBytes: 393216,
-        timeoutMs: 10000,
-        stepStpAuthorized: false,
-        externalReferencesAuthorized: false,
-      }),
+      validatorEnvelope: EXPECTED_VALIDATOR_ENVELOPE,
       sourceOwnedControlsRequiredBeforeLiveGate: Object.freeze([
         'exact current production deployment reference',
         'exact command-card bytes and SHA-256',
@@ -217,6 +214,18 @@ function checkPacket(packet, readSource = read) {
     && packet?.authorizes?.requestBodyAdmissionOrRead === false;
   const bounded = packet?.controlledInternalActivationDecision?.eligibleBodyValidationScope?.uploadAttempts === 1
     && packet?.controlledInternalActivationDecision?.eligibleBodyValidationScope?.concurrentSessions === 1
+    && packet?.reviewedSharedValidator?.path === 'utils/igesAdmission.js'
+    && packet?.reviewedSharedValidator?.sourceBound === true
+    && packet?.reviewedSharedValidator?.workerContractImportsSharedValidator === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedFileNameInspection === true
+    && packet?.reviewedSharedValidator?.workerContractUsesSharedSourceInspection === true
+    && packet?.reviewedSharedValidator?.sourceLimitDerivedFromSharedValidator === true
+    && packet?.reviewedSharedValidator?.exactPayloadKeysPreserved === true
+    && packet?.reviewedSharedValidator?.acceptedMimeTypesPreserved === true
+    && packet?.reviewedSharedValidator?.igesExtensionsOnly === true
+    && packet?.reviewedSharedValidator?.externalReferencesRejected === true
+    && packet?.reviewedSharedValidator?.envelopeMatchesExpected === true
+    && packet?.reviewedSharedValidator?.preserved === true
     && packet?.controlledInternalActivationDecision?.validatorEnvelope?.acceptedFileExtensions?.join(',') === 'igs,iges'
     && packet?.controlledInternalActivationDecision?.validatorEnvelope?.sourceLimitBytes === 262144
     && packet?.productizationDecision?.phase7IsLastBeforeProductization === false;
@@ -256,10 +265,12 @@ if (require.main === module) {
 }
 
 module.exports = {
+  EXPECTED_VALIDATOR_ENVELOPE,
   PACKET,
   SOURCES,
   checkPacket,
   expectedPacket,
+  reviewedSharedValidator,
   routeStillClosed,
   sourceBindings,
 };

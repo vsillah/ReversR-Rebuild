@@ -11,6 +11,7 @@ import {
   verifyPublicIgsFixture,
   type IgsImportState,
 } from '../utils/igsImportJourney';
+import SyntheticIgsQualificationPanel from './SyntheticIgsQualificationPanel';
 
 const initialState: IgsImportState = { status: 'idle', message: '' };
 
@@ -27,7 +28,9 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
   const runId = useRef(0);
   const [state, dispatch] = useReducer(nextIgsImportState, initialState);
   const [dragActive, setDragActive] = useState(false);
+  const [syntheticBusy, setSyntheticBusy] = useState(false);
   const busy = state.status === 'queued' || state.status === 'processing';
+  const sourceBusy = busy || syntheticBusy;
   const ready = state.status === 'ready';
   const canRetry = Boolean(selectedFile.current) || selectedSource.current === 'sample';
 
@@ -41,6 +44,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
   };
 
   const processFile = async (file: File, source: 'file' | 'sample' = 'file') => {
+    if (syntheticBusy) return;
     selectedSource.current = source;
     const metadata = validateIgsFileMetadata(file);
     if (!metadata.ok) {
@@ -128,7 +132,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
           {Platform.OS === 'web' ? (
             <div
               aria-label="Drop approved public IGS file here"
-              aria-disabled={busy}
+              aria-disabled={sourceBusy}
               data-testid="igs-import-drop-zone"
               onDragEnter={event => { event.preventDefault(); setDragActive(true); }}
               onDragOver={event => { event.preventDefault(); setDragActive(true); }}
@@ -137,6 +141,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
                 event.preventDefault();
                 setDragActive(false);
                 if (busy) return;
+                if (syntheticBusy) return;
                 const file = event.dataTransfer.files?.[0];
                 if (file) void processFile(file);
               }}
@@ -146,13 +151,13 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
                 borderRadius: Radii.lg,
                 background: dragActive ? colors.primarySoft : colors.surface,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                gap: 8, padding: 20, textAlign: 'center', pointerEvents: busy ? 'none' : 'auto',
+                gap: 8, padding: 20, textAlign: 'center', pointerEvents: sourceBusy ? 'none' : 'auto',
               }}
             >
               <Ionicons name="cloud-upload-outline" size={30} color={colors.primary} />
               <Text style={[Typography.bodyStrong, { color: colors.text }]}>Drop your approved public .igs file</Text>
               <Text style={[Typography.caption, { color: colors.mutedText }]}>IGS file · IGES format · 2 MB maximum · verified locally</Text>
-              <TouchableOpacity disabled={busy} accessibilityRole="button" accessibilityLabel="Choose approved public IGS file" onPress={() => picker.current?.click()} style={[styles.button, styles.primaryButton, busy && styles.disabled]}>
+              <TouchableOpacity disabled={sourceBusy} accessibilityRole="button" accessibilityLabel="Choose approved public IGS file" onPress={() => picker.current?.click()} style={[styles.button, styles.primaryButton, sourceBusy && styles.disabled]}>
                 <Text style={[Typography.bodyStrong, { color: colors.onPrimary }]}>Choose .igs file</Text>
               </TouchableOpacity>
             </div>
@@ -164,9 +169,10 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
             <Text style={[Typography.caption, { color: colors.mutedText }]}>OR</Text>
             <View style={styles.orLine} />
           </View>
-          <TouchableOpacity disabled={busy} testID="igs-import-use-sample" accessibilityRole="button" accessibilityLabel="No IGS file available? Try the public sample" onPress={() => { void useIncludedFile(); }} style={[styles.sampleLink, busy && styles.disabled]}>
-            <Text style={[Typography.bodyStrong, styles.sampleLinkText]}>{busy ? 'Verifying selected source locally…' : 'No .igs file available? Try the public sample'}</Text>
+          <TouchableOpacity disabled={sourceBusy} testID="igs-import-use-sample" accessibilityRole="button" accessibilityLabel="No IGS file available? Try the public sample" onPress={() => { void useIncludedFile(); }} style={[styles.sampleLink, sourceBusy && styles.disabled]}>
+            <Text style={[Typography.bodyStrong, styles.sampleLinkText]}>{busy ? 'Verifying selected source locally…' : syntheticBusy ? 'Synthetic qualification is running…' : 'No .igs file available? Try the public sample'}</Text>
           </TouchableOpacity>
+          <SyntheticIgsQualificationPanel disabled={busy} onBusyChange={setSyntheticBusy} onReady={onReady} />
         </>
       ) : (
         <View testID="igs-import-ready" accessibilityLiveRegion="polite" style={styles.readyCard}>
@@ -192,7 +198,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
 
       <View style={styles.boundaryCard}>
         <Ionicons name="lock-closed-outline" size={17} color={colors.warning} />
-        <Text style={[Typography.caption, { color: colors.mutedText, flex: 1, lineHeight: 19 }]}><Text style={{ color: colors.text, fontWeight: '700' }}>Public fixture path only.</Text> Live CAD upload remains disabled. No private files, production admission, cloud storage, or external conversion.</Text>
+        <Text style={[Typography.caption, { color: colors.mutedText, flex: 1, lineHeight: 19 }]}><Text style={{ color: colors.text, fontWeight: '700' }}>Non-production paths only.</Text> Live CAD upload remains disabled. No private files, production admission, cloud storage, or external conversion.</Text>
       </View>
     </View>
   );

@@ -16,8 +16,9 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
+  const isSyntheticQualification = fixture.qualificationProvenance?.kind === 'synthetic-igs-local';
   const canDownloadSource = Boolean(fixture.sourceAssetUrl);
-  const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256;
+  const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
   const openAsset = (url: string) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -35,10 +36,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   };
   const downloadDerivedMesh = () => {
     if (!canDownloadDerived || Platform.OS !== 'web' || typeof document === 'undefined') return;
-    const href = URL.createObjectURL(new Blob([createPublicCubeDerivedStl()], { type: 'model/stl' }));
+    const content = fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
+    const href = URL.createObjectURL(new Blob([content], { type: 'model/stl' }));
     const link = document.createElement('a');
     link.href = href;
-    link.download = 'reversr-public-cube-derived-inspection-mesh-mm.stl';
+    link.download = fixture.derivedInspectionStl?.fileName ?? 'reversr-public-cube-derived-inspection-mesh-mm.stl';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
     link.click();
@@ -52,7 +54,9 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
         <Text style={[Typography.heading, { color: colors.text }]}>{fixture.fixtureName}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
           <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
-          <Text style={[Typography.caption, { color: colors.success }]}>{isLocalPreview ? 'Local render ready · Internal preview' : 'Local validation passed · Public IGS file'}</Text>
+          <Text style={[Typography.caption, { color: colors.success }]}>{isSyntheticQualification
+            ? 'Deterministic synthetic inspection ready · Real converter unqualified'
+            : isLocalPreview ? 'Local render ready · Internal preview' : 'Local validation passed · Public IGS file'}</Text>
         </View>
       </View>
       {onChangeSource ? <CadAction testID="cad-change-source-from-design" accessibilityLabel="Change CAD source" label="Change source" icon="arrow-back-outline" onPress={onChangeSource} /> : null}
@@ -86,6 +90,8 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
         <CadProvenance fixture={fixture} />
         <Text style={text}>{isDispenserReview
           ? 'The interactive model is the calibrated display mesh derived from the authorized CAD source. Reference images remain independent visual checks.'
+          : isSyntheticQualification
+            ? 'The interactive cube is a deterministic synthetic inspection adapter output. It proves the bounded local journey only; it is not converted from the generated IGS geometry, and production authentication remains unqualified.'
           : isLocalPreview
             ? 'The interactive model was generated locally in this browser from the selected CAD file. It is an internal preview only and does not activate production upload or conversion.'
             : 'This interactive model represents the digest-verified public IGS file as a deterministic inspection mesh. It does not activate production upload or conversion.'}</Text>

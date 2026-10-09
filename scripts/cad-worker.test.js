@@ -186,7 +186,7 @@ test('worker request dependency graph has only approved local and packaged impor
   const expected = {
     'cadWorkerImport.js': ['express', 'node:path', 'node:worker_threads', './cadWorkerContract'],
     'cadMeshWorker.js': ['node:worker_threads', 'node:fs', './cadWorkerContract', 'occt-import-js'],
-    'cadWorkerContract.js': ['node:crypto'],
+    'cadWorkerContract.js': ['node:crypto', '../utils/igesAdmission'],
   };
   for (const [name, imports] of Object.entries(expected)) {
     const text = fs.readFileSync(path.join(__dirname, '../server', name), 'utf8');

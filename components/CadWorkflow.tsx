@@ -28,7 +28,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
   const { colors } = useAppTheme();
   const [fixture, setFixture] = useState(preview.fixture);
   const [selectedBuildGate, setSelectedBuildGate] = useState(0);
-  const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256;
+  const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(preview.fixture.derivedInspectionStl);
   const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const panelStyle = compact
