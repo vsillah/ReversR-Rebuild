@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 
 type ThreeModule = typeof import('three');
@@ -7,7 +8,10 @@ type OrbitViewName = 'front' | 'front-right' | 'right' | 'back-right' | 'back' |
 type ElevationViewName = 'top' | 'bottom';
 type ViewName = 'isometric' | OrbitViewName | ElevationViewName;
 type FixedViewName = Exclude<ViewName, 'isometric'>;
-type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'panLeft' | 'panRight' | 'panUp' | 'panDown' | 'compactOpen' | 'compactClosed';
+type ControllerMode = 'orbit' | 'move';
+type ActivePanel = 'view' | 'zoom' | null;
+type ControlTooltip = { id: string; text: string };
+type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'panLeft' | 'panRight' | 'panUp' | 'panDown' | 'resetPan' | 'compactOpen' | 'compactClosed';
 type ViewerActions = Partial<Record<ViewerAction, () => void>> & {
   zoomTo?: (zoom: number) => void;
 };
@@ -21,6 +25,12 @@ const scaled = (value: number, scale = 1) => Math.round(value * scale * 100) / 1
 const orbitViews: OrbitViewName[] = ['front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'left', 'front-left'];
 const elevationViews: ElevationViewName[] = ['top', 'bottom'];
 const fixedViews: FixedViewName[] = [...orbitViews, ...elevationViews];
+const moveControls: Array<{ position: OrbitViewName; action: 'panUp' | 'panRight' | 'panDown' | 'panLeft'; label: string; symbol: string }> = [
+  { position: 'front', action: 'panUp', label: 'Move model up', symbol: '↑' },
+  { position: 'right', action: 'panRight', label: 'Move model right', symbol: '→' },
+  { position: 'back', action: 'panDown', label: 'Move model down', symbol: '↓' },
+  { position: 'left', action: 'panLeft', label: 'Move model left', symbol: '←' },
+];
 const isOrbitView = (view: ViewName | 'custom'): view is OrbitViewName => orbitViews.includes(view as OrbitViewName);
 
 const viewLabels: Record<ViewName | 'custom', string> = {
@@ -129,6 +139,7 @@ const frameStyle: React.CSSProperties = {
   minHeight: 300,
   maxHeight: 440,
   overflow: 'hidden',
+  overflowAnchor: 'none',
   background: '#dce6ef',
   borderRadius: 8,
   touchAction: 'none',
@@ -159,20 +170,6 @@ const viewToolbarStyle: React.CSSProperties = {
   boxShadow: '0 8px 18px rgba(9, 16, 18, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
   backdropFilter: 'blur(3px)',
   WebkitBackdropFilter: 'blur(3px)',
-};
-
-const elevationControlStyle: React.CSSProperties = {
-  appearance: 'none',
-  position: 'absolute',
-  left: 0,
-  width: '100%',
-  height: '50%',
-  padding: 0,
-  border: 0,
-  color: '#d8e3df',
-  background: 'transparent',
-  cursor: 'pointer',
-  outlineOffset: -4,
 };
 
 const puckControlStyle: React.CSSProperties = {
@@ -231,18 +228,30 @@ const zoomRailPanelBaseStyle: React.CSSProperties = {
   boxShadow: '0 10px 26px rgba(9, 16, 18, 0.12)',
 };
 
-const zoomRailPanelStyle: React.CSSProperties = {
+const zoomPopoverStyle: React.CSSProperties = {
   ...zoomRailPanelBaseStyle,
-  right: 12,
-  bottom: 12,
-};
-
-const expandedZoomRailPanelStyle: React.CSSProperties = {
-  ...zoomRailPanelBaseStyle,
-  left: 12,
-  top: 12,
+  position: 'absolute',
+  right: 0,
+  top: 48,
   zIndex: 4,
   pointerEvents: 'auto',
+};
+
+const commandStripStyle: React.CSSProperties = {
+  position: 'relative', zIndex: 5, display: 'grid', gridTemplateColumns: 'repeat(2, 36px)', gap: 3,
+  padding: 3, border: '1px solid rgba(216, 227, 223, 0.2)', borderRadius: 999,
+  background: 'rgba(23, 33, 31, 0.5)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+  boxShadow: '0 8px 18px rgba(9, 16, 18, 0.14)',
+};
+
+const commandButtonStyle: React.CSSProperties = {
+  appearance: 'none', width: 36, height: 36, minWidth: 36, minHeight: 36, padding: 0,
+  border: 0, borderRadius: '50%', color: '#e8fffa', fontFamily: 'system-ui, sans-serif',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, cursor: 'pointer',
+};
+
+const commandIconStyle: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, lineHeight: 0,
 };
 
 const zoomStepButtonBaseStyle: React.CSSProperties = {
@@ -349,28 +358,37 @@ const fallbackStyle: React.CSSProperties = {
   background: '#dce6ef',
 };
 
-const interactionGuideStyle: React.CSSProperties = {
-  position: 'absolute', left: 12, bottom: 12, zIndex: 2,
-  maxWidth: 'calc(100% - 92px)', padding: '7px 10px',
-  border: '1px solid rgba(216, 227, 223, 0.18)', borderRadius: 999,
-  color: '#e8fffa', background: 'rgba(23, 33, 31, 0.55)',
-  backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
-  fontFamily: 'system-ui, sans-serif', fontSize: 11, lineHeight: 1.3,
+const tooltipStyle: React.CSSProperties = {
+  position: 'absolute', left: 12, right: 76, bottom: 12, zIndex: 6,
+  boxSizing: 'border-box', width: 'fit-content', maxWidth: 'calc(100% - 88px)', padding: '7px 10px',
+  border: '1px solid rgba(216, 227, 223, 0.24)', borderRadius: 8,
+  color: '#e8fffa', background: 'rgba(15, 24, 23, 0.9)',
+  boxShadow: '0 8px 20px rgba(9, 16, 18, 0.2)',
+  fontFamily: 'system-ui, sans-serif', fontSize: 11, lineHeight: 1.35,
   pointerEvents: 'none',
 };
 
-const panPanelStyle: React.CSSProperties = {
-  position: 'absolute', left: 12, top: 12, zIndex: 2,
-  display: 'grid', gridTemplateColumns: 'repeat(3, 30px)', gridTemplateRows: 'repeat(3, 30px)',
-  gap: 2, padding: 5, borderRadius: 12,
+const modeToggleStyle: React.CSSProperties = {
+  display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%', padding: 3,
+  boxSizing: 'border-box', borderRadius: 999,
   border: '1px solid rgba(216, 227, 223, 0.18)',
   background: 'rgba(23, 33, 31, 0.42)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
 };
 
-const panButtonStyle: React.CSSProperties = {
-  appearance: 'none', width: 30, height: 30, minWidth: 30, minHeight: 30,
-  padding: 0, borderRadius: 8, border: '1px solid rgba(216, 227, 223, 0.2)',
-  color: '#e8fffa', background: 'rgba(23, 33, 31, 0.48)', cursor: 'pointer',
+const modeButtonStyle: React.CSSProperties = {
+  appearance: 'none', minHeight: 32, padding: '5px 9px', borderRadius: 999,
+  border: 0, fontFamily: 'system-ui, sans-serif', fontSize: 11, fontWeight: 700,
+  color: '#e8fffa', cursor: 'pointer',
+};
+
+const elevationRowStyle: React.CSSProperties = {
+  display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, width: '100%', height: 36,
+};
+
+const elevationChipStyle: React.CSSProperties = {
+  appearance: 'none', height: 36, boxSizing: 'border-box', padding: '4px 6px', borderRadius: 10,
+  border: '1px solid rgba(216, 227, 223, 0.2)', fontFamily: 'system-ui, sans-serif',
+  fontSize: 11, fontWeight: 700, color: '#e8fffa', background: 'rgba(23, 33, 31, 0.48)', cursor: 'pointer',
 };
 
 export default function CadFixtureViewer({
@@ -383,7 +401,12 @@ export default function CadFixtureViewer({
   height?: number;
 }) {
   const puckId = useId();
-  const [expanded, setExpanded] = useState(false);
+  const zoomPanelId = useId();
+  const tooltipId = useId();
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
+  const [panelActivityToken, setPanelActivityToken] = useState(0);
+  const [controlMode, setControlMode] = useState<ControllerMode>('orbit');
+  const [activeTooltip, setActiveTooltip] = useState<ControlTooltip | null>(null);
   const [compactControls, setCompactControls] = useState(false);
   const [viewerWidth, setViewerWidth] = useState(0);
   const [currentView, setCurrentView] = useState<ViewName | 'custom'>('isometric');
@@ -392,6 +415,9 @@ export default function CadFixtureViewer({
   const puckRef = useRef<HTMLDivElement | null>(null);
   const controlsRef = useRef<HTMLDivElement | null>(null);
   const zoomControlsRef = useRef<HTMLDivElement | null>(null);
+  const viewCommandRef = useRef<HTMLButtonElement | null>(null);
+  const zoomCommandRef = useRef<HTMLButtonElement | null>(null);
+  const panelPointerDownRef = useRef(false);
   const viewerActions = useRef<ViewerActions>({});
   const [state, setState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
 
@@ -414,19 +440,25 @@ export default function CadFixtureViewer({
   }, []);
 
   useEffect(() => {
-    viewerActions.current[compactControls && expanded ? 'compactOpen' : 'compactClosed']?.();
-  }, [compactControls, expanded, state]);
+    viewerActions.current[compactControls && activePanel === 'view' ? 'compactOpen' : 'compactClosed']?.();
+  }, [activePanel, compactControls, state]);
 
   useEffect(() => {
-    if (!expanded) return;
-    const dismiss = window.setTimeout(() => setExpanded(false), 6000);
+    if (!activePanel) return;
+    const dismiss = window.setTimeout(() => {
+      const activePanelElement = activePanel === 'view' ? puckRef.current : zoomControlsRef.current;
+      if (panelPointerDownRef.current || activePanelElement?.contains(document.activeElement)) {
+        setPanelActivityToken(value => value + 1);
+        return;
+      }
+      setActivePanel(null);
+      setActiveTooltip(null);
+    }, 3000);
     const closeOutside = (event: PointerEvent) => {
-      if (
-        event.target instanceof Node
-        && !controlsRef.current?.contains(event.target)
-        && !zoomControlsRef.current?.contains(event.target)
-      ) {
-        setExpanded(false);
+      if (event.target instanceof Node && !controlsRef.current?.contains(event.target)) {
+        panelPointerDownRef.current = false;
+        setActivePanel(null);
+        setActiveTooltip(null);
       }
     };
     document.addEventListener('pointerdown', closeOutside);
@@ -434,7 +466,7 @@ export default function CadFixtureViewer({
       window.clearTimeout(dismiss);
       document.removeEventListener('pointerdown', closeOutside);
     };
-  }, [expanded, currentView]);
+  }, [activePanel, panelActivityToken]);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -693,6 +725,10 @@ export default function CadFixtureViewer({
         viewerActions.current.panRight = () => panByPixels(32, 0);
         viewerActions.current.panUp = () => panByPixels(0, -32);
         viewerActions.current.panDown = () => panByPixels(0, 32);
+        viewerActions.current.resetPan = () => {
+          rig.position.set(0, 0, 0);
+          renderer.domElement.dataset.pan = '0.000,0.000,0.000';
+        };
         const onPointerDown = (event: PointerEvent) => {
           pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
           pointerDown = pointers.size === 1;
@@ -865,7 +901,8 @@ export default function CadFixtureViewer({
     viewerActions.current.zoomTo?.(MIN_ZOOM + progress * (MAX_ZOOM - MIN_ZOOM));
   };
   const zoomRailPlacementStyle = {
-    ...(expanded ? expandedZoomRailPanelStyle : zoomRailPanelStyle),
+    ...zoomPopoverStyle,
+    display: activePanel === 'zoom' ? 'flex' : 'none',
     gap: scaled(6, controlScale),
     padding: scaled(6, controlScale),
   };
@@ -897,6 +934,47 @@ export default function CadFixtureViewer({
     ...zoomTickStyle,
     width: scaled(16, controlScale),
   };
+  const preventPointerFocusScroll = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+  const tooltipBindings = (id: string, text: string) => ({
+    'aria-describedby': activeTooltip?.id === id ? tooltipId : undefined,
+    onPointerEnter: () => setActiveTooltip({ id, text }),
+    onPointerLeave: () => setActiveTooltip(current => current?.id === id ? null : current),
+    onFocus: () => setActiveTooltip({ id, text }),
+    onBlur: () => setActiveTooltip(current => current?.id === id ? null : current),
+  });
+  const togglePanel = (panel: Exclude<ActivePanel, null>) => {
+    panelPointerDownRef.current = false;
+    setActiveTooltip(null);
+    setPanelActivityToken(value => value + 1);
+    setActivePanel(current => current === panel ? null : panel);
+  };
+  const notePanelActivity = () => setPanelActivityToken(value => value + 1);
+  const onPanelPointerDown = () => {
+    panelPointerDownRef.current = true;
+    notePanelActivity();
+  };
+  const onPanelPointerEnd = () => {
+    panelPointerDownRef.current = false;
+    notePanelActivity();
+  };
+  const dismissTooltipOrController = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Escape') return;
+    if (activePanel) {
+      const origin = activePanel === 'view' ? viewCommandRef.current : zoomCommandRef.current;
+      setActivePanel(null);
+      setActiveTooltip(null);
+      window.requestAnimationFrame(() => origin?.focus());
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    if (activeTooltip) {
+      setActiveTooltip(null);
+      event.stopPropagation();
+    }
+  };
 
   return (
     <div>
@@ -905,57 +983,67 @@ export default function CadFixtureViewer({
         role="group"
         aria-label={`${label} model viewer`}
         data-testid="cad-fixture-canvas-host"
+        onKeyDown={dismissTooltipOrController}
       >
         <div ref={containerRef} role="img" aria-label={`Interactive three-dimensional visualization of ${label}`} style={{ width: '100%', height: '100%' }} />
-        <div ref={controlsRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 3 }} role="group" aria-label="Model view controls"
-          onKeyDown={event => { if (event.key === 'Escape' && expanded) { setExpanded(false); document.querySelector<HTMLButtonElement>(`[aria-controls="${puckId}"]`)?.focus(); } }}>
-          <button type="button" style={{ ...controlStyle, opacity: expanded ? 0 : 0.78, pointerEvents: expanded ? 'none' : 'auto' }}
-            disabled={state !== 'ready'} aria-expanded={expanded} aria-controls={puckId}
-            aria-label={expanded ? 'Collapse orientation controls' : 'Expand orientation controls'}
-            title={`${currentViewLabel} view`}
-            onClick={() => setExpanded(value => !value)}>
-            <ViewCue view={currentView} compact />
-          </button>
+        <div ref={controlsRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 3 }} role="group" aria-label="Model command strip">
+          <div data-testid="cad-command-strip" style={commandStripStyle} role="toolbar" aria-label="Viewer commands">
+            <button ref={viewCommandRef} type="button" data-testid="cad-command-view" style={{ ...commandButtonStyle, background: activePanel === 'view' ? 'rgba(127, 224, 192, 0.3)' : 'transparent' }}
+              disabled={state !== 'ready'} aria-expanded={activePanel === 'view'} aria-controls={puckId}
+              aria-label={activePanel === 'view' ? 'Close View controls' : 'Open View controls'}
+              {...tooltipBindings('command-view', 'View: open Orbit and Move controls.')}
+              onClick={() => togglePanel('view')}><span aria-hidden="true" style={commandIconStyle}><Ionicons name="cube-outline" size={20} color="#e8fffa" /></span></button>
+            <button ref={zoomCommandRef} type="button" data-testid="cad-command-zoom" style={{ ...commandButtonStyle, background: activePanel === 'zoom' ? 'rgba(127, 224, 192, 0.3)' : 'transparent' }}
+              disabled={state !== 'ready'} aria-expanded={activePanel === 'zoom'} aria-controls={zoomPanelId}
+              aria-label={activePanel === 'zoom' ? 'Close Zoom controls' : 'Open Zoom controls'}
+              {...tooltipBindings('command-zoom', 'Zoom: open zoom controls.')}
+              onClick={() => togglePanel('zoom')}><span aria-hidden="true" style={commandIconStyle}><Ionicons name="search-outline" size={20} color="#e8fffa" /></span></button>
+          </div>
           <span role="status" style={visuallyHiddenStyle}>{currentViewLabel}</span>
-          <div ref={puckRef} id={puckId} data-testid="cad-orientation-controls" hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
-            <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...elevationRingStyle, width: puckSize, height: puckSize }} role="group" aria-label="Orientation puck">
-              {elevationViews.map(view => (
-                <button key={view} type="button" disabled={state !== 'ready'}
-                  style={{
-                    ...elevationControlStyle,
-                    top: view === 'top' ? 0 : '50%',
-                    borderRadius: view === 'top' ? `${puckSize / 2}px ${puckSize / 2}px 0 0` : `0 0 ${puckSize / 2}px ${puckSize / 2}px`,
-                    background: elevationButtonBackground(view),
-                  }}
-                  title={`${viewLabels[view]} view`}
-                  aria-label={`Show ${view} view`} aria-pressed={currentView === view}
-                  onClick={() => viewerActions.current[view]?.()}>
-                  <span style={{ position: 'absolute', left: '50%', ...(view === 'top' ? { top: scaled(compactControls ? 6 : 8, controlScale) } : { bottom: scaled(compactControls ? 6 : 8, controlScale) }), transform: 'translateX(-50%)', opacity: 1 }}>
-                    <ElevationGlyph view={view} active={currentView === view} compact={compactControls} scale={controlScale} />
-                  </span>
-                </button>
-              ))}
+          <div ref={puckRef} id={puckId} data-testid="cad-view-controller" data-mode={controlMode} hidden={activePanel !== 'view'} data-layout={compactControls ? 'compact' : 'standard'}
+            style={{ position: 'absolute', top: 48, right: 0, zIndex: 4, width: puckSize, display: activePanel === 'view' ? 'grid' : 'none', gap: 6, overflowAnchor: 'none' }}
+            onPointerDown={onPanelPointerDown} onPointerUp={onPanelPointerEnd} onPointerCancel={onPanelPointerEnd} onFocus={notePanelActivity} onKeyDown={notePanelActivity}>
+            <div style={modeToggleStyle} role="group" aria-label="Controller mode">
+              <button type="button" data-testid="cad-controller-mode-orbit" aria-label="Use Orbit controls for drag rotation and fixed views" aria-pressed={controlMode === 'orbit'} {...tooltipBindings('mode-orbit', 'Drag the model to orbit. Use arrows for fixed views.')} onPointerDown={preventPointerFocusScroll} onMouseDown={preventPointerFocusScroll} onClick={() => setControlMode('orbit')}
+                style={{ ...modeButtonStyle, background: controlMode === 'orbit' ? 'rgba(127, 224, 192, 0.3)' : 'transparent' }}><span aria-hidden="true">◎</span> Orbit</button>
+              <button type="button" data-testid="cad-controller-mode-move" aria-label="Use Move controls for panning and cardinal nudges" aria-pressed={controlMode === 'move'} {...tooltipBindings('mode-move', 'Shift/right-drag pan. Use arrows for cardinal nudges.')} onPointerDown={preventPointerFocusScroll} onMouseDown={preventPointerFocusScroll} onClick={() => setControlMode('move')}
+                style={{ ...modeButtonStyle, background: controlMode === 'move' ? 'rgba(127, 224, 192, 0.3)' : 'transparent' }}><span aria-hidden="true">✥</span> Move</button>
+            </div>
+            <div data-testid="cad-shared-control-ring" data-mode={controlMode} data-layout={compactControls ? 'compact' : 'standard'} style={{ ...elevationRingStyle, width: puckSize, height: puckSize }} role="group" aria-label={controlMode === 'orbit' ? 'Orientation puck' : 'Move puck'}>
               <div style={{ ...viewToolbarStyle, left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: innerPuckSize, height: innerPuckSize }}>
-              {orbitViews.map(view => (
+              {controlMode === 'orbit' ? orbitViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
                   style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, fontSize: scaled(21, controlScale), ...scalePosition(compactControls ? compactPuckPositions[view] : puckPositions[view]) }}
-                  title={`${viewLabels[view]} view`}
-                  aria-label={`Show ${view} view`} aria-pressed={currentView === view}
+                  aria-label={`Show fixed ${viewLabels[view].toLowerCase()} view`} aria-pressed={currentView === view}
+                  {...tooltipBindings(`fixed-${view}`, `Switch to the fixed ${viewLabels[view].toLowerCase()} view.`)}
                   onClick={() => viewerActions.current[view]?.()}>
                   <DirectionGlyph view={view} active={currentView === view} compact={compactControls} scale={controlScale} />
                 </button>
+              )) : moveControls.map(control => (
+                <button key={control.action} type="button" disabled={state !== 'ready'}
+                  style={{ ...puckControlStyle, width: orbitButtonSize, height: orbitButtonSize, fontSize: scaled(20, controlScale), color: '#e8fffa', ...scalePosition(compactControls ? compactPuckPositions[control.position] : puckPositions[control.position]) }}
+                  aria-label={`${control.label} one step`}
+                  {...tooltipBindings(`move-${control.action}`, `${control.label} one step.`)}
+                  onClick={() => viewerActions.current[control.action]?.()}><span aria-hidden="true">{control.symbol}</span></button>
               ))}
-              <button type="button" disabled={state !== 'ready'}
+              <button type="button" data-testid="cad-controller-center-action" disabled={state !== 'ready'}
                 style={{ ...controlStyle, alignItems: 'center', display: 'flex', justifyContent: 'center', position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: resetButtonSize, height: resetButtonSize, minWidth: resetButtonSize, minHeight: resetButtonSize, background: 'rgba(49, 65, 62, 0.28)', border: '1px solid rgba(207, 224, 219, 0.32)', boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)' }}
-                title="Reset to fitted isometric view" aria-label="Reset to fitted isometric view"
-                onClick={() => viewerActions.current.isometric?.()}><span aria-hidden="true">↺</span></button>
+                aria-label={controlMode === 'orbit' ? 'Reset model to fitted isometric view' : 'Reset model pan to center'}
+                {...tooltipBindings('center-action', controlMode === 'orbit' ? 'Reset to the fitted isometric view.' : 'Reset model pan to center.')}
+                onClick={() => controlMode === 'orbit' ? viewerActions.current.isometric?.() : viewerActions.current.resetPan?.()}><span aria-hidden="true">{controlMode === 'orbit' ? '↺' : '⌾'}</span></button>
               </div>
             </div>
+            <div data-testid="cad-elevation-controls" style={{ ...elevationRowStyle, visibility: controlMode === 'orbit' ? 'visible' : 'hidden' }} role={controlMode === 'orbit' ? 'group' : undefined} aria-label={controlMode === 'orbit' ? 'Elevation views' : undefined} aria-hidden={controlMode !== 'orbit'}>
+              {controlMode === 'orbit' ? elevationViews.map(view => <button key={view} type="button" disabled={state !== 'ready'} style={{ ...elevationChipStyle, background: elevationButtonBackground(view) }}
+                aria-label={`Show fixed ${viewLabels[view].toLowerCase()} view`} aria-pressed={currentView === view} {...tooltipBindings(`fixed-${view}`, `Switch to the fixed ${viewLabels[view].toLowerCase()} view.`)} onClick={() => viewerActions.current[view]?.()}>
+                <span aria-hidden="true">{view === 'top' ? '△' : '▽'}</span> {viewLabels[view]}
+              </button>) : null}
+            </div>
           </div>
-        </div>
-        <div ref={zoomControlsRef} style={zoomRailPlacementStyle} role="group" aria-label="Model zoom">
+          <div ref={zoomControlsRef} id={zoomPanelId} data-testid="cad-zoom-popover" hidden={activePanel !== 'zoom'} style={zoomRailPlacementStyle} role="group" aria-label="Model zoom controls"
+            onPointerDown={onPanelPointerDown} onPointerUp={onPanelPointerEnd} onPointerCancel={onPanelPointerEnd} onFocus={notePanelActivity} onKeyDown={notePanelActivity}>
           <span aria-live="polite" aria-label="Zoom level" style={visuallyHiddenStyle}>{canZoomIn ? 'Zoom can increase.' : 'Maximum zoom reached.'} {canZoomOut ? 'Zoom can decrease.' : 'Minimum zoom reached.'}</span>
-          <button type="button" data-testid="cad-zoom-in" data-zoom-meter={zoomInProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomIn)} disabled={!canZoomIn} title={canZoomIn ? 'Zoom in' : 'Maximum zoom reached'} aria-label={canZoomIn ? 'Zoom in' : 'Zoom in unavailable; maximum zoom reached'}
+          <button type="button" data-testid="cad-zoom-in" data-zoom-meter={zoomInProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomIn)} disabled={!canZoomIn} aria-label={canZoomIn ? 'Zoom model in one step' : 'Zoom in unavailable; maximum zoom reached'} {...tooltipBindings('zoom-in', canZoomIn ? 'Zoom model in one step.' : 'Maximum zoom reached.')}
             onClick={() => viewerActions.current.zoomIn?.()}><span style={zoomButtonTextStyle}>+</span></button>
           <div style={zoomRailStyle} data-testid="cad-zoom-rail">
             <span aria-hidden="true" style={zoomRailTrackScaledStyle}>
@@ -966,7 +1054,7 @@ export default function CadFixtureViewer({
             ))}
             <span aria-hidden="true" style={{ ...zoomThumbScaledStyle, bottom: zoomRailInset + zoomThumbBottom }} />
             <button type="button" data-testid="cad-zoom-fit" style={{ ...zoomFitScaledStyle, bottom: zoomFitBottom, opacity: state === 'ready' ? 0.86 : 0.5 }} disabled={state !== 'ready'}
-              title="Reset zoom to fitted view" aria-label="Reset zoom to fitted view"
+              aria-label="Reset model zoom to fitted level" {...tooltipBindings('zoom-fit', 'Reset zoom to the fitted level.')}
               onClick={() => viewerActions.current.zoomTo?.(1)}>⌾</button>
             <input
               type="range"
@@ -976,21 +1064,18 @@ export default function CadFixtureViewer({
               step={1}
               value={zoomSliderValue}
               disabled={state !== 'ready'}
-              aria-label="Zoom level"
+              aria-label="Adjust model zoom level"
               aria-valuetext={canZoomIn || canZoomOut ? 'Model zoom adjusted' : 'Model zoom unavailable'}
+              {...tooltipBindings('zoom-slider', 'Drag or use arrow keys to set model zoom.')}
               style={zoomRailInputStyle}
               onChange={event => setZoomFromSlider(Number(event.currentTarget.value))}
             />
           </div>
-          <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomOut)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
+          <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomOut)} disabled={!canZoomOut} aria-label={canZoomOut ? 'Zoom model out one step' : 'Zoom out unavailable; minimum zoom reached'} {...tooltipBindings('zoom-out', canZoomOut ? 'Zoom model out one step.' : 'Minimum zoom reached.')}
             onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomButtonTextStyle}>-</span></button>
+          </div>
         </div>
-        <div data-testid="cad-pan-controls" style={{ ...panPanelStyle, ...(expanded ? { top: 'auto', bottom: 12 } : {}) }} role="group" aria-label="Model pan controls">
-          <span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model up" onClick={() => viewerActions.current.panUp?.()}>↑</button><span aria-hidden="true" />
-          <button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model left" onClick={() => viewerActions.current.panLeft?.()}>←</button><span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model right" onClick={() => viewerActions.current.panRight?.()}>→</button>
-          <span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model down" onClick={() => viewerActions.current.panDown?.()}>↓</button><span aria-hidden="true" />
-        </div>
-        <div data-testid="cad-interaction-guide" style={{ ...interactionGuideStyle, ...(expanded ? { display: 'none' } : {}) }}>Drag orbit · Shift/right-drag pan · Scroll/pinch zoom · ↺ reset</div>
+        {activeTooltip ? <div id={tooltipId} data-testid="cad-control-tooltip" role="tooltip" style={tooltipStyle}>{activeTooltip.text}</div> : null}
         {state !== 'ready' ? (
           <div style={fallbackStyle} data-testid={`cad-fixture-${state}`}>
             {state === 'loading' ? 'Preparing 3D visualization...' : '3D visualization is unavailable in this browser.'}

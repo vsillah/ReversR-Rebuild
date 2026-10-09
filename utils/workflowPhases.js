@@ -13,8 +13,17 @@ function getWorkflowPhaseStates({ currentPhase = 1, qualifiedCad = false, skippe
     return phase < current ? 'complete' : 'locked';
   });
 }
-function getCadReviewPhaseStates({ selectedPhase = 3 } = {}) {
+function getCadReviewPhaseStates({ selectedPhase = 3, highestReachedPhase } = {}) {
   const selected = Number.isInteger(selectedPhase) && selectedPhase >= 1 && selectedPhase <= 4 ? selectedPhase : 3;
+  if (Number.isInteger(highestReachedPhase)) {
+    const reached = Math.max(1, Math.min(3, highestReachedPhase));
+    return PHASE_NAMES.map((_, index) => {
+      const phase = index + 1;
+      if (phase === 4) return 'locked';
+      if (phase === selected) return 'active';
+      return phase <= reached ? 'complete' : 'locked';
+    });
+  }
   const states = ['complete', 'complete', 'complete', 'locked'];
   if (selected < 4) states[selected - 1] = 'active';
   return states;

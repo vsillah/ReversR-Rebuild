@@ -6,8 +6,10 @@ import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterPreview } from '../utils/cadInternalTesterPreview';
 import { CAD_BUILD_READINESS } from '../utils/cadCostWorkbook';
 import CadImportPanel from './CadImportPanel';
+import PublicIgsImportPanel from './PublicIgsImportPanel';
 import CadDesignReview from './CadDesignReview';
 import { CadAction, CadDetails, CadNotice, CadSourceFacts, CadProvenance, cadReviewStyles as styles } from './CadReviewUI';
+import { PUBLIC_CUBE_SHA256 } from '../utils/igsImportJourney';
 
 type Props = {
   preview: Extract<CadInternalTesterPreview, { enabled: true }>;
@@ -18,7 +20,7 @@ type Props = {
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
-const subtitles = ['Public fixture · Acquisition complete', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Source, geometry, and package readiness'];
+const subtitles = ['Public IGS file · Local validation', 'Imported geometry · Parts review pending', 'Geometry review required · Build locked', 'Source, geometry, and package readiness'];
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
@@ -26,6 +28,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
   const { colors } = useAppTheme();
   const [fixture, setFixture] = useState(preview.fixture);
   const [selectedBuildGate, setSelectedBuildGate] = useState(0);
+  const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256;
   const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const panelStyle = compact
@@ -46,7 +49,10 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
     </View>}
     <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }, panelStyle]}>
       {phase === 1 && <>
-        <CadImportPanel
+        {publicIgsJourney ? <PublicIgsImportPanel onReady={result => {
+          setFixture(result);
+          onPhase(3);
+        }} /> : <CadImportPanel
           internalPreview={preview}
           desktop={desktop}
           onReviewQualifiedResult={() => {
@@ -57,7 +63,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
             setFixture(result);
             onPhase(3);
           }}
-        />
+        />}
       </>}
       {phase === 2 && <>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Auto-generated inventory</Text>
