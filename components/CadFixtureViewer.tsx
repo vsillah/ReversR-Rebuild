@@ -7,7 +7,7 @@ type OrbitViewName = 'front' | 'front-right' | 'right' | 'back-right' | 'back' |
 type ElevationViewName = 'top' | 'bottom';
 type ViewName = 'isometric' | OrbitViewName | ElevationViewName;
 type FixedViewName = Exclude<ViewName, 'isometric'>;
-type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'compactOpen' | 'compactClosed';
+type ViewerAction = ViewName | 'zoomIn' | 'zoomOut' | 'panLeft' | 'panRight' | 'panUp' | 'panDown' | 'compactOpen' | 'compactClosed';
 type ViewerActions = Partial<Record<ViewerAction, () => void>> & {
   zoomTo?: (zoom: number) => void;
 };
@@ -349,6 +349,30 @@ const fallbackStyle: React.CSSProperties = {
   background: '#dce6ef',
 };
 
+const interactionGuideStyle: React.CSSProperties = {
+  position: 'absolute', left: 12, bottom: 12, zIndex: 2,
+  maxWidth: 'calc(100% - 92px)', padding: '7px 10px',
+  border: '1px solid rgba(216, 227, 223, 0.18)', borderRadius: 999,
+  color: '#e8fffa', background: 'rgba(23, 33, 31, 0.55)',
+  backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+  fontFamily: 'system-ui, sans-serif', fontSize: 11, lineHeight: 1.3,
+  pointerEvents: 'none',
+};
+
+const panPanelStyle: React.CSSProperties = {
+  position: 'absolute', left: 12, top: 12, zIndex: 2,
+  display: 'grid', gridTemplateColumns: 'repeat(3, 30px)', gridTemplateRows: 'repeat(3, 30px)',
+  gap: 2, padding: 5, borderRadius: 12,
+  border: '1px solid rgba(216, 227, 223, 0.18)',
+  background: 'rgba(23, 33, 31, 0.42)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+};
+
+const panButtonStyle: React.CSSProperties = {
+  appearance: 'none', width: 30, height: 30, minWidth: 30, minHeight: 30,
+  padding: 0, borderRadius: 8, border: '1px solid rgba(216, 227, 223, 0.2)',
+  color: '#e8fffa', background: 'rgba(23, 33, 31, 0.48)', cursor: 'pointer',
+};
+
 export default function CadFixtureViewer({
   geometry,
   label,
@@ -584,10 +608,14 @@ export default function CadFixtureViewer({
           setCurrentView(name);
           renderer.domElement.dataset.view = name;
         };
-        const setView = (name: ViewName, options: { resetZoom?: boolean } = {}) => {
+        const setView = (name: ViewName, options: { resetZoom?: boolean; resetPan?: boolean } = {}) => {
           updateView(name);
           rig.rotation.set(0, 0, 0);
           if (options.resetZoom) userZoom = 1;
+          if (options.resetPan) {
+            rig.position.set(0, 0, 0);
+            renderer.domElement.dataset.pan = '0.000,0.000,0.000';
+          }
           renderer.domElement.dataset.view = name;
           const distance = distanceForViewport();
           camera.up.set(0, 1, 0);
@@ -627,7 +655,7 @@ export default function CadFixtureViewer({
           applyZoom();
         };
         viewerActions.current = {
-          isometric: () => setView('isometric', { resetZoom: true }),
+          isometric: () => setView('isometric', { resetZoom: true, resetPan: true }),
           zoomIn: () => setZoom(userZoom * 1.2),
           zoomOut: () => setZoom(userZoom / 1.2),
           zoomTo: (zoom: number) => setZoom(zoom),
@@ -643,25 +671,41 @@ export default function CadFixtureViewer({
         fixedViews.forEach(view => {
           viewerActions.current[view] = () => setView(view);
         });
-        setView('isometric', { resetZoom: true });
+        setView('isometric', { resetZoom: true, resetPan: true });
 
         let pointerDown = false;
+        let panning = false;
         let lastX = 0;
         let lastY = 0;
         let pinchDistance: number | null = null;
+        let pinchMidpoint: { x: number; y: number } | null = null;
         const pointers = new Map<number, { x: number; y: number }>();
         let raf = 0;
+        const panByPixels = (deltaX: number, deltaY: number) => {
+          const scale = radius * 0.0045 / userZoom;
+          const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+          const up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+          rig.position.addScaledVector(right, deltaX * scale);
+          rig.position.addScaledVector(up, -deltaY * scale);
+          renderer.domElement.dataset.pan = `${rig.position.x.toFixed(3)},${rig.position.y.toFixed(3)},${rig.position.z.toFixed(3)}`;
+        };
+        viewerActions.current.panLeft = () => panByPixels(-32, 0);
+        viewerActions.current.panRight = () => panByPixels(32, 0);
+        viewerActions.current.panUp = () => panByPixels(0, -32);
+        viewerActions.current.panDown = () => panByPixels(0, 32);
         const onPointerDown = (event: PointerEvent) => {
           pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
           pointerDown = pointers.size === 1;
+          panning = pointerDown && (event.shiftKey || event.button === 2);
           lastX = event.clientX;
           lastY = event.clientY;
           if (pointers.size === 2) {
             const [first, second] = Array.from(pointers.values());
             pinchDistance = Math.hypot(second.x - first.x, second.y - first.y);
+            pinchMidpoint = { x: (first.x + second.x) / 2, y: (first.y + second.y) / 2 };
             pointerDown = false;
           }
-          renderer.domElement.style.cursor = pointers.size === 1 ? 'grabbing' : 'default';
+          renderer.domElement.style.cursor = panning ? 'move' : pointers.size === 1 ? 'grabbing' : 'default';
           try {
             renderer.domElement.setPointerCapture?.(event.pointerId);
           } catch {}
@@ -672,8 +716,11 @@ export default function CadFixtureViewer({
           if (pointers.size >= 2) {
             const [first, second] = Array.from(pointers.values());
             const nextDistance = Math.hypot(second.x - first.x, second.y - first.y);
+            const nextMidpoint = { x: (first.x + second.x) / 2, y: (first.y + second.y) / 2 };
             if (pinchDistance && nextDistance > 0) setZoom(userZoom * (nextDistance / pinchDistance));
+            if (pinchMidpoint) panByPixels(nextMidpoint.x - pinchMidpoint.x, nextMidpoint.y - pinchMidpoint.y);
             pinchDistance = nextDistance;
+            pinchMidpoint = nextMidpoint;
             return;
           }
           if (!pointerDown) return;
@@ -682,12 +729,17 @@ export default function CadFixtureViewer({
           lastX = event.clientX;
           lastY = event.clientY;
           if (deltaX || deltaY) updateView('custom');
-          rig.rotation.y += deltaX * 0.009;
-          rig.rotation.x = Math.max(-1.2, Math.min(1.2, rig.rotation.x + deltaY * 0.007));
+          if (panning) panByPixels(deltaX, deltaY);
+          else {
+            rig.rotation.y += deltaX * 0.009;
+            rig.rotation.x = Math.max(-1.2, Math.min(1.2, rig.rotation.x + deltaY * 0.007));
+          }
         };
         const onPointerUp = (event: PointerEvent) => {
           pointers.delete(event.pointerId);
           pinchDistance = null;
+          pinchMidpoint = null;
+          panning = false;
           pointerDown = pointers.size === 1;
           const remainingPointer = pointers.values().next().value;
           if (remainingPointer) {
@@ -705,6 +757,7 @@ export default function CadFixtureViewer({
           event.preventDefault();
           setZoom(userZoom * Math.exp(-event.deltaY * 0.001));
         };
+        const preventContextMenu = (event: MouseEvent) => event.preventDefault();
         const resize = () => {
           const nextWidth = host.clientWidth || initialWidth;
           const nextHeight = host.clientHeight || initialHeight;
@@ -718,6 +771,7 @@ export default function CadFixtureViewer({
         renderer.domElement.addEventListener('pointerup', onPointerUp);
         renderer.domElement.addEventListener('pointercancel', onPointerUp);
         renderer.domElement.addEventListener('wheel', onWheel, { passive: false });
+        renderer.domElement.addEventListener('contextmenu', preventContextMenu);
         const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(resize);
         resizeObserver?.observe(host);
         window.addEventListener('resize', resize);
@@ -739,6 +793,7 @@ export default function CadFixtureViewer({
           renderer.domElement.removeEventListener('pointerup', onPointerUp);
           renderer.domElement.removeEventListener('pointercancel', onPointerUp);
           renderer.domElement.removeEventListener('wheel', onWheel);
+          renderer.domElement.removeEventListener('contextmenu', preventContextMenu);
           modelGeometry.dispose();
           modelMaterial.dispose();
           edgeGeometry?.dispose();
@@ -862,7 +917,7 @@ export default function CadFixtureViewer({
             <ViewCue view={currentView} compact />
           </button>
           <span role="status" style={visuallyHiddenStyle}>{currentViewLabel}</span>
-          <div ref={puckRef} id={puckId} hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
+          <div ref={puckRef} id={puckId} data-testid="cad-orientation-controls" hidden={!expanded} data-layout={compactControls ? 'compact' : 'standard'} style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}>
             <div data-layout={compactControls ? 'compact' : 'standard'} style={{ ...elevationRingStyle, width: puckSize, height: puckSize }} role="group" aria-label="Orientation puck">
               {elevationViews.map(view => (
                 <button key={view} type="button" disabled={state !== 'ready'}
@@ -930,6 +985,12 @@ export default function CadFixtureViewer({
           <button type="button" data-testid="cad-zoom-out" data-zoom-meter={zoomOutProgress.toFixed(3)} style={zoomStepButtonStyle(canZoomOut)} disabled={!canZoomOut} title={canZoomOut ? 'Zoom out' : 'Minimum zoom reached'} aria-label={canZoomOut ? 'Zoom out' : 'Zoom out unavailable; minimum zoom reached'}
             onClick={() => viewerActions.current.zoomOut?.()}><span style={zoomButtonTextStyle}>-</span></button>
         </div>
+        <div data-testid="cad-pan-controls" style={{ ...panPanelStyle, ...(expanded ? { top: 'auto', bottom: 12 } : {}) }} role="group" aria-label="Model pan controls">
+          <span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model up" onClick={() => viewerActions.current.panUp?.()}>↑</button><span aria-hidden="true" />
+          <button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model left" onClick={() => viewerActions.current.panLeft?.()}>←</button><span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model right" onClick={() => viewerActions.current.panRight?.()}>→</button>
+          <span aria-hidden="true" /><button type="button" style={panButtonStyle} disabled={state !== 'ready'} aria-label="Pan model down" onClick={() => viewerActions.current.panDown?.()}>↓</button><span aria-hidden="true" />
+        </div>
+        <div data-testid="cad-interaction-guide" style={{ ...interactionGuideStyle, ...(expanded ? { display: 'none' } : {}) }}>Drag orbit · Shift/right-drag pan · Scroll/pinch zoom · ↺ reset</div>
         {state !== 'ready' ? (
           <div style={fallbackStyle} data-testid={`cad-fixture-${state}`}>
             {state === 'loading' ? 'Preparing 3D visualization...' : '3D visualization is unavailable in this browser.'}

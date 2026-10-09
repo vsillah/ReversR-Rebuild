@@ -86,6 +86,7 @@
     "iges:shadow:test": "node scripts/iges-shadow-coverage-test.js && node scripts/iges-shadow-overlay-test.js",
     "iges:contact-shadow:test": "node scripts/iges-contact-shadow-test.js",
     "cad:fixtures:qualify": "node scripts/cad-fixture-qualification.js",
+    "aegis:pilot:test": "node --test scripts/aegis-pilot-journey.test.js",
     "cad:convex:codegen": "node scripts/cad-convex-codegen.js",
     "cad:convex:codegen:check": "node scripts/cad-convex-codegen.js --check"
   },
