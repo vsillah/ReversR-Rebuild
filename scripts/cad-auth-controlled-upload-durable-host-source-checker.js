@@ -6,17 +6,22 @@ const { isDeepStrictEqual } = require('node:util');
 const ROOT = path.resolve(__dirname, '..');
 const PACKET = 'docs/cad-auth-controlled-upload-durable-host-source.json';
 const SOURCES = Object.freeze([
-  'convex/schema.ts', 'convex/cadControlledUploadSchema.ts', 'convex/cadControlledUploadStore.ts', 'convex/cadControlledUploadHost.ts',
+  'convex/schema.ts', 'convex/_generated/api.d.ts', 'convex/cadControlledUploadSchema.ts',
+  'convex/cadControlledUploadStore.ts', 'convex/cadControlledUploadContinuityStore.ts', 'convex/cadControlledUploadHost.ts',
+  'convex/cadUploadSessionGateway.ts', 'convex/http.ts',
   'offline/cad-convex/controlledUploadHostModel.ts', 'offline/cad-convex/controlledUploadHostBridge.ts',
   'offline/cad-convex/executionBlockers.json', 'offline/cad-convex/rollbackBaseline.json',
   'convex/developmentAuth.ts', 'convex/auth.ts',
   'scripts/helpers/cad-convex-schema-export.js', 'scripts/helpers/cad-controlled-upload-host-fixture.js',
+  'scripts/cad-convex-codegen.js',
   'scripts/cad-convex-execution-blockers.test.js', 'scripts/cad-convex-rollback-compatibility.test.js',
   'scripts/tsconfig.cad-controlled-host.json', 'scripts/cad-auth-controlled-upload-durable-host-source.test.js',
+  'scripts/cad-auth-controlled-upload-durable-host-implementation.test.js',
   'scripts/cad-auth-controlled-upload-durable-host-source-checker.js',
   'docs/cad-auth-controlled-upload-durable-host-source.md',
   'docs/cad-auth-controlled-upload-durable-host-integration-design.json',
   'scripts/cad-auth-controlled-upload-durable-host-integration-design-checker.js',
+  'server/cadControlledUploadDurableHostAdapter.js',
   'server/index.js', 'server/cadControlledInternalUploadActivation.js', 'server/cadControlledUploadDigestDriftRepair.js',
   'server/cadControlledUploadObservableGateWiringRepair.js', 'server/cadProductionExecutableRuntimeMountCompletion.js', 'server/cadUserUploadRouter.js',
 ]);
@@ -70,15 +75,15 @@ const coverage = {
   'backup-restore': 'old state can replay in pure model; custody verifier always denies; restoration continuity unresolved',
   'internal-occ': 'not simulated; pure proposals only; provider reexecution unqualified',
   'privacy-retention': 'accessor/extra-field rejection and sanitized errors; retention/custody unqualified',
-  'headers-success-contract': 'no new success path; existing synthetic runner only; all new handlers closed',
+  'headers-success-contract': 'all registered outputs keep body admission false; startup route remains blocked',
 };
 function expectedPacket(readSource = read) {
   return {
     schemaVersion: 1, artifact: 'cad-controlled-upload-durable-host-source-v1',
-    status: 'SOURCE_CANDIDATE_REVIEWABLE_HOST_BLOCKED', assertionLevel: 'synthetic-source-only',
+    status: 'SOURCE_INTERNAL_HOST_REGISTERED_RUNTIME_BLOCKED', assertionLevel: 'synthetic-source-only',
     baseCommit: '5535c2c4b52a0d9e6c483307e521f65e0a472148', productionBaseCommit: 'b4a310f84186697c8cb2d751c21bf79265969cad',
     hostQualified: false, bodyAdmissionAuthorized: false, liveReady: false, costs: 0,
-    publicIngressRegistered: false, internalHandlersEnabled: false, generationEvidenceComplete: false,
+    publicIngressRegistered: false, internalHandlersEnabled: true, generationEvidenceComplete: false,
     fixtureCompatible: false, hostRollbackQualified: false, historicalBaselineRewritten: false,
     proposedTables: 7, currentTables: 19, historicalBaselineTables: 10,
     sourceAtomicityIsHostProof: false, registrationInstalled: false, independentEvidenceVerified: false,
@@ -88,7 +93,7 @@ function expectedPacket(readSource = read) {
     unresolved: ['host transport authentication', 'independent approval and custody/restore continuity',
       'login/upload session generation evidence', 'independent receipt and smoke verification',
       'trusted clock and revocation-to-stream handoff', 'persistent automatic corruption/clock-regression stop',
-      'grant registration and baseline evidence installation', 'retention and bounded recovery qualification'],
+      'qualified grant installation and baseline evidence installation', 'retention and bounded recovery qualification'],
     acceptanceCoverage: Object.entries(coverage).map(([id, syntheticCoverage]) => ({ id, syntheticCoverage, liveExecuted: false, livePassed: false })),
     sourceBindings: Object.fromEntries(SOURCES.map(file => [file, hash(readSource(file))])),
   };

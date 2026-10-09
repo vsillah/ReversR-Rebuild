@@ -1,4 +1,5 @@
-// Unregistered typed store candidate. All registered handlers remain disabled.
+// Typed store implementation reached only through internal-only host functions.
+// Forward operations remain denied while independent authority generations are unavailable.
 import type { DatabaseReader, DatabaseWriter } from './_generated/server';
 import type { Doc } from './_generated/dataModel';
 import { closed, digest, exact, hash, plain, transition, uint, validSnapshot } from '../offline/cad-convex/controlledUploadHostModel';
@@ -72,8 +73,9 @@ export async function readCandidateAuthority(db: DatabaseReader, b: Binding, pri
 }
 
 // Must only run inside a single host mutation transaction. No network/clock reads.
-// This is unreachable from registered handlers. Pure fixtures exercise the contract;
-// neither this method nor a supplied principalKey authenticates a host transport.
+// Neither this method nor a supplied principalKey authenticates a host transport.
+// The registered internal host remains unable to execute forward operations until
+// independent authority generations are supplied by a separately reviewed source.
 export async function applyCandidateTransaction(db: DatabaseWriter, input: unknown, now: number) {
   if (!exact(input, ['scopeKey','principalKey','command']) || !plain(input) || !uint(now)) return closed('INPUT_INVALID');
   const captured = JSON.parse(JSON.stringify(input)) as { scopeKey: string; principalKey: string; command: Command };
