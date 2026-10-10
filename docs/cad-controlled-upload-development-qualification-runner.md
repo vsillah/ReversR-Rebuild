@@ -21,8 +21,12 @@ The internal qualification path is bound to:
 
 The checked-in binding intentionally leaves the qualification commit, approval
 digest, exact retained synthetic user/session ids, and UTC window null. A later
-reviewed source rebind must install every value. There is no environment,
-request, CLI, or caller-controlled enabling flag.
+reviewed source rebind must install every value. The qualification commit is the
+immutable reviewed runner baseline `e395632e81b9d8a7fac8491a36ffd14c1bbadcba`;
+execution is allowed only from that commit or a clean descendant. This avoids an
+impossible self-referential commit while retaining exact ancestry and dirty-tree
+rejection. There is no environment, request, CLI, or caller-controlled enabling
+flag.
 
 ## Terminal transaction
 
@@ -52,11 +56,12 @@ The existing production verifier remains unchanged and permanently returns
 
 The runner accepts no CLI arguments. It reads only the fixed mode-`0600`
 approval path, verifies its digest and exact target/source/fixture/window/limits,
-checks the local qualification commit and ancestry, rejects staged or unstaged
-tracked changes, and creates a local consumed attempt ledger before one fixed
-Convex mutation invocation. Ignored `.local` approval and ledger artifacts do
-not make the tracked source dirty. The ledger uses exclusive creation, complete
-writes, file fsync, checked close, and parent-directory fsync. It is never
+checks the immutable qualification baseline is an ancestor of the local HEAD,
+rejects staged or unstaged tracked changes, and creates a local consumed attempt
+ledger before one fixed Convex mutation invocation. Ignored `.local` approval
+and ledger artifacts do not make the tracked source dirty. The ledger uses
+exclusive creation, complete writes, file fsync, checked close, and
+parent-directory fsync. It is never
 deleted or overwritten, including after partial or unknown outcomes. The
 deployment and function references are constants.
 

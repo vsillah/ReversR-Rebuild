@@ -183,6 +183,7 @@ test('runner never retries an unknown mutation and reconciles with one fixed que
 
 test('runner approval is exact and source exposes internal-only zero-argument functions', () => {
   const now = installBinding();
+  binding.source.qualificationCommit = runner.QUALIFICATION_BASELINE;
   const approval = {
     schemaVersion: 1,
     mode: 'cad-controlled-upload-development-qualification-one-use-approval',
@@ -199,6 +200,7 @@ test('runner approval is exact and source exposes internal-only zero-argument fu
     rollback: { first: true, terminal: true, noDelete: true },
   };
   assert.equal(runner.validateApproval(approval, binding.approval.recordSha256, binding), true);
+  assert.throws(() => runner.validateApproval(approval, '0'.repeat(64), binding), /APPROVAL_INVALID/);
   assert.throws(() => runner.validateApproval({ ...approval, target: { ...approval.target,
     cloudUrl: 'https://wrong.example' } }, binding.approval.recordSha256, binding), /APPROVAL_BINDING_MISMATCH/);
   const implementation = fs.readFileSync(path.join(__dirname, '../convex/cadControlledUploadDevQualification.ts'), 'utf8');
@@ -219,26 +221,35 @@ test('runtime target mismatch is source-closed and never writes', async () => {
   assert.equal(database.writes(), 0);
 });
 
-test('runner source integrity rejects staged and unstaged tracked changes but does not inspect untracked files', () => {
-  const sourceBinding = { source: { qualificationCommit: 'c'.repeat(40), baseCommit: 'b'.repeat(40) } };
-  const run = statuses => {
+test('runner source integrity accepts only the reviewed baseline or a clean descendant', () => {
+  const baseline = runner.QUALIFICATION_BASELINE;
+  const descendant = 'd'.repeat(40);
+  const sourceBinding = { source: { qualificationCommit: baseline, baseCommit: 'b'.repeat(40) } };
+  const run = (statuses = {}, head = descendant, candidate = sourceBinding) => {
     const calls = [];
     const spawn = (_command, args) => {
       calls.push(args);
       const key = args.slice(0, 2).join(' ');
       const status = statuses[key] ?? 0;
-      return { status, stdout: args[0] === 'rev-parse' ? `${sourceBinding.source.qualificationCommit}\n` : '', stderr: '' };
+      return { status, stdout: args[0] === 'rev-parse' ? `${head}\n` : '', stderr: '' };
     };
-    return { calls, invoke: () => runner.assertLocalSource(sourceBinding, spawn) };
+    return { calls, invoke: () => runner.assertLocalSource(candidate, spawn) };
   };
   const clean = run({});
   assert.doesNotThrow(clean.invoke);
   assert.deepEqual(clean.calls.map(args => args.slice(0, 2).join(' ')), [
     'rev-parse HEAD', 'merge-base --is-ancestor', 'diff --quiet', 'diff --cached',
   ]);
+  assert.deepEqual(clean.calls[1], ['merge-base', '--is-ancestor', baseline, descendant]);
   assert.equal(clean.calls.some(args => args.includes('--untracked-files')), false);
+  assert.doesNotThrow(run({}, baseline).invoke);
   assert.throws(run({ 'diff --quiet': 1 }).invoke, /QUALIFICATION_TRACKED_SOURCE_DIRTY/);
   assert.throws(run({ 'diff --cached': 1 }).invoke, /QUALIFICATION_TRACKED_SOURCE_DIRTY/);
+  assert.throws(run({ 'merge-base --is-ancestor': 1 }).invoke, /QUALIFICATION_SOURCE_LINEAGE_MISMATCH/);
+  assert.throws(run({}, descendant, {
+    source: { ...sourceBinding.source, qualificationCommit: 'c'.repeat(40) },
+  }).invoke, /QUALIFICATION_SOURCE_BASELINE_MISMATCH/);
+  assert.throws(run({}, 'not-a-commit').invoke, /QUALIFICATION_SOURCE_HEAD_INVALID/);
 });
 
 test('consumed ledger is exclusively written, file-synced, closed, then parent-directory-synced', () => {
