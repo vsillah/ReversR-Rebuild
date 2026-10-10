@@ -2,11 +2,13 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { EXPECTED, check, checkPacket }
+const { EXPECTED, check, checkPacket, checkSuccessorContract }
   = require('./cad-phase5-package8-post-merge-rebind-checker');
 
 const packet = JSON.parse(fs.readFileSync(path.join(__dirname,
   '../docs/cad-phase5-package8-public-evidence/post-merge-execution-rebind.json'), 'utf8'));
+const successor = JSON.parse(fs.readFileSync(path.join(__dirname,
+  '../docs/cad-phase5-package8-public-evidence/live-adapter-runner-source-contract.json'), 'utf8'));
 const copy = value => structuredClone(value);
 
 test('exact post-merge packet passes while execution stays inactive', () => {
@@ -84,4 +86,16 @@ test('unresolved bindings and fully populated captain authorization cannot be om
   assert.throws(() => checkPacket(unresolved), /unresolved binding/);
   const next = copy(packet); next.nextGate.authorization = 'Approve.';
   assert.throws(() => checkPacket(next), /next gate/);
+});
+
+test('successor source contract accepts only the exact disabled binding', () => {
+  assert.equal(checkSuccessorContract().status, 'SOURCE_ONLY_DISABLED_DEFAULT');
+  const deployment = copy(successor);
+  deployment.admission.productionEvidenceDeploymentId = 'dpl_unknown';
+  assert.throws(() => checkSuccessorContract(undefined, deployment), /successor admission/);
+  const source = copy(successor);
+  source.sourceBindings.executionController.sha256 = '0'.repeat(64);
+  assert.throws(() => checkSuccessorContract(undefined, source), /successor source digest/);
+  const activation = copy(successor); activation.defaultState.runtimeActivationAllowed = true;
+  assert.throws(() => checkSuccessorContract(undefined, activation), /successor boundary/);
 });

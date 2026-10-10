@@ -24,7 +24,7 @@ const PACKAGE8_SESSION_DIGEST = 'c'.repeat(64);
 const PACKAGE8_ATTEMPT_ID = 'phase5-package8-development-review-attempt';
 const DERIVED_WARNING = 'Inspection geometry only - not validated for manufacturing.';
 const PACKAGE8_EVIDENCE_BINDING = Object.freeze({
-  vercelDeploymentId: 'dpl_6gU2Ppcn3J4zJQiwtQFBYU1VBM6D',
+  vercelDeploymentId: 'dpl_99Gfdd69ZTCGKYpbFgLDzMiwQGd9',
   reconciliationPacketPath:
     'docs/cad-phase5-package8-public-evidence/readiness-monitoring-reconciliation.json',
   reconciliationPacketSha256:

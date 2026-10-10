@@ -5,6 +5,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const packetPath = path.join(root,
   'docs/cad-phase5-package8-public-evidence/post-merge-execution-rebind.json');
+const successorPath = path.join(root,
+  'docs/cad-phase5-package8-public-evidence/live-adapter-runner-source-contract.json');
 const EXPECTED = Object.freeze({
   main: '27afaccd00231acbca49b71a5fafabd42e9637bd',
   tree: 'c45198a6c493d03e3a57533ad63150323c02b4ea',
@@ -17,12 +19,72 @@ const EXPECTED = Object.freeze({
   deployment: 'dpl_6gU2Ppcn3J4zJQiwtQFBYU1VBM6D',
   fixture: '0bdb42a7c58f4d51eee7eec2befae6ba590e43e0ecce34350cef9db4345c4c70',
 });
+const SUCCESSOR = Object.freeze({
+  main: '24ec45362517d60237f6f3e186e5048f49177cf5',
+  deployment: 'dpl_99Gfdd69ZTCGKYpbFgLDzMiwQGd9',
+  rebindPacket: '1a726b14bed6f3c771b6df58126e9a9ae81d1b726776720e51bd0456f6126e1d',
+});
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const exactKeys = (value, keys) => Boolean(value && typeof value === 'object'
   && !Array.isArray(value) && Object.keys(value).length === keys.length
   && keys.every(key => Object.hasOwn(value, key)));
 const allFalse = value => Boolean(value && Object.keys(value).length > 0
   && Object.values(value).every(item => item === false));
+
+function checkSuccessorContract(rootPath = root, suppliedContract) {
+  const contract = suppliedContract || JSON.parse(fs.readFileSync(path.join(rootPath,
+    path.relative(root, successorPath)), 'utf8'));
+  if (contract.packetType !== 'CAD_PHASE5_PACKAGE8_LIVE_ADAPTER_RUNNER_SOURCE_CONTRACT'
+      || contract.status !== 'SOURCE_ONLY_DISABLED_DEFAULT'
+      || contract.scope !== 'DEVELOPMENT_ONLY_NONPROPRIETARY_SYNTHETIC_QUALIFICATION') {
+    throw Error('successor identity');
+  }
+  const admission = contract.admission || {};
+  if (admission.mergedMainCommit !== SUCCESSOR.main
+      || admission.productionEvidenceDeploymentId !== SUCCESSOR.deployment
+      || admission.productionEvidenceState !== 'READY'
+      || admission.deploymentMetadataBoundMergeCommit !== SUCCESSOR.main
+      || admission.deploymentEvidenceReviewedLocally !== true
+      || admission.providerRecheckPerformedByThisRound !== false
+      || admission.rebindPacketSha256 !== SUCCESSOR.rebindPacket
+      || admission.reconciliationPacketSha256 !== EXPECTED.reconciliation
+      || admission.sourceToDeploymentFunctionEquivalence !== 'NOT_CLAIMED') {
+    throw Error('successor admission');
+  }
+  if (sha256(path.join(rootPath,
+    'docs/cad-phase5-package8-public-evidence/post-merge-execution-rebind.json'))
+      !== SUCCESSOR.rebindPacket) throw Error('successor rebind digest');
+  const bindings = contract.sourceBindings || {};
+  const bindingNames = ['executionController', 'reviewedSourceBridges',
+    'liveAdapterComposition', 'internalRunner', 'controllerTest', 'runnerTest'];
+  for (const name of bindingNames) {
+    const binding = bindings[name];
+    if (typeof binding?.path !== 'string' || typeof binding.sha256 !== 'string'
+        || sha256(path.join(rootPath, binding.path)) !== binding.sha256) {
+      throw Error('successor source digest');
+    }
+  }
+  if (bindings.executionController.path !== 'server/cadPhase5Package8ExecutionController.js'
+      || bindings.controllerTest.path !== 'scripts/cad-phase5-package8-execution-controller.test.js'
+      || bindings.reviewedSourceBridges.sha256 !== EXPECTED.bridge
+      || !allFalse(contract.defaultState)) throw Error('successor boundary');
+  const offline = contract.offlineQualification || {};
+  if (offline.gate !== 'OFFLINE_SYNTHETIC_TEST_ONLY'
+      || offline.fixtureSha256 !== EXPECTED.fixture || offline.projectOwned !== true
+      || offline.nonproprietary !== true || offline.customerData !== false
+      || ['providerRequests', 'liveInvocations', 'runtimeActivations',
+        'requestBodyAdmissions', 'privateOrCustomerCadReads', 'r2Objects',
+        'sandboxJobs', 'downloads', 'payments'].some(key => offline[key] !== 0)) {
+    throw Error('successor qualification');
+  }
+  const boundary = contract.qualificationBoundary || {};
+  if (boundary.controlledSyntheticPathOnly !== true
+      || boundary.proprietaryOrCustomerOwnershipQualified !== false
+      || boundary.customerDataHandlingQualified !== false
+      || boundary.generalProductionUploadReady !== false
+      || boundary.package8Activated !== false) throw Error('successor qualification boundary');
+  return contract;
+}
 
 function checkPacket(packet, rootPath = root) {
   if (packet.packetType !== 'CAD_PHASE5_PACKAGE8_POST_MERGE_EXECUTION_REBIND'
@@ -43,10 +105,20 @@ function checkPacket(packet, rootPath = root) {
       || source.productionEvidenceDeploymentId !== EXPECTED.deployment
       || source.sourceToDeploymentFunctionEquivalence !== 'NOT_CLAIMED'
       || source.deploymentInvokedByThisRound !== false) throw Error('source binding');
+  let successor;
   for (const binding of [source.reboundControllerSource, source.sourceBridge,
     source.lifecycleMonitor, source.controllerTest, source.reconciliationPacket]) {
-    if (typeof binding?.path !== 'string'
-        || sha256(path.join(rootPath, binding.path)) !== binding.sha256) throw Error('source digest');
+    if (typeof binding?.path !== 'string') throw Error('source digest');
+    const currentDigest = sha256(path.join(rootPath, binding.path));
+    if (currentDigest === binding.sha256) continue;
+    if (![source.reboundControllerSource.path, source.controllerTest.path]
+      .includes(binding.path)) throw Error('source digest');
+    successor ||= checkSuccessorContract(rootPath);
+    const successorBinding = binding.path === source.reboundControllerSource.path
+      ? successor.sourceBindings.executionController : successor.sourceBindings.controllerTest;
+    if (successorBinding.path !== binding.path || successorBinding.sha256 !== currentDigest) {
+      throw Error('source digest');
+    }
   }
 
   const target = packet.targetBindings || {};
@@ -179,7 +251,8 @@ function checkPacket(packet, rootPath = root) {
 
   const controller = fs.readFileSync(path.join(rootPath,
     'server/cadPhase5Package8ExecutionController.js'), 'utf8');
-  if (!controller.includes(EXPECTED.deployment)
+  const activeDeployment = successor?.admission.productionEvidenceDeploymentId || EXPECTED.deployment;
+  if (!controller.includes(activeDeployment)
       || !/configured:\s*false/.test(controller) || !/routeMounted:\s*false/.test(controller)
       || !/providerDispatchEnabled:\s*false/.test(controller)
       || !/conversionDispatchEnabled:\s*false/.test(controller)
@@ -202,4 +275,4 @@ function check() {
 }
 
 if (require.main === module) process.stdout.write(`${JSON.stringify(check())}\n`);
-module.exports = { EXPECTED, check, checkPacket };
+module.exports = { EXPECTED, SUCCESSOR, check, checkPacket, checkSuccessorContract };
