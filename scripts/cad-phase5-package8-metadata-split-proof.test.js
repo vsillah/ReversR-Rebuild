@@ -17,9 +17,10 @@ const inventory = collectSourceInventory(root);
 
 test('split proof verifies deterministic source names while keeping deployment equivalence unproven', () => {
   assert.deepEqual(verify(root), []);
-  assert.equal(inventory.functionCount, 50);
+  assert.equal(inventory.functionCount, 56);
+  assert.equal(inventory.moduleCount, 12);
   assert.equal(inventory.visibilityCounts.public, 9);
-  assert.equal(inventory.visibilityCounts.internal, 41);
+  assert.equal(inventory.visibilityCounts.internal, 47);
 });
 
 test('source drift and duplicate function names fail closed', () => {

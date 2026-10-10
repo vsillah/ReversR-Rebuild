@@ -17,6 +17,11 @@ const EXPECTED_TARGET = Object.freeze({
   cloudUrl: 'https://majestic-alligator-31.convex.cloud',
 });
 const MAX_IDENTITY_AGE_MS = 15 * 60 * 1000;
+const ISSUER_SUCCESSOR_BASE_COMMIT = '1512dedb5c240765bf87c749e07ed2f6709ec5b1';
+const ISSUER_SUCCESSOR_MODULE = 'cadPhase5Package8ApprovalIssuance';
+const ISSUER_SUCCESSOR_FUNCTIONS = Object.freeze([
+  'close', 'consume', 'issue', 'readSanitized', 'revoke', 'verify',
+].map(name => ({ name: `${ISSUER_SUCCESSOR_MODULE}:${name}`, visibility: 'internal' })));
 
 function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
@@ -107,6 +112,31 @@ function collectSourceInventory(rootPath = root) {
   };
 }
 
+function approvedIssuerSuccessor(historical, current, manifest) {
+  if (historical?.moduleCount !== 11 || historical?.functionCount !== 50
+      || historical?.visibilityCounts?.public !== 9
+      || historical?.visibilityCounts?.internal !== 41
+      || current?.moduleCount !== 12 || current?.functionCount !== 56
+      || current?.visibilityCounts?.public !== 9
+      || current?.visibilityCounts?.internal !== 47
+      || manifest?.version !== 88 || manifest?.baseCommit !== ISSUER_SUCCESSOR_BASE_COMMIT) {
+    return false;
+  }
+  const historicalModules = new Map(historical.modules.map(item => [item.name, item]));
+  const addedModules = current.modules.filter(item => !historicalModules.has(item.name));
+  if (addedModules.length !== 1 || addedModules[0].name !== ISSUER_SUCCESSOR_MODULE
+      || addedModules[0].sourcePath !== 'convex/cadPhase5Package8ApprovalIssuance.ts') return false;
+  for (const item of current.modules) {
+    if (item.name === ISSUER_SUCCESSOR_MODULE) continue;
+    if (JSON.stringify(item) !== JSON.stringify(historicalModules.get(item.name))) return false;
+  }
+  const historicalFunctions = new Set(historical.functions.map(item => JSON.stringify(item)));
+  const addedFunctions = current.functions.filter(item => !historicalFunctions.has(JSON.stringify(item)));
+  if (JSON.stringify(addedFunctions) !== JSON.stringify(ISSUER_SUCCESSOR_FUNCTIONS)) return false;
+  return current.codegenScriptSha256 === historical.codegenScriptSha256
+    && current.packageLockSha256 === historical.packageLockSha256;
+}
+
 function classifyDeploymentIdentityObservation(proof, observation, evaluatedAtUtc) {
   if (!observation || typeof observation !== 'object') return 'IDENTITY_OBSERVATION_MISSING';
   if (!evaluatedAtUtc || !Number.isFinite(Date.parse(evaluatedAtUtc))) return 'IDENTITY_EVALUATION_TIME_INVALID';
@@ -127,6 +157,8 @@ function classifyDeploymentIdentityObservation(proof, observation, evaluatedAtUt
 function validateProof(proof, inventory, manifest) {
   const errors = [];
   const expect = (condition, message) => { if (!condition) errors.push(message); };
+  const additiveIssuerSuccessor = approvedIssuerSuccessor(proof?.sourceInventory,
+    inventory, manifest);
   expect(proof?.schemaVersion === 1, 'schema version');
   expect(proof?.packetType === 'CAD_PHASE5_PACKAGE8_CONVEX_METADATA_SPLIT_PROOF', 'packet type');
   expect(proof?.status === 'SOURCE_INVENTORY_VERIFIED_DEPLOYMENT_EQUIVALENCE_UNPROVEN', 'fail-closed status');
@@ -134,7 +166,8 @@ function validateProof(proof, inventory, manifest) {
   expect(proof?.bindings?.mainCommit === MAIN_COMMIT, 'main binding');
   expect(proof?.bindings?.tree === SOURCE_TREE, 'tree binding');
   expect(proof?.bindings?.stopReceiptSha256 === STOP_RECEIPT_SHA256, 'stop receipt binding');
-  expect(JSON.stringify(proof?.sourceInventory) === JSON.stringify(inventory), 'source inventory drift');
+  expect(JSON.stringify(proof?.sourceInventory) === JSON.stringify(inventory)
+    || additiveIssuerSuccessor, 'source inventory drift');
   expect(proof?.sourceInventory?.functionCount === 50, 'function count');
   expect(proof?.sourceInventory?.moduleCount === 11, 'module count');
   expect(proof?.sourceInventory?.visibilityCounts?.public === 9, 'public function count');
@@ -142,8 +175,9 @@ function validateProof(proof, inventory, manifest) {
   expect(new Set((proof?.sourceInventory?.functions || []).map(entry => entry.name)).size
     === proof?.sourceInventory?.functionCount, 'function names unique');
 
-  expect(manifest?.version === 87, 'contract manifest version');
-  expect(manifest?.baseCommit === MAIN_COMMIT, 'contract manifest base');
+  expect(manifest?.version === (additiveIssuerSuccessor ? 88 : 87), 'contract manifest version');
+  expect(manifest?.baseCommit === (additiveIssuerSuccessor
+    ? ISSUER_SUCCESSOR_BASE_COMMIT : MAIN_COMMIT), 'contract manifest base');
   expect(manifest?.mode === 'offline-source-unqualified', 'contract manifest mode');
   expect(proof?.contractManifest?.path === 'offline/cad-convex/manifest.json', 'contract manifest path');
   expect(proof?.contractManifest?.version === 87, 'packet contract manifest version');
@@ -283,6 +317,7 @@ if (require.main === module) {
 
 module.exports = {
   EXPECTED_TARGET,
+  approvedIssuerSuccessor,
   buildProof,
   classifyDeploymentIdentityObservation,
   collectSourceInventory,

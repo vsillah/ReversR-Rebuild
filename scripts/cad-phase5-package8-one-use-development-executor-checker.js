@@ -18,6 +18,8 @@ const ZERO_ACTIONS = Object.freeze(['providerRequests', 'environmentValuesRead',
   'configurationChanges', 'deployments', 'liveInvocations', 'runtimeActivations',
   'sessionIssuances', 'requestBodyAdmissions', 'privateOrCustomerCadReads',
   'r2Objects', 'sandboxJobs', 'downloads', 'payments', 'retries']);
+const APPROVED_SOURCE_AUDIT_SUCCESSOR_SHA256 =
+  'd273fa07d3290db09eebf0debf927b35e532ffa105a729eb5acfd8bccaaaf537';
 
 function checkPacket(packet, rootPath = root) {
   if (packet?.schemaVersion !== 1
@@ -40,8 +42,20 @@ function checkPacket(packet, rootPath = root) {
   const bindings = packet.sourceBindings;
   if (!bindings || Object.keys(bindings).length !== 7) throw Error('source bindings');
   for (const binding of Object.values(bindings)) {
-    if (typeof binding?.path !== 'string' || !/^[a-f0-9]{64}$/.test(binding.sha256)
-        || hashFile(path.join(rootPath, binding.path)) !== binding.sha256) throw Error('source digest');
+    if (typeof binding?.path !== 'string' || !/^[a-f0-9]{64}$/.test(binding.sha256)) {
+      throw Error('source digest');
+    }
+    const currentDigest = hashFile(path.join(rootPath, binding.path));
+    if (currentDigest === binding.sha256) continue;
+    if (binding.path !== 'scripts/cad-convex-source-audit.js'
+        || currentDigest !== APPROVED_SOURCE_AUDIT_SUCCESSOR_SHA256) throw Error('source digest');
+    const successor = fs.readFileSync(path.join(rootPath, binding.path), 'utf8');
+    for (const file of ['cadPhase5Package8ApprovalIssuanceContract.js',
+      'cadPhase5Package8ApprovalIssuerAdapter.js',
+      'cadPhase5Package8ApprovalIssuance.ts',
+      'independent-approval-issuer-source-closure.json']) {
+      if (!successor.includes(file)) throw Error('source audit successor');
+    }
   }
   const contract = packet.coordinatorContract || {};
   if (contract.actualReviewedFactoriesComposed !== true
