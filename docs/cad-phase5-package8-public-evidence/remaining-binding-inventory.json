@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_REMAINING_BINDING_INVENTORY",
+  "status": "STOPPED_LIVE_SANDBOX_BINDING_UNAVAILABLE",
+  "scope": "BOUNDED_READ_ONLY_REMAINING_BINDING_INVENTORY",
+  "observedAtUtc": "2026-10-10T17:31:34Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mainCommit": "83140c02ebcf29f287c4d8c023e5dc16ce75f772",
+    "tree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "executionHead": "ae17c76ab47105632cbb7ec4fa6be9925f23fba3",
+    "executionTree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "productionDeployment": "dpl_BHGAbZQamRzSc23JPkDMiu62XKiX",
+    "r2RefreshPacketSha256": "2cf6942916649c9280475e55c75d86a08ccf531952ea4fd55c5df764e6588f12",
+    "splitProofPacketSha256": "51bd69a71349275c631c16eb4849303657fa9c5b3d1dbdd9b7161bd4cd6c77b1"
+  },
+  "readDisposition": {
+    "publicDocumentationReviewBatches": 2,
+    "vercelAuthenticatedMetadataPages": 4,
+    "convexAuthenticatedReads": 0,
+    "cloudflareAuthenticatedReads": 0,
+    "providerWrites": 0,
+    "rawResponsesPersisted": false,
+    "credentialsOrEnvironmentValuesRead": false,
+    "retryPerformed": false,
+    "stopGate": "NO_EXISTING_SANDBOX_RESOURCE_FOR_LIVE_RUNTIME_OR_POLICY_DIGEST"
+  },
+  "verifiedBindings": {
+    "r2Pricing": {
+      "provider": "cloudflare-r2",
+      "storageClass": "STANDARD",
+      "currency": "USD",
+      "storagePerGbMonth": 0.015,
+      "classAPerMillion": 4.5,
+      "classBPerMillion": 0.36,
+      "dataRetrievalPerGb": 0,
+      "internetEgressPerGb": 0,
+      "monthlyFreeStorageGb": 10,
+      "monthlyFreeClassAOperations": 1000000,
+      "monthlyFreeClassBOperations": 10000000,
+      "deleteOperationsFree": true,
+      "billingUnitRoundingApplies": true,
+      "source": "https://developers.cloudflare.com/r2/pricing/",
+      "retrievedAtUtc": "2026-10-10T17:31:34Z"
+    },
+    "vercelSpendManagement": {
+      "teamSlug": "vsillahs-projects",
+      "plan": "pro",
+      "budgetUsd": 200,
+      "automaticProductionPauseEnabled": false,
+      "spendWebhookEnabled": false,
+      "effectiveHardCapEnabled": false,
+      "budgetAloneStopsUsage": false,
+      "source": "authenticated Vercel Team Settings plus https://vercel.com/docs/spend-management"
+    },
+    "sandboxPublicContract": {
+      "isolation": "FIRECRACKER_MICROVM",
+      "supportedRuntimeIncludes": "node24",
+      "proMaximumVcpus": 8,
+      "memoryGbPerVcpu": 2,
+      "proMaximumContinuousHours": 24,
+      "persistenceDefault": true,
+      "nonpersistentOptOutSupported": true,
+      "activeCpuIncludedHoursPerMonth": 5,
+      "activeCpuStartingUsdPerHour": 0.128,
+      "provisionedMemoryIncludedGbHoursPerMonth": 420,
+      "provisionedMemoryStartingUsdPerGbHour": 0.0212,
+      "sandboxCreationsIncludedPerMonth": 5000,
+      "sandboxCreationsStartingUsdPerMillion": 0.6,
+      "dataTransferIncludedGbPerMonth": 20,
+      "snapshotStorageIncludedGb": 15,
+      "snapshotStorageStartingUsdPerGbMonth": 0.08,
+      "sources": [
+        "https://vercel.com/docs/sandbox",
+        "https://vercel.com/kb/guide/vercel-sandbox-duration-and-persistence",
+        "https://vercel.com/pricing"
+      ]
+    },
+    "sandboxSourcePolicy": {
+      "sourceAggregateSha256": "cb9f77377fb09baf05ae415c8ff27651399c1a071950b809d974cd2e43f1b478",
+      "executorSha256": "445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7",
+      "configSha256": "927da7487422d92b5e2e9506cb811321966d8321fcae19c1ac890afacb6d7426",
+      "sdkVersion": "3.3.0",
+      "runtime": "node24",
+      "region": "iad1",
+      "vcpus": 1,
+      "memoryMbMaximum": 2048,
+      "lifetimeMs": 60000,
+      "requestMs": 45000,
+      "commandMs": 10000,
+      "cleanupMs": 5000,
+      "networkPolicy": "deny-all",
+      "persistent": false,
+      "ports": [],
+      "runtimeDispatchEnabled": false,
+      "classification": "SOURCE_ONLY_NOT_LIVE_VERIFIED"
+    },
+    "sandboxAccountState": {
+      "existingSandboxResourceObserved": false,
+      "liveRuntimeDigestAvailable": false,
+      "liveResourcePolicyDigestAvailable": false,
+      "dashboardClassification": "GET_STARTED_NO_EXISTING_RUNTIME",
+      "runtimeCreatedByThisInventory": false
+    },
+    "monitoring": {
+      "vercelObservabilityAvailable": true,
+      "vercelDrainsConfigured": 0,
+      "vercelCustomAlertRulesObserved": 0,
+      "vercelDefaultAnomalyRuleObserved": true,
+      "availablePersonalChannels": [
+        "web",
+        "email",
+        "push",
+        "sms-for-spend-management"
+      ],
+      "globallyEnabledPersonalChannels": [
+        "web"
+      ],
+      "r2JurisdictionalDataAccessLogsAvailable": false,
+      "package8LifecycleCoverageVerified": false,
+      "sources": [
+        "authenticated Vercel Alert Rules and My Notifications metadata",
+        "https://vercel.com/docs/notifications",
+        "https://vercel.com/docs/observability",
+        "https://vercel.com/docs/drains"
+      ]
+    },
+    "processorPublicContract": {
+      "vercelDpaPublished": true,
+      "subprocessorContractPublished": true,
+      "qualificationSpecificBoundaryAccepted": false,
+      "source": "https://vercel.com/legal/Vercel_Inc_-_Data_Processing_Addendum.pdf"
+    }
+  },
+  "convexDisposition": {
+    "installedCliVersion": "1.45.0",
+    "supportedDeploymentIdentityReadFound": false,
+    "internalFunctionSpecEndpointUsed": false,
+    "sourceFunctionInventoryVerifiedBySplitProof": true,
+    "deploymentIdentityVerified": false,
+    "sourceToDeploymentFunctionEquivalence": "NOT_CLAIMED",
+    "authenticatedReadSkippedAfterStop": true
+  },
+  "resolvedSinceR2Refresh": [
+    "current Cloudflare R2 pricing digest",
+    "Vercel Spend Management budget and effective hard-cap state",
+    "Vercel automatic-pausing setting"
+  ],
+  "unavailableValues": [
+    "fresh supported Convex deployment-identity receipt",
+    "Cloudflare R2 least-privilege credential custodian binding",
+    "Cloudflare R2 durable quota-ledger namespace binding",
+    "live Sandbox runtime digest",
+    "live Sandbox runtime, resource, network, persistence, and cost-enforcement receipt",
+    "qualification-specific private-data processor-boundary acceptance",
+    "metadata-only destination covering the R2 and Sandbox qualification lifecycle",
+    "Package 8-specific alert and stop-state rule"
+  ],
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "candidateWindow": {
+    "activated": false,
+    "rebindRequiredBeforeUse": true
+  },
+  "stopReason": "The Vercel Sandbox dashboard has no existing Sandbox resource from which a live runtime or policy digest can be obtained. Creating one was outside this read-only inventory and the stop gate ended further authenticated provider reads.",
+  "nextGate": "A separately approved prerequisite setup may create only the least-privilege development bindings needed for a one-use public-fixture preflight. It must leave request-body admission, storage and conversion dispatch, downloads, and Package 8 activation disabled."
+}

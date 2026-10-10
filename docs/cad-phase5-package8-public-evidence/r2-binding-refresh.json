@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_R2_BINDING_REFRESH",
+  "status": "BLOCKED_REMAINING_BINDINGS",
+  "scope": "SOURCE_ONLY_BINDING_REFRESH_AFTER_BOUNDED_R2_PROVISIONING",
+  "observedAtUtc": "2026-10-10T16:58:31Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mainCommit": "83140c02ebcf29f287c4d8c023e5dc16ce75f772",
+    "tree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "executionHead": "ae17c76ab47105632cbb7ec4fa6be9925f23fba3",
+    "executionTree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "productionDeployment": "dpl_BHGAbZQamRzSc23JPkDMiu62XKiX",
+    "readinessPacketSha256": "b0d1c3b8c3c6fe85990cf0664c54935adca145bd19ae57b0ea5410c213b83cf0",
+    "splitProofPacketSha256": "51bd69a71349275c631c16eb4849303657fa9c5b3d1dbdd9b7161bd4cd6c77b1",
+    "parentProposalSha256": "554fb996ba48f06109eef17026471aab9c44919926c4b203cb3355e210c39cda"
+  },
+  "evidenceDestinations": {
+    "restricted": {
+      "path": ".local/cad-phase5-package8/r2-binding-refresh-20261010T165831Z",
+      "directoryMode": "0700",
+      "fileMode": "0600",
+      "public": false
+    },
+    "publicSafe": {
+      "path": "docs/cad-phase5-package8-public-evidence",
+      "contentPolicy": "sanitized names, fixed classifications, source digests, and unavailable-value inventory only"
+    }
+  },
+  "verifiedR2Binding": {
+    "provider": "cloudflare-r2",
+    "accountReferenceSha256": "d866bce146afc71d8300445bc1956f4d65582a41f8669908c4168bb77ce4cae1",
+    "bucketName": "reversr-cad-package8-public-fixture-us",
+    "jurisdiction": "us",
+    "storageClass": "STANDARD",
+    "publicDevelopmentUrlEnabled": false,
+    "customDomainCount": 0,
+    "objectCount": 0,
+    "storedBytes": 0,
+    "classAOperations": 0,
+    "classBOperations": 0,
+    "credentialCreated": false,
+    "applicationBindingConfigured": false,
+    "pilotDeletionRule": {
+      "name": "Delete all objects after 1 day",
+      "prefix": null,
+      "deleteAfterDays": 1,
+      "enabled": true
+    },
+    "providerDefaultMultipartAbortRule": {
+      "abortAfterDays": 7,
+      "enabled": true,
+      "changedByThisStep": false
+    },
+    "dataAccessLogs": {
+      "available": false,
+      "classification": "UNAVAILABLE_FOR_JURISDICTIONAL_BUCKET",
+      "monitoringEquivalenceClaimed": false
+    }
+  },
+  "sourceEnforcedLimits": {
+    "sourceSha256": "106920b5c72e51d5132edd56d913246489a8aa0e0f1c5cf5978b356dee56ee5d",
+    "maxStoredBytes": 8388608,
+    "maxObjects": 12,
+    "maxClassAOperations": 1000,
+    "maxClassBOperations": 1000,
+    "maxDeleteOperations": 1000,
+    "maxPilotCostMicros": 9000000,
+    "providerDispatchEnabled": false
+  },
+  "provisioningDisposition": {
+    "browserProvisioningAttempts": 1,
+    "bucketResourcesCreated": 1,
+    "pilotLifecycleRulesCreated": 1,
+    "outcome": "VERIFIED_PRIVATE_BUCKET_READY",
+    "rawResponsePersisted": false,
+    "credentialsRead": false,
+    "credentialsCreated": false,
+    "objectsCreated": 0,
+    "runtimeActivated": false
+  },
+  "unavailableValues": [
+    "fresh authoritative Convex target metadata and function-name inventory",
+    "Cloudflare R2 least-privilege credential custodian binding",
+    "Cloudflare R2 durable quota-ledger namespace binding",
+    "current Cloudflare R2 pricing digest",
+    "live Sandbox runtime digest",
+    "live Sandbox resource, network, persistence, and cost-control metadata",
+    "private-data processor boundary attestation",
+    "Vercel Spend Management hard limit",
+    "Vercel automatic-pausing setting",
+    "metadata-only monitoring destinations compatible with jurisdictional R2",
+    "monitoring alert rules"
+  ],
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "candidateWindow": {
+    "activated": false,
+    "rebindRequiredBeforeUse": true
+  },
+  "nextGate": "A separately approved read-only inventory may resolve the remaining supported provider metadata. It must not treat jurisdictional R2 Data Access Logs as available or claim source-to-deployment function equivalence."
+}
