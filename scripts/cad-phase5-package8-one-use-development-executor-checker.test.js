@@ -21,6 +21,9 @@ test('baseline, source, authority, cost, action and activation widening fail clo
   assert.throws(() => checkPacket(source), /source digest/);
   const authority = copy(packet); authority.coordinatorContract.sessionIssuanceEnabled = true;
   assert.throws(() => checkPacket(authority), /coordinator contract/);
+  const issuer = copy(packet);
+  issuer.coordinatorContract.independentApprovalIssuanceVerifierRequired = false;
+  assert.throws(() => checkPacket(issuer), /coordinator contract/);
   const cost = copy(packet); cost.oneUseLimits.maximumCostUsdExclusive = 10;
   assert.throws(() => checkPacket(cost), /one-use limits/);
   const action = copy(packet); action.actionsPerformedByThisRound.providerRequests = 1;

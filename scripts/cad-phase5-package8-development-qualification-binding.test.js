@@ -7,7 +7,8 @@ const { CREDENTIAL_REFERENCES, ENVIRONMENT_VARIABLE_REFERENCES, LIMITS,
   QUALIFICATION_BINDING, QUALIFICATION_REVIEW_GATE, SOURCE_OPERATION_MAP,
   approvalCommitment, createCadPhase5Package8DevelopmentQualificationBinding,
 } = require('../server/cadPhase5Package8DevelopmentQualificationBinding');
-const { EXECUTION_BASELINE, expectedAncestryDigest, expectedRuntimeReceiptDigest,
+const { EXECUTION_BASELINE, expectedAncestryDigest, expectedApprovalIssuanceReceipt,
+  expectedRuntimeReceiptDigest,
 } = require('../server/cadPhase5Package8OneUseCoordinator');
 const { FUNCTIONS, createCadPhase5Package8ConvexDurableInvoker }
   = require('../server/cadPhase5Package8ConvexDurableInvoker');
@@ -47,7 +48,8 @@ function executionBinding() {
 function approval(overrides = {}) {
   const artifact = { schemaVersion: 1,
     kind: 'CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL',
-    status: 'ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION', approvalIdDigest: '0'.repeat(64),
+    status: 'ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION',
+    issuanceReference: 'package8-issued-once-2026-10-10', approvalIdDigest: '0'.repeat(64),
     issuedAtUtc: new Date(NOW).toISOString(), authorityExpiresAtUtc: WINDOW.endUtc,
     window: { ...WINDOW }, binding: { ...QUALIFICATION_BINDING },
     executionBinding: executionBinding(), owner: { ...OWNER }, session: { ...SESSION },
@@ -184,6 +186,17 @@ function fixture(options = {}) {
         shopId: OWNER.shopId, loginSessionId: SESSION.loginSessionId, authMethod: 'password',
         cadUploadAllowed: true, expiresAt: Date.parse(WINDOW.endUtc) + 1 };
     }, store: sessionStore },
+    approvalIssuance: { async verifyExact(request) { calls.push('approval:verify');
+      if (options.issuanceUnknown) throw Error('issuer unavailable');
+      if (options.issuanceMissing) return null;
+      const core = { ...request, verified: true, status: 'ISSUED_ACTIVE_ONE_USE',
+        revoked: false, consumed: false };
+      const receipt = { ...core, receiptDigest: hash(JSON.stringify(core)) };
+      if (options.issuanceRevoked) receipt.revoked = true;
+      if (options.issuanceConsumed) receipt.consumed = true;
+      if (options.issuanceStale) receipt.status = 'ISSUED_STALE';
+      if (options.issuanceMismatch) receipt.ownerCommitment = '0'.repeat(64);
+      return receipt; } },
     executionReceipt: { async verifyExact(binding) { calls.push('receipt:verify');
       if (options.receiptDrift) return { verified: false };
       return { verified: true, baselineCommit: EXECUTION_BASELINE.mergedMainCommit,
@@ -209,6 +222,7 @@ function fixture(options = {}) {
         snapshotPresent: false, attempts: 1, retries: 0, status: 'stopped', terminal: true,
         cleanupConfirmed: true, outcomeUnknown: false },
     }; } } };
+  if (options.omitIssuanceVerifier) delete sources.approvalIssuance;
   const binding = createCadPhase5Package8DevelopmentQualificationBinding({ reviewOnly: true,
     approvalGate: QUALIFICATION_REVIEW_GATE, sources,
     lifecycleMonitor: createDisabledPackage8LifecycleMonitor(), now: () => NOW });
@@ -232,6 +246,7 @@ test('review composition uses actual factories and all Convex references without
   assert.equal(f.binding.reviewConfigured, true);
   assert.equal(f.binding.sourceComposition.actualReviewedFactoriesComposed, true);
   assert.equal(f.binding.sourceComposition.approvalBoundComposition, true);
+  assert.equal(f.binding.sourceComposition.independentApprovalIssuanceRequired, true);
   assert.equal(f.binding.sourceComposition.executableAdaptersExposed, false);
   assert.deepEqual(f.binding.sourceComposition.convexOperations, FUNCTIONS);
   assert.deepEqual(f.calls, []);
@@ -247,7 +262,8 @@ test('review composition uses actual factories and all Convex references without
 
 test('one issued authority runs once, closes first, revokes, deletes and returns sanitized evidence', async () => {
   const f = fixture();
-  const value = await f.binding.reviewOneUse({ approvalArtifact: approval() });
+  const artifact = approval();
+  const value = await f.binding.reviewOneUse({ approvalArtifact: artifact });
   assert.equal(value.ok, true); assert.equal(value.code, 'PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFIED_CLOSED');
   assert.equal(value.deletedArtifactCount, 2); assert.equal(value.sessionCount, 1);
   assert.equal(value.fileCount, 1); assert.equal(value.attemptCount, 1);
@@ -259,11 +275,22 @@ test('one issued authority runs once, closes first, revokes, deletes and returns
   assert.equal(f.calls.filter(call => call === 'r2:put').length, 2);
   assert.equal(f.calls.filter(call => call === 'r2:delete').length, 2);
   assert.equal(f.calls.includes('r2:get'), false); assert.equal(f.calls.includes('session:issue'), false);
+  assert.equal(f.calls[0], 'approval:verify');
+  assert.ok(f.calls.indexOf('approval:verify') < f.calls.indexOf('receipt:verify'));
+  assert.ok(f.calls.indexOf('receipt:verify') < f.calls.indexOf('session:verify'));
   assert.ok(f.calls.indexOf('convex:closeForRollback') < f.calls.indexOf('session:revoke'));
   assert.ok(f.calls.indexOf('session:revoke') < f.calls.indexOf('r2:delete'));
   assert.equal(Object.keys(value).some(key => /token|secret|objectKey|userId|shopId/i.test(key)), false);
+  const issuance = expectedApprovalIssuanceReceipt(artifact);
+  const exactClaimDigest = hash([issuance.issuanceReference, issuance.receiptDigest,
+    artifact.approvalIdDigest, artifact.window.idDigest,
+    artifact.executionBinding.executionHeadCommit].join('|'));
+  assert.equal(f.claims.has(exactClaimDigest), true);
+  assert.equal(f.claims.get(exactClaimDigest).evidenceDigest,
+    hash([issuance.receiptDigest,
+      artifact.executionBinding.runtimeDeployment.receiptDigest].join('|')));
   const restarted = fixture({ state: f.state });
-  const replay = await restarted.binding.reviewOneUse({ approvalArtifact: approval() });
+  const replay = await restarted.binding.reviewOneUse({ approvalArtifact: artifact });
   assert.equal(replay.code, 'PACKAGE8_ATTEMPT_CONSUMED');
   assert.equal(restarted.sandboxCount(), 0); assert.equal(f.sandboxCount(), 1);
 });
@@ -282,6 +309,26 @@ test('stale authority, cost widening, source drift and owner mismatch stop befor
     const f = fixture(options); const value = await f.binding.reviewOneUse({ approvalArtifact: approval() });
     assert.equal(value.ok, false); assert.equal(f.calls.includes('r2:put'), false);
     assert.equal(f.calls.includes('sandbox:create'), false);
+  }
+});
+
+test('self-hash, missing verifier and uncertain or inactive issuance stop before adapter activity', async () => {
+  const selfHashed = approval();
+  assert.equal(selfHashed.approvalIdDigest, approvalCommitment(selfHashed));
+
+  const omitted = fixture({ omitIssuanceVerifier: true });
+  assert.equal(omitted.binding.reviewConfigured, false);
+  assert.equal((await omitted.binding.reviewOneUse({ approvalArtifact: selfHashed })).code,
+    'PACKAGE8_QUALIFICATION_BINDING_DISABLED');
+  assert.deepEqual(omitted.calls, []);
+
+  for (const options of [{ issuanceMissing: true }, { issuanceUnknown: true },
+    { issuanceMismatch: true }, { issuanceStale: true }, { issuanceRevoked: true },
+    { issuanceConsumed: true }]) {
+    const f = fixture(options);
+    const value = await f.binding.reviewOneUse({ approvalArtifact: selfHashed });
+    assert.equal(value.code, 'PACKAGE8_EXECUTION_UNAVAILABLE', JSON.stringify(options));
+    assert.deepEqual(f.calls, ['approval:verify']);
   }
 });
 

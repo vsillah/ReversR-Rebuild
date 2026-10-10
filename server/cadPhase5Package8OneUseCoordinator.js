@@ -74,6 +74,36 @@ const validOwner = value => exactKeys(value, ['userId', 'shopId', 'uploadSession
 const validSession = value => exactKeys(value, ['sessionDigest', 'loginSessionId'])
   && digest(value.sessionDigest) && id(value.loginSessionId);
 
+function approvalIssuanceVerificationRequest(artifact) {
+  return Object.freeze({
+    schemaVersion: 1,
+    issuanceReference: artifact.issuanceReference,
+    approvalCommitment: artifact.approvalIdDigest,
+    baselineCommit: EXECUTION_BASELINE.mergedMainCommit,
+    baselineTree: EXECUTION_BASELINE.mergedMainTree,
+    executionHeadCommit: artifact.executionBinding.executionHeadCommit,
+    executionHeadTree: artifact.executionBinding.executionHeadTree,
+    runtimeDeploymentId: artifact.executionBinding.runtimeDeployment.deploymentId,
+    runtimeReceiptDigest: artifact.executionBinding.runtimeDeployment.receiptDigest,
+    ownerCommitment: hash([artifact.owner.userId, artifact.owner.shopId,
+      artifact.owner.uploadSessionId].join('|')),
+    sessionCommitment: hash([artifact.session.sessionDigest,
+      artifact.session.loginSessionId].join('|')),
+    windowIdDigest: artifact.window.idDigest,
+    windowStartUtc: artifact.window.startUtc,
+    windowEndUtc: artifact.window.endUtc,
+    limitsCommitment: hash(JSON.stringify(artifact.limits)),
+    authorityExpiresAtUtc: artifact.authorityExpiresAtUtc,
+  });
+}
+
+function expectedApprovalIssuanceReceipt(artifact) {
+  const request = approvalIssuanceVerificationRequest(artifact);
+  const receipt = Object.freeze({ ...request, verified: true,
+    status: 'ISSUED_ACTIVE_ONE_USE', revoked: false, consumed: false });
+  return Object.freeze({ ...receipt, receiptDigest: hash(JSON.stringify(receipt)) });
+}
+
 function expectedAncestryDigest(execution) {
   return hash([
     EXECUTION_BASELINE.mergedMainCommit,
@@ -157,6 +187,7 @@ function createCadPhase5Package8OneUseCoordinator({
   sandbox,
   sessionAuthority,
   sessionService,
+  approvalIssuanceVerifier,
   executionReceiptVerifier,
   lifecycleMetadata,
   owner,
@@ -175,6 +206,7 @@ function createCadPhase5Package8OneUseCoordinator({
     && sessionAuthority?.sourceOnly === true && sessionAuthority.configured === true
     && typeof sessionAuthority.resolveAuthorization === 'function'
     && typeof sessionService?.revokeSession === 'function'
+    && typeof approvalIssuanceVerifier?.verifyExact === 'function'
     && typeof executionReceiptVerifier?.verifyExact === 'function'
     && typeof lifecycleMetadata?.readSanitized === 'function'
     && validOwner(owner) && validSession(session)
@@ -227,6 +259,15 @@ function createCadPhase5Package8OneUseCoordinator({
       functionEquivalence: 'VERIFIED_EXACT',
     };
     if (!same(receipt, expected)) throw Error('PACKAGE8_EXECUTION_RECEIPT_UNKNOWN');
+    return receipt;
+  }
+
+  async function verifyApprovalIssuance(approvalArtifact, signal) {
+    const request = approvalIssuanceVerificationRequest(approvalArtifact);
+    const receipt = await bounded(operationSignal => approvalIssuanceVerifier.verifyExact(
+      request, { signal: operationSignal }), signal, operationBudgetMs);
+    const expected = expectedApprovalIssuanceReceipt(approvalArtifact);
+    if (!same(receipt, expected)) throw Error('PACKAGE8_APPROVAL_ISSUANCE_UNKNOWN');
     return receipt;
   }
 
@@ -348,10 +389,11 @@ function createCadPhase5Package8OneUseCoordinator({
       deletedArtifactCount: 0 };
     let cleanupAttempted = false;
     try {
+      const issuance = await verifyApprovalIssuance(approvalArtifact, signal);
       await verifyExecutionBinding(approvalArtifact.executionBinding, signal);
       const grant = await bounded(operationSignal => sessionAuthority.resolveAuthorization(
         Object.freeze({ schemaVersion: 1, cohort: sessionAuthority.cohort,
-          requestRef: approvalArtifact.approvalIdDigest,
+          requestRef: issuance.issuanceReference,
           shopId: owner.shopId,
           loginSessionRef: session.loginSessionId,
           transport: 'bearer' }), { signal: operationSignal }), signal, operationBudgetMs);
@@ -364,6 +406,8 @@ function createCadPhase5Package8OneUseCoordinator({
 
       const createdAt = clock();
       const idempotencyDigest = hash([
+        issuance.issuanceReference,
+        issuance.receiptDigest,
         approvalArtifact.approvalIdDigest,
         approvalArtifact.window.idDigest,
         approvalArtifact.executionBinding.executionHeadCommit,
@@ -376,7 +420,8 @@ function createCadPhase5Package8OneUseCoordinator({
         authorityGeneration: 1,
         deploymentRef: approvalArtifact.executionBinding.runtimeDeployment.deploymentId,
         cohortRef: 'package8-one-use-development',
-        evidenceDigest: approvalArtifact.executionBinding.runtimeDeployment.receiptDigest,
+        evidenceDigest: hash([issuance.receiptDigest,
+          approvalArtifact.executionBinding.runtimeDeployment.receiptDigest].join('|')),
         retentionPolicyDigest: hash('package8-exact-artifacts-close-first-delete'),
         reservationMicros: RESERVATION_MICROS,
         maxRetries: 0,
@@ -537,7 +582,9 @@ module.exports = {
   PACKAGE8_SCOPE_KEY,
   RESERVATION_MICROS,
   SANDBOX_BUDGET_MS,
+  approvalIssuanceVerificationRequest,
   createCadPhase5Package8OneUseCoordinator,
+  expectedApprovalIssuanceReceipt,
   expectedAncestryDigest,
   expectedRuntimeReceiptDigest,
   validExecutionBinding,

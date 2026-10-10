@@ -76,6 +76,7 @@ const SOURCE_OPERATION_MAP = Object.freeze({
   sandbox: Object.freeze(['create', 'loadAssets']),
   exactSession: Object.freeze(['verifyExactSession', 'insertIfAbsent', 'read', 'revoke']),
   executionReceipt: Object.freeze(['verifyExact']),
+  approvalIssuance: Object.freeze(['verifyExact']),
   lifecycleMetadata: Object.freeze(['readSanitized']),
   closeFirst: Object.freeze([
     'convex.closeForRollback',
@@ -95,6 +96,7 @@ function approvalCommitment(artifact) {
     schemaVersion: artifact.schemaVersion,
     kind: artifact.kind,
     status: artifact.status,
+    issuanceReference: artifact.issuanceReference,
     issuedAtUtc: artifact.issuedAtUtc,
     authorityExpiresAtUtc: artifact.authorityExpiresAtUtc,
     window: artifact.window,
@@ -115,7 +117,7 @@ function approvalCommitment(artifact) {
 
 function validateApprovalArtifact(artifact, nowMs) {
   if (!time(nowMs) || !exactKeys(artifact, ['schemaVersion', 'kind', 'status',
-    'approvalIdDigest', 'issuedAtUtc', 'authorityExpiresAtUtc', 'window', 'binding',
+    'issuanceReference', 'approvalIdDigest', 'issuedAtUtc', 'authorityExpiresAtUtc', 'window', 'binding',
     'executionBinding', 'owner', 'session', 'fixture', 'limits', 'credentialReferences',
     'environmentVariableReferences', 'calculatedMaximumCostMicros',
     'observedCostMicros', 'providerRequestsAuthorized', 'runtimeActivationAuthorized'])) {
@@ -124,6 +126,7 @@ function validateApprovalArtifact(artifact, nowMs) {
   if (artifact.schemaVersion !== 1
       || artifact.kind !== 'CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL'
       || artifact.status !== 'ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION'
+      || !id(artifact.issuanceReference)
       || !digest(artifact.approvalIdDigest)
       || artifact.approvalIdDigest !== approvalCommitment(artifact)
       || artifact.providerRequestsAuthorized !== true
@@ -174,7 +177,7 @@ function dependenciesReady(sources) {
   const r2ProviderMethods = SOURCE_OPERATION_MAP.r2Provider;
   return Boolean(sources && typeof sources === 'object' && !Array.isArray(sources)
     && sources.convex && sources.r2 && sources.sandbox && sources.exactSession
-    && sources.executionReceipt && sources.lifecycleMetadata
+    && sources.executionReceipt && sources.approvalIssuance && sources.lifecycleMetadata
     && typeof sources.convex.runQuery === 'function'
     && typeof sources.convex.runMutation === 'function'
     && sources.convex.references && typeof sources.convex.references === 'object'
@@ -185,6 +188,7 @@ function dependenciesReady(sources) {
     && ['insertIfAbsent', 'read', 'revoke']
       .every(name => typeof sources.exactSession.store?.[name] === 'function')
     && typeof sources.executionReceipt.verifyExact === 'function'
+    && typeof sources.approvalIssuance.verifyExact === 'function'
     && typeof sources.lifecycleMetadata.readSanitized === 'function');
 }
 
@@ -231,6 +235,7 @@ function composeReviewedSources(sources, now, owner, session) {
     sandbox,
     sessionAuthority: exactSessionAuthority,
     sessionService: uploadSessionService,
+    approvalIssuanceVerifier: sources.approvalIssuance,
     executionReceiptVerifier: sources.executionReceipt,
     lifecycleMetadata: sources.lifecycleMetadata,
     owner,
@@ -253,6 +258,7 @@ function composeReviewedSources(sources, now, owner, session) {
       sandboxReviewConfigured: sandbox.reviewConfigured,
       exactSessionAuthorityConfigured: exactSessionAuthority.configured,
       oneUseApprovalRequired: true,
+      independentApprovalIssuanceRequired: true,
       runtimeReceiptRequired: true,
       automaticRetries: 0,
     }),
@@ -287,6 +293,7 @@ function createCadPhase5Package8DevelopmentQualificationBinding({
     sandboxReviewConfigured: true,
     exactSessionAuthorityConfigured: true,
     oneUseApprovalRequired: true,
+    independentApprovalIssuanceRequired: true,
     runtimeReceiptRequired: true,
     automaticRetries: 0,
   });

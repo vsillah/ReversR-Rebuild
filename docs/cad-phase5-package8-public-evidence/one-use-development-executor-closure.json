@@ -14,7 +14,7 @@
   "sourceBindings": {
     "developmentQualificationBinding": {
       "path": "server/cadPhase5Package8DevelopmentQualificationBinding.js",
-      "sha256": "e7280b9763aee71fbfd823df2dd67c33e94d06201013c9d9ad85d8a9c4752229"
+      "sha256": "4b18bdd1247184b1ea9d1ff15a7cd37d93c01cf0e3814f52c88da97bfa488a06"
     },
     "oneUseAdapters": {
       "path": "server/cadPhase5Package8OneUseAdapters.js",
@@ -22,11 +22,11 @@
     },
     "oneUseCoordinator": {
       "path": "server/cadPhase5Package8OneUseCoordinator.js",
-      "sha256": "20b17af2da105518d247dbef785534cd9589385ac21287bd1dde631219da1b2d"
+      "sha256": "85a4d7d7f186ff477da2a8ac872840f072a7666f6c7010b46be11c6c15f419ea"
     },
     "offlineContractTests": {
       "path": "scripts/cad-phase5-package8-development-qualification-binding.test.js",
-      "sha256": "f65b69afd5a004f45691cbd3548a45377ec136d1da64ede27edd5b4968f544e9"
+      "sha256": "77ece1d55409fce6478a3efc83ee016d9c80c731e0015526b03347357f0b4b6e"
     },
     "immutableBaselineChecker": {
       "path": "scripts/cad-phase5-package8-development-qualification-binding-checker.js",
@@ -44,6 +44,9 @@
   "coordinatorContract": {
     "actualReviewedFactoriesComposed": true,
     "offlineSyntheticSubstitution": false,
+    "independentApprovalIssuanceVerifierRequired": true,
+    "approvalIssuanceVerificationRunsFirst": true,
+    "durableClaimBindsIssuanceReferenceAndReceiptDigest": true,
     "approvalBoundOwnerAndSession": true,
     "cleanDescendantAncestryReceiptRequired": true,
     "exactDevelopmentDeploymentReceiptRequired": true,
@@ -87,6 +90,7 @@
     "httpRouteAdded": false
   },
   "offlineValidationCoverage": [
+    "INDEPENDENT_APPROVAL_ISSUANCE_AUTHENTICITY",
     "MISSING_OR_STALE_AUTHORITY",
     "SOURCE_OR_DEPLOYMENT_DRIFT",
     "REPLAY_OR_RESTART",
@@ -119,6 +123,7 @@
     "deploymentAuthorized": false,
     "runtimeActivationAuthorized": false,
     "oneUseApprovalArtifactIssued": false,
+    "independentApprovalIssuanceVerifierSupplied": false,
     "liveQualificationAuthorized": false
   }
 }

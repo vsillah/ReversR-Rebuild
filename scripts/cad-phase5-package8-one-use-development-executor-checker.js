@@ -46,6 +46,9 @@ function checkPacket(packet, rootPath = root) {
   const contract = packet.coordinatorContract || {};
   if (contract.actualReviewedFactoriesComposed !== true
       || contract.offlineSyntheticSubstitution !== false
+      || contract.independentApprovalIssuanceVerifierRequired !== true
+      || contract.approvalIssuanceVerificationRunsFirst !== true
+      || contract.durableClaimBindsIssuanceReferenceAndReceiptDigest !== true
       || contract.approvalBoundOwnerAndSession !== true
       || contract.cleanDescendantAncestryReceiptRequired !== true
       || contract.exactDevelopmentDeploymentReceiptRequired !== true
@@ -72,7 +75,9 @@ function checkPacket(packet, rootPath = root) {
     throw Error('credential boundary');
   }
   if (!Array.isArray(packet.offlineValidationCoverage)
-      || packet.offlineValidationCoverage.length !== 9) throw Error('validation coverage');
+      || packet.offlineValidationCoverage.length !== 10
+      || !packet.offlineValidationCoverage.includes(
+        'INDEPENDENT_APPROVAL_ISSUANCE_AUTHENTICITY')) throw Error('validation coverage');
   if (ZERO_ACTIONS.some(key => packet.actionsPerformedByThisRound?.[key] !== 0)) {
     throw Error('action boundary');
   }
@@ -80,6 +85,7 @@ function checkPacket(packet, rootPath = root) {
   if (gate.type !== 'DRAFT_PR_SOURCE_REVIEW_THEN_EXACT_RUNTIME_BINDING'
       || gate.mergeAuthorized !== false || gate.deploymentAuthorized !== false
       || gate.runtimeActivationAuthorized !== false || gate.oneUseApprovalArtifactIssued !== false
+      || gate.independentApprovalIssuanceVerifierSupplied !== false
       || gate.liveQualificationAuthorized !== false) throw Error('remaining gate');
   const coordinator = fs.readFileSync(path.join(rootPath,
     'server/cadPhase5Package8OneUseCoordinator.js'), 'utf8');
