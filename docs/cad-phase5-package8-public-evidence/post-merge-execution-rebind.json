@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_POST_MERGE_EXECUTION_REBIND",
+  "status": "SOURCE_ONLY_REBIND_INACTIVE",
+  "scope": "FINAL_NONPROPRIETARY_SYNTHETIC_ONE_USE_DEVELOPMENT_QUALIFICATION",
+  "recordedAtUtc": "2026-10-10T19:56:42Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mergedMainCommit": "27afaccd00231acbca49b71a5fafabd42e9637bd",
+    "mergedMainTree": "c45198a6c493d03e3a57533ad63150323c02b4ea",
+    "mainAndTreeVerifiedAfterFetch": true,
+    "mergedControllerSource": {
+      "path": "server/cadPhase5Package8ExecutionController.js",
+      "sha256": "d715a1db78f04000620b2a7b6e28a275b5c0e3e25998b65815687561c2905279"
+    },
+    "reboundControllerSource": {
+      "path": "server/cadPhase5Package8ExecutionController.js",
+      "sha256": "b041955ffae7fe35c7a703f16f2846b24fc01d1e48878f8a22377a3d42583504"
+    },
+    "sourceBridge": {
+      "path": "server/cadPhase5Package8SourceBridges.js",
+      "sha256": "e50a6f9291708fb5cdf90d7ac6c141e6337b0f71d938f565fa9a7d1935cedbcf"
+    },
+    "lifecycleMonitor": {
+      "path": "server/cadPhase5Package8LifecycleMonitor.js",
+      "sha256": "e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e"
+    },
+    "controllerTest": {
+      "path": "scripts/cad-phase5-package8-execution-controller.test.js",
+      "sha256": "dbdc8ebea41e17a27ac155a9583d6e42c19a15533a5aecbd40ed06c97f476066"
+    },
+    "reconciliationPacket": {
+      "path": "docs/cad-phase5-package8-public-evidence/readiness-monitoring-reconciliation.json",
+      "sha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c"
+    },
+    "productionEvidenceDeploymentId": "dpl_6gU2Ppcn3J4zJQiwtQFBYU1VBM6D",
+    "sourceToDeploymentFunctionEquivalence": "NOT_CLAIMED",
+    "deploymentInvokedByThisRound": false
+  },
+  "targetBindings": {
+    "convexDevelopment": {
+      "teamSlug": "vambah-sillah",
+      "projectSlug": "reversr-cad-auth-dev",
+      "deploymentName": "majestic-alligator-31",
+      "deploymentType": "development",
+      "identityPreviouslyVerified": true,
+      "functionSchemaEquivalenceClaimed": false
+    },
+    "privateR2": {
+      "bucket": "reversr-cad-package8-public-fixture-us",
+      "jurisdiction": "US",
+      "storageClass": "STANDARD",
+      "publicAccess": false,
+      "customDomainCount": 0,
+      "applicationBindingConfigured": false
+    },
+    "credentialCustody": {
+      "credentialName": "reversr-package8-public-fixture-dev-preview-v2",
+      "custodian": "Vambah Sillah",
+      "permission": "OBJECT_READ_WRITE",
+      "lifetime": "24_HOURS",
+      "activeUntilDate": "2026-10-11",
+      "credentialValuesRecorded": false,
+      "credentialValuesReadByThisRound": false
+    },
+    "vercelServerVariables": {
+      "project": "reversr",
+      "variableNames": [
+        "CAD_R2_ACCESS_KEY_ID",
+        "CAD_R2_SECRET_ACCESS_KEY"
+      ],
+      "environments": [
+        "preview",
+        "development"
+      ],
+      "productionBinding": false,
+      "configurationChangedByThisRound": false
+    },
+    "durableQuota": {
+      "namespace": "phase5-synthetic-private-path-v1",
+      "maximumStoredBytes": 8388608,
+      "maximumObjects": 12,
+      "maximumClassAOperations": 1000,
+      "maximumClassBOperations": 1000,
+      "maximumDeleteOperations": 1000,
+      "maximumCostUsdExclusive": 9,
+      "reservationMicros": 8999999
+    },
+    "sandbox": {
+      "runtime": "node24",
+      "region": "iad1",
+      "vcpus": 1,
+      "memoryMbMaximum": 2048,
+      "lifetimeMsMaximum": 60000,
+      "networkPolicy": "deny-all",
+      "persistent": false,
+      "exposedPorts": 0,
+      "snapshotAllowed": false,
+      "maximumAttempts": 1,
+      "maximumRetries": 0,
+      "terminalCleanupRequired": true
+    }
+  },
+  "fixture": {
+    "id": "reversr-phase5-synthetic-private-line-v1",
+    "fileName": "reversr-phase5-synthetic-private-path.igs",
+    "mimeType": "model/iges",
+    "byteCount": 486,
+    "sha256": "0bdb42a7c58f4d51eee7eec2befae6ba590e43e0ecce34350cef9db4345c4c70",
+    "classification": "RESTRICTED_SYNTHETIC_TEST_ONLY",
+    "owner": "ReversR test project",
+    "projectOwned": true,
+    "nonproprietary": true,
+    "customerData": false,
+    "publicDistributionAuthorized": false
+  },
+  "executionEnvelope": {
+    "developmentOnly": true,
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "ownerShopIsolationRequired": true,
+    "freshAuthorityBeforeBodyRequired": true,
+    "durableClaimAndQuotaBeforeBodyRequired": true,
+    "allInCostUsdExclusive": 9
+  },
+  "closeFirstContract": {
+    "order": [
+      "CLOSE_ADMISSION_AND_CONVERSION",
+      "REVOKE_EXACT_SESSION_AND_GRANTS",
+      "CONFIRM_SANDBOX_STOP_OR_QUARANTINE_UNKNOWN",
+      "QUARANTINE_UNCERTAIN_RECORDS",
+      "DELETE_EXACT_SYNTHETIC_ARTIFACTS_ONLY",
+      "RECONCILE_DURABLE_TOMBSTONES_AND_PROVIDER_ABSENCE"
+    ],
+    "sessionRevocationRequired": true,
+    "grantRevocationRequired": true,
+    "uncertaintyQuarantineRequired": true,
+    "exactArtifactDeletionRequired": true,
+    "durableReconciliationRequired": true
+  },
+  "monitoringContract": {
+    "implementation": "UNWIRED_PURE_METADATA_POLICY",
+    "supportedMetadataOnly": true,
+    "providerReadsEnabled": false,
+    "providerWritesEnabled": false,
+    "runtimeMonitoringEnabled": false,
+    "externalAlertDeliveryConfigured": false,
+    "r2DataAccessLogsAvailable": false,
+    "r2DataAccessLogsEquivalenceClaimed": false,
+    "rawProviderOutputAllowed": false,
+    "sensitiveFieldsAllowed": false,
+    "maximumEvidenceAgeMs": 120000
+  },
+  "qualificationBoundary": {
+    "syntheticControlledPathQualifiedOnSuccess": true,
+    "proprietaryOrCustomerFileOwnershipProven": false,
+    "customerDataHandlingProven": false,
+    "generalProductionUploadReadinessProven": false,
+    "package8ActivationProven": false
+  },
+  "proposedWindow": {
+    "startUtc": "2026-10-10T21:00:00Z",
+    "endUtc": "2026-10-10T21:10:00Z",
+    "durationMinutes": 10,
+    "activated": false,
+    "freshTargetCredentialCostAndAuthorityReviewRequired": true
+  },
+  "validation": {
+    "offlineMetadataTests": 8,
+    "offlineMetadataTestsPassed": 8,
+    "providerRequests": 0,
+    "credentialsOrEnvironmentValuesRead": false,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "functionInvocations": 0,
+    "runtimeActivations": 0,
+    "sessionIssuances": 0,
+    "requestBodiesRead": 0,
+    "cadBodiesRead": 0,
+    "r2ObjectsCreated": 0,
+    "sandboxConversions": 0,
+    "downloads": 0,
+    "payments": 0,
+    "retries": 0
+  },
+  "authority": {
+    "qualificationExecutionAuthorized": false,
+    "windowActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerRequestAuthorized": false,
+    "credentialReadAuthorized": false,
+    "configurationChangeAuthorized": false,
+    "deploymentAuthorized": false,
+    "functionInvocationAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "unresolvedBindings": [
+    {
+      "code": "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED",
+      "requiredBeforeExecution": false
+    },
+    {
+      "code": "FRESH_CREDENTIAL_LIFETIME_NOT_REVALIDATED_FOR_ACTUAL_RUN",
+      "requiredBeforeExecution": true
+    },
+    {
+      "code": "R2_REQUEST_LEVEL_DATA_ACCESS_LOGS_UNAVAILABLE",
+      "requiredBeforeExecution": false
+    },
+    {
+      "code": "EXTERNAL_ALERT_DELIVERY_NOT_CONFIGURED",
+      "requiredBeforeExecution": false
+    },
+    {
+      "code": "PROPOSED_WINDOW_INACTIVE",
+      "requiredBeforeExecution": true
+    }
+  ],
+  "stopConditions": [
+    "MAIN_OR_TREE_DRIFT",
+    "EXPIRED_OR_MISSING_BINDING",
+    "UNSUPPORTED_MONITORING_CLAIM",
+    "SOURCE_TO_DEPLOYMENT_EQUIVALENCE_OVERCLAIM",
+    "VALIDATION_FAILURE",
+    "PRIVACY_RISK",
+    "COST_UNCERTAINTY_OR_CEILING_FAILURE",
+    "UNKNOWN_OUTCOME"
+  ],
+  "nextGate": {
+    "type": "CAPTAIN_SOURCE_REVIEW",
+    "activationAllowed": false,
+    "authorization": "Approve the ReversR Integration Captain to review and, only if the packet and checks remain exact, commit the seven source-only rebind files on branch codex/cad-phase5-package8-post-merge-rebind, push that branch, and open a draft PR against merged main 27afaccd00231acbca49b71a5fafabd42e9637bd with tree c45198a6c493d03e3a57533ad63150323c02b4ea. Bind production evidence deployment dpl_6gU2Ppcn3J4zJQiwtQFBYU1VBM6D and reconciliation packet ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c. Allow offline metadata checks only. Do not authorize provider requests, credential or environment-value reads, configuration changes, deployments, function invocations, runtime activation, session issuance, request-body or CAD-body reads, R2 objects, Sandbox conversions, downloads, payments, merge, or external messages. Stop on main or tree drift, expired or missing binding, unsupported monitoring claim, source-to-deployment equivalence overclaim, validation failure, privacy risk, cost uncertainty, or unknown outcome."
+  },
+  "subsequentExecutionGate": {
+    "separateApprovalRequired": true,
+    "sourceMergeRequired": true,
+    "freshInactiveWindowRequired": true,
+    "sourceToDeploymentFunctionEquivalenceMustBeResolvedOrExplicitlyFailClosed": true
+  }
+}
