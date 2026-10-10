@@ -81,7 +81,8 @@ export default defineSchema({
     .index('by_state_and_retainedUntil', ['state', 'retainedUntil']),
   cadArtifactTombstones: defineTable({ ...custodyBinding, kind: custodyKind,
     objectKeyDigest: v.string(), restrictedDigest: v.string(), deletedAt: v.number(),
-    replayFence: v.literal(true), generation: v.number(), tombstoneDigest: v.string() })
+    replayFence: v.literal(true), generation: v.number(), tombstoneDigest: v.string(),
+    scopeKey: v.optional(v.string()) })
     .index('by_artifactId', ['artifactId'])
     .index('by_owner_shop_artifactId', ['userId', 'shopId', 'artifactId']),
   cadArtifactDownloadGrants: defineTable({ grantDigest: v.string(), artifactId: v.string(),
@@ -90,11 +91,14 @@ export default defineSchema({
     revokedAt: v.optional(v.number()) })
     .index('by_grantDigest', ['grantDigest'])
     .index('by_artifactId', ['artifactId'])
+    .index('by_owner_shop_artifactId', ['userId', 'shopId', 'artifactId'])
     .index('by_expiresAt', ['expiresAt']),
-  cadArtifactQuotaLedgers: defineTable({ scopeKey: v.string(), storedBytes: v.number(),
+  cadArtifactQuotaLedgers: defineTable({ scopeKey: v.string(),
+    userId: v.optional(v.id('users')), shopId: v.optional(v.string()), storedBytes: v.number(),
     objectCount: v.number(), classAOperations: v.number(), classBOperations: v.number(),
     deleteOperations: v.number(), revision: v.number(), stopped: v.boolean(), updatedAt: v.number() })
-    .index('by_scopeKey', ['scopeKey']),
+    .index('by_scopeKey', ['scopeKey'])
+    .index('by_owner_shop_scopeKey', ['userId', 'shopId', 'scopeKey']),
   cadUploadOrchestrationAttempts: defineTable({ idempotencyDigest: v.string(), attemptId: v.string(),
     userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
     authorityGeneration: v.number(), deploymentRef: v.string(), cohortRef: v.string(),
@@ -114,7 +118,7 @@ export default defineSchema({
     originalRestrictedDigest: v.string(),
     state: v.union(v.literal('admitted'), v.literal('converting'), v.literal('ready'),
       v.literal('failed'), v.literal('quarantined')),
-    conversionAuthorized: v.literal(false), conversionDispatchCount: v.literal(0),
+    conversionAuthorized: v.boolean(), conversionDispatchCount: v.literal(0),
     conversionClaimCount: v.number(), conversionGeneration: v.number(),
     previewArtifactId: v.optional(v.string()), stlArtifactId: v.optional(v.string()),
     geometryDigest: v.optional(v.string()), previewDigest: v.optional(v.string()),
@@ -125,6 +129,12 @@ export default defineSchema({
     .index('by_attemptId', ['attemptId'])
     .index('by_artifactId', ['artifactId'])
     .index('by_owner_state', ['userId', 'shopId', 'state']),
+  cadPhase5ControlState: defineTable({ scopeKey: v.string(), userId: v.id('users'),
+    shopId: v.string(), uploadSessionId: v.string(), admissionClosed: v.boolean(), conversionClosed: v.boolean(),
+    grantsRevoked: v.boolean(), uncertainRecordsQuarantined: v.boolean(),
+    generation: v.number(), closedAt: v.number(), reasonDigest: v.string() })
+    .index('by_scopeKey', ['scopeKey'])
+    .index('by_owner_shop_scopeKey', ['userId', 'shopId', 'scopeKey']),
   cadQualificationLedgers: defineTable({
     ...qualificationScope,
     controlState: v.object({ schemaVersion: v.literal(1), revision: v.number(), lastNow: v.number(),
