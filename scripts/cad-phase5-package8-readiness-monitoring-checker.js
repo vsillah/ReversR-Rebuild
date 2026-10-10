@@ -113,8 +113,32 @@ function checkPacket(packet, rootPath = root) {
       || monitor.providerReadsEnabled !== false || monitor.providerWritesEnabled !== false
       || monitor.dispatchEnabled !== false) throw Error('monitor wiring');
 
+  const reviewConsumers = new Set([
+    'cadPhase5Package8LifecycleMonitor.js',
+    'cadPhase5Package8ExecutionController.js',
+    'cadPhase5Package8SourceBridges.js',
+  ]);
+  const controllerSource = fs.readFileSync(path.join(rootPath, 'server',
+    'cadPhase5Package8ExecutionController.js'), 'utf8');
+  if (!/configured:\s*false/.test(controllerSource)
+      || !/runtimeActivationAllowed:\s*false/.test(controllerSource)
+      || !/providerDispatchEnabled:\s*false/.test(controllerSource)
+      || /process\.env|fetch\s*\(|@vercel\/sandbox|cadR2PrivateArtifactCustody|claimExecution|stopKnown/.test(controllerSource)
+      || !/durableCall\('claimUpload'/.test(controllerSource)
+      || !/durableCall\('closeForRollback'/.test(controllerSource)) {
+    throw Error('review controller wiring');
+  }
+  const bridgeSource = fs.readFileSync(path.join(rootPath, 'server',
+    'cadPhase5Package8SourceBridges.js'), 'utf8');
+  if (!/testOnly === true/.test(bridgeSource)
+      || !/createPackage8OfflineDurableCustodyStore/.test(bridgeSource)
+      || !/createPackage8OfflineCustodyBridge/.test(bridgeSource)
+      || !/createPackage8OfflineSandboxBridge/.test(bridgeSource)
+      || /process\.env|fetch\s*\(|https?\.request/.test(bridgeSource)) {
+    throw Error('review source bridge wiring');
+  }
   const serverFiles = fs.readdirSync(path.join(rootPath, 'server'))
-    .filter(name => name.endsWith('.js') && name !== 'cadPhase5Package8LifecycleMonitor.js');
+    .filter(name => name.endsWith('.js') && !reviewConsumers.has(name));
   if (serverFiles.some(name => fs.readFileSync(path.join(rootPath, 'server', name), 'utf8')
     .includes('cadPhase5Package8LifecycleMonitor'))) throw Error('runtime import');
 
