@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_RELEASE_READINESS",
+  "status": "BLOCKED_PENDING_EXACT_BINDINGS",
+  "scope": "SOURCE_ONLY_RELEASE_READINESS",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mergeCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "tree": "0063973062495d3f06e93644f041c57d76989f42",
+    "phase5Plan": {
+      "path": "docs/cad-phase5-private-igs-activation-plan.md",
+      "sha256": "f8f67d93cf35f9bdadd85b26f51c3fc6ba1ab66eb53d76e07f3fe0149550c27b"
+    },
+    "package7Gate": {
+      "path": "docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md",
+      "sha256": "8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed"
+    }
+  },
+  "productionEvidence": {
+    "provider": "Vercel",
+    "project": "reversr",
+    "deploymentId": "dpl_9LJyxxsuq8pqEXBTGidGvagLxfgb",
+    "immutableUrl": "https://reversr-qv3jrtlru-vsillahs-projects.vercel.app",
+    "canonicalUrl": "https://reversr.vercel.app",
+    "target": "production",
+    "readyState": "READY",
+    "gitCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "bindingObservedAtUtc": "2026-10-10T15:49:45Z"
+  },
+  "failClosedSmoke": {
+    "observedAtUtc": "2026-10-10T15:52:47Z",
+    "method": "POST",
+    "url": "https://reversr.vercel.app/api/cad/user-import",
+    "requestCount": 1,
+    "requestBodyBytes": 0,
+    "retries": 0,
+    "redirectsFollowed": 0,
+    "status": 401,
+    "code": "USER_SESSION_REQUIRED"
+  },
+  "packageReceipts": [
+    {
+      "package": 1,
+      "path": "docs/cad-phase5-package1-source-inventory-threat-model-receipt.md",
+      "sha256": "db4e619e78d4768c6de3bfbe3d6e7c90d33121b139b75ff8ddf7ed54aa9241a4"
+    },
+    {
+      "package": 2,
+      "path": "docs/cad-phase5-package2-auth-session-binding-receipt.md",
+      "sha256": "0327536f5a93a55686312489aa61e3ab2b67096eb3bb19e349d5aae479c7456b"
+    },
+    {
+      "package": 3,
+      "path": "docs/cad-phase5-package3-private-custody-receipt.md",
+      "sha256": "c97ee229e2d67448a0ad8544d3bcf1c8daa409dda0cfcff7095aaa1a43b2b9a0"
+    },
+    {
+      "package": 4,
+      "path": "docs/cad-phase5-package4-one-shot-orchestration-receipt.md",
+      "sha256": "a8373caa31a71b43dc396b787a26317cd360c91ba626c2104f6f2851b434f4c9"
+    },
+    {
+      "package": 5,
+      "path": "docs/cad-phase5-package5-derived-artifact-orchestration-receipt.md",
+      "sha256": "66a94f7edb78b257e38681323101b6dd134849b94e55b55fa955e03e8f83e8e2"
+    },
+    {
+      "package": 6,
+      "path": "docs/cad-phase5-package6-authenticated-import-client-receipt.md",
+      "sha256": "f16d335c9d095e2a9ca393283fc41b4b6fa978d5b041d2457411c55aa96b52a7"
+    },
+    {
+      "package": 7,
+      "path": "docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md",
+      "sha256": "8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed"
+    }
+  ],
+  "candidateQualification": {
+    "classification": "PUBLIC_FIXTURE_ONLY",
+    "fixture": "included public IGS sample",
+    "sessions": 1,
+    "files": 1,
+    "attempts": 1,
+    "automaticRetries": 0,
+    "maximumWindowMinutes": 15,
+    "allInCostCeilingUsd": 9,
+    "proprietaryCadAllowed": false,
+    "customerDataAllowed": false,
+    "generalAvailabilityAllowed": false,
+    "commercialAvailabilityAllowed": false
+  },
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "requiredBindings": {
+    "releaseOwner": null,
+    "rollbackOwner": null,
+    "incidentOwner": null,
+    "monitoringOwner": null,
+    "restrictedEvidenceDestination": null,
+    "publicEvidenceDestination": null,
+    "convexTarget": null,
+    "r2OpaqueAccountReference": null,
+    "r2BucketName": null,
+    "r2UsJurisdictionEvidence": null,
+    "r2PublicAccessDisabledEvidence": null,
+    "r2CustomDomainDisabledEvidence": null,
+    "r2LifecycleRules": null,
+    "r2LeastPrivilegeCredentialCustodian": null,
+    "r2QuotaLedgerScope": null,
+    "r2PricingDigest": null,
+    "sandboxRuntimeDigest": null,
+    "sandboxNetworkPolicy": null,
+    "sandboxPersistencePolicy": null,
+    "sandboxCpuMemoryTimeLimits": null,
+    "sandboxCostMeter": null,
+    "privateDataProcessorBoundary": null,
+    "vercelPlan": null,
+    "vercelSpendManagementLimit": null,
+    "vercelAutomaticPausing": null,
+    "monitoringDestinations": null,
+    "monitoringAlertRules": null,
+    "utcWindowStart": null,
+    "utcWindowEnd": null
+  },
+  "rollbackOrder": [
+    "close admission and conversion",
+    "revoke the exact upload session and download grants",
+    "stop known conversion compute",
+    "quarantine uncertain attempts jobs and artifacts",
+    "delete only exact qualification artifacts",
+    "reconcile durable state and provider absence read-only",
+    "run one empty unauthenticated post-rollback smoke"
+  ],
+  "stopConditions": [
+    "any required binding is missing or ambiguous",
+    "source deployment or target drift",
+    "authority opens before the reviewed window",
+    "body access occurs before fresh authority verification",
+    "cost ceiling is not mechanically enforceable below USD 10",
+    "private proprietary or customer CAD is selected",
+    "storage conversion download or cleanup outcome is unknown",
+    "monitoring or evidence exposes sensitive fields",
+    "rollback cannot close first or independently prove closure"
+  ],
+  "nextGate": {
+    "type": "READ_ONLY_BINDING_COMPLETION",
+    "activationAllowed": false,
+    "template": "I approve one bounded read-only Phase 5 Package 8 binding-completion inventory, bound to ReversR main 6c822b215bc74fc1203442bfef903855a9cbe5df, tree 0063973062495d3f06e93644f041c57d76989f42, Vercel production deployment dpl_9LJyxxsuq8pqEXBTGidGvagLxfgb, and readiness packet SHA-256 <READINESS_PACKET_SHA256>. Treat Vambah as release, rollback, incident, and monitoring owner for this internal public-fixture qualification; no backup operator is required. Use a new mode-0700 local restricted-evidence directory under .local/cad-phase5-package8 and docs/cad-phase5-package8-public-evidence as the public-safe destination. Using existing authenticated official tooling, inspect names and non-secret metadata only for the exact Convex target, existing private Cloudflare R2 account and bucket controls, lifecycle and enforceable quota/cost controls, Vercel plan and Spend Management controls, Sandbox runtime digest and resource/network/persistence/cost controls, and available metadata-only monitoring destinations. Propose the shortest future UTC window of at most 15 minutes, but do not activate it. Do not read or emit secret or environment values, credentials, rows, logs, request bodies, CAD, storage-object contents, signed URLs, or customer data. No configuration change, resource creation, deployment, function invocation, storage or conversion dispatch, download, payment, external message, commit, push, PR, merge, activation, or retry. Return one completed source-only binding proposal plus one consolidated list of unavailable values; stop on target mismatch, private-data exposure, billing ambiguity, or unknown outcome."
+  }
+}

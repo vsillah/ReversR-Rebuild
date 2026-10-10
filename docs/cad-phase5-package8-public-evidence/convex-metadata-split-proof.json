@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_CONVEX_METADATA_SPLIT_PROOF",
+  "status": "SOURCE_INVENTORY_VERIFIED_DEPLOYMENT_EQUIVALENCE_UNPROVEN",
+  "scope": "SOURCE_ONLY_METADATA_GATE_REDESIGN",
+  "preparedAtUtc": "2026-10-10T16:27:49Z",
+  "bindings": {
+    "mainCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "tree": "0063973062495d3f06e93644f041c57d76989f42",
+    "stopReceiptSha256": "7c24ab20d73c3e272291430e0207156d10dd1655893c0cce86597ddb206a09d9",
+    "bindingProposalSha256": "554fb996ba48f06109eef17026471aab9c44919926c4b203cb3355e210c39cda",
+    "readinessPacketSha256": "b0d1c3b8c3c6fe85990cf0664c54935adca145bd19ae57b0ea5410c213b83cf0"
+  },
+  "officialSourceDisposition": {
+    "directSystemTransportRemoved": true,
+    "reason": "No versioned complete _system/cli/modules:apiSpec response schema or supported internal endpoint and credential compatibility contract exists for Convex 1.45.0.",
+    "sources": [
+      "https://github.com/get-convex/convex-js/blob/main/src/cli/lib/functionSpec.ts",
+      "https://github.com/get-convex/convex-js/blob/main/src/cli/lib/mcp/tools/functionSpec.ts",
+      "https://docs.convex.dev/http-api/",
+      "https://github.com/get-convex/convex-js/blob/main/src/browser/http_client.ts",
+      "https://docs.convex.dev/cli/deploy-key-types"
+    ]
+  },
+  "sourceInventory": {
+    "method": "TYPESCRIPT_CHECKER_OVER_CHECKED_IN_GENERATED_API_NAMESPACES",
+    "generatedApiPath": "convex/_generated/api.d.ts",
+    "generatedApiSha256": "56fe3093421de179f5e18dd7a10c944e720dba659525c0cc5a5e2cd610241361",
+    "codegenScriptPath": "scripts/cad-convex-codegen.js",
+    "codegenScriptSha256": "8a2e8e7792b4e9372468bbbd2a9486953872e62bc3e29a4b26b6e9a479744392",
+    "packageLockPath": "package-lock.json",
+    "packageLockSha256": "b7c5ea88f5feba3391ca8092356fe443b1a8b2d7656431d6a674f7d39cba3fb7",
+    "sdkVersions": {
+      "convex": "1.45.0",
+      "typescript": "6.0.3"
+    },
+    "namespaceScope": [
+      "api",
+      "internal"
+    ],
+    "exclusions": [
+      "HTTP routes and HTTP actions are not members of the generated api/internal FunctionReference namespaces"
+    ],
+    "moduleCount": 11,
+    "functionCount": 50,
+    "visibilityCounts": {
+      "public": 9,
+      "internal": 41
+    },
+    "functionsSha256": "8d363eb076d70c068636c4a568782686eae077b3813e891b95cb9b8b3d6ce034",
+    "moduleSourcesSha256": "a068eb4c3e12c9f24928be9ef476567050bee27ae28f4299ddf1e10ab5225474",
+    "modules": [
+      {
+        "name": "auth",
+        "sourcePath": "convex/auth.ts",
+        "sha256": "4852c956f4354e1eb2fda5fb29d08ebc69c5c587d11c1f6672fa14de0f908ec0"
+      },
+      {
+        "name": "cad",
+        "sourcePath": "convex/cad.ts",
+        "sha256": "b6bd6edd995571bf149d462b7da75fe090083b89d1ce72501e421d9830759413"
+      },
+      {
+        "name": "cadControlledUploadDevQualification",
+        "sourcePath": "convex/cadControlledUploadDevQualification.ts",
+        "sha256": "a405077d82d1152423dfd9e1e7f4891188345edb1b9ccaee6351caac43f71b5c"
+      },
+      {
+        "name": "cadControlledUploadHost",
+        "sourcePath": "convex/cadControlledUploadHost.ts",
+        "sha256": "ff398dce1a67e14b3ac9ca32d11c0974b1d329eb28464a898316f250027fb3c7"
+      },
+      {
+        "name": "cadDevAuthQualification",
+        "sourcePath": "convex/cadDevAuthQualification.ts",
+        "sha256": "2d52af596a4f6a3720998ef8ab71541f8c97e13cdacc000ff43a00d51d83ddbc"
+      },
+      {
+        "name": "cadDevAuthQualificationStore",
+        "sourcePath": "convex/cadDevAuthQualificationStore.ts",
+        "sha256": "b855eab6af9c165b10ec2440b31d97394d197bf2e92963108cccc43b1ad533a9"
+      },
+      {
+        "name": "cadDevUploadSessionQualification",
+        "sourcePath": "convex/cadDevUploadSessionQualification.ts",
+        "sha256": "b3ac33e51d0c3d7b003ded69cd66a1c69e8d2929e595c1f69f718fc929ecb206"
+      },
+      {
+        "name": "cadDevUploadSessionQualificationAuthority",
+        "sourcePath": "convex/cadDevUploadSessionQualificationAuthority.ts",
+        "sha256": "0cc7b7e74713936ae5fc0831dbe5a2b27436ec0911fc0ca611c45165580b7dbe"
+      },
+      {
+        "name": "cadDevUploadSessionQualificationSession",
+        "sourcePath": "convex/cadDevUploadSessionQualificationSession.ts",
+        "sha256": "290062dfe099dad9053ca1abd65386fababc1a5aa3ea7a55604c216101a5f8ff"
+      },
+      {
+        "name": "cadDurableEngine",
+        "sourcePath": "convex/cadDurableEngine.ts",
+        "sha256": "a964d10e1b4715b17babea1b4115989ffc9f4e64419a9b6b0d208e3e8a51c1c3"
+      },
+      {
+        "name": "cadPhase5DurableAdapters",
+        "sourcePath": "convex/cadPhase5DurableAdapters.ts",
+        "sha256": "308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260"
+      }
+    ],
+    "functions": [
+      {
+        "name": "auth:isAuthenticated",
+        "visibility": "public"
+      },
+      {
+        "name": "auth:signIn",
+        "visibility": "public"
+      },
+      {
+        "name": "auth:signOut",
+        "visibility": "public"
+      },
+      {
+        "name": "auth:store",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:changeAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:insertIfAbsent",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:read",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:refreshAuthorization",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:resolveAuthorization",
+        "visibility": "internal"
+      },
+      {
+        "name": "cad:revoke",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadDevQualification:qualifyOnce",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadDevQualification:readSanitized",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:persistRestriction",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:projectAuthenticatedAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:readReceipt",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:readState",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:recordIndependentSmoke",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:registerApprovedGrantAndScope",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadControlledUploadHost:transact",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDevAuthQualification:provisionCohort",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDevAuthQualification:revokeUsers",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDevAuthQualificationStore:inventory",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDevAuthQualificationStore:readCurrent",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDevUploadSessionQualification:issueReadRevoke",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDevUploadSessionQualification:issueReadRevokeWithSyntheticAuthority",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDevUploadSessionQualificationAuthority:provisionSyntheticAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDevUploadSessionQualificationAuthority:revokeSyntheticAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDevUploadSessionQualificationSession:readCurrent",
+        "visibility": "public"
+      },
+      {
+        "name": "cadDurableEngine:changeAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:claim",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:initialize",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:readAuthority",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:readExact",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:scanPage",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:settle",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:stop",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadDurableEngine:transact",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:advanceConversion",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:advanceUpload",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:claimConversion",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:claimUpload",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:closeForRollback",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:confirmDeleted",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:consumeQuota",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:issueDownloadGrant",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:readArtifact",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:reconcile",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:reserveArtifact",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:resolveDownloadGrant",
+        "visibility": "internal"
+      },
+      {
+        "name": "cadPhase5DurableAdapters:transitionArtifact",
+        "visibility": "internal"
+      }
+    ]
+  },
+  "contractManifest": {
+    "path": "offline/cad-convex/manifest.json",
+    "version": 87,
+    "baseCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "mode": "offline-source-unqualified",
+    "inventorySourceCoverageRequired": true
+  },
+  "deploymentIdentity": {
+    "expectedTarget": {
+      "teamSlug": "vambah-sillah",
+      "projectSlug": "reversr-cad-auth-dev",
+      "deploymentName": "majestic-alligator-31",
+      "deploymentType": "development",
+      "cloudUrl": "https://majestic-alligator-31.convex.cloud"
+    },
+    "status": "UNAVAILABLE_FRESH_SUPPORTED_OBSERVATION_REQUIRED",
+    "freshObservation": null,
+    "identityReceiptAccepted": false,
+    "maximumObservationAgeMs": 900000,
+    "requiredSanitizedFields": [
+      "teamSlug",
+      "projectSlug",
+      "deploymentName",
+      "deploymentType",
+      "cloudUrl",
+      "observedAtUtc",
+      "sourceFunctionsSha256",
+      "sourceGeneratedApiSha256"
+    ],
+    "acceptedClaim": "A matching fresh supported receipt may identify the intended Convex deployment only.",
+    "prohibitedClaims": [
+      "the checked-in source inventory is deployed",
+      "the runtime function schema matches local generated types",
+      "the deployment has current Package 8 adapters",
+      "Package 8 runtime activation is ready"
+    ]
+  },
+  "splitProof": {
+    "sourceInventoryVerified": true,
+    "deploymentIdentityVerified": false,
+    "sourceToDeploymentEquivalence": "NOT_CLAIMED",
+    "runtimeFunctionSchemaEquivalence": "UNSUPPORTED",
+    "package8ActivationReady": false
+  },
+  "preservedState": {
+    "providerRequests": 0,
+    "consumedReadRetried": false,
+    "unavailableValueCount": 17,
+    "unavailableValuesSha256": "9dc9e8294a4334a157dbdff9799d0ea71ce35688314938c7d684d2e0df13c72d",
+    "unavailableValuesChanged": false,
+    "proposedWindowActivated": false,
+    "runtimeAuthorityChanged": false
+  },
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "nextGate": "Obtain a separately approved, supported, sanitized deployment-identity receipt and the remaining 16 provider and operational bindings. Even a matching identity receipt must not be treated as source-to-deployment function equivalence."
+}

@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_BINDING_COMPLETION_PROPOSAL",
+  "status": "BLOCKED_PROVIDER_METADATA_UNKNOWN",
+  "scope": "SOURCE_ONLY_READ_ONLY_BINDING_PROPOSAL",
+  "observedAtUtc": "2026-10-10T16:01:32Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mainCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "tree": "0063973062495d3f06e93644f041c57d76989f42",
+    "productionDeployment": "dpl_9LJyxxsuq8pqEXBTGidGvagLxfgb",
+    "readinessPacketSha256": "b0d1c3b8c3c6fe85990cf0664c54935adca145bd19ae57b0ea5410c213b83cf0"
+  },
+  "owners": {
+    "release": "Vambah Sillah",
+    "rollback": "Vambah Sillah",
+    "incident": "Vambah Sillah",
+    "monitoring": "Vambah Sillah",
+    "backupOperatorRequired": false,
+    "qualificationClass": "INTERNAL_PUBLIC_FIXTURE_ONLY"
+  },
+  "evidenceDestinations": {
+    "restricted": {
+      "path": ".local/cad-phase5-package8/binding-completion-20261010T160011Z",
+      "directoryMode": "0700",
+      "fileMode": "0600",
+      "public": false
+    },
+    "publicSafe": {
+      "path": "docs/cad-phase5-package8-public-evidence",
+      "contentPolicy": "sanitized names, fixed classifications, source digests, and unavailable-value inventory only"
+    }
+  },
+  "verifiedBindings": {
+    "production": {
+      "provider": "Vercel",
+      "deploymentId": "dpl_9LJyxxsuq8pqEXBTGidGvagLxfgb",
+      "gitCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+      "target": "production",
+      "readyState": "READY",
+      "canonicalUrl": "https://reversr.vercel.app"
+    },
+    "vercelTeam": {
+      "teamSlug": "vsillahs-projects",
+      "plan": "pro",
+      "observedAtUtc": "2026-10-10T16:00:32.055Z",
+      "metadataDigest": "b7c2491c87c7af5240533ef01d7a0ba928f7bacf767828b2cf4853cdeddf6a2f"
+    },
+    "r2SourcePolicy": {
+      "provider": "cloudflare-r2",
+      "sourceSha256": "106920b5c72e51d5132edd56d913246489a8aa0e0f1c5cf5978b356dee56ee5d",
+      "jurisdictionCandidate": "us",
+      "storageClassCandidate": "STANDARD",
+      "publicAccessRequired": false,
+      "customDomainRequired": false,
+      "lifecycleBackstopMs": 86400000,
+      "maxStoredBytes": 8388608,
+      "maxObjects": 12,
+      "maxClassAOperations": 1000,
+      "maxClassBOperations": 1000,
+      "maxDeleteOperations": 1000,
+      "maxPilotCostMicros": 9000000,
+      "providerDispatchEnabled": false
+    },
+    "sandboxSourcePolicy": {
+      "sourceAggregateSha256": "cb9f77377fb09baf05ae415c8ff27651399c1a071950b809d974cd2e43f1b478",
+      "sdkVersion": "3.3.0",
+      "runtime": "node24",
+      "regionCandidate": "iad1",
+      "vcpus": 1,
+      "memoryMbMaximum": 2048,
+      "lifetimeMs": 60000,
+      "requestMs": 45000,
+      "commandMs": 10000,
+      "cleanupMs": 5000,
+      "networkPolicy": "deny-all",
+      "persistent": false,
+      "ports": [],
+      "runtimeDispatchEnabled": false
+    },
+    "publicFixtureRunner": {
+      "sourceSha256": "8e71575cdfec8c3b761049af71b3fbad2f847f0a68467004ed716842c4697bf3",
+      "classification": "PUBLIC_FIXTURE_ONLY",
+      "sessions": 1,
+      "files": 1,
+      "attempts": 1,
+      "automaticRetries": 0
+    }
+  },
+  "providerReadDisposition": {
+    "vercel": {
+      "commandCount": 1,
+      "outcome": "SANITIZED_METADATA_AVAILABLE",
+      "rawResponsePersisted": false
+    },
+    "convex": {
+      "commandCount": 1,
+      "command": "convex function-spec --deployment majestic-alligator-31",
+      "expectedTarget": "vambah-sillah / reversr-cad-auth-dev / majestic-alligator-31",
+      "outcome": "UNKNOWN_NO_PARSABLE_OUTPUT",
+      "rawResponsePersisted": false,
+      "retryPerformed": false
+    },
+    "cloudflare": {
+      "commandCount": 0,
+      "outcome": "NOT_ATTEMPTED_AFTER_STOP_GATE"
+    },
+    "sandbox": {
+      "commandCount": 0,
+      "outcome": "NOT_ATTEMPTED_AFTER_STOP_GATE"
+    },
+    "monitoring": {
+      "commandCount": 0,
+      "outcome": "NOT_ATTEMPTED_AFTER_STOP_GATE"
+    }
+  },
+  "proposedWindow": {
+    "startUtc": "2026-10-11T16:00:00Z",
+    "endUtc": "2026-10-11T16:10:00Z",
+    "durationMinutes": 10,
+    "activated": false,
+    "note": "Candidate only; it expires without effect and requires a fresh exact binding review before use."
+  },
+  "unavailableValues": [
+    "fresh authoritative Convex target metadata and function-name inventory",
+    "Cloudflare R2 opaque account reference",
+    "Cloudflare R2 bucket name",
+    "Cloudflare R2 US-jurisdiction evidence",
+    "Cloudflare R2 public-access-disabled evidence",
+    "Cloudflare R2 custom-domain-disabled evidence",
+    "Cloudflare R2 live lifecycle rules",
+    "Cloudflare R2 least-privilege credential custodian binding",
+    "Cloudflare R2 durable quota-ledger namespace binding",
+    "current Cloudflare R2 pricing digest",
+    "live Sandbox runtime digest",
+    "live Sandbox resource, network, persistence, and cost-control metadata",
+    "private-data processor boundary attestation",
+    "Vercel Spend Management hard limit",
+    "Vercel automatic-pausing setting",
+    "metadata-only monitoring destinations",
+    "monitoring alert rules"
+  ],
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "stopReason": "The single authorized Convex metadata command produced no parsable sanitized result. The no-retry and unknown-outcome gates stopped all remaining provider reads.",
+  "nextGate": "A fresh separately approved metadata-only inventory is required after the Convex command/output path is diagnosed offline. No activation proposal is permitted while any unavailable value remains."
+}
