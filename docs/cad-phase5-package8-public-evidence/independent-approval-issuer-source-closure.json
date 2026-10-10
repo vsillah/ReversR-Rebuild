@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packetType": "CAD_PHASE5_PACKAGE8_INDEPENDENT_APPROVAL_ISSUER_SOURCE_CLOSURE",
   "status": "SOURCE_ONLY_INTERNAL_UNMOUNTED_DISABLED",
-  "scope": "INDEPENDENT_DURABLE_APPROVAL_ISSUANCE_LEDGER_AND_DISABLED_ADAPTER",
+  "scope": "SOURCE_SEPARATED_DURABLE_APPROVAL_ISSUANCE_LEDGER_AND_DISABLED_ADAPTER",
   "baseline": {
     "mergedMainCommit": "1512dedb5c240765bf87c749e07ed2f6709ec5b1",
     "mergedMainTree": "a1378dc31e79690fcc717f2414b39074133773a5",
@@ -13,15 +13,15 @@
   "sourceBindings": {
     "issuanceContract": {
       "path": "server/cadPhase5Package8ApprovalIssuanceContract.js",
-      "sha256": "f6adc4bb0424583d03545b9108258864a6d8b2d7c97bb299ce579d152194a408"
+      "sha256": "e95f0ac2a0851b84446c33919d6b347b9ab22b1560cd1650c47d4e996d1f46a7"
     },
     "disabledServerAdapter": {
       "path": "server/cadPhase5Package8ApprovalIssuerAdapter.js",
-      "sha256": "cd4cfd272e221f3cbcf238f6bb0995c5e44cf9c945d18012007af3075126f9c1"
+      "sha256": "a73ace1c863fcd1a07f0f126fc2881fe4a3b04f1cf294f60f2f20ce9d2b3a8c9"
     },
     "internalDurableLedger": {
       "path": "convex/cadPhase5Package8ApprovalIssuance.ts",
-      "sha256": "14e8f5f66b8bbfc8109e744c8c8cca48030a96aebfb9e3d11f1a02604c38124a"
+      "sha256": "45739504e94bd41977c78c69eb6d0ed04a36379e55fda539f96dc0d67b081acd"
     },
     "convexSchema": {
       "path": "convex/schema.ts",
@@ -29,7 +29,7 @@
     },
     "offlineSyntheticTests": {
       "path": "scripts/cad-phase5-package8-independent-approval-issuer.test.js",
-      "sha256": "cec07941ce165de511d742b748bd3e8bc4485e7377b4a1b32a0f33b5281085e8"
+      "sha256": "9d3fe1e58753216414a5e5337fe496866f8dad386cf76ebb3fa5c6804eb999a8"
     },
     "generatedApiTypes": {
       "path": "convex/_generated/api.d.ts",
@@ -38,9 +38,15 @@
   },
   "ownershipBoundary": {
     "issuerNamespace": "cadPackage8ApprovalIssuances",
+    "sourceOwnershipSeparated": true,
     "issuerPrincipalCommitmentRequired": true,
+    "issuerPrincipalDigestIsIdentityProof": false,
     "issuerMustDifferFromOwnerCommitment": true,
     "issuerMustDifferFromSessionCommitment": true,
+    "sourceAuthorityReceiptInterfacePresent": true,
+    "sourceAuthorityReceiptReviewOnly": true,
+    "independentRuntimeIssuerCustodyBound": false,
+    "runtimeAuthorityReceiptVerifierConfigured": false,
     "executionCoordinatorImportsIssuer": false,
     "runtimeImportsIssuer": false,
     "publicFunctionsExposed": 0,
@@ -79,7 +85,15 @@
     "expiryFailClosed": true,
     "closeTerminal": true,
     "closeFirstRollbackOperationAvailable": true,
-    "automaticRetries": 0,
+    "retrySemantics": {
+      "applicationRetries": 0,
+      "transportRetries": 0,
+      "providerRetries": 0,
+      "logicalOperationCallsPerOperation": 1,
+      "externalSideEffectsInsideTransaction": false,
+      "platformOccReexecutionPossible": true,
+      "atMostOneCommittedTransition": true
+    },
     "unknownMutationOutcomeStopsAdapter": true
   },
   "privacyBoundary": {
@@ -102,8 +116,8 @@
     "approvalArtifactIssued": false
   },
   "offlineValidation": {
-    "focusedSyntheticTests": 9,
-    "focusedSyntheticTestsPassed": 9,
+    "focusedSyntheticTests": 10,
+    "focusedSyntheticTestsPassed": 10,
     "typescriptPassed": true,
     "localOnlyCodegenPassed": true,
     "localOnlyCodegenDeploymentAccess": false,
@@ -124,13 +138,16 @@
     "conversions": 0,
     "downloads": 0,
     "payments": 0,
-    "retries": 0
+    "applicationRetries": 0,
+    "transportRetries": 0,
+    "providerRetries": 0
   },
   "remainingGates": [
     "DRAFT_PR_SOURCE_REVIEW",
     "MERGE_NOT_AUTHORIZED",
     "EXACT_DEVELOPMENT_RUNTIME_RECEIPT_NOT_SUPPLIED",
     "FRESH_SYNTHETIC_OWNER_SESSION_BINDING_NOT_SUPPLIED",
+    "INDEPENDENT_RUNTIME_ISSUER_CUSTODY_BINDING_NOT_REVIEWED",
     "ISSUER_TO_COORDINATOR_RUNTIME_BINDING_NOT_REVIEWED",
     "ONE_USE_APPROVAL_ARTIFACT_NOT_ISSUED",
     "LIVE_QUALIFICATION_NOT_AUTHORIZED"

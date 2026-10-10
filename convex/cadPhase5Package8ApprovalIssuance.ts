@@ -28,6 +28,15 @@ const LIMITS = {
   currency: 'USD' as const,
 };
 const MAXIMUM_EVIDENCE_AGE_MS = 120_000;
+const RETRY_SEMANTICS = {
+  applicationRetries: 0 as const,
+  transportRetries: 0 as const,
+  providerRetries: 0 as const,
+  logicalOperationCalls: 1 as const,
+  externalSideEffectsInsideTransaction: false as const,
+  platformOccReexecutionPossible: true as const,
+  atMostOneCommittedTransition: true as const,
+};
 const HEX = /^[a-f0-9]{64}$/;
 const COMMIT = /^[a-f0-9]{40}$/;
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -50,7 +59,11 @@ const baseResult = {
   sourceOnly: v.literal(true), internalOnly: v.literal(true), routeMounted: v.literal(false),
   runtimeActivationAllowed: v.literal(false), sessionIssuanceEnabled: v.literal(false),
   requestBodyAdmissionAuthorized: v.literal(false), providerDispatchEnabled: v.literal(false),
-  automaticRetries: v.literal(0),
+  applicationRetries: v.literal(0), transportRetries: v.literal(0),
+  providerRetries: v.literal(0), logicalOperationCalls: v.literal(1),
+  externalSideEffectsInsideTransaction: v.literal(false),
+  platformOccReexecutionPossible: v.literal(true),
+  atMostOneCommittedTransition: v.literal(true),
 };
 const resultCode = v.union(
   v.literal('PACKAGE8_APPROVAL_ISSUED'), v.literal('PACKAGE8_APPROVAL_VERIFIED'),
@@ -111,12 +124,12 @@ type AcceptedCode = 'PACKAGE8_APPROVAL_ISSUED' | 'PACKAGE8_APPROVAL_VERIFIED'
 const denied = (code: ResultCode) => ({ sourceOnly: true as const, internalOnly: true as const,
   routeMounted: false as const, runtimeActivationAllowed: false as const,
   sessionIssuanceEnabled: false as const, requestBodyAdmissionAuthorized: false as const,
-  providerDispatchEnabled: false as const, automaticRetries: 0 as const,
+  providerDispatchEnabled: false as const, ...RETRY_SEMANTICS,
   accepted: false as const, code });
 const accepted = <T extends AcceptedCode>(code: T) => ({ sourceOnly: true as const, internalOnly: true as const,
   routeMounted: false as const, runtimeActivationAllowed: false as const,
   sessionIssuanceEnabled: false as const, requestBodyAdmissionAuthorized: false as const,
-  providerDispatchEnabled: false as const, automaticRetries: 0 as const,
+  providerDispatchEnabled: false as const, ...RETRY_SEMANTICS,
   accepted: true as const, code });
 
 type Request = {

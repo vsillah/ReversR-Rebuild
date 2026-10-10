@@ -1,4 +1,4 @@
-// Independent Package 8 approval-issuance contract. This module owns only
+// Source-separated Package 8 approval-issuance contract. This module owns only
 // approval metadata and commitments. It cannot activate the executor, mount a
 // route, read credentials, admit a body, or access CAD/provider data.
 const { createHash } = require('node:crypto');
@@ -27,7 +27,21 @@ const REVIEW_GATE = Object.freeze({
   ...ISSUER_BASELINE,
   runtimeMounted: false,
   issuanceEnabled: false,
+  sourceOwnershipSeparated: true,
+  independentRuntimeIssuerCustodyBound: false,
 });
+const RETRY_SEMANTICS = Object.freeze({
+  applicationRetries: 0,
+  transportRetries: 0,
+  providerRetries: 0,
+  logicalCallsPerOperation: 1,
+  externalSideEffectsInsideTransaction: false,
+  platformOccReexecutionPossible: true,
+  atMostOneCommittedTransition: true,
+});
+const ISSUER_OPERATIONS = Object.freeze([
+  'issue', 'verify', 'consume', 'revoke', 'close', 'readSanitized',
+]);
 const VERIFICATION_KEYS = Object.freeze([
   'schemaVersion', 'issuanceReference', 'approvalCommitment', 'baselineCommit',
   'baselineTree', 'executionHeadCommit', 'executionHeadTree', 'runtimeDeploymentId',
@@ -162,17 +176,49 @@ function consumptionReceipt(record, consumedAtMs, generation) {
   ].join('|'));
 }
 
+function authorityReceiptRequest(operation, issuerPrincipalDigest, payload) {
+  if (!ISSUER_OPERATIONS.includes(operation) || !digest(issuerPrincipalDigest)
+    || !payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
+  return Object.freeze({
+    schemaVersion: 1,
+    operation,
+    issuerPrincipalCommitment: issuerPrincipalDigest,
+    payloadCommitment: hash(JSON.stringify(payload)),
+    baselineCommit: ISSUER_BASELINE.reviewedMainCommit,
+    baselineTree: ISSUER_BASELINE.reviewedMainTree,
+    sourceOwnershipSeparated: true,
+    independentRuntimeIssuerCustodyBound: false,
+  });
+}
+
+function expectedSourceReviewAuthorityReceipt(request) {
+  if (!request || request.schemaVersion !== 1
+    || !ISSUER_OPERATIONS.includes(request.operation)
+    || !digest(request.issuerPrincipalCommitment) || !digest(request.payloadCommitment)
+    || request.baselineCommit !== ISSUER_BASELINE.reviewedMainCommit
+    || request.baselineTree !== ISSUER_BASELINE.reviewedMainTree
+    || request.sourceOwnershipSeparated !== true
+    || request.independentRuntimeIssuerCustodyBound !== false) return null;
+  const core = Object.freeze({ ...request, verified: true,
+    status: 'SOURCE_REVIEW_ONLY_RUNTIME_CUSTODY_UNBOUND' });
+  return Object.freeze({ ...core, receiptDigest: hash(JSON.stringify(core)) });
+}
+
 module.exports = {
   ISSUER_BASELINE,
   ISSUER_LIMITS,
   ISSUE_KEYS,
+  ISSUER_OPERATIONS,
+  RETRY_SEMANTICS,
   REVIEW_GATE,
   VERIFICATION_KEYS,
+  authorityReceiptRequest,
   consumptionReceipt,
   digest,
   exactKeys,
   expectedAncestryDigest,
   expectedRuntimeReceiptDigest,
+  expectedSourceReviewAuthorityReceipt,
   hash,
   id,
   parseUtc,

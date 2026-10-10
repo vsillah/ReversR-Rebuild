@@ -15,6 +15,8 @@ function check(rootPath = root) {
   assert.equal(packet.packetType,
     'CAD_PHASE5_PACKAGE8_INDEPENDENT_APPROVAL_ISSUER_SOURCE_CLOSURE');
   assert.equal(packet.status, 'SOURCE_ONLY_INTERNAL_UNMOUNTED_DISABLED');
+  assert.equal(packet.scope,
+    'SOURCE_SEPARATED_DURABLE_APPROVAL_ISSUANCE_LEDGER_AND_DISABLED_ADAPTER');
   assert.deepEqual(packet.baseline, {
     mergedMainCommit: '1512dedb5c240765bf87c749e07ed2f6709ec5b1',
     mergedMainTree: 'a1378dc31e79690fcc717f2414b39074133773a5',
@@ -27,6 +29,11 @@ function check(rootPath = root) {
   }
   assert.deepEqual(packet.durableOperations,
     ['issue', 'verify', 'consume', 'revoke', 'close', 'readSanitized']);
+  assert.equal(packet.ownershipBoundary.sourceOwnershipSeparated, true);
+  assert.equal(packet.ownershipBoundary.issuerPrincipalDigestIsIdentityProof, false);
+  assert.equal(packet.ownershipBoundary.sourceAuthorityReceiptInterfacePresent, true);
+  assert.equal(packet.ownershipBoundary.independentRuntimeIssuerCustodyBound, false);
+  assert.equal(packet.ownershipBoundary.runtimeAuthorityReceiptVerifierConfigured, false);
   assert.equal(packet.ownershipBoundary.executionCoordinatorImportsIssuer, false);
   assert.equal(packet.ownershipBoundary.runtimeImportsIssuer, false);
   assert.equal(packet.ownershipBoundary.publicFunctionsExposed, 0);
@@ -34,14 +41,18 @@ function check(rootPath = root) {
   assert.equal(packet.durabilityAndRollback.atomicOneUseConsumption, true);
   assert.equal(packet.durabilityAndRollback.replayRefused, true);
   assert.equal(packet.durabilityAndRollback.restartDurabilityBackedByConvexTable, true);
-  assert.equal(packet.durabilityAndRollback.automaticRetries, 0);
+  assert.deepEqual(packet.durabilityAndRollback.retrySemantics, {
+    applicationRetries: 0, transportRetries: 0, providerRetries: 0,
+    logicalOperationCallsPerOperation: 1, externalSideEffectsInsideTransaction: false,
+    platformOccReexecutionPossible: true, atMostOneCommittedTransition: true,
+  });
   assert.equal(packet.privacyBoundary.rawOwnerIdentifiersStored, false);
   assert.equal(packet.privacyBoundary.rawSessionIdentifiersStored, false);
   assert.equal(packet.privacyBoundary.credentialOrEnvironmentValuesRead, false);
   assert.equal(packet.privacyBoundary.sanitizedEvidenceOnly, true);
   assert.ok(Object.values(packet.defaultState).every(value => value === false));
-  assert.equal(packet.offlineValidation.focusedSyntheticTests, 9);
-  assert.equal(packet.offlineValidation.focusedSyntheticTestsPassed, 9);
+  assert.equal(packet.offlineValidation.focusedSyntheticTests, 10);
+  assert.equal(packet.offlineValidation.focusedSyntheticTestsPassed, 10);
   assert.equal(packet.offlineValidation.typescriptPassed, true);
   assert.equal(packet.offlineValidation.localOnlyCodegenPassed, true);
   assert.ok(Object.values(packet.actionsPerformedByThisImplementation)
@@ -51,6 +62,8 @@ function check(rootPath = root) {
   assert.equal(packet.nextGate.deploymentAuthorized, false);
   assert.equal(packet.nextGate.approvalArtifactIssuanceAuthorized, false);
   assert.equal(packet.nextGate.liveQualificationAuthorized, false);
+  assert.ok(packet.remainingGates.includes(
+    'INDEPENDENT_RUNTIME_ISSUER_CUSTODY_BINDING_NOT_REVIEWED'));
 
   const sourceFiles = [
     'server/cadPhase5Package8ApprovalIssuanceContract.js',
@@ -61,7 +74,13 @@ function check(rootPath = root) {
     .join('\n');
   assert.doesNotMatch(source,
     /process\.env|fetch\s*\(|https?\.request|CAD_R2_|VERCEL_OIDC|secretAccessKey|private key/i);
-  assert.match(source, /automaticRetries:\s*0/);
+  assert.doesNotMatch(source, /automaticRetries/);
+  for (const field of ['applicationRetries', 'transportRetries', 'providerRetries',
+    'logicalOperationCalls', 'externalSideEffectsInsideTransaction',
+    'platformOccReexecutionPossible', 'atMostOneCommittedTransition']) {
+    assert.match(source, new RegExp(field));
+  }
+  assert.match(source, /independentRuntimeIssuerCustodyBound:\s*false/);
   assert.match(source, /cadPackage8ApprovalIssuances/);
   for (const operation of packet.durableOperations) {
     assert.match(source, new RegExp(`(?:export const|${operation}:)\\s*${operation}`));
@@ -75,7 +94,10 @@ function check(rootPath = root) {
   }
   return Object.freeze({ status: 'PASS', sourceOnly: true,
     operations: packet.durableOperations.length, approvalArtifactsIssued: 0,
-    runtimeMounted: false, automaticRetries: 0 });
+    runtimeMounted: false, sourceOwnershipSeparated: true,
+    independentRuntimeIssuerCustodyBound: false,
+    applicationRetries: 0, transportRetries: 0, providerRetries: 0,
+    platformOccReexecutionPossible: true, atMostOneCommittedTransition: true });
 }
 
 if (require.main === module) process.stdout.write(`${JSON.stringify(check())}\n`);

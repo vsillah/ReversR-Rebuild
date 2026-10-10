@@ -1,10 +1,14 @@
-// Disabled source-only adapter for the independently owned approval issuer.
+// Disabled source-only adapter for the source-separated approval issuer.
 // References and transports are injected explicitly. No default instance,
-// route, provider, environment selector, or retry path exists.
+// route, provider, environment selector, or application/transport/provider
+// retry path exists. Convex may internally re-execute transactions after OCC.
 const {
+  RETRY_SEMANTICS,
   REVIEW_GATE,
+  authorityReceiptRequest,
   digest,
   exactKeys,
+  expectedSourceReviewAuthorityReceipt,
   id,
   same,
   validIssueCommand,
@@ -66,9 +70,27 @@ function validBaseResult(value, code) {
     && value.sourceOnly === true && value.internalOnly === true
     && value.routeMounted === false && value.runtimeActivationAllowed === false
     && value.sessionIssuanceEnabled === false && value.requestBodyAdmissionAuthorized === false
-    && value.providerDispatchEnabled === false && value.automaticRetries === 0
+    && value.providerDispatchEnabled === false
+    && value.applicationRetries === RETRY_SEMANTICS.applicationRetries
+    && value.transportRetries === RETRY_SEMANTICS.transportRetries
+    && value.providerRetries === RETRY_SEMANTICS.providerRetries
+    && value.logicalOperationCalls === RETRY_SEMANTICS.logicalCallsPerOperation
+    && value.externalSideEffectsInsideTransaction
+      === RETRY_SEMANTICS.externalSideEffectsInsideTransaction
+    && value.platformOccReexecutionPossible === RETRY_SEMANTICS.platformOccReexecutionPossible
+    && value.atMostOneCommittedTransition === RETRY_SEMANTICS.atMostOneCommittedTransition
     && typeof value.accepted === 'boolean' && value.code === code && RESULT_CODES.has(code));
 }
+
+const retryProjection = () => ({
+  applicationRetries: RETRY_SEMANTICS.applicationRetries,
+  transportRetries: RETRY_SEMANTICS.transportRetries,
+  providerRetries: RETRY_SEMANTICS.providerRetries,
+  logicalOperationCalls: RETRY_SEMANTICS.logicalCallsPerOperation,
+  externalSideEffectsInsideTransaction: RETRY_SEMANTICS.externalSideEffectsInsideTransaction,
+  platformOccReexecutionPossible: RETRY_SEMANTICS.platformOccReexecutionPossible,
+  atMostOneCommittedTransition: RETRY_SEMANTICS.atMostOneCommittedTransition,
+});
 
 function validReceipt(value, request) {
   const expected = verificationReceipt(request);
@@ -105,7 +127,7 @@ function sanitizeResult(operation, raw, request) {
     return Object.freeze(evidence);
   }
   if (value.accepted !== true) return Object.freeze({ ok: false, code: value.code,
-    sourceOnly: true, automaticRetries: 0 });
+    sourceOnly: true, ...retryProjection() });
   const transition = {
     issue: ['PACKAGE8_APPROVAL_ISSUED', 'ISSUED_ACTIVE_ONE_USE'],
     consume: ['PACKAGE8_APPROVAL_CONSUMED', 'ISSUED_CONSUMED_ONE_USE'],
@@ -121,7 +143,7 @@ function sanitizeResult(operation, raw, request) {
   }
   const result = { ok: true, code: value.code, issuanceReference: value.issuanceReference,
     approvalCommitment: value.approvalCommitment, status: value.status,
-    generation: value.generation, sourceOnly: true, automaticRetries: 0 };
+    generation: value.generation, sourceOnly: true, ...retryProjection() };
   if (Object.hasOwn(value, 'receiptDigest')) {
     if (!digest(value.receiptDigest)) throw Error('PACKAGE8_APPROVAL_RESULT_INVALID');
     result.receiptDigest = value.receiptDigest;
@@ -137,6 +159,7 @@ function createCadPhase5Package8ApprovalIssuerAdapter({
   reviewOnly = false,
   reviewGate,
   issuerPrincipalDigest,
+  issuerAuthorityReceiptVerifier,
   references,
   runQuery,
   runMutation,
@@ -144,6 +167,12 @@ function createCadPhase5Package8ApprovalIssuerAdapter({
   const expected = Object.keys(FUNCTIONS).sort();
   const reviewConfigured = reviewOnly === true && same(reviewGate, REVIEW_GATE)
     && digest(issuerPrincipalDigest)
+    && issuerAuthorityReceiptVerifier?.sourceOnly === true
+    && issuerAuthorityReceiptVerifier?.configured === false
+    && issuerAuthorityReceiptVerifier?.reviewConfigured === true
+    && issuerAuthorityReceiptVerifier?.sourceOwnershipSeparated === true
+    && issuerAuthorityReceiptVerifier?.independentRuntimeIssuerCustodyBound === false
+    && typeof issuerAuthorityReceiptVerifier?.verifySourceReview === 'function'
     && references && typeof references === 'object' && !Array.isArray(references)
     && Object.getPrototypeOf(references) === Object.prototype
     && Object.keys(references).sort().join(',') === expected.join(',')
@@ -151,10 +180,24 @@ function createCadPhase5Package8ApprovalIssuerAdapter({
     && typeof runQuery === 'function' && typeof runMutation === 'function';
   const refs = reviewConfigured ? Object.freeze({ ...references }) : null;
   let remoteAttempts = 0;
+  let sourceAuthorityReviewAttempts = 0;
   let stopped = false;
+
+  async function verifySourceAuthority(operation, payload) {
+    const request = authorityReceiptRequest(operation, issuerPrincipalDigest, payload);
+    if (!request) throw Error('PACKAGE8_ISSUER_AUTHORITY_RECEIPT_INVALID');
+    sourceAuthorityReviewAttempts += 1;
+    const receipt = await issuerAuthorityReceiptVerifier.verifySourceReview(request);
+    const expected = expectedSourceReviewAuthorityReceipt(request);
+    if (!expected || !same(receipt, expected)
+      || receipt.independentRuntimeIssuerCustodyBound !== false) {
+      throw Error('PACKAGE8_ISSUER_AUTHORITY_RECEIPT_INVALID');
+    }
+  }
 
   async function invoke(operation, payload) {
     if (!reviewConfigured || stopped) throw Error('PACKAGE8_APPROVAL_ISSUER_DISABLED');
+    await verifySourceAuthority(operation, payload);
     const input = plainClone({ issuerPrincipalDigest, ...payload });
     remoteAttempts += 1;
     try {
@@ -182,12 +225,18 @@ function createCadPhase5Package8ApprovalIssuerAdapter({
     requestBodyAdmissionAuthorized: false,
     providerDispatchEnabled: false,
     approvalArtifactIssued: false,
-    automaticRetries: 0,
+    sourceOwnershipSeparated: true,
+    independentRuntimeIssuerCustodyBound: false,
+    runtimeAuthorityReceiptVerifierConfigured: false,
+    ...retryProjection(),
     operations: FUNCTIONS,
     status: () => Object.freeze({ sourceOnly: true, internalOnly: true,
       configured: false, reviewConfigured, enabled: false, mounted: false,
       routeMounted: false, runtimeActivationAllowed: false,
-      approvalArtifactIssued: false, remoteAttempts, automaticRetries: 0, stopped }),
+      approvalArtifactIssued: false, sourceOwnershipSeparated: true,
+      independentRuntimeIssuerCustodyBound: false,
+      runtimeAuthorityReceiptVerifierConfigured: false,
+      sourceAuthorityReviewAttempts, remoteAttempts, ...retryProjection(), stopped }),
     async issueExact(command) {
       requireReview();
       if (!validIssueCommand(command)

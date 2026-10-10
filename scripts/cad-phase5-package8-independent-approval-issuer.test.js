@@ -6,6 +6,7 @@ const {
   ISSUER_BASELINE,
   ISSUER_LIMITS,
   REVIEW_GATE,
+  expectedSourceReviewAuthorityReceipt,
   expectedAncestryDigest,
   expectedRuntimeReceiptDigest,
   hash,
@@ -24,7 +25,9 @@ const SESSION = hash('synthetic-session-commitment');
 const CLOSED = Object.freeze({ sourceOnly: true, internalOnly: true, routeMounted: false,
   runtimeActivationAllowed: false, sessionIssuanceEnabled: false,
   requestBodyAdmissionAuthorized: false, providerDispatchEnabled: false,
-  automaticRetries: 0 });
+  applicationRetries: 0, transportRetries: 0, providerRetries: 0,
+  logicalOperationCalls: 1, externalSideEffectsInsideTransaction: false,
+  platformOccReexecutionPossible: true, atMostOneCommittedTransition: true });
 
 function command(overrides = {}) {
   const runtime = { schemaVersion: 1, deploymentId: 'dpl_package8_exact_development',
@@ -183,12 +186,24 @@ function backend(options = {}) {
 
 function fixture(options = {}) {
   const durable = backend(options);
+  const authorityCalls = [];
+  const issuerAuthorityReceiptVerifier = options.omitAuthorityVerifier ? undefined : {
+    sourceOnly: true, configured: false, reviewConfigured: true,
+    sourceOwnershipSeparated: true, independentRuntimeIssuerCustodyBound: false,
+    async verifySourceReview(request) {
+      authorityCalls.push(request);
+      if (options.authorityReceiptUnknown) throw Error('authority receipt unknown');
+      if (options.authorityReceiptMismatch) return { verified: false };
+      return expectedSourceReviewAuthorityReceipt(request);
+    },
+  };
   const references = Object.fromEntries(Object.keys(FUNCTIONS)
     .map(name => [name, `ref:${name}`]));
   const adapter = createCadPhase5Package8ApprovalIssuerAdapter({ reviewOnly: true,
-    reviewGate: REVIEW_GATE, issuerPrincipalDigest: ISSUER, references,
+    reviewGate: REVIEW_GATE, issuerPrincipalDigest: ISSUER,
+    issuerAuthorityReceiptVerifier, references,
     runQuery: durable.runQuery, runMutation: durable.runMutation });
-  return { ...durable, adapter };
+  return { ...durable, adapter, authorityCalls };
 }
 
 test('default state is disabled, internal-only, unmounted and incapable of issuance', async () => {
@@ -209,7 +224,13 @@ test('exact source, runtime, owner, session, window and cost commitments issue a
   const verified = await f.adapter.verifyExact(value.request);
   assert.deepEqual(verified, verificationReceipt(value.request));
   assert.deepEqual(f.state.calls, ['issue', 'verify']);
-  assert.equal(f.adapter.status().automaticRetries, 0);
+  assert.equal(f.authorityCalls.length, 2);
+  assert.equal(f.adapter.status().applicationRetries, 0);
+  assert.equal(f.adapter.status().transportRetries, 0);
+  assert.equal(f.adapter.status().providerRetries, 0);
+  assert.equal(f.adapter.status().platformOccReexecutionPossible, true);
+  assert.equal(f.adapter.status().atMostOneCommittedTransition, true);
+  assert.equal(f.adapter.status().externalSideEffectsInsideTransaction, false);
 });
 
 test('atomic one-use consume refuses concurrent replay and survives adapter restart', async () => {
@@ -246,13 +267,14 @@ test('revocation and close are terminal, monotonic and replay-refusing', async (
   assert.equal((await closed.adapter.consumeExact(second.request)).ok, false);
 });
 
-test('expiry rejects verification and consumption without a retry', async () => {
+test('expiry rejects verification and consumption without application retry', async () => {
   const f = fixture(); const value = command(); await f.adapter.issueExact(value);
   f.state.now = Date.parse(value.request.authorityExpiresAtUtc);
   assert.equal(await f.adapter.verifyExact(value.request), null);
   const consumed = await f.adapter.consumeExact(value.request);
   assert.equal(consumed.ok, false); assert.equal(consumed.code, 'PACKAGE8_APPROVAL_EXPIRED');
-  assert.equal(f.adapter.status().automaticRetries, 0);
+  assert.equal(f.adapter.status().applicationRetries, 0);
+  assert.equal(f.adapter.status().platformOccReexecutionPossible, true);
 });
 
 test('source, target, ownership, session and exclusive cost widening fail before a call', async () => {
@@ -269,11 +291,17 @@ test('source, target, ownership, session and exclusive cost widening fail before
   }
 });
 
-test('independent issuer ownership blocks cross-owner reads and sanitized evidence leaks no identities', async () => {
+test('source ownership separation blocks cross-commitment reads without claiming runtime custody', async () => {
   const f = fixture(); const value = command(); await f.adapter.issueExact(value);
   const references = Object.fromEntries(Object.keys(FUNCTIONS).map(name => [name, `ref:${name}`]));
+  const sourceReceiptVerifier = {
+    sourceOnly: true, configured: false, reviewConfigured: true,
+    sourceOwnershipSeparated: true, independentRuntimeIssuerCustodyBound: false,
+    verifySourceReview: async request => expectedSourceReviewAuthorityReceipt(request),
+  };
   const other = createCadPhase5Package8ApprovalIssuerAdapter({ reviewOnly: true,
-    reviewGate: REVIEW_GATE, issuerPrincipalDigest: hash('other-issuer'), references,
+    reviewGate: REVIEW_GATE, issuerPrincipalDigest: hash('other-issuer'),
+    issuerAuthorityReceiptVerifier: sourceReceiptVerifier, references,
     runQuery: f.runQuery, runMutation: f.runMutation });
   assert.equal(await other.verifyExact(value.request), null);
   assert.equal(await other.readSanitized({ issuanceReference: value.request.issuanceReference,
@@ -286,15 +314,34 @@ test('independent issuer ownership blocks cross-owner reads and sanitized eviden
   assert.doesNotMatch(serialized, /userId|shopId|loginSessionId|uploadSessionId|token|secret/i);
   assert.equal(serialized.includes(OWNER), false);
   assert.equal(serialized.includes(SESSION), false);
+  assert.equal(f.adapter.sourceOwnershipSeparated, true);
+  assert.equal(f.adapter.independentRuntimeIssuerCustodyBound, false);
+  assert.equal(f.adapter.runtimeAuthorityReceiptVerifierConfigured, false);
 });
 
-test('unknown mutation outcome stops the adapter with zero retry', async () => {
+test('a caller-supplied issuer digest alone never configures or reaches the durable ledger', async () => {
+  const omitted = fixture({ omitAuthorityVerifier: true });
+  assert.equal(omitted.adapter.reviewConfigured, false);
+  await assert.rejects(omitted.adapter.issueExact(command()), /ISSUER_DISABLED/);
+  assert.deepEqual(omitted.state.calls, []);
+
+  const mismatched = fixture({ authorityReceiptMismatch: true });
+  await assert.rejects(mismatched.adapter.issueExact(command()), /AUTHORITY_RECEIPT_INVALID/);
+  assert.equal(mismatched.authorityCalls.length, 1);
+  assert.deepEqual(mismatched.state.calls, []);
+  assert.equal(mismatched.adapter.independentRuntimeIssuerCustodyBound, false);
+});
+
+test('unknown mutation stops after one logical call without application retry', async () => {
   const f = fixture({ throwOn: 'issue' });
   await assert.rejects(f.adapter.issueExact(command()), /outcome unknown/);
   assert.equal(f.adapter.status().stopped, true);
   assert.equal(f.adapter.status().remoteAttempts, 1);
   await assert.rejects(f.adapter.issueExact(command()), /ISSUER_DISABLED/);
   assert.equal(f.adapter.status().remoteAttempts, 1);
+  assert.equal(f.adapter.status().applicationRetries, 0);
+  assert.equal(f.adapter.status().transportRetries, 0);
+  assert.equal(f.adapter.status().providerRetries, 0);
 });
 
 test('issuer stays absent from runtime surfaces and source contains no provider or environment access', () => {

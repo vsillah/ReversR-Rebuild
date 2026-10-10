@@ -881,13 +881,13 @@
     "docs/cad-phase5-package8-public-evidence/convex-metadata-split-proof.md": "923bb1113027fc07c3dfbaa1e9e6d29a7d4a0b03e367cbf515889d443c747e37",
     "scripts/cad-phase5-package8-metadata-split-proof.js": "f892559a1e8a5e3ff19aa28bfea3189da88391ededb176270d1155d6691de11b",
     "scripts/cad-phase5-package8-metadata-split-proof.test.js": "180863564ee5b1eb122cbe8ce8992a9fb75136bf58ea3ef0ea70660d6b78c670",
-    "server/cadPhase5Package8ApprovalIssuanceContract.js": "f6adc4bb0424583d03545b9108258864a6d8b2d7c97bb299ce579d152194a408",
-    "server/cadPhase5Package8ApprovalIssuerAdapter.js": "cd4cfd272e221f3cbcf238f6bb0995c5e44cf9c945d18012007af3075126f9c1",
-    "convex/cadPhase5Package8ApprovalIssuance.ts": "14e8f5f66b8bbfc8109e744c8c8cca48030a96aebfb9e3d11f1a02604c38124a",
-    "scripts/cad-phase5-package8-independent-approval-issuer.test.js": "cec07941ce165de511d742b748bd3e8bc4485e7377b4a1b32a0f33b5281085e8",
-    "scripts/cad-phase5-package8-independent-approval-issuer-checker.js": "ad2da7365e10ec4c2e3bfd6fe69ffb8903575f97e7a43001052f349650ae3a93",
-    "scripts/cad-phase5-package8-independent-approval-issuer-checker.test.js": "6c59cc623bec0e8e88f8f28ef89d2fd0b8e88f3af588d2bfcba91fe91aa31f7d",
-    "docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json": "eb3a358fc8d16e63c4465a054e674f633c88ecf78c6c7cce786738752d6da0ca",
+    "server/cadPhase5Package8ApprovalIssuanceContract.js": "e95f0ac2a0851b84446c33919d6b347b9ab22b1560cd1650c47d4e996d1f46a7",
+    "server/cadPhase5Package8ApprovalIssuerAdapter.js": "a73ace1c863fcd1a07f0f126fc2881fe4a3b04f1cf294f60f2f20ce9d2b3a8c9",
+    "convex/cadPhase5Package8ApprovalIssuance.ts": "45739504e94bd41977c78c69eb6d0ed04a36379e55fda539f96dc0d67b081acd",
+    "scripts/cad-phase5-package8-independent-approval-issuer.test.js": "9d3fe1e58753216414a5e5337fe496866f8dad386cf76ebb3fa5c6804eb999a8",
+    "scripts/cad-phase5-package8-independent-approval-issuer-checker.js": "352ac439f0ac692839f52a99f4876d4baac4b5d7403ae0150e296aa58cb47605",
+    "scripts/cad-phase5-package8-independent-approval-issuer-checker.test.js": "8d260346405ab199582c6896fef1600bf8b36e99b7f5ba7b1c252c9bc25fd440",
+    "docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json": "6800d8e67b86d3f15c128e3e183333063616a9d9f8b7a4f433e280ee4c1f0741",
     "scripts/cad-convex-contract-manifest.js": "b835b827cdf164ee1b5c1f184d50864d677951dc7a17c6121d579be8b14940cb"
   }
 }
