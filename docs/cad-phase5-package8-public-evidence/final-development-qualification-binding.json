@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_FINAL_DEVELOPMENT_QUALIFICATION_BINDING",
+  "status": "SOURCE_ONLY_UNMOUNTED_DISABLED",
+  "scope": "ONE_USE_SYNTHETIC_DEVELOPMENT_QUALIFICATION_BINDING_NO_EXECUTION",
+  "recordedAtUtc": "2026-10-10T21:31:10Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mergedMainCommit": "499ee332c0d076f531561a1d79939bc8e9aaddff",
+    "mergedMainTree": "2b5c21f854327fbec81be6fa08d1e9aaa717f3fa",
+    "productionEvidenceDeploymentId": "dpl_D9DcWPErFXC7De9q7pr7KWdQSs2t",
+    "productionEvidenceState": "READY",
+    "postMergeRebindPacketSha256": "882e94de4d42c20934eb69c02b35eadb2c3fee24955bafa9f0c66f589d315cc3",
+    "reconciliationPacketSha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c",
+    "sourceToDeploymentFunctionEquivalence": "NOT_CLAIMED",
+    "providerRecheckPerformedByThisRound": false
+  },
+  "sourceBindings": {
+    "developmentQualificationBinding": {
+      "path": "server/cadPhase5Package8DevelopmentQualificationBinding.js",
+      "sha256": "891a827715421227c4d4ed52d563f3dce779de6e147c2397f392baadcd41a406"
+    },
+    "internalRunner": {
+      "path": "server/cadPhase5Package8InternalRunner.js",
+      "sha256": "8ec89553d8f2243f86ea5ae688503f7b0ddfc51b729c04888aa18ac302ae68bc"
+    },
+    "liveAdapterComposition": {
+      "path": "server/cadPhase5Package8LiveAdapters.js",
+      "sha256": "5c0a96fd8badc1631581f52c73f88b2d4ea9b16956fdd823a2e1ad5a98b43f66"
+    },
+    "executionController": {
+      "path": "server/cadPhase5Package8ExecutionController.js",
+      "sha256": "c7a7ede1f2657e3f69be33e686f85c1e73b0d4b49da2b9a91a893986e083c14c"
+    },
+    "sourceBridges": {
+      "path": "server/cadPhase5Package8SourceBridges.js",
+      "sha256": "e50a6f9291708fb5cdf90d7ac6c141e6337b0f71d938f565fa9a7d1935cedbcf"
+    },
+    "lifecycleMonitor": {
+      "path": "server/cadPhase5Package8LifecycleMonitor.js",
+      "sha256": "e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e"
+    },
+    "privateR2Custody": {
+      "path": "server/cadR2PrivateArtifactCustody.js",
+      "sha256": "106920b5c72e51d5132edd56d913246489a8aa0e0f1c5cf5978b356dee56ee5d"
+    },
+    "boundedSandboxExecutor": {
+      "path": "server/cadSandboxExecutor.js",
+      "sha256": "445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7"
+    },
+    "convexDurableInvoker": {
+      "path": "convex/cadPhase5DurableAdapters.ts",
+      "sha256": "308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260"
+    },
+    "offlineTest": {
+      "path": "scripts/cad-phase5-package8-development-qualification-binding.test.js",
+      "sha256": "34cfd6e8f634901864bc95075cbd638abe2124cebf7db255dda0ce14f83828c3"
+    }
+  },
+  "approvalArtifactContract": {
+    "kind": "CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL",
+    "status": "OFFLINE_SYNTHETIC_TEST_ONLY",
+    "issued": false,
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumWindowMinutes": 15,
+    "maximumCostUsdExclusive": 9,
+    "reservationMicros": 8999999,
+    "ownerShopIsolationRequired": true,
+    "freshAuthorityRequired": true,
+    "closeFirstRollbackRequired": true
+  },
+  "credentialReferences": [
+    "reversr-package8-public-fixture-dev-preview-v2"
+  ],
+  "environmentVariableReferences": [
+    "CAD_R2_ACCESS_KEY_ID",
+    "CAD_R2_SECRET_ACCESS_KEY",
+    "VERCEL_OIDC_TOKEN"
+  ],
+  "credentialOrEnvironmentValuesRead": false,
+  "defaultState": {
+    "configured": false,
+    "enabled": false,
+    "mounted": false,
+    "routeMounted": false,
+    "sessionIssuanceEnabled": false,
+    "requestBodyAdmissionAuthorized": false,
+    "providerDispatchEnabled": false,
+    "storageDispatchEnabled": false,
+    "conversionDispatchEnabled": false,
+    "downloadDispatchEnabled": false,
+    "runtimeActivationAllowed": false,
+    "liveBindingsAccepted": false,
+    "productionBehaviorChanged": false
+  },
+  "validationBoundary": {
+    "offlineOnly": true,
+    "providerRequests": 0,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "liveInvocations": 0,
+    "runtimeActivations": 0,
+    "sessionIssuances": 0,
+    "requestBodyAdmissions": 0,
+    "privateOrCustomerCadReads": 0,
+    "r2Objects": 0,
+    "sandboxJobs": 0,
+    "downloads": 0,
+    "payments": 0,
+    "retries": 0
+  },
+  "remainingLiveBlockers": [
+    "ONE_USE_APPROVAL_ARTIFACT_NOT_ISSUED",
+    "EXACT_LIVE_ACTIVATION_GATE_NOT_REVIEWED",
+    "LIVE_CONVEX_DURABLE_INVOKER_NOT_SUPPLIED",
+    "LIVE_R2_CUSTODY_BINDING_NOT_SUPPLIED",
+    "LIVE_SANDBOX_EXECUTOR_BINDING_NOT_SUPPLIED",
+    "FRESH_SYNTHETIC_SESSION_AUTHORITY_NOT_SUPPLIED",
+    "ACTIVE_WINDOW_AND_COST_REVALIDATION_NOT_SUPPLIED",
+    "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED"
+  ],
+  "nextGate": {
+    "type": "DRAFT_PR_SOURCE_REVIEW",
+    "mergeAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "liveQualificationAuthorized": false
+  }
+}
