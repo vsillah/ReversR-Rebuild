@@ -13,7 +13,7 @@ const v = {
   null: () => scalar('null'), id: table => scalar('id', { table }),
   literal: value => scalar('literal', { value }), optional: value => scalar('optional', { value }),
   union: (...values) => scalar('union', { values }), array: value => scalar('array', { value }),
-  object: fields => scalar('object', { fields }),
+  object: fields => scalar('object', { fields }), commitTs: () => scalar('number'),
 };
 function validate(rule, value) {
   if (rule.kind === 'optional') { if (value !== undefined) validate(rule.value, value); return; }
@@ -70,7 +70,9 @@ function loadSource({ now = () => 1000, readExactLibrarySession } = {}) {
       };
       if (name === './developmentAuth') return { developmentAuthReviewed: false };
       if (name === './librarySession' && readExactLibrarySession) return { readExactLibrarySession };
-      if (name === './librarySession' || name === './schema') return load('convex/' + name.slice(2) + '.ts');
+      if (name === './librarySession' || name === './schema' || name === './cadControlledUploadSchema') {
+        return load('convex/' + name.slice(2) + '.ts');
+      }
       throw new Error('Unexpected source dependency: ' + name);
     }
     vm.runInNewContext(result.outputText, { exports, require: localRequire }, { filename: full });

@@ -1,6 +1,7 @@
 const PREVIEW_QUERY_KEY = 'cadPreview';
 const PREVIEW_QUERY_VALUE = 'public-cube-v1';
 const DISPENSER_PREVIEW_QUERY_VALUE = 'mark-dispenser-v1';
+const AUTHENTICATED_IMPORT_PREVIEW_QUERY_VALUE = 'authenticated-import-v1';
 const NATIVE_EMBEDDED_PREVIEW_QA_VALUE = 'native-internal-upload-render';
 const PRODUCTION_HOSTNAME = 'reversr.vercel.app';
 
@@ -115,7 +116,8 @@ function inspectCadInternalTesterPreview(locationLike) {
   const query = new URLSearchParams(String(locationLike.search || ''));
   const explicitPreview = query.get(PREVIEW_QUERY_KEY);
   const requestedPreview = explicitPreview || (isNonProductionVercelPreview(locationLike.hostname) ? DISPENSER_PREVIEW_QUERY_VALUE : null);
-  if (![PREVIEW_QUERY_VALUE, DISPENSER_PREVIEW_QUERY_VALUE].includes(requestedPreview)) {
+  if (![PREVIEW_QUERY_VALUE, DISPENSER_PREVIEW_QUERY_VALUE,
+    AUTHENTICATED_IMPORT_PREVIEW_QUERY_VALUE].includes(requestedPreview)) {
     return Object.freeze({ enabled: false, code: 'CAD_TEST_PREVIEW_NOT_REQUESTED' });
   }
 
@@ -125,6 +127,11 @@ function inspectCadInternalTesterPreview(locationLike) {
       code: explicitPreview ? 'CAD_TEST_PREVIEW_MARK_DISPENSER' : 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT',
       fixture: MARK_DISPENSER_RESULT,
     });
+  }
+
+  if (requestedPreview === AUTHENTICATED_IMPORT_PREVIEW_QUERY_VALUE) {
+    return Object.freeze({ enabled: true, code: 'CAD_TEST_PREVIEW_AUTHENTICATED_IMPORT',
+      fixture: PUBLIC_CUBE_RESULT });
   }
 
   return Object.freeze({
@@ -168,6 +175,7 @@ module.exports = {
   PREVIEW_QUERY_KEY,
   PREVIEW_QUERY_VALUE,
   DISPENSER_PREVIEW_QUERY_VALUE,
+  AUTHENTICATED_IMPORT_PREVIEW_QUERY_VALUE,
   NATIVE_EMBEDDED_PREVIEW_QA_VALUE,
   PUBLIC_CUBE_RESULT,
   MARK_DISPENSER_RESULT,

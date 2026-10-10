@@ -47,7 +47,8 @@ function createUploadSessionService({ store, resolveAuthorization, refreshAuthor
   const configured = () => store && ['insertIfAbsent', 'read', 'revoke'].every(key => typeof store[key] === 'function')
     && typeof resolveAuthorization === 'function' && typeof refreshAuthorization === 'function' && typeof now === 'function';
   const clock = () => { const value = now(); if (!time(value)) unavailable(); return value; };
-  async function issueSession(context, { transport = 'bearer', lifetimeMs = MAX_LIFETIME_MS } = {}) {
+  async function issueSession(context, { transport = 'bearer', lifetimeMs = MAX_LIFETIME_MS,
+    signal: parentSignal } = {}) {
     try {
       if (!configured()) return deny('AUTH_UNAVAILABLE');
       if (!['bearer', 'cookie'].includes(transport) || !Number.isSafeInteger(lifetimeMs)
@@ -69,7 +70,7 @@ function createUploadSessionService({ store, resolveAuthorization, refreshAuthor
         signal.throwIfAborted();
         if (clock() >= expiresAt) return deny('AUTHORIZATION_REQUIRED');
         return { ok: true, credential, ...(csrf ? { csrf } : {}), sessionId: record.sessionId, expiresAt };
-      });
+      }, parentSignal);
     } catch { return deny('AUTH_UNAVAILABLE'); }
   }
   async function lookupSession(key, { signal: parentSignal } = {}) {
