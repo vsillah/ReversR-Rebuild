@@ -260,6 +260,12 @@ const files = [
   'docs/cad-production-auth-verifier-acceptance.json',
   'scripts/cad-production-auth-verifier-acceptance-checker.js',
   'scripts/cad-production-auth-verifier-acceptance.test.js',
+  'docs/cad-production-auth-verifier-current-source-acceptance-v2.md',
+  'docs/cad-production-auth-verifier-current-source-acceptance-v2.json',
+  'scripts/cad-production-auth-verifier-current-source-acceptance-checker.js',
+  'scripts/cad-production-auth-verifier-current-source-acceptance.test.js',
+  'scripts/cad-production-auth-verifier-historical-chain-integrity.js',
+  'scripts/cad-production-auth-verifier-historical-chain-integrity.test.js',
 
   'server/cadProductionSessionVerifierBinding.js',
   'scripts/cad-production-session-verifier-binding.test.js',
