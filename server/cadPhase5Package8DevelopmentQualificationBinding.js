@@ -1,12 +1,18 @@
-// Source-only final Package 8 development-qualification composition. It is
-// deliberately absent from runtime bootstraps and accepts only exact offline
-// synthetic ports plus a one-use, inactive approval artifact.
+// Source-only Package 8 development-qualification composition. The reviewed
+// factories are composed with injected dependencies, but no route or executor
+// is mounted and no one-use approval artifact is included in source.
 const { createHash } = require('node:crypto');
-const { createCadPhase5Package8InternalRunner }
-  = require('./cadPhase5Package8InternalRunner');
-const { OFFLINE_REVIEW_GATE } = require('./cadPhase5Package8LiveAdapters');
+const { createCadPhase5Package8ConvexDurableInvoker, FUNCTIONS: CONVEX_FUNCTIONS }
+  = require('./cadPhase5Package8ConvexDurableInvoker');
+const { createCadR2PrivateArtifactCustody }
+  = require('./cadR2PrivateArtifactCustody');
+const { createSandboxExecutor } = require('./cadSandboxExecutor');
+const { createCadExactSessionBridge, INTERNAL_MARK_TEST_COHORT }
+  = require('./cadExactSessionBridge');
+const { createUploadSessionService } = require('./uploadSessionStore');
 const {
   POLICY: MONITOR_POLICY,
+  createDisabledPackage8LifecycleMonitor,
   evaluatePackage8LifecycleMetadata,
 } = require('./cadPhase5Package8LifecycleMonitor');
 const {
@@ -21,6 +27,7 @@ const exactKeys = (value, keys) => Boolean(value && typeof value === 'object'
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const digest = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const time = value => Number.isSafeInteger(value) && value >= 0;
+const EMPTY_ENVIRONMENT = Object.freeze({});
 
 const QUALIFICATION_BINDING = Object.freeze({
   mergedMainCommit: '499ee332c0d076f531561a1d79939bc8e9aaddff',
@@ -57,12 +64,28 @@ const APPROVAL_ID_DIGEST = hash([
 ].join('|'));
 const QUALIFICATION_REVIEW_GATE = Object.freeze({
   schemaVersion: 1,
-  mode: 'OFFLINE_SYNTHETIC_FINAL_DEVELOPMENT_QUALIFICATION_ONLY',
+  mode: 'REVIEWED_SOURCE_COMPOSITION_ONLY',
   ...QUALIFICATION_BINDING,
   liveBindingsSupplied: false,
   providerDispatchAuthorized: false,
   runtimeActivationAuthorized: false,
 });
+const SOURCE_OPERATION_MAP = Object.freeze({
+  convex: Object.freeze({ ...CONVEX_FUNCTIONS }),
+  r2Provider: Object.freeze(['putExact', 'getExact', 'deleteExact', 'headExact']),
+  r2Store: Object.freeze(['reserve', 'consumeOperation', 'readForOwner', 'markStored',
+    'markUnknown', 'beginDelete', 'confirmDeleted', 'issueGrant', 'resolveGrant']),
+  sandbox: Object.freeze(['create', 'loadAssets']),
+  exactSession: Object.freeze(['verifyExactSession', 'insertIfAbsent', 'read', 'revoke']),
+  closeFirst: Object.freeze([
+    'convex.closeForRollback',
+    'session.revokeSession',
+    'sandbox.cleanupBlocked',
+    'r2.deleteArtifact',
+    'convex.reconcile',
+  ]),
+});
+
 const deny = code => Object.freeze({ ok: false, code, sourceOnly: true,
   developmentOnly: true, maximumRetries: 0, providerRequests: 0,
   runtimeActivationAuthorized: false });
@@ -76,9 +99,9 @@ function validateApprovalArtifact(artifact, nowMs) {
   }
   if (artifact.schemaVersion !== 1
       || artifact.kind !== 'CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL'
-      || artifact.status !== 'OFFLINE_SYNTHETIC_TEST_ONLY'
+      || artifact.status !== 'ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION'
       || artifact.approvalIdDigest !== APPROVAL_ID_DIGEST
-      || artifact.providerRequestsAuthorized !== false
+      || artifact.providerRequestsAuthorized !== true
       || artifact.runtimeActivationAuthorized !== false
       || !same(artifact.binding, QUALIFICATION_BINDING)
       || !same(artifact.owner, SYNTHETIC_OWNER)
@@ -100,9 +123,9 @@ function validateApprovalArtifact(artifact, nowMs) {
   const start = Date.parse(window.startUtc);
   const end = Date.parse(window.endUtc);
   if (!exactKeys(window, ['schemaVersion', 'idDigest', 'startUtc', 'endUtc', 'activated'])
-      || window.schemaVersion !== 1 || !digest(window.idDigest) || window.activated !== false
+      || window.schemaVersion !== 1 || !digest(window.idDigest) || window.activated !== true
       || !Number.isFinite(start) || !Number.isFinite(end) || end <= start
-      || start <= nowMs || end - start > LIMITS.maximumWindowMs) {
+      || start > nowMs || end <= nowMs || end - start > LIMITS.maximumWindowMs) {
     return 'PACKAGE8_APPROVAL_WINDOW_INVALID';
   }
   if (!Number.isFinite(issuedAt) || !Number.isFinite(expiresAt)
@@ -111,14 +134,73 @@ function validateApprovalArtifact(artifact, nowMs) {
   return null;
 }
 
+function dependenciesReady(sources) {
+  const r2StoreMethods = SOURCE_OPERATION_MAP.r2Store;
+  const r2ProviderMethods = SOURCE_OPERATION_MAP.r2Provider;
+  return Boolean(sources && typeof sources === 'object' && !Array.isArray(sources)
+    && sources.convex && sources.r2 && sources.sandbox && sources.exactSession
+    && typeof sources.convex.runQuery === 'function'
+    && typeof sources.convex.runMutation === 'function'
+    && sources.convex.references && typeof sources.convex.references === 'object'
+    && r2StoreMethods.every(name => typeof sources.r2.store?.[name] === 'function')
+    && r2ProviderMethods.every(name => typeof sources.r2.provider?.[name] === 'function')
+    && typeof sources.sandbox.create === 'function'
+    && typeof sources.sandbox.loadAssets === 'function'
+    && typeof sources.exactSession.verifyExactSession === 'function'
+    && ['insertIfAbsent', 'read', 'revoke']
+      .every(name => typeof sources.exactSession.store?.[name] === 'function'));
+}
+
+function composeReviewedSources(sources, now) {
+  const durableInvoker = createCadPhase5Package8ConvexDurableInvoker(sources.convex);
+  const r2Custody = createCadR2PrivateArtifactCustody({
+    enabled: true,
+    provider: sources.r2.provider,
+    store: sources.r2.store,
+    now,
+  });
+  const sandboxExecutor = createSandboxExecutor({
+    env: EMPTY_ENVIRONMENT,
+    create: sources.sandbox.create,
+    loadAssets: sources.sandbox.loadAssets,
+  });
+  const exactSessionAuthority = createCadExactSessionBridge({
+    enabled: true,
+    cohort: INTERNAL_MARK_TEST_COHORT,
+    verifyExactSession: sources.exactSession.verifyExactSession,
+    now,
+  });
+  const uploadSessionService = createUploadSessionService({
+    store: sources.exactSession.store,
+    resolveAuthorization: exactSessionAuthority.resolveAuthorization,
+    refreshAuthorization: exactSessionAuthority.refreshAuthorization,
+    now,
+  });
+  if (durableInvoker.status().configured !== true || r2Custody.reviewConfigured !== true
+    || exactSessionAuthority.configured !== true
+    || typeof sandboxExecutor.convert !== 'function'
+    || typeof uploadSessionService.revokeSession !== 'function') {
+    throw Error('PACKAGE8_SOURCE_COMPOSITION_INVALID');
+  }
+  return Object.freeze({
+    actualReviewedFactoriesComposed: true,
+    executableAdaptersExposed: false,
+    convexOperations: Object.freeze({ ...CONVEX_FUNCTIONS }),
+    durableRemoteAttempts: durableInvoker.status().remoteAttempts,
+    r2CustodyReviewConfigured: r2Custody.reviewConfigured,
+    sandboxActiveCount: sandboxExecutor.activeCount(),
+    sandboxCleanupBlocked: sandboxExecutor.cleanupBlocked(),
+    exactSessionAuthorityConfigured: exactSessionAuthority.configured,
+    sessionRevokerMapped: true,
+  });
+}
+
 function createCadPhase5Package8DevelopmentQualificationBinding({
   reviewOnly = false,
-  testOnly = false,
   approvalGate,
-  bindings = {},
-  lifecycleMonitor,
+  sources,
+  lifecycleMonitor = createDisabledPackage8LifecycleMonitor(),
   now = Date.now,
-  operationBudgetMs,
 } = {}) {
   const monitorReviewed = lifecycleMonitor?.sourceOnly === true
     && lifecycleMonitor.configured === false
@@ -127,27 +209,20 @@ function createCadPhase5Package8DevelopmentQualificationBinding({
     && lifecycleMonitor.providerWritesEnabled === false
     && lifecycleMonitor.dispatchEnabled === false
     && lifecycleMonitor.evaluate === evaluatePackage8LifecycleMetadata;
-  const qualificationConfigured = reviewOnly === true && testOnly === true
-    && same(approvalGate, QUALIFICATION_REVIEW_GATE) && monitorReviewed
-    && typeof now === 'function';
-  const runner = createCadPhase5Package8InternalRunner({
-    enabled: false,
-    reviewOnly: qualificationConfigured,
-    testOnly: qualificationConfigured,
-    activationGate: qualificationConfigured ? OFFLINE_REVIEW_GATE : undefined,
-    bindings,
-    now,
-    ...(operationBudgetMs === undefined ? {} : { operationBudgetMs }),
-  });
-  const reviewConfigured = qualificationConfigured && runner.reviewConfigured === true;
+  let sourceComposition = null;
+  if (reviewOnly === true && same(approvalGate, QUALIFICATION_REVIEW_GATE)
+    && monitorReviewed && typeof now === 'function' && dependenciesReady(sources)) {
+    try { sourceComposition = composeReviewedSources(sources, now); } catch { sourceComposition = null; }
+  }
+  const reviewConfigured = sourceComposition !== null;
 
-  async function reviewOneUse({ approvalArtifact, signal } = {}) {
+  async function reviewOneUse({ approvalArtifact } = {}) {
     if (!reviewConfigured) return deny('PACKAGE8_QUALIFICATION_BINDING_DISABLED');
     let nowMs;
     try { nowMs = now(); } catch { return deny('PACKAGE8_APPROVAL_TIME_UNKNOWN'); }
     const invalid = validateApprovalArtifact(approvalArtifact, nowMs);
     if (invalid) return deny(invalid);
-    return runner.runOneUse({ window: approvalArtifact.window, signal });
+    return deny('PACKAGE8_ONE_USE_EXECUTION_NOT_INSTALLED');
   }
 
   return Object.freeze({
@@ -173,6 +248,8 @@ function createCadPhase5Package8DevelopmentQualificationBinding({
     limits: LIMITS,
     approvalIdDigest: APPROVAL_ID_DIGEST,
     lifecycleMonitorReviewed: monitorReviewed,
+    sourceOperationMap: SOURCE_OPERATION_MAP,
+    sourceComposition,
     reviewOneUse,
   });
 }
@@ -184,6 +261,7 @@ module.exports = {
   LIMITS,
   QUALIFICATION_BINDING,
   QUALIFICATION_REVIEW_GATE,
+  SOURCE_OPERATION_MAP,
   createCadPhase5Package8DevelopmentQualificationBinding,
   validateApprovalArtifact,
 };

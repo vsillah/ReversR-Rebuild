@@ -23,8 +23,10 @@ test('exact final development qualification binding is closed and source-only', 
 test('source, evidence, and contract widening fail closed', () => {
   const source = copy(packet); source.source.mergedMainCommit = '0'.repeat(40);
   assert.throws(() => checkPacket(source), /source binding/);
-  const digest = copy(packet); digest.sourceBindings.executionController.sha256 = '1'.repeat(64);
+  const digest = copy(packet); digest.sourceBindings.convexDurableInvoker.sha256 = '1'.repeat(64);
   assert.throws(() => checkPacket(digest), /source digest/);
+  const composition = copy(packet); composition.sourceComposition.offlineSyntheticSubstitution = true;
+  assert.throws(() => checkPacket(composition), /source composition/);
   const approval = copy(packet); approval.approvalArtifactContract.maximumAttempts = 2;
   assert.throws(() => checkPacket(approval), /approval boundary/);
   const runtime = copy(packet); runtime.defaultState.runtimeActivationAllowed = true;

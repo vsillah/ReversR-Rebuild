@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "packetType": "CAD_PHASE5_PACKAGE8_FINAL_DEVELOPMENT_QUALIFICATION_BINDING",
   "status": "SOURCE_ONLY_UNMOUNTED_DISABLED",
-  "scope": "ONE_USE_SYNTHETIC_DEVELOPMENT_QUALIFICATION_BINDING_NO_EXECUTION",
-  "recordedAtUtc": "2026-10-10T21:31:10Z",
+  "scope": "REVIEWED_ADAPTER_SOURCE_COMPOSITION_NO_EXECUTION",
+  "recordedAtUtc": "2026-10-10T21:42:22Z",
   "source": {
     "repository": "vsillah/ReversR-Rebuild",
     "mergedMainCommit": "499ee332c0d076f531561a1d79939bc8e9aaddff",
@@ -18,27 +18,15 @@
   "sourceBindings": {
     "developmentQualificationBinding": {
       "path": "server/cadPhase5Package8DevelopmentQualificationBinding.js",
-      "sha256": "891a827715421227c4d4ed52d563f3dce779de6e147c2397f392baadcd41a406"
+      "sha256": "5ccc9f69ce2a28e53b0e21935481b2c12783dd1228aa93cb839c79cc184ca742"
     },
-    "internalRunner": {
-      "path": "server/cadPhase5Package8InternalRunner.js",
-      "sha256": "8ec89553d8f2243f86ea5ae688503f7b0ddfc51b729c04888aa18ac302ae68bc"
+    "convexDurableInvoker": {
+      "path": "server/cadPhase5Package8ConvexDurableInvoker.js",
+      "sha256": "4f308722e2e2996ba25dacf8181b05f490b47a3798e840800abfa028721a0ce8"
     },
-    "liveAdapterComposition": {
-      "path": "server/cadPhase5Package8LiveAdapters.js",
-      "sha256": "5c0a96fd8badc1631581f52c73f88b2d4ea9b16956fdd823a2e1ad5a98b43f66"
-    },
-    "executionController": {
-      "path": "server/cadPhase5Package8ExecutionController.js",
-      "sha256": "c7a7ede1f2657e3f69be33e686f85c1e73b0d4b49da2b9a91a893986e083c14c"
-    },
-    "sourceBridges": {
-      "path": "server/cadPhase5Package8SourceBridges.js",
-      "sha256": "e50a6f9291708fb5cdf90d7ac6c141e6337b0f71d938f565fa9a7d1935cedbcf"
-    },
-    "lifecycleMonitor": {
-      "path": "server/cadPhase5Package8LifecycleMonitor.js",
-      "sha256": "e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e"
+    "convexDurableFunctions": {
+      "path": "convex/cadPhase5DurableAdapters.ts",
+      "sha256": "308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260"
     },
     "privateR2Custody": {
       "path": "server/cadR2PrivateArtifactCustody.js",
@@ -48,18 +36,57 @@
       "path": "server/cadSandboxExecutor.js",
       "sha256": "445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7"
     },
-    "convexDurableInvoker": {
-      "path": "convex/cadPhase5DurableAdapters.ts",
-      "sha256": "308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260"
+    "exactSessionAuthority": {
+      "path": "server/cadExactSessionBridge.js",
+      "sha256": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee"
     },
-    "offlineTest": {
+    "uploadSessionService": {
+      "path": "server/uploadSessionStore.js",
+      "sha256": "e1a49b7779ec53c36346846a845a4076659358a96fd493467fa9e0824ed0b3b8"
+    },
+    "lifecycleMonitor": {
+      "path": "server/cadPhase5Package8LifecycleMonitor.js",
+      "sha256": "e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e"
+    },
+    "sourceCompositionTest": {
       "path": "scripts/cad-phase5-package8-development-qualification-binding.test.js",
-      "sha256": "34cfd6e8f634901864bc95075cbd638abe2124cebf7db255dda0ce14f83828c3"
+      "sha256": "0d4ca93827dd8d1c999bd9c5503dbac3492e76b0f95d2a367d0dc185f7b55ada"
     }
+  },
+  "sourceComposition": {
+    "actualReviewedFactoriesComposed": true,
+    "offlineSyntheticSubstitution": false,
+    "executableAdaptersExposed": false,
+    "dependencyInvocationsDuringComposition": 0,
+    "sandboxEnvironmentValuesRead": false,
+    "sandboxReceivesExplicitEmptyEnvironment": true,
+    "convexOperations": {
+      "reserveArtifact": "mutation",
+      "consumeQuota": "mutation",
+      "readArtifact": "query",
+      "transitionArtifact": "mutation",
+      "confirmDeleted": "mutation",
+      "issueDownloadGrant": "mutation",
+      "resolveDownloadGrant": "query",
+      "claimUpload": "mutation",
+      "advanceUpload": "mutation",
+      "claimConversion": "mutation",
+      "advanceConversion": "mutation",
+      "closeForRollback": "mutation",
+      "reconcile": "query"
+    },
+    "closeFirstOrder": [
+      "convex.closeForRollback",
+      "session.revokeSession",
+      "sandbox.cleanupBlocked",
+      "r2.deleteArtifact",
+      "convex.reconcile"
+    ]
   },
   "approvalArtifactContract": {
     "kind": "CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL",
-    "status": "OFFLINE_SYNTHETIC_TEST_ONLY",
+    "status": "NOT_ISSUED",
+    "requiredIssuedStatus": "ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION",
     "issued": false,
     "maximumSessions": 1,
     "maximumFiles": 1,
@@ -97,7 +124,7 @@
     "productionBehaviorChanged": false
   },
   "validationBoundary": {
-    "offlineOnly": true,
+    "sourceCompositionOnly": true,
     "providerRequests": 0,
     "configurationChanges": 0,
     "deployments": 0,
@@ -115,10 +142,10 @@
   "remainingLiveBlockers": [
     "ONE_USE_APPROVAL_ARTIFACT_NOT_ISSUED",
     "EXACT_LIVE_ACTIVATION_GATE_NOT_REVIEWED",
-    "LIVE_CONVEX_DURABLE_INVOKER_NOT_SUPPLIED",
-    "LIVE_R2_CUSTODY_BINDING_NOT_SUPPLIED",
-    "LIVE_SANDBOX_EXECUTOR_BINDING_NOT_SUPPLIED",
-    "FRESH_SYNTHETIC_SESSION_AUTHORITY_NOT_SUPPLIED",
+    "LIVE_CONVEX_REFERENCES_AND_TRANSPORT_NOT_INSTALLED",
+    "LIVE_R2_PROVIDER_AND_STORE_NOT_INSTALLED",
+    "LIVE_SANDBOX_CREATE_BINDING_NOT_INSTALLED",
+    "LIVE_EXACT_SESSION_STORE_AND_VERIFIER_NOT_INSTALLED",
     "ACTIVE_WINDOW_AND_COST_REVALIDATION_NOT_SUPPLIED",
     "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED"
   ],

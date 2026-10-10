@@ -680,6 +680,7 @@ const files = [
   'scripts/cad-phase5-package8-live-adapter-rebind-checker.js',
   'scripts/cad-phase5-package8-live-adapter-rebind.test.js',
   'docs/cad-phase5-package8-public-evidence/post-merge-live-adapter-rebind.json',
+  'server/cadPhase5Package8ConvexDurableInvoker.js',
   'server/cadPhase5Package8DevelopmentQualificationBinding.js',
   'scripts/cad-phase5-package8-development-qualification-binding.test.js',
   'scripts/cad-phase5-package8-development-qualification-binding-checker.js',

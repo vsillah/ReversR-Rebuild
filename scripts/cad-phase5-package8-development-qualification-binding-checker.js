@@ -19,7 +19,7 @@ const allFalse = value => Boolean(value && Object.keys(value).length > 0
 function checkPacket(packet, rootPath = root) {
   if (packet.packetType !== 'CAD_PHASE5_PACKAGE8_FINAL_DEVELOPMENT_QUALIFICATION_BINDING'
       || packet.status !== 'SOURCE_ONLY_UNMOUNTED_DISABLED'
-      || packet.scope !== 'ONE_USE_SYNTHETIC_DEVELOPMENT_QUALIFICATION_BINDING_NO_EXECUTION') {
+      || packet.scope !== 'REVIEWED_ADAPTER_SOURCE_COMPOSITION_NO_EXECUTION') {
     throw Error('packet identity');
   }
   const source = packet.source || {};
@@ -42,9 +42,28 @@ function checkPacket(packet, rootPath = root) {
       throw Error('source digest');
     }
   }
+  const composition = packet.sourceComposition || {};
+  if (composition.actualReviewedFactoriesComposed !== true
+      || composition.offlineSyntheticSubstitution !== false
+      || composition.executableAdaptersExposed !== false
+      || composition.dependencyInvocationsDuringComposition !== 0
+      || composition.sandboxEnvironmentValuesRead !== false
+      || composition.sandboxReceivesExplicitEmptyEnvironment !== true
+      || JSON.stringify(composition.convexOperations) !== JSON.stringify({
+        reserveArtifact: 'mutation', consumeQuota: 'mutation', readArtifact: 'query',
+        transitionArtifact: 'mutation', confirmDeleted: 'mutation',
+        issueDownloadGrant: 'mutation', resolveDownloadGrant: 'query',
+        claimUpload: 'mutation', advanceUpload: 'mutation', claimConversion: 'mutation',
+        advanceConversion: 'mutation', closeForRollback: 'mutation', reconcile: 'query',
+      })
+      || JSON.stringify(composition.closeFirstOrder) !== JSON.stringify([
+        'convex.closeForRollback', 'session.revokeSession', 'sandbox.cleanupBlocked',
+        'r2.deleteArtifact', 'convex.reconcile'])) throw Error('source composition');
   const approval = packet.approvalArtifactContract || {};
   if (approval.kind !== 'CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_QUALIFICATION_APPROVAL'
-      || approval.status !== 'OFFLINE_SYNTHETIC_TEST_ONLY' || approval.issued !== false
+      || approval.status !== 'NOT_ISSUED'
+      || approval.requiredIssuedStatus !== 'ISSUED_ONE_USE_DEVELOPMENT_QUALIFICATION'
+      || approval.issued !== false
       || approval.maximumSessions !== 1 || approval.maximumFiles !== 1
       || approval.maximumAttempts !== 1 || approval.maximumRetries !== 0
       || approval.maximumWindowMinutes !== 15 || approval.maximumCostUsdExclusive !== 9
@@ -59,7 +78,7 @@ function checkPacket(packet, rootPath = root) {
       || packet.credentialOrEnvironmentValuesRead !== false) throw Error('credential boundary');
   if (!allFalse(packet.defaultState)) throw Error('runtime boundary');
   const validation = packet.validationBoundary || {};
-  if (validation.offlineOnly !== true || ['providerRequests', 'configurationChanges',
+  if (validation.sourceCompositionOnly !== true || ['providerRequests', 'configurationChanges',
     'deployments', 'liveInvocations', 'runtimeActivations', 'sessionIssuances',
     'requestBodyAdmissions', 'privateOrCustomerCadReads', 'r2Objects', 'sandboxJobs',
     'downloads', 'payments', 'retries'].some(key => validation[key] !== 0)) {
@@ -68,10 +87,10 @@ function checkPacket(packet, rootPath = root) {
   if (JSON.stringify(packet.remainingLiveBlockers) !== JSON.stringify([
     'ONE_USE_APPROVAL_ARTIFACT_NOT_ISSUED',
     'EXACT_LIVE_ACTIVATION_GATE_NOT_REVIEWED',
-    'LIVE_CONVEX_DURABLE_INVOKER_NOT_SUPPLIED',
-    'LIVE_R2_CUSTODY_BINDING_NOT_SUPPLIED',
-    'LIVE_SANDBOX_EXECUTOR_BINDING_NOT_SUPPLIED',
-    'FRESH_SYNTHETIC_SESSION_AUTHORITY_NOT_SUPPLIED',
+    'LIVE_CONVEX_REFERENCES_AND_TRANSPORT_NOT_INSTALLED',
+    'LIVE_R2_PROVIDER_AND_STORE_NOT_INSTALLED',
+    'LIVE_SANDBOX_CREATE_BINDING_NOT_INSTALLED',
+    'LIVE_EXACT_SESSION_STORE_AND_VERIFIER_NOT_INSTALLED',
     'ACTIVE_WINDOW_AND_COST_REVALIDATION_NOT_SUPPLIED',
     'SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED',
   ])) throw Error('blocker inventory');
@@ -82,6 +101,14 @@ function checkPacket(packet, rootPath = root) {
   const bindingSource = fs.readFileSync(path.join(rootPath,
     'server/cadPhase5Package8DevelopmentQualificationBinding.js'), 'utf8');
   if (/process\.env|fetch\s*\(|https?\.request|credentialOptions/.test(bindingSource)
+      || /createCadPhase5Package8InternalRunner|OFFLINE_REVIEW_GATE|offlineSynthetic/.test(bindingSource)
+      || !/createCadPhase5Package8ConvexDurableInvoker/.test(bindingSource)
+      || !/createCadR2PrivateArtifactCustody/.test(bindingSource)
+      || !/createSandboxExecutor/.test(bindingSource)
+      || !/createCadExactSessionBridge/.test(bindingSource)
+      || !/createUploadSessionService/.test(bindingSource)
+      || !/env:\s*EMPTY_ENVIRONMENT/.test(bindingSource)
+      || !/liveBindingsSupplied:\s*false/.test(bindingSource)
       || !/configured:\s*false/.test(bindingSource)
       || !/routeMounted:\s*false/.test(bindingSource)
       || !/runtimeActivationAllowed:\s*false/.test(bindingSource)) throw Error('source boundary');
