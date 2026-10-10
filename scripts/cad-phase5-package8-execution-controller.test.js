@@ -318,7 +318,7 @@ test('success binds both artifacts, closes first, revokes, deletes, and reconcil
   assert.ok(close >= 0);
   assert.equal(f.events[close + 1].name, 'session:revokeExact');
   assert.equal(value.productionEvidenceDeploymentId,
-    'dpl_6gU2Ppcn3J4zJQiwtQFBYU1VBM6D');
+    'dpl_99Gfdd69ZTCGKYpbFgLDzMiwQGd9');
   assert.equal(value.reconciliationPacketSha256,
     'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c');
 });
@@ -430,3 +430,5 @@ test('Package 8 files remain offline, internal, unrouted, and credential-free', 
     assert.equal(source.includes('cadPhase5Package8SourceBridges'), false, runtime);
   }
 });
+
+module.exports = { NOW, WINDOW, setup };

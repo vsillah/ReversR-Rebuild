@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_LIVE_ADAPTER_RUNNER_SOURCE_CONTRACT",
+  "status": "SOURCE_ONLY_DISABLED_DEFAULT",
+  "scope": "DEVELOPMENT_ONLY_NONPROPRIETARY_SYNTHETIC_QUALIFICATION",
+  "recordedAtUtc": "2026-10-10T20:15:00Z",
+  "admission": {
+    "mergedMainCommit": "24ec45362517d60237f6f3e186e5048f49177cf5",
+    "productionEvidenceDeploymentId": "dpl_99Gfdd69ZTCGKYpbFgLDzMiwQGd9",
+    "productionEvidenceState": "READY",
+    "deploymentMetadataBoundMergeCommit": "24ec45362517d60237f6f3e186e5048f49177cf5",
+    "deploymentEvidenceReviewedLocally": true,
+    "providerRecheckPerformedByThisRound": false,
+    "rebindPacketSha256": "1a726b14bed6f3c771b6df58126e9a9ae81d1b726776720e51bd0456f6126e1d",
+    "reconciliationPacketSha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c",
+    "sourceToDeploymentFunctionEquivalence": "NOT_CLAIMED"
+  },
+  "sourceBindings": {
+    "executionController": {
+      "path": "server/cadPhase5Package8ExecutionController.js",
+      "sha256": "cc455fe1d7762024a389d848578ee76cb674c9780cd9d5a9a939e5e06e489225"
+    },
+    "reviewedSourceBridges": {
+      "path": "server/cadPhase5Package8SourceBridges.js",
+      "sha256": "e50a6f9291708fb5cdf90d7ac6c141e6337b0f71d938f565fa9a7d1935cedbcf"
+    },
+    "liveAdapterComposition": {
+      "path": "server/cadPhase5Package8LiveAdapters.js",
+      "sha256": "314c219fda185997d951f4d340fad579bce51ec174ad86687886a61e2b41dc18"
+    },
+    "internalRunner": {
+      "path": "server/cadPhase5Package8InternalRunner.js",
+      "sha256": "8ec89553d8f2243f86ea5ae688503f7b0ddfc51b729c04888aa18ac302ae68bc"
+    },
+    "controllerTest": {
+      "path": "scripts/cad-phase5-package8-execution-controller.test.js",
+      "sha256": "cb30bcaf9eb4eed6349844d6dba3c98a193b838ff01847324ce8eddea948c8ac"
+    },
+    "runnerTest": {
+      "path": "scripts/cad-phase5-package8-live-adapter-runner.test.js",
+      "sha256": "b572d2c874a64ba93a6d14fc40cff01a36193937c14d59dbc9f472f81bf5f502"
+    }
+  },
+  "reviewedContracts": {
+    "convexDurableOperations": [
+      "claimUpload",
+      "reserveArtifact",
+      "consumeQuota",
+      "readArtifact",
+      "transitionArtifact",
+      "confirmDeleted",
+      "issueDownloadGrant",
+      "resolveDownloadGrant",
+      "closeForRollback",
+      "reconcile"
+    ],
+    "privateR2CustodyMethods": [
+      "reserveArtifact(identity, input, options)",
+      "commitArtifact(identity, artifactId, bytes, options)",
+      "issueDownloadGrant(identity, artifactId, options)",
+      "deleteArtifact(identity, artifactId, options)"
+    ],
+    "sandboxMethods": [
+      "convert(body, signal)",
+      "activeCount()",
+      "cleanupBlocked()"
+    ],
+    "authority": "EXACT_SYNTHETIC_SESSION_OWNER_SHOP_UPLOAD_SESSION",
+    "monitoring": "UNWIRED_PURE_METADATA_POLICY"
+  },
+  "fixedEnvelope": {
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumCostUsdExclusive": 9,
+    "reservationMicros": 8999999,
+    "authorityBeforeFixtureRequired": true,
+    "durableClaimBeforeFixtureRequired": true,
+    "durableQuotaReservationBeforeFixtureRequired": true,
+    "ownerShopIsolationRequired": true,
+    "originalIgsGrantOwnerScoped": true,
+    "derivedStlGrantOwnerScoped": true,
+    "closeFirstRollbackRequired": true,
+    "grantRevocationRequired": true,
+    "quarantineOnUnknownRequired": true,
+    "exactSyntheticDeletionRequired": true,
+    "durableReconciliationRequired": true
+  },
+  "defaultState": {
+    "configured": false,
+    "enabled": false,
+    "mounted": false,
+    "routeMounted": false,
+    "sessionIssuanceEnabled": false,
+    "requestBodyAdmissionAuthorized": false,
+    "providerDispatchEnabled": false,
+    "storageDispatchEnabled": false,
+    "conversionDispatchEnabled": false,
+    "downloadDispatchEnabled": false,
+    "runtimeActivationAllowed": false,
+    "liveBindingsAccepted": false,
+    "productionBehaviorChanged": false
+  },
+  "offlineQualification": {
+    "gate": "OFFLINE_SYNTHETIC_TEST_ONLY",
+    "fixtureId": "reversr-phase5-synthetic-private-line-v1",
+    "fixtureSha256": "0bdb42a7c58f4d51eee7eec2befae6ba590e43e0ecce34350cef9db4345c4c70",
+    "projectOwned": true,
+    "nonproprietary": true,
+    "customerData": false,
+    "providerRequests": 0,
+    "liveInvocations": 0,
+    "runtimeActivations": 0,
+    "requestBodyAdmissions": 0,
+    "privateOrCustomerCadReads": 0,
+    "r2Objects": 0,
+    "sandboxJobs": 0,
+    "downloads": 0,
+    "payments": 0
+  },
+  "qualificationBoundary": {
+    "controlledSyntheticPathOnly": true,
+    "proprietaryOrCustomerOwnershipQualified": false,
+    "customerDataHandlingQualified": false,
+    "generalProductionUploadReady": false,
+    "package8Activated": false
+  },
+  "remainingExecutionBlockers": [
+    "EXACT_LIVE_ACTIVATION_GATE_NOT_REVIEWED",
+    "LIVE_CONVEX_DURABLE_INVOKER_NOT_SUPPLIED",
+    "LIVE_R2_CUSTODY_BINDING_NOT_SUPPLIED",
+    "LIVE_SANDBOX_EXECUTOR_BINDING_NOT_SUPPLIED",
+    "FRESH_SYNTHETIC_SESSION_AUTHORITY_NOT_SUPPLIED",
+    "ACTIVE_WINDOW_AND_COST_REVALIDATION_NOT_SUPPLIED",
+    "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED"
+  ],
+  "nextGate": {
+    "type": "DRAFT_PR_SOURCE_REVIEW",
+    "mergeAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "liveQualificationAuthorized": false
+  }
+}
