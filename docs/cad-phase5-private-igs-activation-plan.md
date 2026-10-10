@@ -1,8 +1,10 @@
 # Phase 5 private IGS activation plan
 
-Status: Packages 1-6 complete within their source-only scopes, including Package 6 Human QA approval on 2026-10-10; Package 7 remains not started; all live capability remains disabled.
+Status: Packages 1-7 are complete within their source-only scopes, including Package 6 Human QA approval on 2026-10-10 and Package 7's deterministic synthetic private-path control qualification. All live capability and Package 8 remain disabled.
 
-Prepared from: `a30c11cb56dba945b8d59d06787fa99b7ead4a03`.
+Original plan prepared from: `a30c11cb56dba945b8d59d06787fa99b7ead4a03`.
+
+Package 7 revision base: `066ea62d8cbc32cf7358497c0b9cf128ab38a59a`.
 
 Supplied Phase 4 closeout manifest SHA-256: `255e8320b9cf840ee151418a90c15e63873272aa2cc6f726586d5a503f21c8aa`
 
@@ -10,7 +12,7 @@ Supplied Phase 4 closeout manifest SHA-256: `255e8320b9cf840ee151418a90c15e63873
 
 ReversR has useful pieces of the journey, but it does not yet have one qualified private-file path. The repository can authenticate a synthetic session, reject unauthenticated production requests, validate bounded IGES input, run a public fixture through a sandboxed converter, render qualified fixture geometry, and offer fixture downloads. Those proofs were completed in separate lanes with different trust boundaries.
 
-Phase 5 joins those pieces through eight finite work packages. Package 1 repaired and froze the evidence baseline. Package 2 added an unrouted, closed-by-default web session binding for exact Convex Auth login plus fresh user/shop CAD authority. Package 3 added a disabled Cloudflare R2 custody contract, metadata/tombstone model, bounded quota policy, and owner-checked download-grant contract. Package 4 added an unmounted one-shot orchestration contract and durable attempt/job schema that preserve authority-before-body ordering, idempotency, quota holds, quarantine, and zero conversion dispatch. Package 5 added an unmounted bounded-conversion successor contract, monotonic conversion job model, deterministic source-bound preview/STL generation, cleanup-before-ready rule, and terminal quarantine matrix while keeping runtime dispatch at zero. Package 6 supplies a localhost-only browser qualification mode for the still-disabled authenticated Import-to-Design journey, including exclusive generated sources, automatic progress, reload continuity, failure/unknown recovery, interactive Design review, exact local artifact downloads, and deletion/revocation. Vambah's `proceed`, interpreted by the Captain in this thread on 2026-10-10, approved Human QA of the final privacy-safe MP4. The remaining sequence covers one separately authorized proprietary qualification and an exact-deployment rollback drill. Private CAD cannot enter the path until a separate exact Package 7 authorization packet is approved.
+Phase 5 joins those pieces through eight finite work packages. Package 1 repaired and froze the evidence baseline. Package 2 added an unrouted, closed-by-default web session binding for exact Convex Auth login plus fresh user/shop CAD authority. Package 3 added a disabled Cloudflare R2 custody contract, metadata/tombstone model, bounded quota policy, and owner-checked download-grant contract. Package 4 added an unmounted one-shot orchestration contract and durable attempt/job schema that preserve authority-before-body ordering, idempotency, quota holds, quarantine, and zero conversion dispatch. Package 5 added an unmounted bounded-conversion successor contract, monotonic conversion job model, deterministic source-bound preview/STL generation, cleanup-before-ready rule, and terminal quarantine matrix while keeping runtime dispatch at zero. Package 6 supplies a localhost-only browser qualification mode for the still-disabled authenticated Import-to-Design journey, including exclusive generated sources, automatic progress, reload continuity, failure/unknown recovery, interactive Design review, exact local artifact downloads, and deletion/revocation. Vambah's `proceed`, interpreted by the Captain in this thread on 2026-10-10, approved Human QA of the final privacy-safe MP4. Package 7 now qualifies only the source-level private-path controls with one deterministic project-owned, nonproprietary synthetic IGES fixture. Package 8 remains a separate exact-deployment and rollback gate.
 
 Nothing in this plan authorizes credentials, provider or environment changes, storage writes, request-body admission, conversion, deployment, private CAD, a live test, or production activation.
 
@@ -47,7 +49,8 @@ The repair changed evidence hashes only. It did not change the route, its closed
 | Authenticated client upload | `utils/cadAuthenticatedImportQualification.js`, `components/AuthenticatedIgsQualificationPanel.tsx`, `components/CadWorkflow.tsx` | Localhost-only synthetic browser qualification; no upload, route, account, provider, or private-file authority |
 | Original IGS and derived STL downloads | Synthetic byte-bound Blob controls in the Design review plus Package 3 parser/IDOR fixtures | Exact public/synthetic bytes qualified; fresh owner-authorized durable grants remain unrouted |
 | Durable private object custody, deletion and backup disposition | `server/cadR2PrivateArtifactCustody.js`, Convex artifact/tombstone/grant/quota schema, focused offline tests | Qualified source-only R2 contract; provider/store runtime and resources remain absent |
-| End-to-end authenticated proprietary IGS to viewable model | No single mounted path or receipt found | Unproven and disabled |
+| Synthetic private-path rollback/revocation/deletion controls | `server/cadPhase5SyntheticPrivatePathQualification.js`; exact project-owned fixture; existing internal durable adapters; focused offline tests | Source-only qualification; unmounted and zero dispatch |
+| End-to-end authenticated proprietary or customer IGS to viewable model | No authorized input or mounted receipt exists | Unproven and disabled; outside Package 7 |
 
 ## Reusable source inventory
 
@@ -231,32 +234,41 @@ Automated validation: client adapter tests, state-machine tests, accessibility p
 
 Human QA: yes. Before asking for approval, create and inspect a privacy-safe MP4 of the exact authenticated test route using a public or generated synthetic fixture. Show selection, upload, progress, ready viewer, orbit/move, original download, STL download, failure recovery, deletion/revocation state, and mobile plus desktop layouts. The MP4 must contain no credentials, private CAD, private names, raw URLs with grants, account identifiers, or provider consoles. Attach the playable MP4 directly in the Codex thread and offer the exact route only as optional hands-on follow-up.
 
-### Work package 7 of 8: run the bounded proprietary IGS qualification
+### Work package 7 of 8: qualify the synthetic private-path controls
 
-Scope: after the public mounted path and Human QA pass, run one separately authorized proprietary `.igs` file through a non-production or production-equivalent internal account. Capture restricted operational evidence and a separate public-safe receipt. Validate viewability plus both downloads without publishing the source name, path, bytes, digest, geometry payload, identifiers, or signed URLs.
+Result: complete within the source-only, deterministic qualification scope. No proprietary or customer file was permitted. The exact gate is `docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md`.
 
-Dependencies: packages 1-6; explicit private-file authorization; source owner consent; classification; named operator and backup; exact deployment and test account; retention/deletion deadline; cost cap; one-attempt/no-retry window; approved evidence destinations; incident and stop owner.
+Scope: generate one immutable ReversR-owned synthetic `.igs` payload, classify it `RESTRICTED_SYNTHETIC_TEST`, and exercise the private-path control lifecycle against offline durable test doubles. The fixture is checked-in test material with fixed bytes and digest; treating it as private-path input tests control semantics without claiming that it is confidential or customer-owned.
+
+Dependencies: packages 1-6; the existing internal Package 7 durable adapters; the exact synthetic fixture manifest; one injected exact-session revoker; read-only reconciliation; deterministic tombstones; and all route/provider/runtime flags fixed false.
+
+Fixed limits: one synthetic session, one file, one attempt, zero retries, one independent digest-only qualification-intent commitment, one durable closed-state fence, and an enforceable all-in ceiling of US$9 (`9000000` micros).
 
 Acceptance criteria:
 
-- The original enters only the approved custody path and never appears in Git, chat attachments, screenshots, MP4s, logs, analytics, crash reports, or public evidence.
-- The authenticated owner can view the derived 3D model and download byte-identical original IGS plus the bound derived STL.
-- Another user and shop cannot discover or access the job or any artifact.
-- Conversion cleanup is confirmed, usage stays inside the approved cap, and no retry or second run occurs.
-- The retention/deletion action completes by the approved deadline, including temporary objects, with a sanitized tombstone and documented backup/log limits.
-- Any unknown outcome, cleanup ambiguity, access-control anomaly, fidelity failure, or evidence leak stops the run and keeps activation closed.
+- An independent qualification ledger atomically consumes a sanitized run/protocol/target/owner commitment before fixture validation or application/durable-adapter activity and refuses replay across fresh controller instances.
+- Exact descriptor shape, byte count, SHA-256, project ownership, nonproprietary status, no-customer-data status, and private-path classification are validated before any application/durable-adapter or session mutation.
+- Authority-before-body ordering remains intact because this source-only qualification never admits or reads a request body.
+- Intent-ledger replay blocks restart or a second attempt even if initial read-only reconciliation failed before a durable closed control existed; read-only reconciliation additionally detects an already-closed application control.
+- The first state-changing action closes admission and conversion, revokes exact-session grants, and quarantines uncertain attempts, jobs, and artifacts.
+- An injected exact-session revoker confirms only the bound synthetic upload session. Another owner, shop, session, grant, and artifact remain unchanged.
+- Only the three exact synthetic artifact records enter deleting state; confirmed tombstones and a zero-byte/zero-object quota ledger are reconciled read-only.
+- Any rollback, session-revocation, quarantine, grant, deletion, or reconciliation ambiguity returns one sanitized unknown result and stops without retry.
+- Route mounting, session issuance, request-body admission, provider/storage/conversion dispatch, downloads, deployment, and Package 8 authority remain false.
 
-Rollback: close admission and conversion authorities, revoke the exact session/cohort and artifact grants, stop known compute, quarantine unknown state, execute the approved private-object deletion plan, and run read-only reconciliation. Do not retry.
+Rollback: rollback is the qualification. Consume the independent one-use intent first; then close admission and conversion as the first application mutation, revoke the exact synthetic session and grants, quarantine uncertainty, delete only the exact synthetic artifact records, and reconcile control and tombstones read-only. The intent ledger prevents a second run even when application-state reconciliation is unavailable. No human backup operator is required for this exact offline synthetic qualification; this exception cannot be reused for proprietary data, customer data, providers, or deployment.
 
-Automated validation: execute the already-passed public suite first, then bounded live assertions that disclose only allowlisted booleans/count ranges and opaque receipt references. Run post-test access-denial and deletion/retention checks.
+Automated validation: deterministic fixture bytes/digest and shared IGES admission; descriptor drift; independent intent consumption and duplicate rejection; fresh-process restart after success and after initial reconciliation failure; close-first application mutation ordering; exact-session and grant revocation; owner/shop/session isolation; attempt/job/artifact quarantine; confirmed deletion and quota release; read-only reconciliation; ambiguity/no-retry handling; static runtime isolation; existing public-fixture and durable-adapter regressions; typecheck; local deterministic Convex checks; privacy/source audit; and `git diff --check`.
 
-Human QA: no private CAD in a thread MP4. A privacy-safe MP4 may use the public fixture to demonstrate the identical released UI. The proprietary result receives operator/security review through restricted evidence, not client-facing visual approval.
+Human QA: no. This package changes source-only backend/test controls and planning documents, with no visible or interactive client behavior.
+
+Success does not prove proprietary-file ownership or consent, customer-data handling, provider custody, real conversion/downloads, deployment binding, production readiness, general availability, or commercial readiness. It does not authorize Package 8.
 
 ### Work package 8 of 8: staged release, rollback drill, and production proof
 
-Scope: merge reviewed packages in dependency order, deploy with all authorities closed, verify fail-closed behavior on the exact deployment, then open only the narrowly approved internal cohort/window. Run the public fixture production smoke first. A proprietary run remains separately authorized under package 7. Close the window, revoke sessions/grants, and prove rollback.
+Scope: merge reviewed packages in dependency order, deploy with all authorities closed, verify fail-closed behavior on the exact deployment, then open only a separately approved internal cohort/window. The Package 7 synthetic result supplies no deployment, provider, proprietary-file, or customer-data authority. Close the window, revoke sessions/grants, and prove rollback.
 
-Dependencies: green packages 1-7 as applicable, reviewed PRs, exact deployment metadata, release owner, rollback owner, monitoring, incident path, enforceable spend/usage limits, and explicit activation authority.
+Dependencies: green source-only packages 1-7, reviewed PRs, exact deployment metadata, release owner, rollback owner, monitoring, incident path, enforceable spend/usage limits, and new explicit Package 8 activation authority.
 
 Acceptance criteria:
 
@@ -275,14 +287,14 @@ Human QA: yes for any released client-facing behavior. Attach a fresh privacy-sa
 
 ## Decision gates
 
-Resolved for Packages 2-6: web-only authentication; Convex Auth exact-session authority; current user/shop entitlement; 15-minute session maximum; fresh-read revocation; Cloudflare R2 Standard in the US jurisdiction; bounded retention/deletion/log policy; a fixed US$9 quota ceiling; authority-before-body ordering; one durable idempotency fence; one artifact/job maximum; monotonic admitted/converting/ready-or-terminal state; deterministic source-bound preview and STL; cleanup before ready; quarantine on ambiguity; zero retries; rollback-first closure; and a localhost-only synthetic client qualification that cannot reach the server boundary. Source-only completion does not authorize routing, provider access, body admission, storage, conversion, grant issuance, private CAD, or production issuance.
+Resolved for Packages 2-7: web-only authentication; Convex Auth exact-session authority; current user/shop entitlement; 15-minute session maximum; fresh-read revocation; Cloudflare R2 Standard in the US jurisdiction; bounded retention/deletion/log policy; a fixed US$9 quota ceiling; authority-before-body ordering; one durable idempotency fence; one artifact/job maximum; monotonic admitted/converting/ready-or-terminal state; deterministic source-bound preview and STL; cleanup before ready; quarantine on ambiguity; zero retries; rollback-first closure; a localhost-only synthetic client qualification that cannot reach the server boundary; and one source-only synthetic private-path control qualification with automated exact-session revocation, read-only reconciliation, and confirmed deletion. Source-only completion does not authorize routing, provider access, body admission, storage, conversion, grant issuance, proprietary/customer CAD, deployment, or production issuance.
 
-1. Name the Package 3 incident owner and backup, then bind the exact private R2 bucket, lifecycle, least-privilege credential path, price digest, durable quota scope, and independent verifier before activation.
+1. The human backup-operator prerequisite is removed only for Package 7's offline project-owned synthetic fixture because close-first rollback, exact-session/grant revocation, quarantine, reconciliation, and deletion are automated and fail closed. Live or customer-data work still requires separately named operational owners.
 2. Bind and qualify the durable Package 4 Convex transaction adapter plus independent reconciliation owner before any mounting.
 3. Approve the Package 5 conversion state machine, exact runtime, resource/cost limits, and private-data processor boundary.
-4. Approve a public-fixture mounted integration before any proprietary file.
-5. Separately authorize the exact proprietary file qualification with restricted evidence handling.
-6. Separately authorize deployment and any timed internal activation. Passing Phase 5 does not authorize general or commercial availability.
+4. Keep the public-fixture and synthetic private-path runners separate; neither may widen the other's classification or input manifest.
+5. Treat any proprietary-file or customer-data proposal as a new authorization outside Package 7, with explicit ownership, consent, restricted evidence, retention, incident, and deletion controls.
+6. Separately authorize Package 8, deployment, and any timed internal activation. Passing Package 7 does not authorize Package 8, general availability, or commercial availability.
 
 ## Validation performed for this plan
 
@@ -322,11 +334,15 @@ Resolved for Packages 2-6: web-only authentication; Convex Auth exact-session au
 - Convex contract manifest: version 80 regenerated and verified across 777 files after Package 6.
 - Package 6 Human QA: approved in this thread on 2026-10-10 through Vambah's `proceed`, interpreted by the Captain as approval of the final privacy-safe MP4 only.
 - Package 6 receipt: `docs/cad-phase5-package6-authenticated-import-client-receipt.md`, refreshed SHA-256 `f16d335c9d095e2a9ca393283fc41b4b6fa978d5b041d2457411c55aa96b52a7`.
-- Package 7 authorization gate: `docs/cad-phase5-package7-proprietary-igs-authorization-gate.md`, SHA-256 `7668624b8149c2e7943152aaa1222618460caac79d1f656a727895c9ac1c28a9`; preparation only, Package 7 not started.
+- Package 7 revised gate: `docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md`, SHA-256 `8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed`; source-only synthetic private-path controls only, with no runtime activation or Package 8 authority.
+- Package 7 focused and relevant regression suite: 105 passed, 0 failed. It covered exact fixture bytes/digest and shared IGES admission, drift rejection before application/session mutation, independent intent consumption, duplicate use, process restart, restart after initial reconciliation failure, close-first application mutation ordering, exact-session/grant revocation, owner/shop/session isolation, attempt/job/artifact quarantine, confirmed deletion, quota release, durable reconciliation, ambiguity/no-retry behavior, public-fixture separation, custody, orchestration, conversion, authentication, and static runtime isolation.
+- Package 7 TypeScript check passed with no diagnostics. Deterministic local Convex SDK/codegen verified five files with no deployment access.
+- Convex contract manifest version 82 regenerated and verified across 784 files. The privacy/source audit passed across 648 files with zero leak-pattern matches and preserved internal-only/runtime-isolation checks.
+- `git diff --check` passed. No network, provider, credential, configuration, request body, live session, storage, conversion, deployment, payment, external message, Package 8 action, commit, or push occurred.
 - No live request, body admission, provider call, storage write, conversion, deployment, private CAD access, credential read, external message, commit, push, or PR occurred.
 
 ## Captain handoff
 
-Phase 5 has completed 6 of 8 work packages within their source-only scopes, with two remaining. Packages 1-5 meet their source-only acceptance criteria, and Package 6 has passed its automated, browser, and Human QA gates. The source now contains an unrouted exact-login web session binding, disabled private-artifact custody, durable admission and conversion state models, deterministic source-bound preview/STL derivation, and the localhost-only synthetic authenticated Import-to-Design journey. Mounted production issuance, qualified transactional runtime adapters, real conversion and storage, routed owner-authorized downloads, one separately authorized proprietary-file receipt, and exact-deployment proof are still missing.
+Phase 5 has completed 7 of 8 finite work packages within their source-only scopes, with one package remaining. Packages 1-5 meet their source-only acceptance criteria, Package 6 has passed its automated, browser, and Human QA gates, and Package 7 has passed its project-owned synthetic private-path control qualification. The source contains an unrouted exact-login web session binding, disabled private-artifact custody, durable admission and conversion state models, deterministic source-bound preview/STL derivation, the localhost-only synthetic authenticated Import-to-Design journey, and automated close-first/revoke/quarantine/reconcile/delete controls. Mounted production issuance, provider-backed storage or conversion, routed owner-authorized downloads, proprietary/customer-data evidence, deployment proof, and Package 8 authority are still missing.
 
-The current gate is the separate Package 7 proprietary-run authorization packet in `docs/cad-phase5-package7-proprietary-igs-authorization-gate.md`. Package 7 is not started. Before any activation, the Captain must also bind and qualify the Package 4/5 durable Convex transition adapters and reconciliation owner, name the Package 3 incident owner and backup, and bind the exact private R2 and sandbox resources and controls. Keep `BODY_ADMISSION_AUTHORIZED = false`, keep `CAD_USER_IMPORT_ENABLED = false`, and keep session issuance, provider dispatch, downloads, orchestration, and conversion unrouted.
+The current gate is Captain review of the completed Package 7 source-only revision in `docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md`. Package 8 remains the sole remaining phase and is unauthorized. Before any activation, a new Package 8 packet must bind the exact deployment, runtime resources, operational owners, provider controls, cost enforcement, and rollback evidence. Keep `BODY_ADMISSION_AUTHORIZED = false`, keep `CAD_USER_IMPORT_ENABLED = false`, and keep session issuance, provider dispatch, downloads, orchestration, conversion, and Package 8 unrouted.

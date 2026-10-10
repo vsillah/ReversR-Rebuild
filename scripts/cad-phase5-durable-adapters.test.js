@@ -119,10 +119,24 @@ async function claim(store, value = attempt()) {
   }));
 }
 
-test('binds the exact Package 7 gate and verified 37-function live inventory without activation', () => {
+test('binds the exact Package 7 synthetic private-path gate and verified inventory without activation', () => {
+  assert.equal(adapter.PACKAGE7_BINDING.gatePath,
+    'docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md');
   assert.equal(adapter.PACKAGE7_BINDING.gateSha256,
-    '7668624b8149c2e7943152aaa1222618460caac79d1f656a727895c9ac1c28a9');
-  assert.equal(adapter.PACKAGE7_BINDING.deployment, 'majestic-alligator-31');
+    '8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed');
+  assert.equal(adapter.PACKAGE7_BINDING.qualificationMode,
+    'project-owned-synthetic-private-path');
+  assert.deepEqual({ maxSessions: adapter.PACKAGE7_BINDING.maxSessions,
+    maxFiles: adapter.PACKAGE7_BINDING.maxFiles,
+    maxAttempts: adapter.PACKAGE7_BINDING.maxAttempts,
+    maxRetries: adapter.PACKAGE7_BINDING.maxRetries,
+    budgetMicros: adapter.PACKAGE7_BINDING.budgetMicros },
+  { maxSessions: 1, maxFiles: 1, maxAttempts: 1, maxRetries: 0,
+    budgetMicros: 9_000_000 });
+  assert.equal(adapter.PACKAGE7_BINDING.proprietaryFilesAuthorized, false);
+  assert.equal(adapter.PACKAGE7_BINDING.customerDataAuthorized, false);
+  assert.equal(adapter.PACKAGE7_BINDING.package8Authorized, false);
+  assert.equal(adapter.PACKAGE7_BINDING.verifiedInventoryDeployment, 'majestic-alligator-31');
   assert.equal(adapter.PACKAGE7_VERIFIED_FUNCTIONS.length, 37);
   assert.equal(new Set(adapter.PACKAGE7_VERIFIED_FUNCTIONS).size, 37);
   assert.equal(adapter.PACKAGE7_BINDING.runtimeActivationAuthorized, false);
