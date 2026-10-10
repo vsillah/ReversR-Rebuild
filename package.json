@@ -89,7 +89,9 @@
     "igs:import:test": "node --test scripts/igs-import-journey.test.js",
     "igs:private-qualification:test": "node --test scripts/igs-private-pipeline-qualification.test.js scripts/iges-admission-parity.test.js",
     "cad:convex:codegen": "node scripts/cad-convex-codegen.js",
-    "cad:convex:codegen:check": "node scripts/cad-convex-codegen.js --check"
+    "cad:convex:codegen:check": "node scripts/cad-convex-codegen.js --check",
+    "cad:convex:deploy:preflight": "node scripts/cad-convex-development-deploy-preflight.js --preflight",
+    "cad:convex:occupancy:check": "node scripts/cad-convex-development-deploy-preflight.js --occupancy-check"
   },
   "dependencies": {
     "@auth/core": "0.41.3",
