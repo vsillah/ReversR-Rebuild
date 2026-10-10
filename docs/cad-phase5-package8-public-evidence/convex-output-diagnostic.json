@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_CONVEX_OUTPUT_DIAGNOSTIC",
+  "status": "STOPPED_AMBIGUOUS_OUTPUT_BEHAVIOR",
+  "scope": "OFFLINE_ONLY_SOURCE_AND_SYNTHETIC_DIAGNOSIS",
+  "bindings": {
+    "mainCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "tree": "0063973062495d3f06e93644f041c57d76989f42",
+    "readinessPacketSha256": "b0d1c3b8c3c6fe85990cf0664c54935adca145bd19ae57b0ea5410c213b83cf0",
+    "bindingProposalSha256": "554fb996ba48f06109eef17026471aab9c44919926c4b203cb3355e210c39cda"
+  },
+  "installedSource": {
+    "convexVersion": "1.45.0",
+    "cliBundleSha256": "f4fea97eef31a470c05c5effaf5e2dd0c63dbf161ccc7f51163b73e34a650c4f",
+    "functionSpecSourceSha256": "35d95bad438f549fb9d1a87e72ed2e8bb2a1c23a0c44674b8e3db529283f62af",
+    "logSourceSha256": "19f98d6b3cbece11e603bb830e7022f847b88f0ab7900940ccf34737e4fb4cc3",
+    "functionSpecWritesJsonToStdout": true,
+    "systemQueriesPerCommand": 2,
+    "transportMaxRetries": 6,
+    "functionSpecNoRetryFlagFound": true
+  },
+  "classification": {
+    "primary": "WRAPPER_SILENT_EXIT_UNOBSERVABLE",
+    "futureTransport": "OFFICIAL_CLI_ZERO_RETRY_NOT_PROVABLE",
+    "explanation": "The consumed sanitizer used silent parser exits 51 through 54 and retained neither parser exit status nor sanitized output. Installed source confirms JSON should be written to stdout, but the exact target, shape, identifier, or duplicate failure cannot be recovered without a prohibited retry."
+  },
+  "syntheticCoverage": [
+    "CLI_EXIT_UNKNOWN",
+    "CLI_EXIT_NONZERO",
+    "STDOUT_EMPTY",
+    "STDOUT_JSON_INVALID",
+    "RESPONSE_SHAPE_INVALID",
+    "TARGET_MISMATCH",
+    "IDENTIFIER_MISSING",
+    "IDENTIFIER_GRAMMAR_UNSUPPORTED",
+    "IDENTIFIER_DUPLICATE",
+    "SANITIZED_METADATA_AVAILABLE",
+    "PRESENT_NOT_RETAINED"
+  ],
+  "preservedState": {
+    "providerRequests": 0,
+    "consumedReadRetried": false,
+    "unavailableValuesChanged": false,
+    "proposedWindowActivated": false,
+    "runtimeAuthorityChanged": false
+  },
+  "stopReason": "The exact parser subcause is ambiguous and the installed official CLI does not expose a reviewed zero-retry function-spec mode.",
+  "nextGate": "Source-only design of a direct one-attempt metadata transport and sanitizer, followed by offline fault qualification. No live read may occur until that successor is separately reviewed."
+}

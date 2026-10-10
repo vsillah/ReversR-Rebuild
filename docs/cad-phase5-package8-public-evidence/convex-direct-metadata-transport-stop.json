@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_CONVEX_DIRECT_METADATA_TRANSPORT_STOP",
+  "status": "STOPPED_AUTHORITATIVE_SCHEMA_UNAVAILABLE",
+  "scope": "SOURCE_ONLY_DIRECT_METADATA_TRANSPORT_REVIEW",
+  "observedAtUtc": "2026-10-10T16:11:33Z",
+  "bindings": {
+    "mainCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
+    "tree": "0063973062495d3f06e93644f041c57d76989f42",
+    "diagnosticPacketSha256": "801fd08dc6ee20e6276a16db8d68af962a262033d0ef6d6bac3448b63488c619",
+    "bindingProposalSha256": "554fb996ba48f06109eef17026471aab9c44919926c4b203cb3355e210c39cda"
+  },
+  "installedSource": {
+    "convexVersion": "1.45.0",
+    "httpClientSource": "node_modules/convex/src/browser/http_client.ts",
+    "httpClientSourceSha256": "520630075b6c48f0d5cd1ca9d40a7045da974ab42dcc576463b60a302c328548",
+    "functionSpecSource": "node_modules/convex/src/cli/lib/functionSpec.ts",
+    "functionSpecSourceSha256": "0a8d6e5e89ad7ed38ede86c3e855f7d23aa6990b187e90b8b992d5837d750925",
+    "mcpFunctionSpecSource": "node_modules/convex/src/cli/lib/mcp/tools/functionSpec.ts",
+    "mcpFunctionSpecSourceSha256": "70730e7f9f0dfcb6f496914d4aa9901688220b44285bd846930f58d919daf2a6"
+  },
+  "verifiedContract": {
+    "method": "POST",
+    "endpoint": "/api/function",
+    "systemFunction": "_system/cli/modules:apiSpec",
+    "contentType": "application/json",
+    "requestFields": [
+      "componentPath",
+      "path",
+      "format",
+      "args"
+    ],
+    "format": "convex_encoded_json",
+    "authenticationScheme": "Convex <admin-key>",
+    "successDiscriminator": "success",
+    "errorDiscriminator": "error",
+    "clientRetryObserved": false
+  },
+  "unavailableAuthoritativeContract": {
+    "functionSpecResultType": "any[]",
+    "mcpOutputSchema": "z.any()",
+    "missingGuarantees": [
+      "complete required and optional function-entry keys",
+      "validator payload encoding and recursive bounds",
+      "HTTP-action entry representation",
+      "component metadata representation",
+      "forward-compatible unknown-field policy",
+      "Package 8 owner and custodian contract for the required admin credential"
+    ]
+  },
+  "implementationDisposition": {
+    "transportImplemented": false,
+    "sanitizerImplemented": false,
+    "runtimeImported": false,
+    "dispatchEnabled": false,
+    "syntheticFaultCampaignRun": false,
+    "reason": "A strict parser cannot prove complete response-shape validation from an authoritative published schema, and the required admin credential has no reviewed Package 8 custody interface. Implementing either contract would create a false runtime guarantee."
+  },
+  "preservedState": {
+    "providerRequests": 0,
+    "consumedReadRetried": false,
+    "unavailableValueCount": 17,
+    "unavailableValuesChanged": false,
+    "proposedWindowActivated": false,
+    "runtimeAuthorityChanged": false,
+    "credentialsRead": false,
+    "environmentValuesRead": false,
+    "configurationChanged": false,
+    "deploymentPerformed": false
+  },
+  "authority": {
+    "package8ActivationAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "stopReason": "The approved unavailable-authoritative-schema and ambiguous-authentication-ownership stop gates triggered before implementation.",
+  "nextGate": "Obtain a versioned authoritative function-spec schema and define a reviewed opaque admin-credential custody interface before reconsidering a disabled direct transport. No live read or runtime activation is authorized."
+}

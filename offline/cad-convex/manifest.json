@@ -1,7 +1,7 @@
 {
-  "version": 82,
+  "version": 87,
   "mode": "offline-source-unqualified",
-  "baseCommit": "066ea62d8cbc32cf7358497c0b9cf128ab38a59a",
+  "baseCommit": "6c822b215bc74fc1203442bfef903855a9cbe5df",
   "productionWiring": false,
   "liveQualification": false,
   "functions": {
@@ -851,7 +851,7 @@
     "scripts/cad-authenticated-import-qualification.test.js": "e4ffc1a348bd87ad9e8c4db9d6008b0dcb8b9be254a3fd9d8cf823a72dca18db",
     "scripts/cad-authenticated-import-browser-qa.js": "196cb504f7d4fd15dbd0f9e418e1ee3a18bd42583444c2b2adae3d1c13f3ccbe",
     "docs/evidence/cad-phase5-package6/browser-qa-results.json": "0f661985207e2bc7410508dbf23bb58066cf2cc8db44ce200651f6c3c97af2d0",
-    "docs/cad-phase5-private-igs-activation-plan.md": "c40542ebd1e469ec0363c049bcd66832028cc7e23ca94e4754b9eb26c5404a43",
+    "docs/cad-phase5-private-igs-activation-plan.md": "f8f67d93cf35f9bdadd85b26f51c3fc6ba1ab66eb53d76e07f3fe0149550c27b",
     "docs/cad-phase5-package6-authenticated-import-client-receipt.md": "f16d335c9d095e2a9ca393283fc41b4b6fa978d5b041d2457411c55aa96b52a7",
     "convex/cadPhase5DurableAdapters.ts": "308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260",
     "scripts/cad-phase5-durable-adapters.test.js": "eb14a965a171a2ea5420ff35c9b1873854bfbd4717b02219c8540fa93c4f1dc0",
@@ -860,6 +860,27 @@
     "server/cadPhase5SyntheticPrivatePathQualification.js": "1cd6c7c0c47e93b51610528d13b85d7769036bec42ebd2907d30393c81abb520",
     "scripts/cad-phase5-synthetic-private-path-qualification.test.js": "a5ddf09d00bc7840c7c965ebfa0b6cdd506c21edc3af71604a19b78067ef2f2f",
     "docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md": "8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed",
-    "scripts/cad-convex-contract-manifest.js": "9440a434f9d1f898a7705515e39fa9201691846b4b850134f81e18d2497ba47d"
+    "docs/cad-phase5-package8-release-readiness.json": "b0d1c3b8c3c6fe85990cf0664c54935adca145bd19ae57b0ea5410c213b83cf0",
+    "docs/cad-phase5-package8-release-readiness.md": "bc9d30ec897c41aa81c87c13b43f30011957c38c95990b2bddfafa437ec8fda7",
+    "scripts/cad-phase5-package8-release-readiness-checker.js": "cff1ae612ccee5fe029187e28e78247e57a18a619de7eb7f50ed5f966c30bd71",
+    "scripts/cad-phase5-package8-release-readiness.test.js": "ce03136c2314bce69a430c2b6245e8bff9c7e918274c7ad19a06119575ea03d4",
+    "docs/cad-phase5-package8-public-evidence/binding-completion-proposal.json": "554fb996ba48f06109eef17026471aab9c44919926c4b203cb3355e210c39cda",
+    "docs/cad-phase5-package8-public-evidence/binding-completion-proposal.md": "31ce4a64e4d4566d9a14710235cdc46b2a1e7b933751eb7ee54b0b5f965bf030",
+    "scripts/cad-phase5-package8-binding-completion-checker.js": "a8068f90f99be462040c18fc0fc46e028450e18cd2c36665567c3beea481782c",
+    "scripts/cad-phase5-package8-binding-completion.test.js": "ce9d3be3db5b83dafca40c698c32279b9bc73b065c5b335c5074624c8165cbee",
+    "docs/cad-phase5-package8-public-evidence/convex-output-diagnostic.json": "801fd08dc6ee20e6276a16db8d68af962a262033d0ef6d6bac3448b63488c619",
+    "docs/cad-phase5-package8-public-evidence/convex-output-diagnostic.md": "8090925497fb06cad857ba41b2ca69d042513a7a9553228b5e2c4580e123273f",
+    "scripts/cad-phase5-package8-convex-output-diagnostic.js": "b7494238b868f3340aaa93162b5210e8ecbe2690f319781773ed1e908aa64925",
+    "scripts/cad-phase5-package8-convex-output-diagnostic.test.js": "ff163a752d8c08c4c0982d0715b8b427874c0cb8a1c10196b0450b69922e2f70",
+    "docs/cad-phase5-package8-public-evidence/convex-direct-metadata-transport-stop.json": "7c24ab20d73c3e272291430e0207156d10dd1655893c0cce86597ddb206a09d9",
+    "docs/cad-phase5-package8-public-evidence/convex-direct-metadata-transport-stop.md": "10d6922eccd06491004ef2b46179883c528d49c54e5162ec7519da809523d753",
+    "convex/cadControlledUploadDevQualification.ts": "a405077d82d1152423dfd9e1e7f4891188345edb1b9ccaee6351caac43f71b5c",
+    "convex/cadControlledUploadHost.ts": "ff398dce1a67e14b3ac9ca32d11c0974b1d329eb28464a898316f250027fb3c7",
+    "convex/cadDevUploadSessionQualificationAuthority.ts": "0cc7b7e74713936ae5fc0831dbe5a2b27436ec0911fc0ca611c45165580b7dbe",
+    "docs/cad-phase5-package8-public-evidence/convex-metadata-split-proof.json": "51bd69a71349275c631c16eb4849303657fa9c5b3d1dbdd9b7161bd4cd6c77b1",
+    "docs/cad-phase5-package8-public-evidence/convex-metadata-split-proof.md": "923bb1113027fc07c3dfbaa1e9e6d29a7d4a0b03e367cbf515889d443c747e37",
+    "scripts/cad-phase5-package8-metadata-split-proof.js": "dc7a3ecb73b803f5db08601a8025bac3ad8b82758437249c3d303f2d41555bb4",
+    "scripts/cad-phase5-package8-metadata-split-proof.test.js": "82101fb50f7b305f7cc6ebdbbf2f2c72262ceaffb7076b3e8a84c4a25cc317ef",
+    "scripts/cad-convex-contract-manifest.js": "08af72bec064f8105777d1e9f5a2cf97fd4d99a372398fc079ee4210806edf5d"
   }
 }
