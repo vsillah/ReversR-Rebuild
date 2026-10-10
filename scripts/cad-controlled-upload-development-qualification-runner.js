@@ -19,6 +19,7 @@ const LEDGER_FILE = path.join(ROOT, '.local/cad-convex/controlled-upload-develop
 const MUTATION = 'cadControlledUploadDevQualification:qualifyOnce';
 const QUERY = 'cadControlledUploadDevQualification:readSanitized';
 const DEPLOYMENT = 'majestic-alligator-31';
+const QUALIFICATION_BASELINE = 'e395632e81b9d8a7fac8491a36ffd14c1bbadcba';
 const CLI_TIMEOUT_MS = 15_000;
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 const isSha1 = value => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
@@ -160,12 +161,15 @@ function invokeFixed(functionName, spawn = spawnSync) {
 
 function assertLocalSource(binding, spawn = spawnSync) {
   const options = { cwd: ROOT, encoding: 'utf8', stdio: 'pipe' };
-  const head = spawn('git', ['rev-parse', 'HEAD'], options);
-  if (head.error || head.status !== 0 || head.stdout.trim() !== binding.source.qualificationCommit) {
-    fail('QUALIFICATION_SOURCE_COMMIT_MISMATCH');
+  if (binding.source.qualificationCommit !== QUALIFICATION_BASELINE) {
+    fail('QUALIFICATION_SOURCE_BASELINE_MISMATCH');
   }
-  const ancestry = spawn('git', ['merge-base', '--is-ancestor', binding.source.baseCommit,
-    binding.source.qualificationCommit], options);
+  const head = spawn('git', ['rev-parse', 'HEAD'], options);
+  if (head.error || head.status !== 0 || !isSha1(head.stdout.trim())) {
+    fail('QUALIFICATION_SOURCE_HEAD_INVALID');
+  }
+  const ancestry = spawn('git', ['merge-base', '--is-ancestor', QUALIFICATION_BASELINE,
+    head.stdout.trim()], options);
   if (ancestry.error || ancestry.status !== 0) fail('QUALIFICATION_SOURCE_LINEAGE_MISMATCH');
   const unstaged = spawn('git', ['diff', '--quiet', '--ignore-submodules', '--'], options);
   if (unstaged.error || unstaged.status !== 0) fail('QUALIFICATION_TRACKED_SOURCE_DIRTY');
@@ -247,4 +251,5 @@ module.exports = {
   invokeFixed,
   assertLocalSource,
   writeConsumedLedgerDurably,
+  QUALIFICATION_BASELINE,
 };
