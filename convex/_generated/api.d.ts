@@ -12,6 +12,8 @@
   import type * as auth from "../auth.js";
 import type * as cad from "../cad.js";
 import type * as cadControlledUploadContinuityStore from "../cadControlledUploadContinuityStore.js";
+import type * as cadControlledUploadDevQualification from "../cadControlledUploadDevQualification.js";
+import type * as cadControlledUploadDevQualificationBinding from "../cadControlledUploadDevQualificationBinding.js";
 import type * as cadControlledUploadHost from "../cadControlledUploadHost.js";
 import type * as cadControlledUploadSchema from "../cadControlledUploadSchema.js";
 import type * as cadControlledUploadStore from "../cadControlledUploadStore.js";
@@ -40,6 +42,8 @@ import type * as librarySession from "../librarySession.js";
     "auth": typeof auth,
 "cad": typeof cad,
 "cadControlledUploadContinuityStore": typeof cadControlledUploadContinuityStore,
+"cadControlledUploadDevQualification": typeof cadControlledUploadDevQualification,
+"cadControlledUploadDevQualificationBinding": typeof cadControlledUploadDevQualificationBinding,
 "cadControlledUploadHost": typeof cadControlledUploadHost,
 "cadControlledUploadSchema": typeof cadControlledUploadSchema,
 "cadControlledUploadStore": typeof cadControlledUploadStore,

@@ -202,7 +202,7 @@
   ],
   "sourceBindings": {
     "convex/schema.ts": "69d659ca0742b4cb056010adda1250e5578ed8631d24751f305f892d324eafac",
-    "convex/_generated/api.d.ts": "c3892fc21679d1d6bad65ca9f344dde64395a2a1a4ed60cd69512dc11751cbaf",
+    "convex/_generated/api.d.ts": "ac0f6dcfac52c6dc2f9e67c06eaceda2332d454392bf1fafb2e9796118c854a0",
     "convex/cadControlledUploadSchema.ts": "ad3e08da99274b7cf612bb6562bb60fba42cac9d89c32c1a6ff5290c218d8bce",
     "convex/cadControlledUploadStore.ts": "aaf19e3cc7a5df7f8f115445d7e8e8134c1dad68e0938da2221cbb03b780dd4c",
     "convex/cadControlledUploadContinuityStore.ts": "9834f5f1014cd85ce2dde0a726ad5ef349d4d00560b66a1fb75d7fb627f015c7",
@@ -220,7 +220,7 @@
     "scripts/cad-convex-codegen.js": "8a2e8e7792b4e9372468bbbd2a9486953872e62bc3e29a4b26b6e9a479744392",
     "scripts/cad-convex-execution-blockers.test.js": "68e4a99be42c9da8ff18bd9ea5e377bb52f9f8272ae67d6ad72525e6872e209c",
     "scripts/cad-convex-rollback-compatibility.test.js": "316b316faeac24f96b3ef52f6bd046e3c8f425fa010f0c1db63eb1937fd5e148",
-    "scripts/tsconfig.cad-controlled-host.json": "2655a5117e93c3816fa28ab883bd66a86d867b72887dcc1479d28bdd106bbd1c",
+    "scripts/tsconfig.cad-controlled-host.json": "5808b54e231f52baae4e4f83377bfd02c9349065029a819d271da8e646366c0a",
     "scripts/cad-auth-controlled-upload-durable-host-source.test.js": "8c740c0460b4dc3f8b781178041006754bfd7c969a0cb01fc5074d5ff5fface6",
     "scripts/cad-auth-controlled-upload-durable-host-implementation.test.js": "f6fa0a3fdb5209d251a9149c0485c1fa7eb86d6a486755424876c668c035aed5",
     "scripts/cad-auth-controlled-upload-durable-host-source-checker.js": "3d5cdc428221a92ab5766a6fc69c1461e303feea9eb4f11e73de5217ca4437fc",
