@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
@@ -10,6 +10,10 @@ import PublicIgsImportPanel from './PublicIgsImportPanel';
 import CadDesignReview from './CadDesignReview';
 import { CadAction, CadDetails, CadNotice, CadSourceFacts, CadProvenance, cadReviewStyles as styles } from './CadReviewUI';
 import { PUBLIC_CUBE_SHA256 } from '../utils/igsImportJourney';
+import AuthenticatedIgsQualificationPanel from './AuthenticatedIgsQualificationPanel';
+import { createAuthenticatedImportQualificationAdapter, createAuthenticatedImportStateStore,
+  inspectAuthenticatedImportQualification, type AuthenticatedImportState }
+  from '../utils/cadAuthenticatedImportQualification';
 
 type Props = {
   preview: Extract<CadInternalTesterPreview, { enabled: true }>;
@@ -26,7 +30,22 @@ const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
 export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false }: Props) {
   const { colors } = useAppTheme();
-  const [fixture, setFixture] = useState(preview.fixture);
+  const authenticatedMode = useMemo(() => typeof window !== 'undefined'
+    && inspectAuthenticatedImportQualification(window.location).enabled, []);
+  const authenticatedAdapter = useMemo(() => {
+    if (!authenticatedMode || typeof window === 'undefined') return null;
+    return createAuthenticatedImportQualificationAdapter({
+      stateStore: createAuthenticatedImportStateStore(window.localStorage),
+      wait: (milliseconds, signal) => new Promise(resolve => {
+        const done = () => { clearTimeout(timer); signal?.removeEventListener('abort', done); resolve(); };
+        const timer = window.setTimeout(done, milliseconds);
+        signal?.addEventListener('abort', done, { once: true });
+      }),
+    });
+  }, [authenticatedMode]);
+  const [authenticatedState, setAuthenticatedState] = useState<AuthenticatedImportState | null>(
+    () => authenticatedAdapter?.status() ?? null);
+  const [fixture, setFixture] = useState(() => authenticatedAdapter?.fixture() ?? preview.fixture);
   const [selectedBuildGate, setSelectedBuildGate] = useState(0);
   const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(preview.fixture.derivedInspectionStl);
   const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
@@ -49,7 +68,10 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
     </View>}
     <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.border }, panelStyle]}>
       {phase === 1 && <>
-        {publicIgsJourney ? <PublicIgsImportPanel onReady={result => {
+        {authenticatedMode && authenticatedAdapter && authenticatedState
+          ? <AuthenticatedIgsQualificationPanel adapter={authenticatedAdapter} state={authenticatedState}
+            onState={setAuthenticatedState} onReady={result => { setFixture(result); onPhase(3); }} />
+          : publicIgsJourney ? <PublicIgsImportPanel onReady={result => {
           setFixture(result);
           onPhase(3);
         }} /> : <CadImportPanel
@@ -78,11 +100,28 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
         <CadAction label="Review source in Input" icon="arrow-back-outline" onPress={() => onPhase(1)} />
       </>}
       {phase === 3 && <>
-        <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} desktop={desktop} onReadiness={() => onPhase(4)} />
-        {!desktop && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
+        {authenticatedMode && authenticatedAdapter && authenticatedState?.status !== 'ready'
+          ? <AuthenticatedIgsQualificationPanel adapter={authenticatedAdapter} state={authenticatedState!}
+            onState={setAuthenticatedState} onReady={result => { setFixture(result); onPhase(3); }} />
+          : <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} desktop={desktop}
+            onReadiness={authenticatedMode ? undefined : () => onPhase(4)}
+            qualificationArtifacts={authenticatedMode ? authenticatedAdapter?.artifacts() : null}
+            onDeleteQualificationArtifacts={authenticatedMode && authenticatedAdapter ? () => {
+              setAuthenticatedState(authenticatedAdapter.deleteArtifacts());
+            } : undefined} />}
+        {!desktop && !authenticatedMode && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
       </>}
       {phase === 4 && <>
-        <View testID="cad-build-locked" style={{ gap: Spacing.md }}>
+        {authenticatedMode ? <View testID="cad-auth-import-build-locked" style={{ gap: Spacing.sm,
+          borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md,
+          backgroundColor: colors.elevated }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+            <Ionicons name="lock-closed-outline" size={18} color={colors.mutedText} accessible={false} />
+            <Text style={[Typography.bodyStrong, { color: colors.text }]}>Build remains locked</Text>
+          </View>
+          <Text style={text}>Review the synthetic model in Design. Manufacturing actions are unavailable.</Text>
+          <CadAction label="Return to Design" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
+        </View> : <><View testID="cad-build-locked" style={{ gap: Spacing.md }}>
           <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>
             <View testID="cad-commercialization-gates" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.panel }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
@@ -156,6 +195,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
         </View>
         <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
+        </>}
       </>}
     </View>
   </View>;

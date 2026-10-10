@@ -8,8 +8,12 @@ import { useAppTheme } from '../hooks/useAppTheme';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 import CadFixtureViewer from './CadFixtureViewer';
 import { createPublicCubeDerivedStl, PUBLIC_CUBE_SHA256 } from '../utils/igsImportJourney';
+import type { SyntheticArtifacts } from '../utils/cadAuthenticatedImportQualification';
 
-export default function CadDesignReview({ fixture, onChangeSource, desktop = false, onReadiness }: { fixture: CadInternalTesterFixture; onChangeSource?: () => void; desktop?: boolean; onReadiness?: () => void }) {
+export default function CadDesignReview({ fixture, onChangeSource, desktop = false, onReadiness,
+  qualificationArtifacts, onDeleteQualificationArtifacts }: { fixture: CadInternalTesterFixture;
+  onChangeSource?: () => void; desktop?: boolean; onReadiness?: () => void;
+  qualificationArtifacts?: SyntheticArtifacts | null; onDeleteQualificationArtifacts?: () => void }) {
   const { viewerHeight } = useCadDesktopWorkspace();
   const { colors } = useAppTheme();
   const DetailsContainer = desktop ? ScrollView : View;
@@ -17,8 +21,9 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const isSyntheticQualification = fixture.qualificationProvenance?.kind === 'synthetic-igs-local';
-  const canDownloadSource = Boolean(fixture.sourceAssetUrl);
-  const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
+  const canDownloadSource = Boolean(fixture.sourceAssetUrl || qualificationArtifacts?.original);
+  const canDownloadDerived = Boolean(qualificationArtifacts?.stl)
+    || fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
   const [downloadMenuOpen, setDownloadMenuOpen] = React.useState(false);
   const downloadMenuRef = React.useRef<View>(null);
 
@@ -48,20 +53,29 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const downloadSource = () => {
     if (!fixture || !canDownloadSource || Platform.OS !== 'web' || typeof document === 'undefined') return;
     const link = document.createElement('a');
-    link.href = fixture.sourceAssetUrl;
-    link.download = fixture.sourceFileName;
+    let href = fixture.sourceAssetUrl;
+    if (qualificationArtifacts?.original) {
+      href = URL.createObjectURL(new Blob([qualificationArtifacts.original.bytes.slice().buffer as ArrayBuffer],
+        { type: qualificationArtifacts.original.format }));
+    }
+    link.href = href;
+    link.download = qualificationArtifacts?.original.fileName ?? fixture.sourceFileName;
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
     link.click();
     link.remove();
+    if (qualificationArtifacts?.original) window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
   const downloadDerivedMesh = () => {
     if (!canDownloadDerived || Platform.OS !== 'web' || typeof document === 'undefined') return;
-    const content = fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
+    const content = qualificationArtifacts?.stl
+      ? qualificationArtifacts.stl.bytes.slice().buffer as ArrayBuffer
+      : fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
     const href = URL.createObjectURL(new Blob([content], { type: 'model/stl' }));
     const link = document.createElement('a');
     link.href = href;
-    link.download = fixture.derivedInspectionStl?.fileName ?? 'reversr-public-cube-derived-inspection-mesh-mm.stl';
+    link.download = qualificationArtifacts?.stl.fileName ?? fixture.derivedInspectionStl?.fileName
+      ?? 'reversr-public-cube-derived-inspection-mesh-mm.stl';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
     link.click();
@@ -91,7 +105,7 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
         <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} height={desktop ? viewerHeight : undefined} />
       </View>
       <DetailsContainer testID="cad-review-rail" style={desktop ? { width: 300, height: viewerHeight, flexGrow: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md }}>
-      {desktop && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={onReadiness} />}
+      {desktop && onReadiness ? <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={onReadiness} /> : null}
       <CadSourceFacts fixture={fixture} />
       {(canDownloadSource || canDownloadDerived) ? <View ref={downloadMenuRef} style={downloadStyles.host}>
         <TouchableOpacity
@@ -140,6 +154,14 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
           </TouchableOpacity> : null}
         </View> : null}
       </View> : null}
+      {qualificationArtifacts && onDeleteQualificationArtifacts ? <TouchableOpacity
+        testID="cad-delete-synthetic-artifacts" accessibilityRole="button"
+        accessibilityLabel="Delete synthetic artifacts and revoke access"
+        onPress={onDeleteQualificationArtifacts}
+        style={[downloadStyles.deleteAction, { borderColor: colors.border }]}>
+        <Ionicons name="trash-outline" size={16} color={colors.danger} accessible={false} />
+        <Text style={[Typography.caption, { color: colors.danger, fontWeight: '700' }]}>Delete synthetic artifacts</Text>
+      </TouchableOpacity> : null}
       {isDispenserReview && <View testID="cad-reference-comparison" style={{ gap: Spacing.sm }}>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Supplied reference views</Text>
         <Text style={text}>Compare with the model. Open an image for a closer look.</Text>
@@ -178,4 +200,6 @@ const downloadStyles = StyleSheet.create({
   menu: { marginTop: 6, borderWidth: 1, borderRadius: Radii.md, overflow: 'hidden', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.18, shadowRadius: 18, elevation: 8 },
   option: { minHeight: 56, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   optionText: { flex: 1, minWidth: 0, gap: 2 },
+  deleteAction: { minHeight: 40, borderWidth: 1, borderRadius: Radii.md, paddingHorizontal: Spacing.md,
+    paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
 });

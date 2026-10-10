@@ -134,7 +134,7 @@
     "server/cadProductionSessionVerifierBinding.js": "b76fccd7e1d4984e04ea062d5ae6cec5c91e23b90b7a53499582ee712ff6a020",
     "server/cadExactSessionBridge.js": "ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee",
     "server/cadUploadSessionGatewayService.js": "5e302a8d032a7e1795619d1abe61923430c541060ca6b59baf797ce7423fac07",
-    "server/uploadSessionStore.js": "9ee8337b9280a3f8d4131703a944bb4ca09d6c87d840ac1e7995014936163516",
+    "server/uploadSessionStore.js": "e1a49b7779ec53c36346846a845a4076659358a96fd493467fa9e0824ed0b3b8",
     "server/cadUserUploadRouter.js": "505edcadacc870be65d9ef7db72bfdcc3eeb9fa72b4802c225a163b1532dee7d",
     "convex/librarySession.ts": "a36e8d17d4a509498cfbef226487be1b00c90f1f721ac4c907bd799d667df042",
     "convex/cadUploadSessionGateway.ts": "60472cb959917ac42e698839efa526156519323086a02e1d3766115c68a889e5"

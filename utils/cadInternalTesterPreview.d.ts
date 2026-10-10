@@ -62,13 +62,14 @@ export type CadInternalTesterPreview =
   | { enabled: false; code: string }
   | {
       enabled: true;
-      code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER' | 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT' | 'CAD_TEST_PREVIEW_SYNTHETIC_IGS';
+      code: 'CAD_TEST_PREVIEW_PUBLIC_CUBE' | 'CAD_TEST_PREVIEW_MARK_DISPENSER' | 'CAD_TEST_PREVIEW_MARK_DISPENSER_DEFAULT' | 'CAD_TEST_PREVIEW_SYNTHETIC_IGS' | 'CAD_TEST_PREVIEW_AUTHENTICATED_IMPORT';
       fixture: CadInternalTesterFixture;
     };
 
 export const PREVIEW_QUERY_KEY: 'cadPreview';
 export const PREVIEW_QUERY_VALUE: 'public-cube-v1';
 export const DISPENSER_PREVIEW_QUERY_VALUE: 'mark-dispenser-v1';
+export const AUTHENTICATED_IMPORT_PREVIEW_QUERY_VALUE: 'authenticated-import-v1';
 export const NATIVE_EMBEDDED_PREVIEW_QA_VALUE: 'native-internal-upload-render';
 export const PUBLIC_CUBE_RESULT: Readonly<CadInternalTesterFixture>;
 export const MARK_DISPENSER_RESULT: Readonly<CadInternalTesterFixture>;

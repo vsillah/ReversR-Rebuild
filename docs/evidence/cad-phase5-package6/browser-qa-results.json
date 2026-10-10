@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "qualificationMode": "authenticated-import-v1",
+  "exactRoute": "http://127.0.0.1:5002/?cadPreview=authenticated-import-v1&cadQualification=authenticated-import-v1&cadAuth=synthetic&cadPhase=input",
+  "sourceOnly": true,
+  "localhostOnly": true,
+  "runtimeGatesRemainFalse": true,
+  "responsive": [
+    {
+      "viewport": "320x844",
+      "noHorizontalOverflow": true,
+      "inputVisible": true,
+      "designReady": true,
+      "webglCanvasReady": true,
+      "readinessAndRoadmapAbsent": true,
+      "externalRequestsBlocked": 0,
+      "nonReadRequestsBlocked": 0,
+      "apiRequestsBlocked": 0
+    },
+    {
+      "viewport": "390x844",
+      "noHorizontalOverflow": true,
+      "inputVisible": true,
+      "designReady": true,
+      "webglCanvasReady": true,
+      "readinessAndRoadmapAbsent": true,
+      "externalRequestsBlocked": 0,
+      "nonReadRequestsBlocked": 0,
+      "apiRequestsBlocked": 0
+    },
+    {
+      "viewport": "768x900",
+      "noHorizontalOverflow": true,
+      "inputVisible": true,
+      "designReady": true,
+      "webglCanvasReady": true,
+      "readinessAndRoadmapAbsent": true,
+      "externalRequestsBlocked": 0,
+      "nonReadRequestsBlocked": 0,
+      "apiRequestsBlocked": 0
+    },
+    {
+      "viewport": "855x900",
+      "noHorizontalOverflow": true,
+      "inputVisible": true,
+      "designReady": true,
+      "webglCanvasReady": true,
+      "readinessAndRoadmapAbsent": true,
+      "externalRequestsBlocked": 0,
+      "nonReadRequestsBlocked": 0,
+      "apiRequestsBlocked": 0
+    },
+    {
+      "viewport": "1440x900",
+      "noHorizontalOverflow": true,
+      "inputVisible": true,
+      "designReady": true,
+      "webglCanvasReady": true,
+      "readinessAndRoadmapAbsent": true,
+      "externalRequestsBlocked": 0,
+      "nonReadRequestsBlocked": 0,
+      "apiRequestsBlocked": 0
+    }
+  ],
+  "desktop": {
+    "viewport": "1440x900",
+    "reloadContinuity": true,
+    "viewerOrbitAndMove": true,
+    "authenticatedDesignScope": true,
+    "readinessAndRoadmapAbsent": true,
+    "original": {
+      "suggestedFilename": "generated-authenticated-qualification.igs",
+      "sha256": "6a33a42c62b839e57244df6412ffdf755aabbeedae372aa9223483bb9611e0f4"
+    },
+    "stl": {
+      "suggestedFilename": "reversr-synthetic-inspection-mesh-mm.stl",
+      "sha256": "d0fa57561304b96d122815cac8ff2b09e56be785dcaadce23d70b63577418150"
+    },
+    "deletionRevocation": true,
+    "externalRequestsBlocked": 0,
+    "nonReadRequestsBlocked": 0,
+    "apiRequestsBlocked": 0
+  },
+  "mobile": {
+    "viewport": "390x844",
+    "exclusiveSampleChoice": true,
+    "automaticProgression": true,
+    "viewerOrbitAndMove": true,
+    "compactDownloadMenu": true,
+    "authenticatedDesignScope": true,
+    "readinessAndRoadmapAbsent": true,
+    "externalRequestsBlocked": 0,
+    "nonReadRequestsBlocked": 0,
+    "apiRequestsBlocked": 0
+  },
+  "video": "docs/evidence/cad-phase5-package6/cad-package6-authenticated-import-walkthrough.mp4",
+  "videoSha256": "b6eb9787fef8dbe91d191fdd4468a0bcd1096ec2f44535e270f4679fd7d848e9"
+}

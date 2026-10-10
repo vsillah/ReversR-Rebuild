@@ -2,6 +2,7 @@
 // The injected call must implement docs/cad-convex-store-design.md in full.
 const { MAX_LIFETIME_MS } = require('./uploadSessionStore');
 const OPERATION_BUDGET_MS = 800;
+const CONVEX_AUTHORITY_MODEL = 'convex-authSessions-user-membership-generation-v1';
 const fail = () => { throw new Error('AUTH_UNAVAILABLE'); };
 const digest = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const id = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
@@ -68,6 +69,7 @@ function createConvexUploadSessionStore({ call, now = Date.now } = {}) {
     }
   }
   return Object.freeze({
+    authorityModel: CONVEX_AUTHORITY_MODEL,
     async insertIfAbsent(key, record, { signal } = {}) {
       try {
         if (!digest(key)) fail();
@@ -95,4 +97,4 @@ function createConvexUploadSessionStore({ call, now = Date.now } = {}) {
     },
   });
 }
-module.exports = { OPERATION_BUDGET_MS, createConvexUploadSessionStore };
+module.exports = { CONVEX_AUTHORITY_MODEL, OPERATION_BUDGET_MS, createConvexUploadSessionStore };

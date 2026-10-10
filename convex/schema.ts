@@ -33,6 +33,34 @@ export const qualificationRecord = {
   status: v.union(v.literal('reserved'), v.literal('fenced'), v.literal('unknown'), v.literal('settled')),
   outcome: v.union(v.null(), v.literal('not-started'), v.literal('completed'), v.literal('failed')),
 };
+export const custodyBinding = {
+  artifactId: v.string(), userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
+};
+export const custodyKind = v.union(v.literal('original-igs'), v.literal('preview-geometry'),
+  v.literal('derived-stl'));
+const custodyArtifactBase = {
+  schemaVersion: v.literal(1), ...custodyBinding,
+  byteCount: v.number(), restrictedDigest: v.string(), providerObjectKey: v.string(),
+  objectKeyDigest: v.string(),
+  state: v.union(v.literal('reserved'), v.literal('stored'), v.literal('quarantined'),
+    v.literal('deleting')),
+  createdAt: v.number(), retainedUntil: v.number(), generation: v.number(),
+  updatedAt: v.optional(v.number()), quarantineReasonDigest: v.optional(v.string()),
+};
+export const custodyArtifact = v.union(
+  v.object({ ...custodyArtifactBase, kind: v.literal('original-igs'), format: v.literal('model/iges') }),
+  v.object({ ...custodyArtifactBase, kind: v.literal('preview-geometry'),
+    format: v.literal('application/vnd.reversr.preview+json'),
+    sourceArtifactId: v.string(), sourceDigest: v.string(), geometryDigest: v.string(),
+    units: v.literal('millimeter'),
+    warning: v.literal('Inspection geometry only - not validated for manufacturing.'),
+  }),
+  v.object({ ...custodyArtifactBase, kind: v.literal('derived-stl'), format: v.literal('model/stl'),
+    sourceArtifactId: v.string(), sourceDigest: v.string(), geometryDigest: v.string(),
+    units: v.literal('millimeter'),
+    warning: v.literal('Inspection geometry only - not validated for manufacturing.'),
+  }),
+);
 export default defineSchema({
   ...authTables,
   ...controlledUploadTables,
@@ -46,6 +74,57 @@ export default defineSchema({
     .index('by_credentialDigest', ['credentialDigest'])
     .index('by_sessionId', ['sessionId'])
     .index('by_expiresAt', ['expiresAt']),
+  cadArtifacts: defineTable(custodyArtifact)
+    .index('by_artifactId', ['artifactId'])
+    .index('by_owner_shop_artifactId', ['userId', 'shopId', 'artifactId'])
+    .index('by_uploadSessionId', ['uploadSessionId'])
+    .index('by_state_and_retainedUntil', ['state', 'retainedUntil']),
+  cadArtifactTombstones: defineTable({ ...custodyBinding, kind: custodyKind,
+    objectKeyDigest: v.string(), restrictedDigest: v.string(), deletedAt: v.number(),
+    replayFence: v.literal(true), generation: v.number(), tombstoneDigest: v.string() })
+    .index('by_artifactId', ['artifactId'])
+    .index('by_owner_shop_artifactId', ['userId', 'shopId', 'artifactId']),
+  cadArtifactDownloadGrants: defineTable({ grantDigest: v.string(), artifactId: v.string(),
+    userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
+    artifactGeneration: v.number(), issuedAt: v.number(), expiresAt: v.number(),
+    revokedAt: v.optional(v.number()) })
+    .index('by_grantDigest', ['grantDigest'])
+    .index('by_artifactId', ['artifactId'])
+    .index('by_expiresAt', ['expiresAt']),
+  cadArtifactQuotaLedgers: defineTable({ scopeKey: v.string(), storedBytes: v.number(),
+    objectCount: v.number(), classAOperations: v.number(), classBOperations: v.number(),
+    deleteOperations: v.number(), revision: v.number(), stopped: v.boolean(), updatedAt: v.number() })
+    .index('by_scopeKey', ['scopeKey']),
+  cadUploadOrchestrationAttempts: defineTable({ idempotencyDigest: v.string(), attemptId: v.string(),
+    userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
+    authorityGeneration: v.number(), deploymentRef: v.string(), cohortRef: v.string(),
+    evidenceDigest: v.string(), retentionPolicyDigest: v.string(), reservationMicros: v.number(),
+    maxRetries: v.literal(0), fence: v.number(), createdAt: v.number(), expiresAt: v.number(),
+    state: v.union(v.literal('reserved'), v.literal('body-accepted'), v.literal('quarantined'),
+      v.literal('admitted')),
+    bodyByteCount: v.optional(v.number()), restrictedDigest: v.optional(v.string()),
+    artifactId: v.optional(v.string()), jobId: v.optional(v.string()),
+    quarantineReasonDigest: v.optional(v.string()), updatedAt: v.optional(v.number()),
+  }).index('by_idempotencyDigest', ['idempotencyDigest'])
+    .index('by_attemptId', ['attemptId'])
+    .index('by_owner_state', ['userId', 'shopId', 'state'])
+    .index('by_state_and_expiresAt', ['state', 'expiresAt']),
+  cadUploadJobs: defineTable({ jobId: v.string(), attemptId: v.string(), artifactId: v.string(),
+    userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
+    originalRestrictedDigest: v.string(),
+    state: v.union(v.literal('admitted'), v.literal('converting'), v.literal('ready'),
+      v.literal('failed'), v.literal('quarantined')),
+    conversionAuthorized: v.literal(false), conversionDispatchCount: v.literal(0),
+    conversionClaimCount: v.number(), conversionGeneration: v.number(),
+    previewArtifactId: v.optional(v.string()), stlArtifactId: v.optional(v.string()),
+    geometryDigest: v.optional(v.string()), previewDigest: v.optional(v.string()),
+    stlDigest: v.optional(v.string()), cleanupConfirmed: v.optional(v.boolean()),
+    quarantineReasonDigest: v.optional(v.string()), terminalAt: v.optional(v.number()),
+    createdAt: v.number(), updatedAt: v.number(),
+  }).index('by_jobId', ['jobId'])
+    .index('by_attemptId', ['attemptId'])
+    .index('by_artifactId', ['artifactId'])
+    .index('by_owner_state', ['userId', 'shopId', 'state']),
   cadQualificationLedgers: defineTable({
     ...qualificationScope,
     controlState: v.object({ schemaVersion: v.literal(1), revision: v.number(), lastNow: v.number(),

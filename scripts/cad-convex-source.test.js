@@ -33,8 +33,12 @@ test('actual source registrations match fixed gateway mapping; policy stays inte
 });
 test('source schema preserves every bounded read index and library ID boundary', () => {
   const { schema } = loadSource();
-  assert.deepEqual(Object.keys(schema).sort(), ['cadMemberships', 'cadQualificationAuthority',
-    'cadQualificationLedgers', 'cadUploadSessions', 'cadUserAuthority']);
+  assert.deepEqual(Object.keys(schema).sort(), ['cadArtifactDownloadGrants', 'cadArtifactQuotaLedgers',
+    'cadArtifactTombstones', 'cadArtifacts', 'cadControlledUploadAttempts',
+    'cadControlledUploadEvidence', 'cadControlledUploadGrants', 'cadControlledUploadHostPrincipals',
+    'cadControlledUploadReceipts', 'cadControlledUploadScopes', 'cadControlledUploadSessionTombstones',
+    'cadMemberships', 'cadQualificationAuthority', 'cadQualificationLedgers', 'cadUploadJobs',
+    'cadUploadOrchestrationAttempts', 'cadUploadSessions', 'cadUserAuthority']);
   for (const [table, indexes] of Object.entries({ cadUserAuthority: { by_userId: ['userId'] },
     cadMemberships: { by_userId_and_shopId: ['userId', 'shopId'] },
     cadUploadSessions: { by_credentialDigest: ['credentialDigest'], by_sessionId: ['sessionId'], by_expiresAt: ['expiresAt'] } })) {
@@ -42,6 +46,56 @@ test('source schema preserves every bounded read index and library ID boundary',
     assert.equal(schema[table].fields.userId.table, 'users');
   }
   assert.equal(schema.cadUploadSessions.fields.loginSessionId.table, 'authSessions');
+  assert.equal(schema.cadArtifacts.fields.kind, 'union');
+  assert.equal(schema.cadArtifacts.fields.values.length, 3);
+  const [originalArtifact, previewArtifact, stlArtifact] = schema.cadArtifacts.fields.values;
+  for (const artifact of [originalArtifact, previewArtifact, stlArtifact]) {
+    assert.equal(artifact.kind, 'object'); assert.equal(artifact.fields.userId.table, 'users');
+  }
+  assert.equal(originalArtifact.fields.kind.value, 'original-igs');
+  assert.equal(Object.hasOwn(originalArtifact.fields, 'sourceArtifactId'), false);
+  assert.equal(previewArtifact.fields.kind.value, 'preview-geometry');
+  assert.equal(previewArtifact.fields.format.value, 'application/vnd.reversr.preview+json');
+  assert.equal(stlArtifact.fields.kind.value, 'derived-stl');
+  assert.equal(stlArtifact.fields.format.value, 'model/stl');
+  for (const artifact of [previewArtifact, stlArtifact]) {
+    for (const field of ['sourceArtifactId', 'sourceDigest', 'geometryDigest']) {
+      assert.equal(artifact.fields[field].kind, 'string');
+    }
+    assert.equal(artifact.fields.units.value, 'millimeter');
+    assert.equal(artifact.fields.warning.value,
+      'Inspection geometry only - not validated for manufacturing.');
+  }
+  assert.equal(JSON.stringify(schema.cadArtifacts.indexes.by_owner_shop_artifactId),
+    JSON.stringify(['userId', 'shopId', 'artifactId']));
+  assert.equal(JSON.stringify(schema.cadArtifactTombstones.indexes.by_artifactId),
+    JSON.stringify(['artifactId']));
+  assert.equal(JSON.stringify(schema.cadArtifactDownloadGrants.indexes.by_grantDigest),
+    JSON.stringify(['grantDigest']));
+  assert.equal(JSON.stringify(schema.cadArtifactQuotaLedgers.indexes.by_scopeKey),
+    JSON.stringify(['scopeKey']));
+  assert.deepEqual(Object.keys(schema.cadArtifactQuotaLedgers.fields).sort(), [
+    'classAOperations', 'classBOperations', 'deleteOperations', 'objectCount', 'revision',
+    'scopeKey', 'stopped', 'storedBytes', 'updatedAt',
+  ]);
+  for (const field of ['storedBytes', 'objectCount', 'classAOperations', 'classBOperations',
+    'deleteOperations', 'revision', 'updatedAt']) {
+    assert.equal(schema.cadArtifactQuotaLedgers.fields[field].kind, 'number');
+  }
+  assert.equal(schema.cadArtifactQuotaLedgers.fields.stopped.kind, 'boolean');
+  assert.equal(JSON.stringify(schema.cadUploadOrchestrationAttempts.indexes.by_idempotencyDigest),
+    JSON.stringify(['idempotencyDigest']));
+  assert.equal(JSON.stringify(schema.cadUploadOrchestrationAttempts.indexes.by_attemptId),
+    JSON.stringify(['attemptId']));
+  assert.equal(JSON.stringify(schema.cadUploadJobs.indexes.by_attemptId),
+    JSON.stringify(['attemptId']));
+  assert.equal(schema.cadUploadOrchestrationAttempts.fields.userId.table, 'users');
+  assert.equal(schema.cadUploadJobs.fields.userId.table, 'users');
+  assert.equal(schema.cadUploadJobs.fields.originalRestrictedDigest.kind, 'string');
+  assert.equal(schema.cadUploadJobs.fields.conversionDispatchCount.value, 0);
+  assert.equal(schema.cadUploadJobs.fields.conversionAuthorized.value, false);
+  assert.equal(schema.cadUploadJobs.fields.conversionClaimCount.kind, 'number');
+  assert.equal(schema.cadUploadJobs.fields.conversionGeneration.kind, 'number');
 });
 test('unmodified provider boundary fails closed before authority reads or issuance', async () => {
   const f = fixture(); const { cad } = loadSource({ now: f.now });
