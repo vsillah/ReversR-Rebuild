@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { OFFLINE_REVIEW_GATE, createCadPhase5Package8LiveAdapters }
+const { BINDING, OFFLINE_REVIEW_GATE, createCadPhase5Package8LiveAdapters }
   = require('../server/cadPhase5Package8LiveAdapters');
 const { createCadPhase5Package8InternalRunner }
   = require('../server/cadPhase5Package8InternalRunner');
@@ -151,6 +151,18 @@ test('errors stay sanitized and no route or runtime bootstrap imports the adapte
 });
 
 test('source contract records exact reviewed bindings and every live execution blocker', () => {
+  assert.deepEqual(BINDING, {
+    mergedMainCommit: 'e0e2dc5b1ea7753d6c82dceeb887bfac3a9b62ad',
+    mergedMainTree: '8aff14e3fbcd25da2edd81d9886c31f6be96e745',
+    productionEvidenceDeploymentId: 'dpl_9FnZqUdqpUyzNhqS1GRwMoJpA14c',
+    liveAdapterSourceContractSha256:
+      'c3ca361bf56eea26a95c92db2bf97680877e6f75c26deb5329c0d46191d3c054',
+    rebindPacketSha256:
+      '1a726b14bed6f3c771b6df58126e9a9ae81d1b726776720e51bd0456f6126e1d',
+    reconciliationPacketSha256:
+      'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c',
+    sourceToDeploymentFunctionEquivalence: 'NOT_CLAIMED',
+  });
   assert.equal(contract.status, 'SOURCE_ONLY_DISABLED_DEFAULT');
   assert.equal(contract.admission.mergedMainCommit,
     '24ec45362517d60237f6f3e186e5048f49177cf5');

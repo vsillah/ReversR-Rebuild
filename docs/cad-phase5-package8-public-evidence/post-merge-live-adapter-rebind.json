@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_POST_MERGE_LIVE_ADAPTER_REBIND",
+  "status": "SOURCE_ONLY_REBOUND_DISABLED",
+  "scope": "POST_MERGE_BINDING_ONLY_NO_EXECUTION",
+  "recordedAtUtc": "2026-10-10T20:57:08Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "mergedMainCommit": "e0e2dc5b1ea7753d6c82dceeb887bfac3a9b62ad",
+    "mergedMainTree": "8aff14e3fbcd25da2edd81d9886c31f6be96e745",
+    "productionEvidenceDeploymentId": "dpl_9FnZqUdqpUyzNhqS1GRwMoJpA14c",
+    "productionEvidenceState": "READY",
+    "deploymentMetadataBoundMergeCommit": "e0e2dc5b1ea7753d6c82dceeb887bfac3a9b62ad",
+    "bindingProvenance": "USER_SUPPLIED_EXACT_POST_MERGE_BINDING",
+    "mergedCommitObjectAvailableLocally": false,
+    "mainAndTreeVerifiedAfterFetch": false,
+    "localHeadCommit": "cec0cafd5041731f5bf82cb8c901e6e5de1bc1ba",
+    "localHeadTree": "8aff14e3fbcd25da2edd81d9886c31f6be96e745",
+    "mergedMainTreeMatchesLocalHeadTree": true,
+    "providerRecheckPerformedByThisRound": false,
+    "sourceToDeploymentFunctionEquivalence": "NOT_CLAIMED"
+  },
+  "immutableEvidence": {
+    "liveAdapterSourceContract": {
+      "path": "docs/cad-phase5-package8-public-evidence/live-adapter-runner-source-contract.json",
+      "sha256": "c3ca361bf56eea26a95c92db2bf97680877e6f75c26deb5329c0d46191d3c054"
+    },
+    "historicalExecutionRebind": {
+      "path": "docs/cad-phase5-package8-public-evidence/post-merge-execution-rebind.json",
+      "sha256": "1a726b14bed6f3c771b6df58126e9a9ae81d1b726776720e51bd0456f6126e1d"
+    },
+    "readinessMonitoringReconciliation": {
+      "path": "docs/cad-phase5-package8-public-evidence/readiness-monitoring-reconciliation.json",
+      "sha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c"
+    }
+  },
+  "sourceBindings": {
+    "executionController": {
+      "path": "server/cadPhase5Package8ExecutionController.js",
+      "sha256": "c7a7ede1f2657e3f69be33e686f85c1e73b0d4b49da2b9a91a893986e083c14c"
+    },
+    "reviewedSourceBridges": {
+      "path": "server/cadPhase5Package8SourceBridges.js",
+      "sha256": "e50a6f9291708fb5cdf90d7ac6c141e6337b0f71d938f565fa9a7d1935cedbcf"
+    },
+    "liveAdapterComposition": {
+      "path": "server/cadPhase5Package8LiveAdapters.js",
+      "sha256": "5c0a96fd8badc1631581f52c73f88b2d4ea9b16956fdd823a2e1ad5a98b43f66"
+    },
+    "internalRunner": {
+      "path": "server/cadPhase5Package8InternalRunner.js",
+      "sha256": "8ec89553d8f2243f86ea5ae688503f7b0ddfc51b729c04888aa18ac302ae68bc"
+    },
+    "controllerTest": {
+      "path": "scripts/cad-phase5-package8-execution-controller.test.js",
+      "sha256": "b50ab62026542965e208073db90cc9b3bb8b5e2fcc4a3b1aef10064ea10639df"
+    },
+    "runnerTest": {
+      "path": "scripts/cad-phase5-package8-live-adapter-runner.test.js",
+      "sha256": "72f30cd7c52551b111f3ddb28e1734fa8cc3b0274ce4665acb044d1150f1c439"
+    }
+  },
+  "defaultState": {
+    "configured": false,
+    "enabled": false,
+    "mounted": false,
+    "routeMounted": false,
+    "sessionIssuanceEnabled": false,
+    "requestBodyAdmissionAuthorized": false,
+    "providerDispatchEnabled": false,
+    "storageDispatchEnabled": false,
+    "conversionDispatchEnabled": false,
+    "downloadDispatchEnabled": false,
+    "runtimeActivationAllowed": false,
+    "liveBindingsAccepted": false,
+    "productionBehaviorChanged": false
+  },
+  "authority": {
+    "providerRequestAuthorized": false,
+    "credentialReadAuthorized": false,
+    "configurationChangeAuthorized": false,
+    "deploymentAuthorized": false,
+    "functionInvocationAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "cadAccessAuthorized": false,
+    "r2ObjectAuthorized": false,
+    "sandboxConversionAuthorized": false,
+    "downloadAuthorized": false,
+    "paymentAuthorized": false,
+    "commitAuthorized": false,
+    "pushAuthorized": false,
+    "pullRequestAuthorized": false,
+    "mergeAuthorized": false,
+    "activationAuthorized": false,
+    "externalMessageAuthorized": false
+  },
+  "validation": {
+    "offlineOnly": true,
+    "providerRequests": 0,
+    "credentialsOrEnvironmentValuesRead": false,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "functionInvocations": 0,
+    "sessionIssuances": 0,
+    "requestBodyAdmissions": 0,
+    "cadBodiesRead": 0,
+    "r2ObjectsCreated": 0,
+    "sandboxConversions": 0,
+    "downloads": 0,
+    "payments": 0,
+    "commits": 0,
+    "pushes": 0,
+    "pullRequests": 0,
+    "merges": 0,
+    "externalMessages": 0
+  },
+  "remainingExecutionBlockers": [
+    "MERGED_COMMIT_AND_TREE_NOT_LOCALLY_FETCH_VERIFIED",
+    "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED",
+    "EXACT_LIVE_ACTIVATION_GATE_NOT_REVIEWED",
+    "LIVE_CONVEX_DURABLE_INVOKER_NOT_SUPPLIED",
+    "LIVE_R2_CUSTODY_BINDING_NOT_SUPPLIED",
+    "LIVE_SANDBOX_EXECUTOR_BINDING_NOT_SUPPLIED",
+    "FRESH_SYNTHETIC_SESSION_AUTHORITY_NOT_SUPPLIED",
+    "ACTIVE_WINDOW_AND_COST_REVALIDATION_NOT_SUPPLIED"
+  ],
+  "nextGate": {
+    "type": "CAPTAIN_REVIEW_AND_COMMIT_AUTHORIZATION",
+    "commitAuthorized": false,
+    "pushAuthorized": false,
+    "mergeAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "liveQualificationAuthorized": false
+  }
+}

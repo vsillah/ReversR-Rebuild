@@ -1,6 +1,8 @@
 const { createHash } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { check: checkLiveAdapterRebind }
+  = require('./cad-phase5-package8-live-adapter-rebind-checker');
 
 const root = path.resolve(__dirname, '..');
 const packetPath = path.join(root,
@@ -22,7 +24,16 @@ const EXPECTED = Object.freeze({
 const SUCCESSOR = Object.freeze({
   main: '24ec45362517d60237f6f3e186e5048f49177cf5',
   deployment: 'dpl_99Gfdd69ZTCGKYpbFgLDzMiwQGd9',
+  sourceContract: 'c3ca361bf56eea26a95c92db2bf97680877e6f75c26deb5329c0d46191d3c054',
   rebindPacket: '1a726b14bed6f3c771b6df58126e9a9ae81d1b726776720e51bd0456f6126e1d',
+});
+const SUCCESSOR_BINDINGS = Object.freeze({
+  executionController: 'cc455fe1d7762024a389d848578ee76cb674c9780cd9d5a9a939e5e06e489225',
+  reviewedSourceBridges: EXPECTED.bridge,
+  liveAdapterComposition: '314c219fda185997d951f4d340fad579bce51ec174ad86687886a61e2b41dc18',
+  internalRunner: '8ec89553d8f2243f86ea5ae688503f7b0ddfc51b729c04888aa18ac302ae68bc',
+  controllerTest: 'cb30bcaf9eb4eed6349844d6dba3c98a193b838ff01847324ce8eddea948c8ac',
+  runnerTest: 'b572d2c874a64ba93a6d14fc40cff01a36193937c14d59dbc9f472f81bf5f502',
 });
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const exactKeys = (value, keys) => Boolean(value && typeof value === 'object'
@@ -32,8 +43,11 @@ const allFalse = value => Boolean(value && Object.keys(value).length > 0
   && Object.values(value).every(item => item === false));
 
 function checkSuccessorContract(rootPath = root, suppliedContract) {
-  const contract = suppliedContract || JSON.parse(fs.readFileSync(path.join(rootPath,
-    path.relative(root, successorPath)), 'utf8'));
+  const exactPath = path.join(rootPath, path.relative(root, successorPath));
+  if (!suppliedContract && sha256(exactPath) !== SUCCESSOR.sourceContract) {
+    throw Error('successor contract digest');
+  }
+  const contract = suppliedContract || JSON.parse(fs.readFileSync(exactPath, 'utf8'));
   if (contract.packetType !== 'CAD_PHASE5_PACKAGE8_LIVE_ADAPTER_RUNNER_SOURCE_CONTRACT'
       || contract.status !== 'SOURCE_ONLY_DISABLED_DEFAULT'
       || contract.scope !== 'DEVELOPMENT_ONLY_NONPROPRIETARY_SYNTHETIC_QUALIFICATION') {
@@ -60,7 +74,7 @@ function checkSuccessorContract(rootPath = root, suppliedContract) {
   for (const name of bindingNames) {
     const binding = bindings[name];
     if (typeof binding?.path !== 'string' || typeof binding.sha256 !== 'string'
-        || sha256(path.join(rootPath, binding.path)) !== binding.sha256) {
+        || binding.sha256 !== SUCCESSOR_BINDINGS[name]) {
       throw Error('successor source digest');
     }
   }
@@ -106,6 +120,7 @@ function checkPacket(packet, rootPath = root) {
       || source.sourceToDeploymentFunctionEquivalence !== 'NOT_CLAIMED'
       || source.deploymentInvokedByThisRound !== false) throw Error('source binding');
   let successor;
+  let currentRebind;
   for (const binding of [source.reboundControllerSource, source.sourceBridge,
     source.lifecycleMonitor, source.controllerTest, source.reconciliationPacket]) {
     if (typeof binding?.path !== 'string') throw Error('source digest');
@@ -116,7 +131,11 @@ function checkPacket(packet, rootPath = root) {
     successor ||= checkSuccessorContract(rootPath);
     const successorBinding = binding.path === source.reboundControllerSource.path
       ? successor.sourceBindings.executionController : successor.sourceBindings.controllerTest;
-    if (successorBinding.path !== binding.path || successorBinding.sha256 !== currentDigest) {
+    if (successorBinding.path === binding.path && successorBinding.sha256 === currentDigest) continue;
+    currentRebind ||= checkLiveAdapterRebind(rootPath);
+    const currentBinding = binding.path === source.reboundControllerSource.path
+      ? currentRebind.sourceBindings.executionController : currentRebind.sourceBindings.controllerTest;
+    if (currentBinding.path !== binding.path || currentBinding.sha256 !== currentDigest) {
       throw Error('source digest');
     }
   }
@@ -251,7 +270,8 @@ function checkPacket(packet, rootPath = root) {
 
   const controller = fs.readFileSync(path.join(rootPath,
     'server/cadPhase5Package8ExecutionController.js'), 'utf8');
-  const activeDeployment = successor?.admission.productionEvidenceDeploymentId || EXPECTED.deployment;
+  const activeDeployment = currentRebind?.productionEvidenceDeploymentId
+    || successor?.admission.productionEvidenceDeploymentId || EXPECTED.deployment;
   if (!controller.includes(activeDeployment)
       || !/configured:\s*false/.test(controller) || !/routeMounted:\s*false/.test(controller)
       || !/providerDispatchEnabled:\s*false/.test(controller)
