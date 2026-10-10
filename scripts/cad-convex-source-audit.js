@@ -667,6 +667,7 @@ const files = [
   'server/cadPhase5SyntheticPrivatePathQualification.js',
   'scripts/cad-phase5-synthetic-private-path-qualification.test.js',
   'server/cadPhase5Package8ExecutionController.js',
+  'server/cadPhase5Package8SourceBridges.js',
   'scripts/cad-phase5-package8-execution-controller.test.js',
   'docs/cad-phase5-private-igs-activation-plan.md',
   'docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md',

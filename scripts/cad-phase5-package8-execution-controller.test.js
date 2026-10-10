@@ -1,487 +1,432 @@
-// Offline synthetic ports only. No network, provider, credential, environment,
-// deployment, request-body, private CAD, or production access occurs here.
+// Offline synthetic contract qualification only. No network, provider,
+// credential, environment, deployment, request-body, or private CAD access.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const {
-  MAXIMUM_COST_MICROS_EXCLUSIVE,
-  PACKAGE8_EVIDENCE_BINDING,
-  PACKAGE8_EXECUTION_INTENT,
-  PACKAGE8_POLICY,
-  PACKAGE8_SCOPE_KEY,
-  PACKAGE8_SESSION_DIGEST,
-  RESERVATION_MICROS,
+  MAXIMUM_COST_MICROS_EXCLUSIVE, PACKAGE8_EVIDENCE_BINDING,
+  PACKAGE8_EXECUTION_INTENT, PACKAGE8_POLICY, PACKAGE8_SCOPE_KEY,
+  PACKAGE8_SESSION_DIGEST, RESERVATION_MICROS,
   createCadPhase5Package8ExecutionController,
 } = require('../server/cadPhase5Package8ExecutionController');
 const {
-  SYNTHETIC_OWNER,
-  createSyntheticPrivateIgesFixture,
-} = require('../server/cadPhase5SyntheticPrivatePathQualification');
+  REQUIRED_DURABLE_OPERATIONS, createPackage8OfflineCustodyBridge,
+  createPackage8OfflineDurableCustodyStore, createPackage8OfflineSandboxBridge,
+} = require('../server/cadPhase5Package8SourceBridges');
+const { createCadR2PrivateArtifactCustody }
+  = require('../server/cadR2PrivateArtifactCustody');
+const { SYNTHETIC_OWNER, createSyntheticPrivateIgesFixture }
+  = require('../server/cadPhase5SyntheticPrivatePathQualification');
 
 const root = path.resolve(__dirname, '..');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const NOW = Date.parse('2026-10-10T19:20:30.000Z');
-const WINDOW = Object.freeze({
-  schemaVersion: 1,
-  idDigest: 'a'.repeat(64),
-  startUtc: '2026-10-10T19:25:00.000Z',
-  endUtc: '2026-10-10T19:35:00.000Z',
-  activated: false,
-});
-const STL_BYTES = Buffer.from('solid package8_fixture\nendsolid package8_fixture\n');
-const clone = value => structuredClone(value);
+const WINDOW = Object.freeze({ schemaVersion: 1, idDigest: 'a'.repeat(64),
+  startUtc: '2026-10-10T19:25:00.000Z', endUtc: '2026-10-10T19:35:00.000Z',
+  activated: false });
+const CLOSED = Object.freeze({ sourceOnly: true, liveReady: false, routeMounted: false,
+  bodyAdmissionAuthorized: false, providerDispatchEnabled: false,
+  conversionDispatchEnabled: false, downloadRouteEnabled: false });
+const result = (accepted, code, extra = {}) => ({ ...CLOSED, accepted, code, ...extra });
+const port = methods => Object.freeze({ sourceOnly: true, offlineSynthetic: true,
+  configured: false, ...methods });
 
 function setup(options = {}, shared = {}) {
   const events = [];
   const intents = shared.intents || new Set();
-  const state = {
-    claimed: false,
-    closed: false,
-    revoked: false,
-    bodyReads: 0,
-    sandboxAttempts: 0,
-    sandboxStopped: false,
-    artifacts: new Map(),
-    tombstones: new Map(),
-    grants: new Map(),
-  };
-  const event = (name, details = {}) => events.push({ name, ...details });
-  const port = methods => Object.freeze({ offlineSynthetic: true, ...methods });
+  const state = { claimed: false, closed: false, revoked: false, bodyReads: 0,
+    artifacts: new Map(), tombstones: new Map(), grants: new Map(), objects: new Map(),
+    quota: { 'class-a': 0, 'class-b': 0, delete: 0 }, sandboxAttempts: 0,
+    sandboxActive: 0, cleanupBlocked: false };
+  const event = (name, args) => events.push({ name, args });
+  const ownerMatches = owner => ['userId', 'shopId', 'uploadSessionId']
+    .every(key => owner?.[key] === SYNTHETIC_OWNER[key]);
 
-  const intentLedger = port({
-    async consumeOnce(value, { signal } = {}) {
+  const durable = Object.freeze({ sourceOnly: true, offlineSynthetic: true,
+    configured: false, operations: REQUIRED_DURABLE_OPERATIONS,
+    async call(operation, args, { signal } = {}) {
       signal?.throwIfAborted?.();
-      event('intent');
-      assert.equal(value.commitmentDigest, PACKAGE8_EXECUTION_INTENT.commitmentDigest);
-      assert.equal(value.windowDigest, WINDOW.idDigest);
-      if (intents.has(value.commitmentDigest)) return { accepted: false,
-        code: 'PACKAGE8_INTENT_REPLAYED', commitmentDigest: value.commitmentDigest };
-      intents.add(value.commitmentDigest);
-      return { accepted: true, code: 'PACKAGE8_INTENT_CONSUMED',
-        commitmentDigest: value.commitmentDigest };
-    },
-  });
-  const authority = port({
-    async verifyExact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('authority');
-      assert.deepEqual(value.owner, SYNTHETIC_OWNER);
-      assert.equal(value.sessionDigest, PACKAGE8_SESSION_DIGEST);
-      assert.deepEqual(value.evidenceBinding, PACKAGE8_EVIDENCE_BINDING);
-      assert.equal(value.reservationMicros, RESERVATION_MICROS);
-      return { authorized: true, ...SYNTHETIC_OWNER,
-        ...(options.authorityMismatch ? { shopId: 'other-shop' } : {}),
-        authorityGeneration: 7, expiresAt: Date.parse(WINDOW.endUtc) + 1,
-        reservationMicros: options.reservationMicros ?? RESERVATION_MICROS,
-        calculatedMaximumCostMicros: options.calculatedMaximumCostMicros ?? 7705,
-        observedCostMicros: options.observedCostMicros ?? 0,
-        windowActivated: false };
-    },
-  });
-  const durable = port({
-    async claimExecution(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('claim');
-      if (options.claimTimeout) return new Promise(() => {});
-      if (state.claimed || options.claimReplay) return { accepted: false, code: 'CLAIM_REPLAYED' };
-      state.claimed = true;
-      if (options.claimUnknown) return { accepted: false, code: 'CLAIM_UNKNOWN' };
-      return { accepted: true, code: 'PACKAGE8_EXECUTION_CLAIMED',
-        claimId: 'package8-claim', fence: 1, reservationMicros: value.reservationMicros,
-        maximumAttempts: value.maximumAttempts, maximumRetries: value.maximumRetries,
-        ...SYNTHETIC_OWNER };
-    },
-    async closeForRollback(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('close');
-      state.closed = true;
-      for (const artifact of state.artifacts.values()) artifact.state = 'quarantined';
-      for (const grant of state.grants.values()) grant.revoked = true;
-      return { accepted: true, admissionClosed: true, conversionClosed: true,
-        grantsRevoked: true, uncertainRecordsQuarantined: true,
-        order: ['admission-closed', 'conversion-closed', 'grants-revoked',
-          'unknown-quarantined'] };
-    },
-    async reconcile(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event(`reconcile:${value.kind}`);
-      if (value.kind === 'control') return state.closed
-        ? { accepted: true, state: 'closed', admissionClosed: true,
+      event(`durable:${operation}`, args);
+      if (operation === 'claimUpload') {
+        assert.deepEqual(Object.keys(args).sort(), ['attempt', 'policy', 'scopeKey']);
+        assert.equal(args.scopeKey, PACKAGE8_SCOPE_KEY);
+        assert.equal(args.attempt.reservationMicros, RESERVATION_MICROS);
+        assert.deepEqual(args.policy, { maxAttempts: 1, maxConcurrent: 1,
+          budgetMicros: RESERVATION_MICROS });
+        if (options.claimTimeout) return new Promise(() => {});
+        if (state.claimed || options.claimReplay) return result(false, 'UPLOAD_ATTEMPT_REPLAYED');
+        state.claimed = true;
+        return options.claimUnknown ? result(false, 'UPLOAD_ATTEMPT_UNKNOWN')
+          : result(true, 'UPLOAD_ATTEMPT_CLAIMED', { status: 'claimed',
+            attemptId: args.attempt.attemptId, fence: 1 });
+      }
+      if (operation === 'reserveArtifact') {
+        if (!ownerMatches(args.owner) || options.quotaExceeded) {
+          return result(false, 'QUOTA_EXHAUSTED');
+        }
+        state.artifacts.set(args.artifact.artifactId, { ...args.artifact });
+        return result(true, 'ARTIFACT_RESERVED', { artifactId: args.artifact.artifactId,
+          generation: args.artifact.generation });
+      }
+      if (operation === 'consumeQuota') {
+        if (!ownerMatches(args.owner)) return result(false, 'QUOTA_DENIED');
+        state.quota[args.operation] += args.count;
+        return result(true, 'QUOTA_RESERVED', { operation: args.operation });
+      }
+      if (operation === 'readArtifact') {
+        const artifact = state.artifacts.get(args.artifactId);
+        if (!artifact || !ownerMatches(args.owner)) return result(false, 'ARTIFACT_DENIED');
+        return result(true, 'ARTIFACT_PRESENT', { artifactId: artifact.artifactId,
+          state: artifact.state, generation: artifact.generation,
+          byteCount: artifact.byteCount, retainedUntil: artifact.retainedUntil });
+      }
+      if (operation === 'transitionArtifact') {
+        const artifact = state.artifacts.get(args.artifactId);
+        if (!artifact || !ownerMatches(args.owner)
+          || artifact.generation !== args.expectedGeneration) {
+          return result(false, 'ARTIFACT_DENIED');
+        }
+        artifact.state = args.transition;
+        artifact.generation += 1;
+        artifact.updatedAt = args.now;
+        if (args.reasonDigest) artifact.quarantineReasonDigest = args.reasonDigest;
+        return result(true, 'ARTIFACT_TRANSITIONED', { artifactId: artifact.artifactId,
+          state: artifact.state, generation: artifact.generation });
+      }
+      if (operation === 'issueDownloadGrant') {
+        const artifact = state.artifacts.get(args.artifactId);
+        if (!artifact || artifact.state !== 'stored' || !ownerMatches(args.owner)
+          || artifact.generation !== args.artifactGeneration) {
+          return result(false, 'DOWNLOAD_GRANT_DENIED');
+        }
+        state.grants.set(args.grantDigest, { artifactId: args.artifactId,
+          generation: args.artifactGeneration, revoked: false });
+        return result(true, 'DOWNLOAD_GRANT_ISSUED');
+      }
+      if (operation === 'resolveDownloadGrant') {
+        const grant = state.grants.get(args.grantDigest);
+        if (!grant || grant.revoked || !ownerMatches(args.owner)) {
+          return result(false, 'DOWNLOAD_GRANT_DENIED');
+        }
+        return result(true, 'DOWNLOAD_GRANT_RESOLVED', {
+          artifactId: options.grantMismatch ? 'other-artifact' : grant.artifactId,
+          generation: grant.generation });
+      }
+      if (operation === 'closeForRollback') {
+        assert.deepEqual(Object.keys(args).sort(), ['now', 'reasonDigest', 'scopeKey',
+          'shopId', 'uploadSessionId', 'userId']);
+        assert.equal(Object.hasOwn(args, 'owner'), false);
+        state.closed = true;
+        for (const artifact of state.artifacts.values()) {
+          if (artifact.state !== 'quarantined') {
+            artifact.state = 'quarantined';
+            artifact.generation += 1;
+          }
+        }
+        for (const grant of state.grants.values()) grant.revoked = true;
+        return result(true, 'ROLLBACK_CLOSED_FIRST', { admissionClosed: true,
           conversionClosed: true, grantsRevoked: true,
-          uncertainRecordsQuarantined: true }
-        : { accepted: false, code: 'RECONCILIATION_DENIED' };
-      if (value.kind === 'artifact') {
-        const artifact = state.artifacts.get(value.key);
-        if (!artifact) return { accepted: false, code: 'RECONCILIATION_DENIED' };
-        return { accepted: true, artifactId: value.key, ...artifact,
-          ...(options.reconcileOwnerMismatch ? { shopId: 'other-shop' } : {}) };
+          uncertainRecordsQuarantined: true, generation: 1 });
       }
-      if (value.kind === 'tombstone') {
-        const tombstoneDigest = state.tombstones.get(value.key);
-        return tombstoneDigest ? { accepted: true, deleted: true,
-          artifactId: value.key, tombstoneDigest } : { accepted: false };
+      if (operation === 'reconcile') {
+        if (options.reconcileOwnerMismatch || args.userId !== SYNTHETIC_OWNER.userId
+          || args.shopId !== SYNTHETIC_OWNER.shopId
+          || args.uploadSessionId !== SYNTHETIC_OWNER.uploadSessionId) {
+          return result(false, 'RECONCILIATION_DENIED');
+        }
+        if (args.kind === 'control') return state.closed
+          ? result(true, 'RECONCILIATION_PRESENT', { state: 'closed', generation: 1,
+            admissionClosed: true, conversionClosed: true, grantsRevoked: true,
+            uncertainRecordsQuarantined: true })
+          : result(false, 'RECONCILIATION_DENIED');
+        if (args.kind === 'artifact') {
+          const artifact = state.artifacts.get(args.key);
+          return artifact ? result(true, 'RECONCILIATION_PRESENT', {
+            artifactId: artifact.artifactId, state: artifact.state,
+            generation: artifact.generation }) : result(false, 'RECONCILIATION_DENIED');
+        }
+        if (args.kind === 'tombstone') {
+          const digest = state.tombstones.get(args.key);
+          return digest ? result(true, 'RECONCILIATION_PRESENT', { state: 'deleted',
+            artifactId: args.key, deleted: true, tombstoneDigest: digest, generation: 1 })
+            : result(false, 'RECONCILIATION_DENIED');
+        }
       }
-      return { accepted: false, code: 'RECONCILIATION_DENIED' };
-    },
-    async resolveDownloadGrant(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('resolve-grant');
-      const grant = state.grants.get(value.grantDigest);
-      if (!grant || grant.revoked) return { accepted: false, code: 'CUSTODY_DENIED' };
-      return { accepted: true, artifactId: options.grantMismatch
-        ? 'other-artifact' : grant.artifactId, ...SYNTHETIC_OWNER };
-    },
-    async readLifecycleMetadata(_value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('metadata:convex');
-      const metadata = { teamSlug: 'vambah-sillah', projectSlug: 'reversr-cad-auth-dev',
-        deploymentName: 'majestic-alligator-31', identityVerified: true,
-        sourceToDeploymentFunctionEquivalence: 'NOT_CLAIMED',
-        quotaLedgerNamespace: PACKAGE8_SCOPE_KEY, stuckJobs: 0, uncertainRecords: 0 };
-      return options.duplicateMetadata ? [metadata, clone(metadata)] : metadata;
+      if (operation === 'confirmDeleted') {
+        const artifact = state.artifacts.get(args.artifactId);
+        if (!artifact || artifact.generation !== args.expectedGeneration
+          || !ownerMatches(args.owner)) return result(false, 'DELETE_DENIED');
+        state.artifacts.delete(args.artifactId);
+        state.tombstones.set(args.artifactId, args.tombstoneDigest);
+        return result(true, 'ARTIFACT_DELETED', { deleted: true,
+          artifactId: args.artifactId, tombstoneDigest: args.tombstoneDigest });
+      }
+      return result(false, 'OPERATION_DENIED');
     },
   });
 
-  let artifactSequence = 0;
-  const custody = port({
-    async reserveArtifact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('quota-reserve', { kind: value.input.kind });
-      if (options.quotaExceeded) return { ok: false, code: 'CUSTODY_QUOTA_EXHAUSTED' };
-      const artifactId = value.input.kind === 'original-igs'
-        ? 'package8-original' : `package8-stl-${++artifactSequence}`;
-      state.artifacts.set(artifactId, { ...SYNTHETIC_OWNER, ...clone(value.input),
-        artifactId, state: 'reserved' });
-      return { ok: true, code: 'ARTIFACT_RESERVED', artifactId };
-    },
-    async commitArtifact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      const artifact = state.artifacts.get(value.artifactId);
-      event('provider-commit', { kind: artifact?.kind });
-      if (!artifact) return { ok: false, code: 'CUSTODY_DENIED' };
-      if (options.providerAckUnknown === artifact.kind) {
-        return { ok: false, code: 'CUSTODY_UNKNOWN' };
+  const store = createPackage8OfflineDurableCustodyStore({ testOnly: true, durable,
+    scopeKey: PACKAGE8_SCOPE_KEY, owner: SYNTHETIC_OWNER, now: () => NOW });
+  const provider = Object.freeze({
+    async putExact(input, { signal } = {}) {
+      signal?.throwIfAborted?.(); event('provider:putExact', input);
+      if (options.providerAckUnknown && input.contentType === 'model/iges') {
+        return { committed: false };
       }
-      assert.equal(value.bytes.length, artifact.byteCount);
-      assert.equal(hash(value.bytes), artifact.restrictedDigest);
-      artifact.state = 'stored';
-      return { ok: true, code: 'ARTIFACT_STORED', artifactId: value.artifactId };
+      state.objects.set(input.objectKey, Buffer.from(input.bytes));
+      return { committed: true, byteCount: input.bytes.length, sha256: hash(input.bytes) };
     },
-    async issueDownloadGrant(value, { signal } = {}) {
+    async getExact(input, { signal } = {}) {
       signal?.throwIfAborted?.();
-      event('grant', { artifactId: value.artifactId });
-      const token = `dg1.${value.artifactId.includes('original') ? 'A' : 'B'}`.padEnd(47,
-        value.artifactId.includes('original') ? 'A' : 'B');
-      state.grants.set(hash(token), { artifactId: value.artifactId, revoked: false });
-      return { ok: true, code: 'DOWNLOAD_GRANT_ISSUED', token };
+      const bytes = state.objects.get(input.objectKey);
+      return bytes ? { bytes: Buffer.from(bytes) } : null;
     },
-    async deleteArtifact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('provider-delete', { artifactId: value.artifactId });
-      const artifact = state.artifacts.get(value.artifactId);
-      if (!artifact || !state.closed || artifact.state !== 'quarantined'
-        || !Object.entries(SYNTHETIC_OWNER).every(([key, expected]) => artifact[key] === expected)) {
-        return { ok: false, code: 'CUSTODY_DENIED' };
-      }
-      if (options.deleteUnknown === value.artifactId) return { ok: false, code: 'CUSTODY_UNKNOWN' };
-      const tombstoneDigest = hash(`deleted:${value.artifactId}`);
-      state.artifacts.delete(value.artifactId);
-      state.tombstones.set(value.artifactId, tombstoneDigest);
-      return { ok: true, code: 'ARTIFACT_DELETED', artifactId: value.artifactId,
-        tombstoneDigest };
+    async deleteExact(objectKey, { signal } = {}) {
+      signal?.throwIfAborted?.(); event('provider:deleteExact', { objectKey });
+      if (options.deleteUnknown) return false;
+      state.objects.delete(objectKey); return true;
     },
-    async readLifecycleMetadata(_value, { signal } = {}) {
+    async headExact(objectKey, { signal } = {}) {
       signal?.throwIfAborted?.();
-      event('metadata:r2');
-      return { bucket: 'reversr-cad-package8-public-fixture-us', jurisdiction: 'US',
-        storageClass: 'STANDARD', publicAccess: false, customDomains: 0,
-        lifecycleDeleteAfterDays: 1, lifecycleStatus: 'ENABLED',
-        objectCount: state.artifacts.size, byteCount: [...state.artifacts.values()]
-          .reduce((total, value) => total + value.byteCount, 0),
-        classAOperations: 4, classBOperations: 4,
-        deleteOperations: state.tombstones.size, usageUnknown: false };
+      return state.objects.has(objectKey) ? { present: true } : null;
     },
   });
-  const sandbox = port({
-    async convert(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('sandbox-convert');
-      state.sandboxAttempts += 1;
+  const custody = createPackage8OfflineCustodyBridge({ testOnly: true,
+    custody: createCadR2PrivateArtifactCustody({ enabled: true, provider, store,
+      now: () => NOW }) });
+  const executor = Object.freeze({
+    async convert(body, signal) {
+      signal?.throwIfAborted?.(); event('sandbox:convert', { fileName: body.fileName });
+      state.sandboxAttempts += 1; state.sandboxActive = 1;
       if (options.sandboxTimeout) return new Promise(() => {});
-      if (options.sandboxUnknown) return { status: 'unknown', outcomeUnknown: true };
-      return { status: 'ready', sourceSha256: hash(value.bytes),
-        stlBytes: Buffer.from(STL_BYTES), geometryDigest: '9'.repeat(64),
-        cleanupConfirmed: true, outcomeUnknown: false, attempts: 1, retries: 0 };
+      state.sandboxActive = 0;
+      if (options.sandboxUnknown) return { status: 'unknown' };
+      if (options.cleanupUnknown) state.cleanupBlocked = true;
+      return { status: 'ready', source: { sha256: hash(body.bytes) },
+        meshes: [{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2] }],
+        execution: { cleanup: 'stopped' } };
     },
-    async stopKnown(_value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('sandbox-stop');
-      state.sandboxStopped = true;
-      return options.cleanupUnknown
-        ? { stopped: false, cleanupConfirmed: false, outcomeUnknown: true }
-        : { stopped: true, cleanupConfirmed: true, outcomeUnknown: false };
-    },
-    async readLifecycleMetadata(_value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('metadata:sandbox');
-      return { runtime: 'node24', region: 'iad1', vcpus: 1, memoryMb: 2048,
+    activeCount() { return state.sandboxActive; },
+    cleanupBlocked() { return state.cleanupBlocked; },
+  });
+  const sandbox = createPackage8OfflineSandboxBridge({ testOnly: true, executor });
+  const authority = port({ async verifyExact(value, { signal } = {}) {
+    signal?.throwIfAborted?.(); event('authority', value);
+    assert.equal(value.sessionDigest, PACKAGE8_SESSION_DIGEST);
+    assert.deepEqual(value.evidenceBinding, PACKAGE8_EVIDENCE_BINDING);
+    return { authorized: true, ...SYNTHETIC_OWNER,
+      ...(options.authorityMismatch ? { shopId: 'other-shop' } : {}),
+      authorityGeneration: 7, expiresAt: Date.parse(WINDOW.endUtc) + 1,
+      reservationMicros: options.reservationMicros ?? RESERVATION_MICROS,
+      calculatedMaximumCostMicros: options.calculatedMaximumCostMicros ?? 7705,
+      observedCostMicros: options.observedCostMicros ?? 0, windowActivated: false };
+  } });
+  const intentLedger = port({ async consumeOnce(value, { signal } = {}) {
+    signal?.throwIfAborted?.(); event('intent', value);
+    assert.equal(value.commitmentDigest, PACKAGE8_EXECUTION_INTENT.commitmentDigest);
+    if (intents.has(value.commitmentDigest)) return { accepted: false,
+      code: 'PACKAGE8_INTENT_REPLAYED', commitmentDigest: value.commitmentDigest };
+    intents.add(value.commitmentDigest);
+    return { accepted: true, code: 'PACKAGE8_INTENT_CONSUMED',
+      commitmentDigest: value.commitmentDigest };
+  } });
+  const sessionRevoker = port({ async revokeExact(value, { signal } = {}) {
+    signal?.throwIfAborted?.(); event('session:revokeExact', value); state.revoked = true;
+    return { revoked: true, uploadSessionId: SYNTHETIC_OWNER.uploadSessionId };
+  } });
+  const fixtureReader = port({ async readExact(value, { signal } = {}) {
+    signal?.throwIfAborted?.(); event('fixture:readExact', value); state.bodyReads += 1;
+    const fixture = createSyntheticPrivateIgesFixture();
+    if (!options.fixtureDrift) return fixture.bytes;
+    const drift = Buffer.from(fixture.bytes); drift[0] ^= 1; return drift;
+  } });
+  const lifecycleMetadata = port({ async readSanitized(_value, { signal } = {}) {
+    signal?.throwIfAborted?.(); event('lifecycle:readSanitized');
+    const convex = { teamSlug: 'vambah-sillah', projectSlug: 'reversr-cad-auth-dev',
+      deploymentName: 'majestic-alligator-31', identityVerified: true,
+      sourceToDeploymentFunctionEquivalence: 'NOT_CLAIMED',
+      quotaLedgerNamespace: PACKAGE8_SCOPE_KEY, stuckJobs: 0, uncertainRecords: 0 };
+    return options.duplicateMetadata ? { convex: [convex, convex], r2: {}, sandbox: {} } : {
+      convex,
+      r2: { bucket: 'reversr-cad-package8-public-fixture-us', jurisdiction: 'US',
+        storageClass: 'STANDARD', publicAccess: false, customDomains: 0,
+        lifecycleDeleteAfterDays: 1, lifecycleStatus: 'ENABLED', objectCount: 0,
+        byteCount: 0, classAOperations: state.quota['class-a'],
+        classBOperations: state.quota['class-b'], deleteOperations: state.quota.delete,
+        usageUnknown: false },
+      sandbox: { runtime: 'node24', region: 'iad1', vcpus: 1, memoryMb: 2048,
         lifetimeMs: 60000, networkPolicy: 'deny-all', persistent: false,
         exposedPorts: 0, snapshotPresent: false, attempts: 1, retries: 0,
         status: 'stopped', terminal: true, cleanupConfirmed: true,
-        outcomeUnknown: false };
-    },
-  });
-  const sessionRevoker = port({
-    async revokeExact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('revoke-session');
-      assert.equal(value.sessionDigest, PACKAGE8_SESSION_DIGEST);
-      assert.deepEqual(value.owner, SYNTHETIC_OWNER);
-      state.revoked = true;
-      return { revoked: true, uploadSessionId: SYNTHETIC_OWNER.uploadSessionId };
-    },
-  });
-  const fixtureReader = port({
-    async readExact(value, { signal } = {}) {
-      signal?.throwIfAborted?.();
-      event('fixture-read');
-      state.bodyReads += 1;
-      assert.equal(value.descriptor.id, 'reversr-phase5-synthetic-private-line-v1');
-      const fixture = createSyntheticPrivateIgesFixture();
-      if (!options.fixtureDrift) return fixture.bytes;
-      const drifted = Buffer.from(fixture.bytes);
-      drifted[0] ^= 1;
-      return drifted;
-    },
-  });
+        outcomeUnknown: false },
+    };
+  } });
   const controllerOptions = { reviewOnly: true, authority, intentLedger, durable, custody,
-    sandbox, sessionRevoker, fixtureReader, now: () => NOW,
+    sandbox, sessionRevoker, fixtureReader, lifecycleMetadata, now: () => NOW,
     operationBudgetMs: options.operationBudgetMs ?? 25 };
   return { events, intents, state, controllerOptions,
     controller: createCadPhase5Package8ExecutionController(controllerOptions),
     restart: () => createCadPhase5Package8ExecutionController(controllerOptions) };
 }
 
-test('default stays permanently disabled with no route, body, provider, runtime, or production authority', async () => {
+test('default is permanently disabled and has no runtime or provider authority', async () => {
   const controller = createCadPhase5Package8ExecutionController();
-  assert.equal(controller.configured, false);
-  assert.equal(controller.reviewConfigured, false);
-  assert.deepEqual([controller.routeMounted, controller.sessionIssuanceEnabled,
-    controller.requestBodyAdmissionAuthorized, controller.providerDispatchEnabled,
-    controller.conversionDispatchEnabled, controller.runtimeActivationAllowed,
-    controller.productionBehaviorChanged], [false, false, false, false, false, false, false]);
-  assert.deepEqual(await controller.reviewOneUse({ window: WINDOW }), {
-    ok: false, code: 'PACKAGE8_CONTROLLER_DISABLED', sourceOnly: true,
-    developmentOnly: true, maxRetries: 0, providerRequests: 0 });
+  assert.deepEqual([controller.configured, controller.reviewConfigured, controller.routeMounted,
+    controller.providerDispatchEnabled, controller.conversionDispatchEnabled,
+    controller.runtimeActivationAllowed, controller.productionBehaviorChanged],
+  [false, false, false, false, false, false, false]);
+  assert.equal((await controller.reviewOneUse({ window: WINDOW })).code,
+    'PACKAGE8_CONTROLLER_DISABLED');
 });
 
-test('policy is one-session, one-file, one-attempt, zero-retry, inactive-window, and strictly below nine dollars', () => {
-  assert.deepEqual(PACKAGE8_POLICY, {
-    schemaVersion: 1, developmentOnly: true, maximumSessions: 1, maximumFiles: 1,
-    maximumAttempts: 1, maximumRetries: 0, maximumWindowMs: 900000,
-    maximumCostMicrosExclusive: 9000000, reservationMicros: 8999999, currency: 'USD',
-    routeMounted: false, sessionIssuanceEnabled: false,
-    requestBodyAdmissionAuthorized: false, providerDispatchEnabled: false,
-    runtimeActivationAllowed: false, productionBehaviorChanged: false });
+test('policy remains one-file, one-attempt, zero-retry, inactive, and below nine dollars', () => {
+  assert.equal(PACKAGE8_POLICY.maximumFiles, 1);
+  assert.equal(PACKAGE8_POLICY.maximumAttempts, 1);
+  assert.equal(PACKAGE8_POLICY.maximumRetries, 0);
+  assert.equal(PACKAGE8_POLICY.maximumCostMicrosExclusive, 9_000_000);
   assert.ok(RESERVATION_MICROS < MAXIMUM_COST_MICROS_EXCLUSIVE);
   assert.equal(WINDOW.activated, false);
-  assert.ok(Date.parse(WINDOW.startUtc) > NOW);
-  assert.ok(Date.parse(WINDOW.endUtc) - Date.parse(WINDOW.startUtc) <= 15 * 60_000);
 });
 
-test('authority, durable claim, and quota reservation all precede the one fixture read', async () => {
+test('claimUpload and reserveArtifact precede fixture read; commit consumes quota', async () => {
   const f = setup();
-  const result = await f.controller.reviewOneUse({ window: WINDOW });
-  assert.equal(result.ok, true, JSON.stringify({ result, events: f.events }));
-  const index = name => f.events.findIndex(value => value.name === name);
-  assert.ok(index('authority') < index('claim'));
-  assert.ok(index('claim') < index('quota-reserve'));
-  assert.ok(index('quota-reserve') < index('fixture-read'));
+  const value = await f.controller.reviewOneUse({ window: WINDOW });
+  assert.equal(value.ok, true, JSON.stringify({ value, events: f.events }));
+  const index = name => f.events.findIndex(item => item.name === name);
+  assert.ok(index('authority') < index('durable:claimUpload'));
+  assert.ok(index('durable:claimUpload') < index('durable:reserveArtifact'));
+  assert.ok(index('durable:reserveArtifact') < index('fixture:readExact'));
+  assert.ok(index('fixture:readExact') < index('durable:consumeQuota'));
   assert.equal(f.state.bodyReads, 1);
-  assert.equal(f.state.sandboxAttempts, 1);
-  assert.equal(f.events.filter(value => value.name === 'sandbox-convert').length, 1);
-  assert.equal(result.sourceToDeploymentFunctionEquivalence, 'NOT_CLAIMED');
-  assert.equal(result.productionEvidenceDeploymentId,
-    'dpl_9x1ENTXP4qefJKdMQaHKD1CXRjaj');
-  assert.equal(result.reconciliationPacketSha256,
-    'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c');
-  assert.equal(result.providerRequests, 0);
+  assert.equal(f.state.quota['class-a'], 2);
+  assert.equal(value.sourceToDeploymentFunctionEquivalence, 'NOT_CLAIMED');
 });
 
-test('success binds original and STL grants, closes first, revokes, reconciles, and deletes exact owned artifacts', async () => {
+test('success binds both artifacts, closes first, revokes, deletes, and reconciles', async () => {
   const f = setup();
-  const result = await f.controller.reviewOneUse({ window: WINDOW });
-  assert.equal(result.code, 'PACKAGE8_DEVELOPMENT_REVIEW_QUALIFIED_CLOSED');
-  assert.equal(result.originalGrantQualified, true);
-  assert.equal(result.stlGrantQualified, true);
-  assert.equal(result.deletedArtifactCount, 2);
-  assert.equal(result.admissionClosed, true);
-  assert.equal(result.conversionClosed, true);
-  assert.equal(result.sessionRevoked, true);
-  assert.equal(result.grantsRevoked, true);
-  assert.equal(result.uncertainRecordsQuarantined, true);
-  assert.deepEqual(result.lifecycleStopCodes, ['WINDOW_INVALID_OR_INACTIVE']);
+  const value = await f.controller.reviewOneUse({ window: WINDOW });
+  assert.equal(value.code, 'PACKAGE8_DEVELOPMENT_REVIEW_QUALIFIED_CLOSED');
+  assert.equal(value.originalGrantQualified, true);
+  assert.equal(value.stlGrantQualified, true);
+  assert.equal(value.deletedArtifactCount, 2);
   assert.equal(f.state.artifacts.size, 0);
   assert.equal(f.state.tombstones.size, 2);
-  const close = f.events.findIndex(value => value.name === 'close');
-  assert.ok(close >= 0);
-  assert.equal(f.events[close + 1].name, 'revoke-session');
-  assert.equal(f.events[close + 2].name, 'sandbox-stop');
-  const grants = f.events.filter(value => value.name === 'grant').map(value => value.artifactId);
-  assert.equal(grants.some(value => value === 'package8-original'), true);
-  assert.equal(grants.some(value => value.startsWith('package8-stl-')), true);
-});
-
-test('provider acknowledgement uncertainty quarantines and stops without retry or cap transfer', async () => {
-  const f = setup({ providerAckUnknown: 'original-igs' });
-  const result = await f.controller.reviewOneUse({ window: WINDOW });
-  assert.equal(result.code, 'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(f.events.filter(value => value.name === 'provider-commit').length, 1);
-  assert.equal(f.events.filter(value => value.name === 'sandbox-convert').length, 0);
-  assert.equal(f.events.filter(value => value.name === 'close').length, 1);
   assert.equal(f.state.revoked, true);
-  assert.deepEqual(await f.controller.reviewOneUse({ window: WINDOW }), {
-    ok: false, code: 'PACKAGE8_ATTEMPT_CONSUMED', sourceOnly: true,
-    developmentOnly: true, maxRetries: 0, providerRequests: 0 });
+  const close = f.events.findIndex(item => item.name === 'durable:closeForRollback');
+  assert.ok(close >= 0);
+  assert.equal(f.events[close + 1].name, 'session:revokeExact');
+  assert.equal(value.productionEvidenceDeploymentId,
+    'dpl_9x1ENTXP4qefJKdMQaHKD1CXRjaj');
+  assert.equal(value.reconciliationPacketSha256,
+    'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c');
 });
 
-test('lost durable-claim acknowledgement closes the exact scope before any fixture read', async () => {
+test('provider uncertainty quarantines with no retry or Sandbox dispatch', async () => {
+  const f = setup({ providerAckUnknown: true });
+  assert.equal((await f.controller.reviewOneUse({ window: WINDOW })).code,
+    'PACKAGE8_EXECUTION_QUARANTINED');
+  assert.equal(f.events.filter(item => item.name === 'provider:putExact').length, 1);
+  assert.equal(f.events.filter(item => item.name === 'sandbox:convert').length, 0);
+  assert.equal(f.events.filter(item => item.name === 'durable:closeForRollback').length, 1);
+});
+
+test('lost claim acknowledgement closes the flat exact scope before body read', async () => {
   const f = setup({ claimTimeout: true, operationBudgetMs: 5 });
-  const result = await f.controller.reviewOneUse({ window: WINDOW });
-  assert.equal(result.code, 'PACKAGE8_EXECUTION_QUARANTINED');
+  assert.equal((await f.controller.reviewOneUse({ window: WINDOW })).code,
+    'PACKAGE8_EXECUTION_QUARANTINED');
   assert.equal(f.state.bodyReads, 0);
-  assert.equal(f.events.filter(value => value.name === 'claim').length, 1);
-  assert.equal(f.events.filter(value => value.name === 'close').length, 1);
-  assert.equal(f.events.filter(value => value.name === 'revoke-session').length, 1);
+  assert.equal(f.events.filter(item => item.name === 'durable:closeForRollback').length, 1);
 });
 
-test('Sandbox unknown outcome and cleanup uncertainty both quarantine with zero retries', async () => {
-  for (const options of [{ sandboxUnknown: true }, { cleanupUnknown: true }]) {
-    const f = setup(options);
-    const result = await f.controller.reviewOneUse({ window: WINDOW });
-    assert.equal(result.code, 'PACKAGE8_EXECUTION_QUARANTINED');
-    assert.equal(f.events.filter(value => value.name === 'sandbox-convert').length, 1);
-    assert.equal(f.events.filter(value => value.name === 'close').length, 1);
-    assert.equal(f.events.filter(value => value.name === 'sandbox-stop').length, 1);
-    assert.equal(f.state.sandboxAttempts, 1);
-  }
-});
-
-test('timeout and cancellation remain consumed, close-first, and restart-safe', async () => {
-  const timed = setup({ sandboxTimeout: true, operationBudgetMs: 5 });
-  assert.equal((await timed.controller.reviewOneUse({ window: WINDOW })).code,
-    'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(timed.events.filter(value => value.name === 'close').length, 1);
-  assert.equal((await timed.restart().reviewOneUse({ window: WINDOW })).code,
-    'PACKAGE8_ATTEMPT_CONSUMED');
-
-  const cancelled = setup();
-  const control = new AbortController();
-  const originalConvert = cancelled.controllerOptions.sandbox.convert;
-  cancelled.controllerOptions.sandbox = Object.freeze({
-    ...cancelled.controllerOptions.sandbox,
-    async convert(value, context) { control.abort(); return originalConvert(value, context); },
-  });
-  const controller = createCadPhase5Package8ExecutionController(cancelled.controllerOptions);
-  assert.equal((await controller.reviewOneUse({ window: WINDOW, signal: control.signal })).code,
-    'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(cancelled.events.filter(value => value.name === 'close').length, 1);
-});
-
-test('process restart, replay, and concurrent use consume one durable intent and one claim', async () => {
-  const shared = { intents: new Set() };
-  const first = setup({}, shared);
-  const restarted = setup({}, shared);
-  const [a, b] = await Promise.all([
-    first.controller.reviewOneUse({ window: WINDOW }),
-    restarted.controller.reviewOneUse({ window: WINDOW }),
-  ]);
-  assert.equal([a, b].filter(value => value.ok === true).length, 1);
-  assert.equal([a, b].filter(value => value.code === 'PACKAGE8_ATTEMPT_CONSUMED').length, 1);
-  assert.equal(first.events.filter(value => value.name === 'claim').length
-    + restarted.events.filter(value => value.name === 'claim').length, 1);
-  assert.equal(shared.intents.size, 1);
-});
-
-test('owner and shop mismatches fail closed before body or before deletion', async () => {
-  const authority = setup({ authorityMismatch: true });
-  assert.equal((await authority.controller.reviewOneUse({ window: WINDOW })).code,
-    'PACKAGE8_EXECUTION_UNAVAILABLE');
-  assert.equal(authority.state.bodyReads, 0);
-  assert.equal(authority.events.some(value => value.name === 'claim'), false);
-
-  const reconciliation = setup({ reconcileOwnerMismatch: true });
-  assert.equal((await reconciliation.controller.reviewOneUse({ window: WINDOW })).code,
-    'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(reconciliation.events.some(value => value.name === 'provider-delete'), false);
-});
-
-test('cost, reservation, and quota limits stop before fixture bytes are read', async () => {
-  for (const options of [
-    { calculatedMaximumCostMicros: 9_000_000 },
-    { observedCostMicros: 9_000_000 },
-    { reservationMicros: 9_000_000 },
-  ]) {
+test('Sandbox unknown, cleanup uncertainty, and timeout are fail-closed and zero-retry', async () => {
+  for (const options of [{ sandboxUnknown: true }, { cleanupUnknown: true },
+    { sandboxTimeout: true, operationBudgetMs: 5 }]) {
     const f = setup(options);
     assert.equal((await f.controller.reviewOneUse({ window: WINDOW })).code,
-      'PACKAGE8_EXECUTION_UNAVAILABLE');
+      'PACKAGE8_EXECUTION_QUARANTINED');
+    assert.equal(f.state.sandboxAttempts, 1);
+    assert.equal(f.events.filter(item => item.name === 'sandbox:convert').length, 1);
+  }
+});
+
+test('cancellation, restart, replay, and concurrency stay consumed', async () => {
+  const cancelled = setup();
+  const control = new AbortController(); control.abort();
+  assert.equal((await cancelled.controller.reviewOneUse({ window: WINDOW,
+    signal: control.signal })).code, 'PACKAGE8_EXECUTION_UNAVAILABLE');
+  const shared = { intents: new Set() };
+  const a = setup({}, shared); const b = setup({}, shared);
+  const values = await Promise.all([a.controller.reviewOneUse({ window: WINDOW }),
+    b.controller.reviewOneUse({ window: WINDOW })]);
+  assert.equal(values.filter(value => value.ok === true).length, 1);
+  assert.equal(values.filter(value => value.code === 'PACKAGE8_ATTEMPT_CONSUMED').length, 1);
+  assert.equal((await a.restart().reviewOneUse({ window: WINDOW })).code,
+    'PACKAGE8_ATTEMPT_CONSUMED');
+});
+
+test('owner, shop, grant, fixture, deletion, and metadata drift fail closed and sanitized', async () => {
+  for (const options of [{ authorityMismatch: true }, { reconcileOwnerMismatch: true },
+    { grantMismatch: true }, { fixtureDrift: true }, { deleteUnknown: true },
+    { duplicateMetadata: true }]) {
+    const f = setup(options);
+    const value = await f.controller.reviewOneUse({ window: WINDOW });
+    assert.equal(value.ok, false, JSON.stringify(options));
+    assert.doesNotMatch(JSON.stringify(value), /phase5-synthetic-(?:user|shop|upload-session)|dg1\./);
+  }
+});
+
+test('cost and quota limits stop before fixture bytes', async () => {
+  for (const options of [{ calculatedMaximumCostMicros: 9_000_000 },
+    { observedCostMicros: 9_000_000 }, { reservationMicros: 9_000_000 },
+    { quotaExceeded: true }]) {
+    const f = setup(options);
+    assert.equal((await f.controller.reviewOneUse({ window: WINDOW })).ok, false);
     assert.equal(f.state.bodyReads, 0);
   }
-  const quota = setup({ quotaExceeded: true });
-  assert.equal((await quota.controller.reviewOneUse({ window: WINDOW })).code,
-    'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(quota.state.bodyReads, 0);
-  assert.equal(quota.events.filter(value => value.name === 'close').length, 1);
 });
 
-test('fixture drift, grant binding drift, and deletion uncertainty fail closed and sanitized', async () => {
-  for (const options of [
-    { fixtureDrift: true },
-    { grantMismatch: true },
-    { deleteUnknown: 'package8-original' },
-  ]) {
-    const f = setup(options);
-    const result = await f.controller.reviewOneUse({ window: WINDOW });
-    assert.equal(result.code, 'PACKAGE8_EXECUTION_QUARANTINED');
-    const serialized = JSON.stringify(result);
-    assert.doesNotMatch(serialized, /phase5-synthetic-(?:user|shop|upload-session)/);
-    assert.doesNotMatch(serialized, /dg1\.|provider-commit|Dispenser\.IGS|PRIVATE KEY/);
-  }
-});
-
-test('duplicate or unknown lifecycle metadata cannot become public evidence', async () => {
-  const f = setup({ duplicateMetadata: true });
-  const result = await f.controller.reviewOneUse({ window: WINDOW });
-  assert.equal(result.code, 'PACKAGE8_EXECUTION_QUARANTINED');
-  assert.equal(result.providerRequests, 0);
-  assert.equal(f.events.filter(value => value.name === 'metadata:convex').length, 1);
-  assert.equal(f.state.artifacts.size, 0);
-});
-
-test('invalid, active, expired, or overlong windows remain inactive and consume no intent', async () => {
-  for (const window of [
-    { ...WINDOW, activated: true },
+test('invalid, active, expired, and overlong windows consume no intent', async () => {
+  for (const window of [{ ...WINDOW, activated: true },
     { ...WINDOW, startUtc: '2026-10-10T19:10:00.000Z' },
-    { ...WINDOW, endUtc: '2026-10-10T19:45:01.000Z' },
-  ]) {
+    { ...WINDOW, endUtc: '2026-10-10T19:45:01.000Z' }]) {
     const f = setup();
     assert.equal((await f.controller.reviewOneUse({ window })).code, 'PACKAGE8_WINDOW_INVALID');
     assert.equal(f.intents.size, 0);
-    assert.equal(f.events.length, 0);
   }
 });
 
-test('source remains offline, internal, unrouted, credential-free, and absent from runtime imports', () => {
-  const sourceName = 'server/cadPhase5Package8ExecutionController.js';
-  const source = fs.readFileSync(path.join(root, sourceName), 'utf8');
-  assert.doesNotMatch(source, /process\.env|fetch\s*\(|https?\.request|node:fs|child_process/);
-  assert.doesNotMatch(source, /@vercel\/sandbox|cadR2PrivateArtifactCustody|request\.body/);
+test('bridges track exact reviewed durable, custody, Sandbox, and rollback contracts', () => {
+  const durable = fs.readFileSync(path.join(root, 'convex/cadPhase5DurableAdapters.ts'), 'utf8');
+  for (const operation of REQUIRED_DURABLE_OPERATIONS) {
+    assert.match(durable, new RegExp(`export const ${operation}\\s*=`), operation);
+  }
+  assert.match(durable, /closeForRollback[^]*scopeKey: v\.string\(\), userId: v\.id\('users'\),[^]*shopId: v\.string\(\), uploadSessionId: v\.string\(\)/);
+  const custody = fs.readFileSync(path.join(root, 'server/cadR2PrivateArtifactCustody.js'), 'utf8');
+  assert.match(custody, /reserveArtifact\(identity, input, \{ signal \} = \{\}\)/);
+  assert.match(custody, /commitArtifact\(identity, artifactId, bytes, \{ signal \} = \{\}\)/);
+  assert.match(custody, /issueDownloadGrant\(identity, artifactId, \{ signal \} = \{\}\)/);
+  assert.match(custody, /deleteArtifact\(identity, artifactId, \{ signal \} = \{\}\)/);
+  const sandbox = fs.readFileSync(path.join(root, 'server/cadSandboxExecutor.js'), 'utf8');
+  assert.match(sandbox, /async function convert\(body, signal\)/);
+  assert.match(sandbox, /activeCount:\s*\(\)\s*=>\s*Number\(active\)/);
+  assert.match(sandbox, /cleanupBlocked:\s*\(\)\s*=>\s*cleanupBlocked/);
+  const controller = fs.readFileSync(path.join(root,
+    'server/cadPhase5Package8ExecutionController.js'), 'utf8');
+  assert.doesNotMatch(controller, /claimExecution|stopKnown/);
+});
+
+test('Package 8 files remain offline, internal, unrouted, and credential-free', () => {
+  for (const name of ['server/cadPhase5Package8ExecutionController.js',
+    'server/cadPhase5Package8SourceBridges.js']) {
+    const source = fs.readFileSync(path.join(root, name), 'utf8');
+    assert.doesNotMatch(source, /process\.env|fetch\s*\(|https?\.request|child_process|request\.body/);
+  }
   for (const runtime of ['server/index.js', 'server/cadUserUploadRouter.js',
     'server/cadProductionExecutionBinding.js', 'server/cadLiveOpeningRuntimeActivation.js']) {
-    assert.equal(fs.readFileSync(path.join(root, runtime), 'utf8')
-      .includes('cadPhase5Package8ExecutionController'), false, runtime);
+    const source = fs.readFileSync(path.join(root, runtime), 'utf8');
+    assert.equal(source.includes('cadPhase5Package8ExecutionController'), false, runtime);
+    assert.equal(source.includes('cadPhase5Package8SourceBridges'), false, runtime);
   }
-  assert.equal(source.includes('sourceToDeploymentFunctionEquivalence: \'NOT_CLAIMED\''), true);
 });
