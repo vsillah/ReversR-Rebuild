@@ -8,8 +8,18 @@ import { v } from 'convex/values';
 import { custodyArtifact } from './schema';
 
 export const PACKAGE7_BINDING = Object.freeze({
-  gateSha256: '7668624b8149c2e7943152aaa1222618460caac79d1f656a727895c9ac1c28a9',
-  deployment: 'majestic-alligator-31',
+  gatePath: 'docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md',
+  gateSha256: '8e119efa39024343e3b0591d4a693e99caafd6d5a1101dc005cb82c31931b2ed',
+  qualificationMode: 'project-owned-synthetic-private-path',
+  maxSessions: 1,
+  maxFiles: 1,
+  maxAttempts: 1,
+  maxRetries: 0,
+  budgetMicros: 9_000_000,
+  proprietaryFilesAuthorized: false,
+  customerDataAuthorized: false,
+  package8Authorized: false,
+  verifiedInventoryDeployment: 'majestic-alligator-31',
   verifiedFunctionCount: 37,
   sourceOnly: true,
   runtimeActivationAuthorized: false,
