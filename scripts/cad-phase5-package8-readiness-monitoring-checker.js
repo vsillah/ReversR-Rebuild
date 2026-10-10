@@ -119,6 +119,8 @@ function checkPacket(packet, rootPath = root) {
     'cadPhase5Package8SourceBridges.js',
     'cadPhase5Package8ConvexDurableInvoker.js',
     'cadPhase5Package8DevelopmentQualificationBinding.js',
+    'cadPhase5Package8OneUseAdapters.js',
+    'cadPhase5Package8OneUseCoordinator.js',
   ]);
   const controllerSource = fs.readFileSync(path.join(rootPath, 'server',
     'cadPhase5Package8ExecutionController.js'), 'utf8');

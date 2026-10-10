@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_ONE_USE_DEVELOPMENT_EXECUTOR_CLOSURE",
+  "status": "SOURCE_ONLY_UNMOUNTED_DISABLED_BY_DEFAULT",
+  "scope": "ONE_USE_DEVELOPMENT_COORDINATOR_SOURCE_CLOSURE",
+  "baseline": {
+    "mergedMainCommit": "228320e174d23cbe9b43d9c192c2216733f4c477",
+    "mergedMainTree": "cb22fc27d6bc741f2abc61ed0e456d66e2bfc336",
+    "productionEvidenceDeploymentId": "dpl_5AAN3zH7vezsF7So7s93jxz7oVCY",
+    "finalBindingPacketSha256": "979ddfcc8ff378e50bd451365982b31fb232b21033d78d13f91f403829f4b012",
+    "postMergeRebindPacketSha256": "882e94de4d42c20934eb69c02b35eadb2c3fee24955bafa9f0c66f589d315cc3",
+    "reconciliationPacketSha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c"
+  },
+  "sourceBindings": {
+    "developmentQualificationBinding": {
+      "path": "server/cadPhase5Package8DevelopmentQualificationBinding.js",
+      "sha256": "e7280b9763aee71fbfd823df2dd67c33e94d06201013c9d9ad85d8a9c4752229"
+    },
+    "oneUseAdapters": {
+      "path": "server/cadPhase5Package8OneUseAdapters.js",
+      "sha256": "8272fb06b62f1366e850ec8f0e9ba3fe92e8b643d4b283c2c7dbc3b8f2daa1a8"
+    },
+    "oneUseCoordinator": {
+      "path": "server/cadPhase5Package8OneUseCoordinator.js",
+      "sha256": "20b17af2da105518d247dbef785534cd9589385ac21287bd1dde631219da1b2d"
+    },
+    "offlineContractTests": {
+      "path": "scripts/cad-phase5-package8-development-qualification-binding.test.js",
+      "sha256": "f65b69afd5a004f45691cbd3548a45377ec136d1da64ede27edd5b4968f544e9"
+    },
+    "immutableBaselineChecker": {
+      "path": "scripts/cad-phase5-package8-development-qualification-binding-checker.js",
+      "sha256": "1227865862f09a777bf8e7f6d55772558447a545f45425c37341579b1ff5300d"
+    },
+    "lifecycleImportChecker": {
+      "path": "scripts/cad-phase5-package8-readiness-monitoring-checker.js",
+      "sha256": "4f42d666ae02f1e853e653dea716dace72c0452eae5ce9641ca07f0be51b1c77"
+    },
+    "sourceAuditAllowlist": {
+      "path": "scripts/cad-convex-source-audit.js",
+      "sha256": "2c00eeb1f6c828a6708e386ca13a7f74b4200db76d3081a347a43a725742ccb1"
+    }
+  },
+  "coordinatorContract": {
+    "actualReviewedFactoriesComposed": true,
+    "offlineSyntheticSubstitution": false,
+    "approvalBoundOwnerAndSession": true,
+    "cleanDescendantAncestryReceiptRequired": true,
+    "exactDevelopmentDeploymentReceiptRequired": true,
+    "runtimeRouteMounted": false,
+    "runtimeActivationAllowed": false,
+    "sessionIssuanceEnabled": false,
+    "requestBodyAdmissionAuthorized": false,
+    "automaticRetries": 0,
+    "closeFirstOrder": [
+      "convex.closeForRollback",
+      "session.revokeSession",
+      "sandbox.cleanupConfirmed",
+      "convex.reconcile",
+      "grant.revokeReconcile",
+      "artifact.quarantineReconcile",
+      "r2.deleteExact",
+      "convex.tombstoneReconcile"
+    ]
+  },
+  "oneUseLimits": {
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumWindowMinutes": 15,
+    "maximumCostUsdExclusive": 9,
+    "reservationMicros": 8999999,
+    "projectOwnedNonproprietarySyntheticFixtureOnly": true,
+    "ownerShopIsolationRequired": true
+  },
+  "credentialAndEnvironmentBoundary": {
+    "credentialReferences": [
+      "reversr-package8-public-fixture-dev-preview-v2"
+    ],
+    "environmentVariableReferences": [
+      "CAD_R2_ACCESS_KEY_ID",
+      "CAD_R2_SECRET_ACCESS_KEY",
+      "VERCEL_OIDC_TOKEN"
+    ],
+    "valuesReadByThisRound": false,
+    "httpRouteAdded": false
+  },
+  "offlineValidationCoverage": [
+    "MISSING_OR_STALE_AUTHORITY",
+    "SOURCE_OR_DEPLOYMENT_DRIFT",
+    "REPLAY_OR_RESTART",
+    "PROVIDER_ACK_UNCERTAINTY",
+    "QUARANTINE_AND_REVOCATION",
+    "EXACT_DELETION_AND_TOMBSTONE_RECONCILIATION",
+    "SANDBOX_CLEANUP_UNCERTAINTY",
+    "COST_BOUNDARY",
+    "SANITIZED_EVIDENCE"
+  ],
+  "actionsPerformedByThisRound": {
+    "providerRequests": 0,
+    "environmentValuesRead": 0,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "liveInvocations": 0,
+    "runtimeActivations": 0,
+    "sessionIssuances": 0,
+    "requestBodyAdmissions": 0,
+    "privateOrCustomerCadReads": 0,
+    "r2Objects": 0,
+    "sandboxJobs": 0,
+    "downloads": 0,
+    "payments": 0,
+    "retries": 0
+  },
+  "remainingGate": {
+    "type": "DRAFT_PR_SOURCE_REVIEW_THEN_EXACT_RUNTIME_BINDING",
+    "mergeAuthorized": false,
+    "deploymentAuthorized": false,
+    "runtimeActivationAuthorized": false,
+    "oneUseApprovalArtifactIssued": false,
+    "liveQualificationAuthorized": false
+  }
+}
