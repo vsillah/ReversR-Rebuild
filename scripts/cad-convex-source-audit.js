@@ -666,6 +666,8 @@ const files = [
   'scripts/cad-phase5-public-fixture-qualification-runner.test.js',
   'server/cadPhase5SyntheticPrivatePathQualification.js',
   'scripts/cad-phase5-synthetic-private-path-qualification.test.js',
+  'server/cadPhase5Package8ExecutionController.js',
+  'scripts/cad-phase5-package8-execution-controller.test.js',
   'docs/cad-phase5-private-igs-activation-plan.md',
   'docs/cad-phase5-package7-synthetic-private-path-authorization-gate.md',
   'offline/cad-convex/backend.d.ts', 'scripts/helpers/cad-convex-source-loader.js',

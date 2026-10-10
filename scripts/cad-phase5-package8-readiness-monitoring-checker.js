@@ -113,8 +113,20 @@ function checkPacket(packet, rootPath = root) {
       || monitor.providerReadsEnabled !== false || monitor.providerWritesEnabled !== false
       || monitor.dispatchEnabled !== false) throw Error('monitor wiring');
 
+  const reviewConsumers = new Set([
+    'cadPhase5Package8LifecycleMonitor.js',
+    'cadPhase5Package8ExecutionController.js',
+  ]);
+  const controllerSource = fs.readFileSync(path.join(rootPath, 'server',
+    'cadPhase5Package8ExecutionController.js'), 'utf8');
+  if (!/configured:\s*false/.test(controllerSource)
+      || !/runtimeActivationAllowed:\s*false/.test(controllerSource)
+      || !/providerDispatchEnabled:\s*false/.test(controllerSource)
+      || /process\.env|fetch\s*\(|@vercel\/sandbox|cadR2PrivateArtifactCustody/.test(controllerSource)) {
+    throw Error('review controller wiring');
+  }
   const serverFiles = fs.readdirSync(path.join(rootPath, 'server'))
-    .filter(name => name.endsWith('.js') && name !== 'cadPhase5Package8LifecycleMonitor.js');
+    .filter(name => name.endsWith('.js') && !reviewConsumers.has(name));
   if (serverFiles.some(name => fs.readFileSync(path.join(rootPath, 'server', name), 'utf8')
     .includes('cadPhase5Package8LifecycleMonitor'))) throw Error('runtime import');
 
