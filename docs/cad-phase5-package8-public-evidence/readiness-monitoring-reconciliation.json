@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_READINESS_MONITORING_RECONCILIATION",
+  "status": "SOURCE_RECONCILED_EXECUTION_CLOSED",
+  "scope": "SOURCE_ONLY_METADATA_MONITORING_AND_STOP_RULES",
+  "recordedAtUtc": "2026-10-10T18:19:22Z",
+  "source": {
+    "repository": "vsillah/ReversR-Rebuild",
+    "reportedMergedMainCommit": "83140c02ebcf29f287c4d8c023e5dc16ce75f772",
+    "reportedMergedMainObjectAvailableOffline": false,
+    "reviewedSourceTree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "localExecutionHead": "ae17c76ab47105632cbb7ec4fa6be9925f23fba3",
+    "localExecutionTree": "3508853a7cf470fc73e3a35a8dec7f8867c6f079",
+    "commitAncestryClaimed": false,
+    "treeIdentityVerified": true,
+    "credentialRotationPacketSha256": "5e41c1fa25f271a117103ab528c2ee298ffe0be1c723ba568e942acd5d67762a",
+    "remainingBindingInventorySha256": "6810835298ce09e4b2f685f938c3bf4cfa42809a39741cbd0331ce9b2287bcdb",
+    "r2RefreshPacketSha256": "2cf6942916649c9280475e55c75d86a08ccf531952ea4fd55c5df764e6588f12",
+    "splitProofPacketSha256": "51bd69a71349275c631c16eb4849303657fa9c5b3d1dbdd9b7161bd4cd6c77b1",
+    "sandboxPreflightReceiptSha256": "430ca8a85dc3f14fc2ec10e087ae55911ab6ad6af31d6b188b69675794ad1d4a",
+    "restrictedCredentialRotationReceiptSha256": "bcb90102c74058e841f2eaadfce5e2268a28a1d6c272eba66519812fa3592dfb",
+    "monitorSource": {
+      "path": "server/cadPhase5Package8LifecycleMonitor.js",
+      "sha256": "e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e"
+    },
+    "monitorTest": {
+      "path": "scripts/cad-phase5-package8-lifecycle-monitor.test.js",
+      "sha256": "12f38a508c94a8840419807786d5e519d3626e49824b9ef3d7fe2d560b8f96b2"
+    }
+  },
+  "completedBindings": {
+    "convex": {
+      "teamSlug": "vambah-sillah",
+      "projectSlug": "reversr-cad-auth-dev",
+      "deploymentName": "majestic-alligator-31",
+      "deploymentIdentityVerified": true,
+      "functionSchemaEquivalenceClaimed": false
+    },
+    "quota": {
+      "namespace": "phase5-synthetic-private-path-v1",
+      "maximumBytes": 8388608,
+      "maximumObjects": 12,
+      "maximumClassAOperations": 1000,
+      "maximumClassBOperations": 1000,
+      "maximumDeleteOperations": 1000,
+      "maximumCostUsdExclusive": 9
+    },
+    "sandbox": {
+      "preflightPassed": true,
+      "runtime": "node24",
+      "region": "iad1",
+      "vcpus": 1,
+      "memoryMbMaximum": 2048,
+      "lifetimeMsMaximum": 60000,
+      "networkPolicy": "deny-all",
+      "persistent": false,
+      "exposedPorts": 0,
+      "snapshotAllowed": false,
+      "terminalCleanupVerified": true,
+      "maximumCalculatedCostUsd": 0.00770450625
+    },
+    "r2CredentialCustody": {
+      "credentialName": "reversr-package8-public-fixture-dev-preview-v2",
+      "custodian": "Vambah Sillah",
+      "bucket": "reversr-cad-package8-public-fixture-us",
+      "jurisdiction": "US",
+      "permission": "OBJECT_READ_WRITE",
+      "lifetime": "24_HOURS",
+      "credentialValuesRecorded": false
+    },
+    "vercelServerBindings": {
+      "project": "reversr",
+      "variableNames": [
+        "CAD_R2_ACCESS_KEY_ID",
+        "CAD_R2_SECRET_ACCESS_KEY"
+      ],
+      "environments": [
+        "preview",
+        "development"
+      ],
+      "productionBinding": false,
+      "deploymentTriggered": false
+    }
+  },
+  "processorBoundary": {
+    "acceptedClassification": "RESTRICTED_SYNTHETIC_TEST_ONLY",
+    "fixtureId": "reversr-phase5-synthetic-private-line-v1",
+    "fixtureOwner": "ReversR test project",
+    "projectOwned": true,
+    "nonproprietary": true,
+    "customerData": false,
+    "proprietaryCadQualified": false,
+    "customerDataHandlingQualified": false,
+    "generalProductionReadinessQualified": false
+  },
+  "monitoringContract": {
+    "implementation": "UNWIRED_PURE_METADATA_POLICY",
+    "providerReadsEnabled": false,
+    "providerWritesEnabled": false,
+    "runtimeMonitoringEnabled": false,
+    "metadataSources": [
+      "supported Convex deployment identity and durable counts/status classifications",
+      "Cloudflare R2 bucket configuration, lifecycle, object and operation counts",
+      "Vercel Sandbox runtime, policy, status, cleanup and cost classifications"
+    ],
+    "restrictedEvidenceDestination": ".local/cad-phase5-package8/readiness-monitoring-reconciliation/",
+    "publicSafeEvidenceDestination": "docs/cad-phase5-package8-public-evidence/",
+    "externalAlertDeliveryConfigured": false,
+    "r2DataAccessLogsAvailable": false,
+    "r2DataAccessLogsEquivalenceClaimed": false,
+    "rawProviderOutputAllowed": false,
+    "sensitiveFieldsAllowed": false,
+    "maximumEvidenceAgeMs": 120000
+  },
+  "stopRules": [
+    "AUTHORITY_ORDER_VIOLATION",
+    "BUDGET_LIMIT_OR_UNKNOWN",
+    "CROSS_OWNER_ACCESS",
+    "EVIDENCE_PRIVACY_RISK",
+    "EVIDENCE_STALE",
+    "FIXTURE_OUT_OF_SCOPE",
+    "METADATA_SHAPE_UNKNOWN",
+    "R2_EXPOSURE_LIFECYCLE_OR_USAGE",
+    "RETRY_OR_ATTEMPT_LIMIT",
+    "SANDBOX_POLICY_OR_CLEANUP",
+    "SOURCE_OR_TARGET_DRIFT",
+    "STUCK_OR_UNCERTAIN_DURABLE_STATE",
+    "UNKNOWN_OUTCOME",
+    "WINDOW_INVALID_OR_INACTIVE"
+  ],
+  "closeFirstActions": [
+    "CLOSE_ADMISSION_AND_CONVERSION",
+    "REVOKE_EXACT_SESSION_AND_GRANTS",
+    "STOP_KNOWN_SANDBOX_COMPUTE",
+    "QUARANTINE_UNCERTAIN_RECORDS",
+    "DELETE_EXACT_SYNTHETIC_ARTIFACTS_ONLY",
+    "RECONCILE_DURABLE_AND_PROVIDER_METADATA_READ_ONLY",
+    "RUN_EMPTY_UNAUTHENTICATED_FAIL_CLOSED_SMOKE"
+  ],
+  "proposedWindow": {
+    "startUtc": "2026-10-10T20:00:00Z",
+    "endUtc": "2026-10-10T20:10:00Z",
+    "durationMinutes": 10,
+    "activated": false,
+    "freshAdmissionReviewRequired": true
+  },
+  "validation": {
+    "offlineSyntheticTests": 12,
+    "offlineSyntheticTestsPassed": 12,
+    "providerRequests": 0,
+    "credentialsOrEnvironmentValuesRead": false,
+    "rawResponsesPersisted": false,
+    "runtimeImportsAdded": 0,
+    "retries": 0
+  },
+  "authority": {
+    "package8QualificationExecutionAuthorized": false,
+    "routeMountAuthorized": false,
+    "sessionIssuanceAuthorized": false,
+    "requestBodyAdmissionAuthorized": false,
+    "storageDispatchAuthorized": false,
+    "conversionDispatchAuthorized": false,
+    "downloadRoutingAuthorized": false,
+    "providerConfigurationAuthorized": false,
+    "deploymentAuthorized": false,
+    "paymentAuthorized": false,
+    "externalMessagesAuthorized": false
+  },
+  "sourceOnlyBindingsRemaining": [],
+  "executionPrerequisites": [
+    "verify reported main commit object and clean descendant source after a fresh fetch",
+    "review and merge the source-only monitoring contract",
+    "revalidate exact target and credential lifetime before the inactive window is activated",
+    "obtain separate one-window qualification execution authority"
+  ],
+  "nextGate": {
+    "type": "SOURCE_RELEASE_REVIEW",
+    "activationAllowed": false,
+    "template": "Approve committing the reviewed Package 8 readiness reconciliation, disabled lifecycle monitor, offline tests, and public-safe evidence on a clean branch based on merged main 83140c02ebcf29f287c4d8c023e5dc16ce75f772, then push that branch and open a draft PR. Allow non-production checks only. No deployment, provider request, credentials, configuration change, runtime activation, request-body admission, CAD, storage, conversion, payment, merge, or external messages. Stop on main drift, failing checks, privacy risk, or unknown outcome."
+  }
+}
