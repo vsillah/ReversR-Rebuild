@@ -57,7 +57,7 @@ function expectedPacket(readSource=read) {
   return { schemaVersion:1, artifact:'controlled-upload-authority-continuity-source-v1',
     status:'SOURCE_CANDIDATE_INDEPENDENT_PROVENANCE_UNAVAILABLE', assertionLevel:'synthetic-source-only',
     predecessorCommit:'23b2c4bf8e404d9f20c86f4f4a39f76c8e82d539', productionBaseCommit:'b4a310f84186697c8cb2d751c21bf79265969cad',
-    predecessorPacketSha256:'009b9255f86f9988737109cda255f4e9e02e26655008d2557969bfdd7c85c5c3',
+    predecessorPacketSha256:'a616a5ac62557ac91223d1efd6ec905400ce83282d2e3c6e54a43503496ada04',
     hostQualified:false, bodyAdmissionAuthorized:false, liveReady:false, costs:0, providerCalls:0,
     runtimeEffects:0, internalHandlersEnabled:true, provenanceAvailable:false, realRegistrationInstalled:false,
     schemaChanged:false, controlledTables:7, historicalBaselineRewritten:false, fixtureCompatible:false,
