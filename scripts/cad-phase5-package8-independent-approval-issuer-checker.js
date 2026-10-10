@@ -38,6 +38,8 @@ function check(rootPath = root) {
   assert.equal(packet.ownershipBoundary.runtimeImportsIssuer, false);
   assert.equal(packet.ownershipBoundary.publicFunctionsExposed, 0);
   assert.equal(packet.ownershipBoundary.httpRoutesAdded, 0);
+  assert.equal(packet.durabilityAndRollback.atomicIssueReferenceAndCommitmentUniqueness, true);
+  assert.equal(packet.durabilityAndRollback.exactIssueReplayDistinguishedFromKeyConflict, true);
   assert.equal(packet.durabilityAndRollback.atomicOneUseConsumption, true);
   assert.equal(packet.durabilityAndRollback.replayRefused, true);
   assert.equal(packet.durabilityAndRollback.restartDurabilityBackedByConvexTable, true);
@@ -51,8 +53,8 @@ function check(rootPath = root) {
   assert.equal(packet.privacyBoundary.credentialOrEnvironmentValuesRead, false);
   assert.equal(packet.privacyBoundary.sanitizedEvidenceOnly, true);
   assert.ok(Object.values(packet.defaultState).every(value => value === false));
-  assert.equal(packet.offlineValidation.focusedSyntheticTests, 10);
-  assert.equal(packet.offlineValidation.focusedSyntheticTestsPassed, 10);
+  assert.equal(packet.offlineValidation.focusedSyntheticTests, 11);
+  assert.equal(packet.offlineValidation.focusedSyntheticTestsPassed, 11);
   assert.equal(packet.offlineValidation.typescriptPassed, true);
   assert.equal(packet.offlineValidation.localOnlyCodegenPassed, true);
   assert.ok(Object.values(packet.actionsPerformedByThisImplementation)
@@ -81,6 +83,7 @@ function check(rootPath = root) {
     assert.match(source, new RegExp(field));
   }
   assert.match(source, /independentRuntimeIssuerCustodyBound:\s*false/);
+  assert.match(source, /by_approvalCommitment/);
   assert.match(source, /cadPackage8ApprovalIssuances/);
   for (const operation of packet.durableOperations) {
     assert.match(source, new RegExp(`(?:export const|${operation}:)\\s*${operation}`));

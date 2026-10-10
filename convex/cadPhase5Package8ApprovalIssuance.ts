@@ -260,11 +260,20 @@ export const issue = internalMutation({
       || now - issuedAt > MAXIMUM_EVIDENCE_AGE_MS || now < start || now >= end) {
       return denied('PACKAGE8_APPROVAL_DENIED');
     }
-    const prior = await ctx.db.query('cadPackage8ApprovalIssuances')
+    const priorByReference = await ctx.db.query('cadPackage8ApprovalIssuances')
       .withIndex('by_issuanceReference', q => q.eq('issuanceReference', request.issuanceReference))
       .unique();
-    if (prior) return denied(prior.approvalCommitment === request.approvalCommitment
-      ? 'PACKAGE8_APPROVAL_REPLAYED' : 'PACKAGE8_APPROVAL_CONFLICT');
+    const priorByCommitment = await ctx.db.query('cadPackage8ApprovalIssuances')
+      .withIndex('by_approvalCommitment', q => q.eq('approvalCommitment', request.approvalCommitment))
+      .unique();
+    if (priorByReference || priorByCommitment) {
+      const exactReplay = priorByReference && priorByCommitment
+        && priorByReference._id === priorByCommitment._id
+        && priorByReference.issuanceReference === request.issuanceReference
+        && priorByReference.approvalCommitment === request.approvalCommitment;
+      return denied(exactReplay
+        ? 'PACKAGE8_APPROVAL_REPLAYED' : 'PACKAGE8_APPROVAL_CONFLICT');
+    }
     const issuanceReceipt = await expectedReceipt(request);
     await ctx.db.insert('cadPackage8ApprovalIssuances', {
       schemaVersion: 1, issuerPrincipalDigest, issuanceReference: request.issuanceReference,

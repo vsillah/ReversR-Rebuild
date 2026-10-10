@@ -77,7 +77,9 @@ function command(overrides = {}) {
 }
 
 function backend(options = {}) {
-  const state = options.state || { records: new Map(), calls: [], now: NOW };
+  const state = options.state || {
+    records: new Map(), recordsByCommitment: new Map(), calls: [], now: NOW,
+  };
   const base = (accepted, code, extra = {}) => ({ ...CLOSED, accepted, code, ...extra });
   const exact = (record, input) => record
     && record.issuerPrincipalDigest === input.issuerPrincipalDigest
@@ -96,18 +98,26 @@ function backend(options = {}) {
         || input.issuerPrincipalDigest !== input.command.issuerPrincipalDigest) {
         return base(false, 'PACKAGE8_APPROVAL_DENIED');
       }
-      const prior = state.records.get(input.command.request.issuanceReference);
-      if (prior) return base(false, prior.approvalCommitment
-        === input.command.request.approvalCommitment
-        ? 'PACKAGE8_APPROVAL_REPLAYED' : 'PACKAGE8_APPROVAL_CONFLICT');
+      const priorByReference = state.records.get(input.command.request.issuanceReference);
+      const priorByCommitment = state.recordsByCommitment.get(
+        input.command.request.approvalCommitment);
+      if (priorByReference || priorByCommitment) {
+        const exactReplay = priorByReference && priorByCommitment
+          && priorByReference === priorByCommitment
+          && priorByReference.approvalCommitment === input.command.request.approvalCommitment;
+        return base(false, exactReplay
+          ? 'PACKAGE8_APPROVAL_REPLAYED' : 'PACKAGE8_APPROVAL_CONFLICT');
+      }
       const receipt = verificationReceipt(input.command.request);
-      state.records.set(input.command.request.issuanceReference, {
+      const inserted = {
         issuerPrincipalDigest: input.issuerPrincipalDigest,
         approvalCommitment: input.command.request.approvalCommitment,
         request: structuredClone(input.command.request), receiptDigest: receipt.receiptDigest,
         status: 'active', generation: 1, issuedAtUtc: input.command.issuedAtUtc,
         expiresAt: Date.parse(input.command.request.authorityExpiresAtUtc),
-      });
+      };
+      state.records.set(input.command.request.issuanceReference, inserted);
+      state.recordsByCommitment.set(input.command.request.approvalCommitment, inserted);
       return base(true, 'PACKAGE8_APPROVAL_ISSUED', {
         issuanceReference: input.command.request.issuanceReference,
         approvalCommitment: input.command.request.approvalCommitment,
@@ -246,6 +256,44 @@ test('atomic one-use consume refuses concurrent replay and survives adapter rest
   const replay = await restarted.adapter.consumeExact(value.request);
   assert.equal(replay.ok, false); assert.equal(replay.code, 'PACKAGE8_APPROVAL_REPLAYED');
   assert.equal(f.state.records.get(value.request.issuanceReference).generation, 2);
+});
+
+test('atomic issue enforces reference and commitment uniqueness with replay distinction', async () => {
+  const exact = fixture();
+  const first = command();
+  assert.equal((await exact.adapter.issueExact(first)).ok, true);
+  const replay = await exact.adapter.issueExact(command());
+  assert.equal(replay.ok, false);
+  assert.equal(replay.code, 'PACKAGE8_APPROVAL_REPLAYED');
+
+  const referenceCollision = fixture();
+  assert.equal((await referenceCollision.adapter.issueExact(first)).ok, true);
+  const sameReference = command({ request: { approvalCommitment: hash('approval-artifact-2') } });
+  const referenceConflict = await referenceCollision.adapter.issueExact(sameReference);
+  assert.equal(referenceConflict.ok, false);
+  assert.equal(referenceConflict.code, 'PACKAGE8_APPROVAL_CONFLICT');
+
+  const commitmentCollision = fixture();
+  assert.equal((await commitmentCollision.adapter.issueExact(first)).ok, true);
+  const sameCommitment = command({ request: {
+    issuanceReference: 'package8-independent-issuance-2',
+  } });
+  const commitmentConflict = await commitmentCollision.adapter.issueExact(sameCommitment);
+  assert.equal(commitmentConflict.ok, false);
+  assert.equal(commitmentConflict.code, 'PACKAGE8_APPROVAL_CONFLICT');
+
+  const concurrent = fixture();
+  const [left, right] = await Promise.all([
+    concurrent.adapter.issueExact(first),
+    concurrent.adapter.issueExact(command({ request: {
+      issuanceReference: 'package8-independent-issuance-3',
+    } })),
+  ]);
+  assert.equal([left, right].filter(result => result.ok).length, 1);
+  assert.equal([left, right].filter(result => !result.ok
+    && result.code === 'PACKAGE8_APPROVAL_CONFLICT').length, 1);
+  assert.equal(concurrent.state.records.size, 1);
+  assert.equal(concurrent.state.recordsByCommitment.size, 1);
 });
 
 test('revocation and close are terminal, monotonic and replay-refusing', async () => {

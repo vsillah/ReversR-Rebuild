@@ -21,7 +21,7 @@
     },
     "internalDurableLedger": {
       "path": "convex/cadPhase5Package8ApprovalIssuance.ts",
-      "sha256": "45739504e94bd41977c78c69eb6d0ed04a36379e55fda539f96dc0d67b081acd"
+      "sha256": "a496cdde9214ff5bbf9e0dee64dce3cf20d567b85ce9facade97696bf81d21bb"
     },
     "convexSchema": {
       "path": "convex/schema.ts",
@@ -29,7 +29,7 @@
     },
     "offlineSyntheticTests": {
       "path": "scripts/cad-phase5-package8-independent-approval-issuer.test.js",
-      "sha256": "9d3fe1e58753216414a5e5337fe496866f8dad386cf76ebb3fa5c6804eb999a8"
+      "sha256": "fea176750dede1b746e13952fab6326f40a51af9e32e058f1bb8dc2098803852"
     },
     "generatedApiTypes": {
       "path": "convex/_generated/api.d.ts",
@@ -78,6 +78,8 @@
     "reservationMicros": 8999999
   },
   "durabilityAndRollback": {
+    "atomicIssueReferenceAndCommitmentUniqueness": true,
+    "exactIssueReplayDistinguishedFromKeyConflict": true,
     "atomicOneUseConsumption": true,
     "replayRefused": true,
     "restartDurabilityBackedByConvexTable": true,
@@ -116,8 +118,8 @@
     "approvalArtifactIssued": false
   },
   "offlineValidation": {
-    "focusedSyntheticTests": 10,
-    "focusedSyntheticTestsPassed": 10,
+    "focusedSyntheticTests": 11,
+    "focusedSyntheticTestsPassed": 11,
     "typescriptPassed": true,
     "localOnlyCodegenPassed": true,
     "localOnlyCodegenDeploymentAccess": false,

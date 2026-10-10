@@ -883,11 +883,11 @@
     "scripts/cad-phase5-package8-metadata-split-proof.test.js": "180863564ee5b1eb122cbe8ce8992a9fb75136bf58ea3ef0ea70660d6b78c670",
     "server/cadPhase5Package8ApprovalIssuanceContract.js": "e95f0ac2a0851b84446c33919d6b347b9ab22b1560cd1650c47d4e996d1f46a7",
     "server/cadPhase5Package8ApprovalIssuerAdapter.js": "a73ace1c863fcd1a07f0f126fc2881fe4a3b04f1cf294f60f2f20ce9d2b3a8c9",
-    "convex/cadPhase5Package8ApprovalIssuance.ts": "45739504e94bd41977c78c69eb6d0ed04a36379e55fda539f96dc0d67b081acd",
-    "scripts/cad-phase5-package8-independent-approval-issuer.test.js": "9d3fe1e58753216414a5e5337fe496866f8dad386cf76ebb3fa5c6804eb999a8",
-    "scripts/cad-phase5-package8-independent-approval-issuer-checker.js": "352ac439f0ac692839f52a99f4876d4baac4b5d7403ae0150e296aa58cb47605",
+    "convex/cadPhase5Package8ApprovalIssuance.ts": "a496cdde9214ff5bbf9e0dee64dce3cf20d567b85ce9facade97696bf81d21bb",
+    "scripts/cad-phase5-package8-independent-approval-issuer.test.js": "fea176750dede1b746e13952fab6326f40a51af9e32e058f1bb8dc2098803852",
+    "scripts/cad-phase5-package8-independent-approval-issuer-checker.js": "aa1363af01e237b08b19ab90374d3f9fb79949c8a93c403068a67727fbf01c51",
     "scripts/cad-phase5-package8-independent-approval-issuer-checker.test.js": "8d260346405ab199582c6896fef1600bf8b36e99b7f5ba7b1c252c9bc25fd440",
-    "docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json": "6800d8e67b86d3f15c128e3e183333063616a9d9f8b7a4f433e280ee4c1f0741",
+    "docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json": "f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb",
     "scripts/cad-convex-contract-manifest.js": "b835b827cdf164ee1b5c1f184d50864d677951dc7a17c6121d579be8b14940cb"
   }
 }
