@@ -29,6 +29,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
   const [state, dispatch] = useReducer(nextIgsImportState, initialState);
   const [dragActive, setDragActive] = useState(false);
   const [syntheticBusy, setSyntheticBusy] = useState(false);
+  const [sourceChoice, setSourceChoice] = useState<'file' | 'sample' | null>(null);
   const busy = state.status === 'queued' || state.status === 'processing';
   const sourceBusy = busy || syntheticBusy;
   const ready = state.status === 'ready';
@@ -40,12 +41,14 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
     runId.current += 1;
     selectedFile.current = null;
     selectedSource.current = null;
+    setSourceChoice(null);
     dispatch({ type: 'RESET' });
   };
 
   const processFile = async (file: File, source: 'file' | 'sample' = 'file') => {
     if (syntheticBusy) return;
     selectedSource.current = source;
+    setSourceChoice(source);
     const metadata = validateIgsFileMetadata(file);
     if (!metadata.ok) {
       selectedFile.current = null;
@@ -76,6 +79,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
 
   const useIncludedFile = async () => {
     selectedSource.current = 'sample';
+    setSourceChoice('sample');
     if (Platform.OS !== 'web' || typeof File === 'undefined') {
       dispatch({ type: 'ERROR', message: 'Local IGS import is available in the ReversR web app.' });
       return;
@@ -130,48 +134,59 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
       {!ready ? (
         <>
           {Platform.OS === 'web' ? (
-            <div
-              aria-label="Drop approved public IGS file here"
-              aria-disabled={sourceBusy}
-              data-testid="igs-import-drop-zone"
-              onDragEnter={event => { event.preventDefault(); setDragActive(true); }}
-              onDragOver={event => { event.preventDefault(); setDragActive(true); }}
-              onDragLeave={event => { event.preventDefault(); setDragActive(false); }}
-              onDrop={event => {
-                event.preventDefault();
-                setDragActive(false);
-                if (busy) return;
-                if (syntheticBusy) return;
-                const file = event.dataTransfer.files?.[0];
-                if (file) void processFile(file);
-              }}
-              style={{
-                minHeight: 156,
-                border: `1.5px dashed ${dragActive ? colors.primary : colors.border}`,
-                borderRadius: Radii.lg,
-                background: dragActive ? colors.primarySoft : colors.surface,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                gap: 8, padding: 20, textAlign: 'center', pointerEvents: sourceBusy ? 'none' : 'auto',
-              }}
-            >
-              <Ionicons name="cloud-upload-outline" size={30} color={colors.primary} />
-              <Text style={[Typography.bodyStrong, { color: colors.text }]}>Drop your approved public .igs file</Text>
-              <Text style={[Typography.caption, { color: colors.mutedText }]}>IGS file · IGES format · 2 MB maximum · verified locally</Text>
-              <TouchableOpacity disabled={sourceBusy} accessibilityRole="button" accessibilityLabel="Choose approved public IGS file" onPress={() => picker.current?.click()} style={[styles.button, styles.primaryButton, sourceBusy && styles.disabled]}>
-                <Text style={[Typography.bodyStrong, { color: colors.onPrimary }]}>Choose .igs file</Text>
-              </TouchableOpacity>
-            </div>
+            <View testID="igs-source-choice-panel" style={styles.sourceChoiceGrid}>
+              <div
+                aria-label="Drop approved public IGS file here"
+                aria-disabled={sourceBusy}
+                data-testid="igs-import-drop-zone"
+                data-selected={sourceChoice === 'file'}
+                onDragEnter={event => { event.preventDefault(); setDragActive(true); }}
+                onDragOver={event => { event.preventDefault(); setDragActive(true); }}
+                onDragLeave={event => { event.preventDefault(); setDragActive(false); }}
+                onDrop={event => {
+                  event.preventDefault();
+                  setDragActive(false);
+                  if (sourceBusy) return;
+                  const file = event.dataTransfer.files?.[0];
+                  if (file) void processFile(file);
+                }}
+                style={{
+                  minWidth: 0,
+                  flex: '1 1 220px',
+                  minHeight: 160,
+                  boxSizing: 'border-box',
+                  border: `1.5px dashed ${dragActive || sourceChoice === 'file' ? colors.primary : colors.border}`,
+                  borderRadius: Radii.lg,
+                  background: dragActive || sourceChoice === 'file' ? colors.primarySoft : colors.surface,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: 8, padding: 16, textAlign: 'center',
+                  opacity: sourceChoice === 'sample' ? 0.48 : sourceBusy && sourceChoice !== 'file' ? 0.55 : 1,
+                  pointerEvents: sourceBusy ? 'none' : 'auto',
+                }}
+              >
+                <Ionicons name={sourceChoice === 'file' ? 'checkmark-circle-outline' : 'cloud-upload-outline'} size={27} color={colors.primary} />
+                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Local .igs file</Text>
+                <Text style={[Typography.caption, { color: colors.mutedText }]}>IGS or IGES · 2 MB maximum</Text>
+                <TouchableOpacity testID="igs-source-local-action" disabled={sourceBusy} accessibilityRole="button" accessibilityLabel={sourceChoice === 'file' ? 'Selected local IGS file' : 'Choose local IGS file'} accessibilityState={{ disabled: sourceBusy }} aria-pressed={sourceChoice === 'file'} onPress={() => picker.current?.click()} style={[styles.chooseAction, sourceBusy && styles.disabled]}>
+                  <Text style={[Typography.label, { color: colors.primary }]}>{sourceChoice === 'file' ? 'Selected' : 'Choose'}</Text>
+                </TouchableOpacity>
+              </div>
+              <View
+                testID="igs-source-sample-tile"
+                style={[styles.sourceChoiceTile, sourceChoice === 'sample' && styles.sourceChoiceTileSelected, sourceChoice === 'file' && styles.sourceChoiceTileDeemphasized, sourceBusy && sourceChoice !== 'sample' && styles.disabled]}
+              >
+                <Ionicons name={sourceChoice === 'sample' ? 'checkmark-circle-outline' : 'globe-outline'} size={27} color={colors.primary} />
+                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Included public sample</Text>
+                <Text style={[Typography.caption, { color: colors.mutedText, textAlign: 'center' }]}>Synthetic cube · ready to review</Text>
+                <TouchableOpacity testID="igs-source-sample-action" disabled={sourceBusy} accessibilityRole="button" accessibilityLabel={sourceChoice === 'sample' ? 'Selected included public IGS sample' : 'Choose included public IGS sample'} accessibilityState={{ disabled: sourceBusy }} aria-pressed={sourceChoice === 'sample'} onPress={() => { void useIncludedFile(); }} style={[styles.chooseAction, sourceBusy && styles.disabled]}>
+                  <Text style={[Typography.label, { color: colors.primary }]}>{sourceChoice === 'sample' ? 'Selected' : 'Choose'}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           ) : (
             <View style={styles.blockedCard}><Text style={styles.body}>Local IGS import currently requires the ReversR web app.</Text></View>
           )}
-          <View accessibilityLabel="Or use the public sample" style={styles.orRow}>
-            <View style={styles.orLine} />
-            <Text style={[Typography.caption, { color: colors.mutedText }]}>OR</Text>
-            <View style={styles.orLine} />
-          </View>
-          <TouchableOpacity disabled={sourceBusy} testID="igs-import-use-sample" accessibilityRole="button" accessibilityLabel="No IGS file available? Try the public sample" onPress={() => { void useIncludedFile(); }} style={[styles.sampleLink, sourceBusy && styles.disabled]}>
-            <Text style={[Typography.bodyStrong, styles.sampleLinkText]}>{busy ? 'Verifying selected source locally…' : syntheticBusy ? 'Synthetic qualification is running…' : 'No .igs file available? Try the public sample'}</Text>
-          </TouchableOpacity>
+          {sourceBusy ? <Text accessibilityLiveRegion="polite" style={[Typography.caption, { color: colors.mutedText, textAlign: 'center' }]}>{busy ? state.message : 'Preparing synthetic fixture…'}</Text> : null}
           <SyntheticIgsQualificationPanel disabled={busy} onBusyChange={setSyntheticBusy} onReady={onReady} />
         </>
       ) : (
@@ -181,13 +196,13 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
         </View>
       )}
 
-      <View testID={`igs-import-status-${state.status}`} accessibilityLiveRegion="polite" style={[styles.statusCard, state.status === 'error' && styles.errorCard]}>
-        <Ionicons name={state.status === 'error' ? 'alert-circle-outline' : ready ? 'checkmark-circle-outline' : busy ? 'sync-outline' : 'shield-checkmark-outline'} size={20} color={state.status === 'error' ? colors.danger : ready ? colors.success : colors.primary} />
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={[Typography.label, { color: colors.text, textTransform: 'capitalize' }]}>{state.status === 'idle' ? 'Ready for a public file' : state.status}</Text>
-          <Text style={styles.body}>{state.message || 'No production upload or conversion service is called.'}</Text>
-        </View>
-      </View>
+      {state.status === 'error' ? <View testID="igs-import-status-error" accessibilityLiveRegion="polite" style={[styles.statusCard, styles.errorCard]}>
+          <Ionicons name="alert-circle-outline" size={20} color={colors.danger} />
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={[Typography.label, { color: colors.text }]}>Could not prepare source</Text>
+            <Text style={styles.body}>{state.message}</Text>
+          </View>
+        </View> : null}
 
       {state.status === 'error' ? (
         <View style={styles.actionRow}>
@@ -196,10 +211,6 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
         </View>
       ) : null}
 
-      <View style={styles.boundaryCard}>
-        <Ionicons name="lock-closed-outline" size={17} color={colors.warning} />
-        <Text style={[Typography.caption, { color: colors.mutedText, flex: 1, lineHeight: 19 }]}><Text style={{ color: colors.text, fontWeight: '700' }}>Non-production paths only.</Text> Live CAD upload remains disabled. No private files, production admission, cloud storage, or external conversion.</Text>
-      </View>
     </View>
   );
 }
@@ -212,15 +223,15 @@ const createStyles = (colors: ReturnType<typeof useAppTheme>['colors']) => Style
   button: { minHeight: 46, paddingHorizontal: Spacing.md, paddingVertical: 11, borderRadius: Radii.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
   primaryButton: { backgroundColor: colors.primary },
   secondaryButton: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
-  orRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  orLine: { flex: 1, height: 1, backgroundColor: colors.border },
-  sampleLink: { minHeight: 40, alignItems: 'center', justifyContent: 'center', paddingHorizontal: Spacing.sm },
-  sampleLinkText: { color: colors.primary, textDecorationLine: 'underline', textAlign: 'center' },
+  sourceChoiceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
+  sourceChoiceTile: { flexGrow: 1, flexBasis: 220, minWidth: 0, minHeight: 150, borderWidth: 1.5, borderStyle: 'dashed', borderColor: colors.border, borderRadius: Radii.lg, backgroundColor: colors.surface, padding: Spacing.md, alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
+  sourceChoiceTileSelected: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
+  sourceChoiceTileDeemphasized: { opacity: 0.48 },
+  chooseAction: { minHeight: 34, minWidth: 88, borderRadius: Radii.pill, borderWidth: 1, borderColor: colors.border, paddingHorizontal: Spacing.md, paddingVertical: 7, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.panel },
   disabled: { opacity: 0.55 },
   statusCard: { flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start', padding: Spacing.md, borderRadius: Radii.md, backgroundColor: colors.primarySoft },
   errorCard: { backgroundColor: colors.dangerSoft },
   readyCard: { gap: Spacing.md, padding: Spacing.md, borderRadius: Radii.lg, borderWidth: 1, borderColor: colors.success, backgroundColor: colors.successSoft },
   blockedCard: { padding: Spacing.md, borderRadius: Radii.md, backgroundColor: colors.warningSoft },
-  boundaryCard: { flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start', padding: Spacing.md, borderRadius: Radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
   actionRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
 });

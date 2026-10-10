@@ -144,6 +144,12 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
                   </View>
                 </View> : null}
               </View>
+              {fixture.qualificationProvenance?.kind === 'synthetic-igs-local' ? <CadDetails title="Qualification boundaries & roadmap" testID="cad-readiness-qualification-details">
+                <Text style={text}>This review used generated synthetic IGS data in one browser-only, single-attempt session. A result is returned only after volatile source cleanup completes.</Text>
+                <Text style={text}>Browser account and upload-session adapters are not production authentication. The deterministic cube adapter is not the real geometry converter.</Text>
+                <Text style={text}>Production upload, hosted conversion, cloud storage, and provider dispatch remain disabled.</Text>
+                <Text style={text}>Roadmap gate: qualify real authentication, user-file admission, durable cleanup evidence, and real converter output before production activation.</Text>
+              </CadDetails> : null}
             </View>
           </View>
           <CadAction label="Prepare implementation package · Locked" accessibilityLabel="Prepare implementation package locked" icon="lock-closed-outline" disabled />
