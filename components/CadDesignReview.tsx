@@ -1,6 +1,6 @@
 import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
 import React from 'react';
-import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadSourceFacts, CadProvenance } from './CadReviewUI';
@@ -19,6 +19,27 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const isSyntheticQualification = fixture.qualificationProvenance?.kind === 'synthetic-igs-local';
   const canDownloadSource = Boolean(fixture.sourceAssetUrl);
   const canDownloadDerived = fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
+  const [downloadMenuOpen, setDownloadMenuOpen] = React.useState(false);
+  const downloadMenuRef = React.useRef<View>(null);
+
+  React.useEffect(() => {
+    if (!downloadMenuOpen || Platform.OS !== 'web' || typeof document === 'undefined') return undefined;
+    const closeOnOutsidePress = (event: MouseEvent | TouchEvent) => {
+      const host = downloadMenuRef.current as unknown as HTMLElement | null;
+      if (host && event.target instanceof Node && !host.contains(event.target)) setDownloadMenuOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDownloadMenuOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutsidePress);
+    document.addEventListener('touchstart', closeOnOutsidePress);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsidePress);
+      document.removeEventListener('touchstart', closeOnOutsidePress);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [downloadMenuOpen]);
   const openAsset = (url: string) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -45,7 +66,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     document.body.appendChild(link);
     link.click();
     link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(href), 0);
+    window.setTimeout(() => URL.revokeObjectURL(href), 1000);
+  };
+  const chooseDownload = (download: () => void) => {
+    setDownloadMenuOpen(false);
+    download();
   };
   return (
     <View testID="cad-qualified-result" style={{ gap: Spacing.md }}>
@@ -68,8 +93,53 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
       <DetailsContainer testID="cad-review-rail" style={desktop ? { width: 300, height: viewerHeight, flexGrow: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md }}>
       {desktop && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={onReadiness} />}
       <CadSourceFacts fixture={fixture} />
-      {canDownloadSource ? <CadAction testID="cad-open-source-iges" role="link" accessibilityLabel={`Download original ${fixture.sourceFileName}`} label={canDownloadDerived ? 'Download original .igs file' : 'Download original CAD'} icon="download-outline" onPress={downloadSource} /> : null}
-      {canDownloadDerived ? <CadAction testID="igs-download-derived-stl" accessibilityLabel="Download derived inspection mesh STL in millimeters" label="Download derived inspection mesh (.stl)" icon="download-outline" onPress={downloadDerivedMesh} /> : null}
+      {(canDownloadSource || canDownloadDerived) ? <View ref={downloadMenuRef} style={downloadStyles.host}>
+        <TouchableOpacity
+          testID="cad-download-menu-trigger"
+          accessibilityRole="button"
+          accessibilityLabel="Choose file to download"
+          accessibilityState={{ expanded: downloadMenuOpen }}
+          aria-expanded={downloadMenuOpen}
+          aria-haspopup="menu"
+          aria-controls="cad-download-menu"
+          onPress={() => setDownloadMenuOpen(open => !open)}
+          style={[downloadStyles.trigger, { borderColor: colors.border }]}
+        >
+          <Text style={[Typography.label, { color: colors.primary, flex: 1 }]}>Download</Text>
+          <Ionicons name="download-outline" size={18} color={colors.primary} accessible={false} />
+          <Ionicons name={downloadMenuOpen ? 'chevron-up' : 'chevron-down'} size={16} color={colors.primary} accessible={false} />
+        </TouchableOpacity>
+        {downloadMenuOpen ? <View nativeID="cad-download-menu" testID="cad-download-menu" role="menu" style={[downloadStyles.menu, { backgroundColor: colors.panel, borderColor: colors.border, shadowColor: colors.shadowColor }]}>
+          {canDownloadSource ? <TouchableOpacity
+            testID="cad-open-source-iges"
+            accessibilityRole="button"
+            accessibilityLabel={`Original IGS (.igs), ${fixture.sourceFileName}`}
+            role="menuitem"
+            onPress={() => chooseDownload(downloadSource)}
+            style={downloadStyles.option}
+          >
+            <Ionicons name="document-outline" size={18} color={colors.primary} accessible={false} />
+            <View style={downloadStyles.optionText}>
+              <Text style={[Typography.label, { color: colors.text }]}>Original IGS (.igs)</Text>
+              <Text style={[Typography.caption, { color: colors.mutedText }]} numberOfLines={1}>{fixture.sourceFileName} · source asset</Text>
+            </View>
+          </TouchableOpacity> : null}
+          {canDownloadDerived ? <TouchableOpacity
+            testID="igs-download-derived-stl"
+            accessibilityRole="button"
+            accessibilityLabel="Inspection mesh (.stl), derived review artifact"
+            role="menuitem"
+            onPress={() => chooseDownload(downloadDerivedMesh)}
+            style={[downloadStyles.option, canDownloadSource && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}
+          >
+            <Ionicons name="cube-outline" size={18} color={colors.primary} accessible={false} />
+            <View style={downloadStyles.optionText}>
+              <Text style={[Typography.label, { color: colors.text }]}>Inspection mesh (.stl)</Text>
+              <Text style={[Typography.caption, { color: colors.mutedText }]} numberOfLines={1}>Derived review artifact · millimeters</Text>
+            </View>
+          </TouchableOpacity> : null}
+        </View> : null}
+      </View> : null}
       {isDispenserReview && <View testID="cad-reference-comparison" style={{ gap: Spacing.sm }}>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Supplied reference views</Text>
         <Text style={text}>Compare with the model. Open an image for a closer look.</Text>
@@ -101,3 +171,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     </View>
   );
 }
+
+const downloadStyles = StyleSheet.create({
+  host: { position: 'relative' },
+  trigger: { minHeight: 42, borderWidth: 1, borderRadius: Radii.md, paddingHorizontal: Spacing.md, paddingVertical: 9, flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' },
+  menu: { marginTop: 6, borderWidth: 1, borderRadius: Radii.md, overflow: 'hidden', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.18, shadowRadius: 18, elevation: 8 },
+  option: { minHeight: 56, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  optionText: { flex: 1, minWidth: 0, gap: 2 },
+});

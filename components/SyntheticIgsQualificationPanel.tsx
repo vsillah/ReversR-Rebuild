@@ -58,35 +58,19 @@ export default function SyntheticIgsQualificationPanel({ disabled = false, onBus
     }
   };
 
-  const statusMessage = state.status === 'processing'
-    ? 'Checking browser-only synthetic account and upload-session adapters, validating IGS, generating deterministic inspection output, then deleting the volatile source.'
-    : state.status === 'ready'
-      ? 'Synthetic IGS inspection qualified. Cleanup was verified; production authentication and the real geometry converter remain unqualified.'
-      : state.status === 'error'
-        ? `Stopped safely: ${state.code.replaceAll('_', ' ').toLowerCase()}. This browser cannot retry${state.unknownOutcome ? '; the prior outcome is unknown' : ''}.`
-        : 'Runs once in this browser with generated data only. Browser adapters are not production authentication; the real geometry converter remains unqualified.';
-
-  return <View testID="synthetic-igs-qualification-panel" style={{ gap: Spacing.sm, borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md, backgroundColor: colors.surface }}>
-    <View style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
-      <Ionicons name="flask-outline" size={21} color={colors.primary} accessible={false} />
-      <View style={{ flex: 1, gap: 3 }}>
-        <Text style={[Typography.bodyStrong, { color: colors.text }]}>Local synthetic qualification</Text>
-        <Text style={[Typography.caption, { color: colors.mutedText, lineHeight: 19 }]}>{statusMessage}</Text>
-      </View>
-    </View>
+  return <View testID="synthetic-igs-qualification-panel" style={{ gap: Spacing.sm }}>
     {state.status === 'idle' ? <TouchableOpacity
       testID="run-synthetic-igs-qualification"
       accessibilityRole="button"
-      accessibilityLabel="Run one-attempt browser-only synthetic IGS inspection qualification"
+      accessibilityLabel="Use synthetic IGS fixture"
       disabled={disabled}
       onPress={() => { void run(); }}
-      style={{ minHeight: 44, borderRadius: Radii.md, backgroundColor: colors.primary, opacity: disabled ? 0.55 : 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: Spacing.md }}
+      style={{ minHeight: 40, borderRadius: Radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, opacity: disabled ? 0.55 : 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md }}
     >
-      <Text style={[Typography.bodyStrong, { color: colors.onPrimary }]}>Run browser-only synthetic IGS</Text>
+      <Ionicons name="flask-outline" size={18} color={colors.primary} accessible={false} />
+      <Text style={[Typography.bodyStrong, { color: colors.primary }]}>Use synthetic IGS fixture</Text>
     </TouchableOpacity> : null}
-    {state.status !== 'idle' ? <View testID={`synthetic-igs-status-${state.status}`} accessibilityLiveRegion="polite" style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' }}>
-      <Ionicons name={state.status === 'ready' ? 'checkmark-circle-outline' : state.status === 'error' ? 'alert-circle-outline' : 'sync-outline'} size={18} color={state.status === 'ready' ? colors.success : state.status === 'error' ? colors.danger : colors.primary} />
-      <Text style={[Typography.caption, { color: colors.mutedText, flex: 1 }]}>One browser · one attempt · zero retries · cleanup {state.cleanupVerified ? 'verified' : state.unknownOutcome ? 'unknown' : 'pending'}</Text>
-    </View> : null}
+    {state.status === 'processing' ? <Text testID="synthetic-igs-status-processing" accessibilityLiveRegion="polite" style={[Typography.caption, { color: colors.mutedText, textAlign: 'center' }]}>Preparing the synthetic fixture…</Text> : null}
+    {state.status === 'error' ? <Text testID="synthetic-igs-status-error" accessibilityLiveRegion="polite" style={[Typography.caption, { color: colors.danger, textAlign: 'center' }]}>Synthetic fixture unavailable in this browser. Choose another source.</Text> : null}
   </View>;
 }
