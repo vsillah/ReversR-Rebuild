@@ -6,11 +6,36 @@ const root = path.resolve(__dirname, '..');
 const packetPath = path.join(root,
   'docs/cad-phase5-package8-public-evidence/final-development-qualification-binding.json');
 const EXPECTED = Object.freeze({
+  packetSha256: '979ddfcc8ff378e50bd451365982b31fb232b21033d78d13f91f403829f4b012',
   main: '499ee332c0d076f531561a1d79939bc8e9aaddff',
   tree: '2b5c21f854327fbec81be6fa08d1e9aaa717f3fa',
   deployment: 'dpl_D9DcWPErFXC7De9q7pr7KWdQSs2t',
   rebind: '882e94de4d42c20934eb69c02b35eadb2c3fee24955bafa9f0c66f589d315cc3',
   reconciliation: 'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c',
+});
+const IMMUTABLE_SOURCE_BINDINGS = Object.freeze({
+  developmentQualificationBinding: Object.freeze({
+    path: 'server/cadPhase5Package8DevelopmentQualificationBinding.js',
+    sha256: '5ccc9f69ce2a28e53b0e21935481b2c12783dd1228aa93cb839c79cc184ca742',
+  }),
+  convexDurableInvoker: Object.freeze({ path: 'server/cadPhase5Package8ConvexDurableInvoker.js',
+    sha256: '4f308722e2e2996ba25dacf8181b05f490b47a3798e840800abfa028721a0ce8' }),
+  convexDurableFunctions: Object.freeze({ path: 'convex/cadPhase5DurableAdapters.ts',
+    sha256: '308594be3b407f129d9e219092fe3a9bdf22ea0224473aab2172c5136f675260' }),
+  privateR2Custody: Object.freeze({ path: 'server/cadR2PrivateArtifactCustody.js',
+    sha256: '106920b5c72e51d5132edd56d913246489a8aa0e0f1c5cf5978b356dee56ee5d' }),
+  boundedSandboxExecutor: Object.freeze({ path: 'server/cadSandboxExecutor.js',
+    sha256: '445191c5e89c5188ddee055921a1582ccd8116738c8f29f74b6d3821c0445fc7' }),
+  exactSessionAuthority: Object.freeze({ path: 'server/cadExactSessionBridge.js',
+    sha256: 'ba2839aa0cdaf3a32b94f5d2dfb6b1ffc7d4909b58232745a8a9a1fc0e7d5eee' }),
+  uploadSessionService: Object.freeze({ path: 'server/uploadSessionStore.js',
+    sha256: 'e1a49b7779ec53c36346846a845a4076659358a96fd493467fa9e0824ed0b3b8' }),
+  lifecycleMonitor: Object.freeze({ path: 'server/cadPhase5Package8LifecycleMonitor.js',
+    sha256: 'e8c23880d7de4edbfbac2729f41b9f072e9651405e5effe49796608fba97d74e' }),
+  sourceCompositionTest: Object.freeze({
+    path: 'scripts/cad-phase5-package8-development-qualification-binding.test.js',
+    sha256: '0d4ca93827dd8d1c999bd9c5503dbac3492e76b0f95d2a367d0dc185f7b55ada',
+  }),
 });
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const allFalse = value => Boolean(value && Object.keys(value).length > 0
@@ -36,11 +61,8 @@ function checkPacket(packet, rootPath = root) {
       !== EXPECTED.rebind || sha256(path.join(rootPath,
     'docs/cad-phase5-package8-public-evidence/readiness-monitoring-reconciliation.json'))
       !== EXPECTED.reconciliation) throw Error('evidence digest');
-  for (const binding of Object.values(packet.sourceBindings || {})) {
-    if (typeof binding?.path !== 'string' || typeof binding.sha256 !== 'string'
-        || sha256(path.join(rootPath, binding.path)) !== binding.sha256) {
-      throw Error('source digest');
-    }
+  if (JSON.stringify(packet.sourceBindings) !== JSON.stringify(IMMUTABLE_SOURCE_BINDINGS)) {
+    throw Error('source digest');
   }
   const composition = packet.sourceComposition || {};
   if (composition.actualReviewedFactoriesComposed !== true
@@ -124,8 +146,9 @@ function checkPacket(packet, rootPath = root) {
 }
 
 function check(rootPath = root) {
-  return checkPacket(JSON.parse(fs.readFileSync(path.join(rootPath,
-    path.relative(root, packetPath)), 'utf8')), rootPath);
+  const exactPacketPath = path.join(rootPath, path.relative(root, packetPath));
+  if (sha256(exactPacketPath) !== EXPECTED.packetSha256) throw Error('immutable packet digest');
+  return checkPacket(JSON.parse(fs.readFileSync(exactPacketPath, 'utf8')), rootPath);
 }
 
 if (require.main === module) process.stdout.write(`${JSON.stringify(check())}\n`);
