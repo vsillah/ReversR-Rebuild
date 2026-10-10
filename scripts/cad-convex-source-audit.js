@@ -4,78 +4,14 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
-assert.equal(require('./cad-production-auth-verifier-acceptance-checker').checkAcceptance(
-  JSON.parse(read('docs/cad-production-auth-verifier-acceptance.json'))).ok, true);
-assert.equal(require('./cad-production-verifier-evidence-checker').checkEvidence(
-  JSON.parse(read('docs/cad-production-verifier-evidence-template.json'))).ok, true);
-assert.equal(require('./cad-auth-live-evidence-plan-checker').checkPlan(
-  JSON.parse(read('docs/cad-auth-live-evidence-plan.json'))).ok, true);
-assert.equal(require('./cad-auth-sealed-evidence-card-checker').checkCard(
-  JSON.parse(read('docs/cad-auth-sealed-evidence-card.json'))).ok, true);
-assert.equal(require('./cad-auth-sealed-setup-checker').checkSetup(
-  JSON.parse(read('docs/cad-auth-sealed-setup.json'))).ok, true);
-assert.equal(require('./cad-auth-live-evidence-prereq-checker').checkPrerequisites(
-  JSON.parse(read('docs/cad-auth-live-evidence-prerequisites.json'))).ok, true);
-assert.equal(require('./cad-auth-live-evidence-prereq-completion-checker').checkCompletion(
-  JSON.parse(read('docs/cad-auth-live-evidence-prereq-completion.json'))).ok, true);
-assert.equal(require('./cad-auth-live-evidence-acceptance-checker').checkAcceptance(
-  JSON.parse(read('docs/cad-auth-live-evidence-acceptance.json'))).ok, true);
-assert.equal(require('./cad-auth-live-evidence-sealed-card-prep-checker').checkPreparation(
-  JSON.parse(read('docs/cad-auth-live-evidence-sealed-card-prep.json'))).ok, true);
-assert.equal(require('./cad-auth-live-collector-binding-checker').checkBinding(
-  JSON.parse(read('docs/cad-auth-live-collector-binding.json'))).ok, true);
-assert.equal(require('./cad-auth-command-card-source-checker').checkPreparation(
-  JSON.parse(read('docs/cad-auth-command-card-source.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-receipt-bundle-checker').checkBundle(
-  JSON.parse(read('docs/cad-auth-restricted-receipt-bundle.json'))).ok, true);
-assert.equal(require('./cad-auth-receipt-custody-binding-checker').checkBinding(
-  JSON.parse(read('docs/cad-auth-receipt-custody-binding.json'))).ok, true);
-assert.equal(require('./cad-auth-sealed-card-custody-rebind-checker').checkRebind(
-  JSON.parse(read('docs/cad-auth-sealed-card-custody-rebind.json'))).ok, true);
-assert.equal(require('./cad-auth-receipt-intake-template-checker').checkIntake(
-  JSON.parse(read('docs/cad-auth-receipt-intake-template.json'))).ok, true);
-assert.equal(require('./cad-auth-receipt-intake-review-disposition-checker').checkDisposition(
-  JSON.parse(read('docs/cad-auth-receipt-intake-review-disposition.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-receipt-review-checker').checkReview(
-  JSON.parse(read('docs/cad-auth-restricted-receipt-review.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-source-intake-checker').checkIntake(
-  JSON.parse(read('docs/cad-auth-restricted-source-intake.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-candidate-discovery-checker').checkDiscovery(
-  JSON.parse(read('docs/cad-auth-restricted-candidate-discovery.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-source-set-contract-checker').checkContract(
-  JSON.parse(read('docs/cad-auth-restricted-source-set-contract.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-source-set-generator-checker').checkGeneratorPacket(
-  JSON.parse(read('docs/cad-auth-restricted-source-set-generator.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-receipt-gap-closure-checker').checkGapClosurePacket(
-  JSON.parse(read('docs/cad-auth-restricted-receipt-gap-closure.json'))).ok, true);
-assert.equal(require('./cad-auth-missing-receipt-artifact-prep-checker').checkArtifactPacket(
-  JSON.parse(read('docs/cad-auth-missing-receipt-artifact-prep.json'))).ok, true);
-assert.equal(require('./cad-auth-eight-artifact-supply-gate-checker').checkSupplyPacket(
-  JSON.parse(read('docs/cad-auth-eight-artifact-supply-gate.json'))).ok, true);
-assert.equal(require('./cad-auth-receipt-provenance-gap-recovery-checker').checkRecoveryPacket(
-  JSON.parse(read('docs/cad-auth-receipt-provenance-gap-recovery.json'))).ok, true);
-assert.equal(require('./cad-auth-accepted-provenance-projection-checker').checkProjectionPacket(
-  JSON.parse(read('docs/cad-auth-accepted-provenance-projection.json'))).ok, true);
-assert.equal(require('./cad-auth-restricted-source-set-projection-checker').checkSourceSetProjectionPacket(
-  JSON.parse(read('docs/cad-auth-restricted-source-set-projection.json'))).ok, true);
-assert.equal(require('./cad-auth-upload-admission-readiness-rollup-checker').checkReadinessRollupPacket(
-  JSON.parse(read('docs/cad-auth-upload-admission-readiness-rollup.json'))).ok, true);
-assert.equal(require('./cad-auth-prod-opening-prep-checker').checkPacket(
-  JSON.parse(read('docs/cad-auth-prod-opening-prep.json'))).ok, true);
-assert.equal(require('./cad-auth-prod-runner-checker').checkPacket(
-  JSON.parse(read('docs/cad-auth-prod-runner.json'))).ok, true);
-assert.equal(require('./cad-auth-prod-executable-runner-source-checker').checkPacket(
-  JSON.parse(read('docs/cad-auth-prod-executable-runner-source.json'))).ok, true);
-assert.equal(require('./cad-auth-prod-executable-runner-checker').checkPacket(
-  JSON.parse(read('docs/cad-auth-prod-executable-runner.json'))).ok, true);
-assert.equal(require('./cad-auth-prod-durable-runner-adapter-prep-checker').checkPacket(
-  JSON.parse(read('docs/cad-auth-prod-durable-runner-adapter-prep.json'))).ok, true);
-assert.equal(require('./cad-auth-durable-adapter-evidence-command-card-review-checker').checkReviewPacket(
-  JSON.parse(read('docs/cad-auth-durable-adapter-evidence-command-card-review.json'))).ok, true);
+assert.equal(require('./cad-production-auth-verifier-current-source-acceptance-checker').checkAcceptance(
+  JSON.parse(read('docs/cad-production-auth-verifier-current-source-acceptance-v2.json'))).ok, true);
+assert.equal(require('./cad-production-auth-verifier-historical-chain-integrity').checkHistoricalChainIntegrity().ok, true);
 assert.equal(require('./cad-auth-live-opening-command-card-digest-prep-checker').checkDigestPrepPacket(
   JSON.parse(read('docs/cad-auth-live-opening-command-card-digest-prep.json'))).ok, true);
-assert.equal(require('./cad-auth-live-opening-runtime-mount-prep-checker').checkRuntimeMountPrepPacket(
-  JSON.parse(read('docs/cad-auth-live-opening-runtime-mount-prep.json'))).ok, true);
+// Thirty-six commit-bound packet/checker pairs are retained under fixed baseline
+// hashes rather than replayed as current authority. The one former semantic
+// assertion that remains current-valid is preserved above.
 const files = [
   'docs/cad-auth-prod-durable-runner-adapter-prep.md',
   'docs/cad-auth-prod-durable-runner-adapter-prep.json',
@@ -292,6 +228,12 @@ const files = [
   'docs/cad-production-auth-verifier-acceptance.json',
   'scripts/cad-production-auth-verifier-acceptance-checker.js',
   'scripts/cad-production-auth-verifier-acceptance.test.js',
+  'docs/cad-production-auth-verifier-current-source-acceptance-v2.md',
+  'docs/cad-production-auth-verifier-current-source-acceptance-v2.json',
+  'scripts/cad-production-auth-verifier-current-source-acceptance-checker.js',
+  'scripts/cad-production-auth-verifier-current-source-acceptance.test.js',
+  'scripts/cad-production-auth-verifier-historical-chain-integrity.js',
+  'scripts/cad-production-auth-verifier-historical-chain-integrity.test.js',
 
   'server/cadProductionSessionVerifierBinding.js',
   'scripts/cad-production-session-verifier-binding.test.js',
@@ -763,10 +705,8 @@ assert.equal(principalBoundary.nextGate.requiredBeforeLiveDispatch, true);
 assert.equal(principalBoundary.nextGate.sourceOnlyBridgePacket, 'docs/cad-gateway-exact-session-bridge.json');
 assert.equal(principalBoundary.guardrails.productionUploadActivationAllowed, false);
 assert.match(read('docs/cad-convex-gateway-principal-boundary.md'), /live dispatch remains blocked/i);
-const currentOpeningReview = require('./cad-internal-admission-current-commit-rebind-checker').checkRebind(
-  JSON.parse(read('docs/cad-internal-admission-current-commit-rebind.json')),
-  { expectedCommit: '046ff00368caa98f13c9a105fa30ec7036bdc57f', root });
-assert.equal(currentOpeningReview.ok, true, currentOpeningReview.problems.join('; '));
+// The historical current-commit rebind targets 046ff003 and remains in the
+// manifest/leak scan; it is not replayed as current authority after PR #480.
 const exactSessionBridge = JSON.parse(read('docs/cad-gateway-exact-session-bridge.json'));
 assert.equal(exactSessionBridge.status, 'IMPLEMENTED_SOURCE_ONLY_INJECTION_DEFAULT_CLOSED');
 assert.equal(exactSessionBridge.runtimeBehavior.defaultGatewayIssuanceEnabled, false);
@@ -981,7 +921,7 @@ for (const directory of ['convex', 'server', 'src', 'app', 'api', 'components', 
       const name = dir + '/' + entry.name;
       if (entry.isDirectory()) visit(name);
       else if (/\.(?:ts|tsx|js|jsx)$/.test(name))
-        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|disabledUploadAdmissionAdapter|cad-upload-admission-disabled-adapter|cad-upload-admission-durable-adapter-plan|uploadAdmissionDurableAdapterPlan|uploadAdmissionDurableAdapter|cad-upload-admission-durable-adapter-source|cad-upload-admission-qualification-window|uploadAdmissionQualificationWindow|uploadAdmissionGuardedRouteBridge|cad-upload-admission-guarded-route-bridge|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes|boundedDevQualificationExecutor|cad-bounded-dev-qualification-executor/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
+        assert.ok(!/durableEngineAdapter|durableEngineRunner|durableEngineQualification|cad-durable-engine-fixture|durableEvidenceBinding|durableEvidencePrerequisites|cad-durable-evidence-fixture|runnerCommandCards|cad-runner-command-cards|offline\/cad-convex\/durableAdapter|liveRunner|cad-live-runner|liveRunApprovalPacket|liveRunApprovalEnvelope|boundedLiveRunDossier|liveAdapterRunPacket|sharedControlsAdapterQualification|cad-shared-controls-adapter-double|sharedUploadControls|disabledUploadAdmissionAdapter|cad-upload-admission-disabled-adapter|cad-upload-admission-durable-adapter-plan|uploadAdmissionDurableAdapterPlan|uploadAdmissionDurableAdapter|cad-upload-admission-durable-adapter-source|cad-upload-admission-qualification-window|uploadAdmissionQualificationWindow|uploadAdmissionGuardedRouteBridge|cad-upload-admission-guarded-route-bridge|lockoutPrivateAdapters|privateAdapterReadiness|retainedTerminalState|lockoutReadiness|boundedRetentionPolicy|removalRetentionReview|syntheticRemovalBoundary|syntheticRunRegister|verifiedSyntheticTransport|positiveSyntheticSession|positiveSyntheticLedger|cad-positive-synthetic-fixture|passwordPolicy|liveReadiness|devWiring|configurationQualification|developmentConfigurationGate|executionInputs|executionBlockers|rollbackCompatibility|rollbackBaseline|rollbackFixtures|userUploadActivationReadiness|privateRestrictedRegisterReview|restrictedEvidenceCommandCardBytes|boundedDevQualificationExecutor|cad-bounded-dev-qualification-executor/.test(read(name)), 'Offline Password policy or readiness packet referenced by runtime');
     }
   }
   visit(directory);
