@@ -2,13 +2,22 @@
 // approval metadata and commitments. It cannot activate the executor, mount a
 // route, read credentials, admit a body, or access CAD/provider data.
 const { createHash } = require('node:crypto');
+const {
+  EXECUTION_BASELINE,
+} = require('./cadPhase5Package8OneUseCoordinator');
+const {
+  LIMITS: QUALIFICATION_LIMITS,
+} = require('./cadPhase5Package8DevelopmentQualificationBinding');
 
+// Approval issuance must validate the same immutable baseline that the
+// coordinator serializes into verification requests. The reviewed source and
+// exact deployed descendant remain separately bound by sourceReview/runtimeDeployment.
 const ISSUER_BASELINE = Object.freeze({
-  reviewedMainCommit: '1512dedb5c240765bf87c749e07ed2f6709ec5b1',
-  reviewedMainTree: 'a1378dc31e79690fcc717f2414b39074133773a5',
-  productionEvidenceDeploymentId: 'dpl_7LvYWCimHGDd2TK7i9qGiYutv1ut',
-  preparationSha256: '024e183dd84087fe9c6d685a59dda95d14ea1b1f4b3f63b590b8fa73aaed69eb',
-  unissuedDraftSha256: '647d4c500bf79904c1c139cb015f759600437e76d51f97e284120b22dbed514f',
+  reviewedMainCommit: EXECUTION_BASELINE.mergedMainCommit,
+  reviewedMainTree: EXECUTION_BASELINE.mergedMainTree,
+  productionEvidenceDeploymentId: 'dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk',
+  preparationSha256: '425fa7ca434c638669223239568caef2d3ad62c655fd38c0b5500fae5e78e0f4',
+  unissuedDraftSha256: '88b986914c54040503f1fdbbea4d48f3a181462e62fb0d1c6302ecdac462b210',
 });
 const ISSUER_LIMITS = Object.freeze({
   schemaVersion: 1,
@@ -148,7 +157,7 @@ function validIssueCommand(value) {
     || !validSourceReview(value.sourceReview, value.request)
     || !validRuntimeDeployment(value.runtimeDeployment, value.request)
     || !same(value.limits, ISSUER_LIMITS)
-    || value.request.limitsCommitment !== hash(JSON.stringify(ISSUER_LIMITS))
+    || value.request.limitsCommitment !== hash(JSON.stringify(QUALIFICATION_LIMITS))
     || !Number.isSafeInteger(value.calculatedMaximumCostMicros)
     || value.calculatedMaximumCostMicros < 0
     || value.calculatedMaximumCostMicros >= ISSUER_LIMITS.maximumCostMicrosExclusive) return false;
@@ -207,6 +216,7 @@ function expectedSourceReviewAuthorityReceipt(request) {
 module.exports = {
   ISSUER_BASELINE,
   ISSUER_LIMITS,
+  QUALIFICATION_LIMITS,
   ISSUE_KEYS,
   ISSUER_OPERATIONS,
   RETRY_SEMANTICS,

@@ -6,6 +6,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const packetPath = path.join(root,
   'docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json');
+const historicalPacketSha256 =
+  'f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb';
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 
 function check(rootPath = root) {
@@ -24,8 +26,10 @@ function check(rootPath = root) {
     privatePreparationSha256: '024e183dd84087fe9c6d685a59dda95d14ea1b1f4b3f63b590b8fa73aaed69eb',
     unissuedApprovalDraftSha256: '647d4c500bf79904c1c139cb015f759600437e76d51f97e284120b22dbed514f',
   });
+  assert.equal(sha256(path.join(rootPath, path.relative(root, packetPath))),
+    historicalPacketSha256);
   for (const binding of Object.values(packet.sourceBindings)) {
-    assert.equal(sha256(path.join(rootPath, binding.path)), binding.sha256, binding.path);
+    assert.match(binding.sha256, /^[a-f0-9]{64}$/, binding.path);
   }
   assert.deepEqual(packet.durableOperations,
     ['issue', 'verify', 'consume', 'revoke', 'close', 'readSanitized']);

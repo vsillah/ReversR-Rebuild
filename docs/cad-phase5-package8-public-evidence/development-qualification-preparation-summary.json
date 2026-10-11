@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "packetType": "CAD_PHASE5_PACKAGE8_CONTROLLED_DEVELOPMENT_QUALIFICATION_PREPARATION_PUBLIC_SUMMARY",
+  "status": "REBOUND_BLOCKED_FAIL_CLOSED",
+  "recordedAtUtc": "2026-10-11T00:41:55Z",
+  "baseline": {
+    "mergedMainCommit": "06897c895354b45d290cfc6ea1d7d0ccb9367243",
+    "mergedMainTree": "18feadb96a8da14fe102999d744155df5d8c7cf4",
+    "reviewedLaneHead": "4e27717b2d2865bad73418265607c7abe13c07c8",
+    "reviewedLaneTree": "18feadb96a8da14fe102999d744155df5d8c7cf4",
+    "treeIdentityVerified": true,
+    "productionDeploymentId": "dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk",
+    "launcherClosureSha256": "da063f17489e95a2a8bbf55e9e32da40fca93866291d673e22276305408fc1c1",
+    "independentIssuerClosureSha256": "f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb",
+    "reconciliationPacketSha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c",
+    "failClosedSmoke": "401 USER_SESSION_REQUIRED",
+    "smokeObservedNoLaterThanUtc": "2026-10-11T00:33:43Z"
+  },
+  "untrustedPredecessor": {
+    "previousSummarySha256": "394bc371704123efe5624910691bc2e546aa799a6b2cf04a3984ab28efa65198",
+    "disposition": "REPLACED_AFTER_INDEPENDENT_SOURCE_RECONCILIATION"
+  },
+  "verifiedBindings": {
+    "convexDevelopmentTarget": "vambah-sillah/reversr-cad-auth-dev/majestic-alligator-31",
+    "syntheticFixtureId": "reversr-phase5-synthetic-private-line-v1",
+    "syntheticFixtureClassification": "RESTRICTED_SYNTHETIC_TEST_ONLY",
+    "r2CredentialName": "reversr-package8-public-fixture-dev-preview-v2",
+    "r2Bucket": "reversr-cad-package8-public-fixture-us",
+    "r2EnvironmentVariableNames": [
+      "CAD_R2_ACCESS_KEY_ID",
+      "CAD_R2_SECRET_ACCESS_KEY"
+    ],
+    "sandboxPolicy": "node24/iad1/1-vCPU/2048-MiB/60-seconds/deny-all/nonpersistent/no-ports/no-snapshot",
+    "lifecycleMonitoring": "UNWIRED_PURE_METADATA_POLICY",
+    "closeFirstRollbackBound": true,
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumWindowMinutes": 15,
+    "maximumCostUsdExclusive": 9
+  },
+  "unavailableBindings": [
+    "independent runtime issuer-authority verifier and custody binding",
+    "fresh synthetic owner and session commitments",
+    "exact Convex development runtime receipt",
+    "supported source-to-deployment function equivalence evidence",
+    "exact R2 credential expiry instant"
+  ],
+  "windowDecision": {
+    "proposed": false,
+    "activated": false,
+    "authorizationEffect": "NONE",
+    "reason": "A safe future window cannot be bound while authority, session, runtime receipt, and credential-expiry prerequisites are missing."
+  },
+  "restrictedArtifacts": {
+    "preparationPath": ".local/cad-phase5-package8/development-qualification-preparation/preparation.json",
+    "preparationSha256": "425fa7ca434c638669223239568caef2d3ad62c655fd38c0b5500fae5e78e0f4",
+    "unissuedDraftPath": ".local/cad-phase5-package8/development-qualification-preparation/one-use-approval-draft.json",
+    "unissuedDraftSha256": "88b986914c54040503f1fdbbea4d48f3a181462e62fb0d1c6302ecdac462b210",
+    "directoryMode": "0700",
+    "fileMode": "0600"
+  },
+  "authorizationDecision": {
+    "oneUseApprovalArtifactIssued": false,
+    "singleControlledQualificationAuthorized": false,
+    "fullyPopulatedExecutableAuthorizationReturned": false,
+    "stopReasonCodes": [
+      "INDEPENDENT_RUNTIME_ISSUER_AUTHORITY_NOT_SUPPLIED",
+      "FRESH_SYNTHETIC_OWNER_SESSION_BINDING_NOT_SUPPLIED",
+      "EXACT_DEVELOPMENT_RUNTIME_RECEIPT_NOT_SUPPLIED",
+      "SOURCE_TO_DEPLOYMENT_FUNCTION_EQUIVALENCE_NOT_CLAIMED",
+      "EXACT_CREDENTIAL_EXPIRY_INSTANT_UNAVAILABLE"
+    ]
+  },
+  "actionsPerformed": {
+    "providerRequests": 0,
+    "credentialOrEnvironmentValuesRead": 0,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "functionInvocations": 0,
+    "sessionIssuances": 0,
+    "runtimeActivations": 0,
+    "requestBodyAdmissions": 0,
+    "cadReads": 0,
+    "r2Objects": 0,
+    "sandboxJobs": 0,
+    "conversions": 0,
+    "downloads": 0,
+    "payments": 0,
+    "commits": 0,
+    "pushes": 0,
+    "pullRequests": 0,
+    "merges": 0,
+    "retries": 0,
+    "externalMessages": 0
+  },
+  "nextGate": {
+    "type": "SOURCE_ONLY_INDEPENDENT_RUNTIME_ISSUER_AUTHORITY_VERIFIER",
+    "activationAllowed": false,
+    "exactAuthorization": "I approve one bounded source-only Phase 5 Package 8 independent runtime issuer-authority verifier implementation in Yaa Asantewaa's existing lane, bound to merged main 06897c895354b45d290cfc6ea1d7d0ccb9367243, tree 18feadb96a8da14fe102999d744155df5d8c7cf4, production deployment dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk, preparation packet SHA-256 425fa7ca434c638669223239568caef2d3ad62c655fd38c0b5500fae5e78e0f4, unissued draft SHA-256 88b986914c54040503f1fdbbea4d48f3a181462e62fb0d1c6302ecdac462b210, launcher closure packet SHA-256 da063f17489e95a2a8bbf55e9e32da40fca93866291d673e22276305408fc1c1, independent-issuer closure packet SHA-256 f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb, and reconciliation packet SHA-256 ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c. Implement an internal-only, disabled-by-default verifier independently owned from the approval issuer, synthetic owner, and session. Accept sanitized commitments only and expose exactly one verifyExact operation bound to issuer principal, issuance reference, approval commitment, reviewed source commit and tree, exact development runtime deployment and receipt, owner and session commitments, UTC window, limits, expiry, and source closure. Reject replay, stale or mismatched receipts, ownership overlap, unsupported equivalence claims, and unknown outcomes with zero retries. Add offline synthetic tests and return source evidence only. Do not make provider requests, read credentials or environment values, change configuration, deploy, invoke functions or providers, issue approvals or sessions, activate runtime authority, admit request bodies, access CAD, create R2 objects, run Sandbox, convert, download, pay, commit, push, open a PR, merge, or send external messages. Stop on unclear independent ownership, unverifiable runtime receipt semantics, widened authority, hidden retry behavior, failing validation, privacy risk, cost uncertainty, drift, or unknown outcome."
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "packetType": "CAD_PHASE5_PACKAGE8_INDEPENDENT_RUNTIME_ISSUER_AUTHORITY_VERIFIER_STOP",
+  "status": "STOPPED_UNSUPPORTED_BASELINE_CONTRACT",
+  "recordedAtUtc": "2026-10-11T00:45:34Z",
+  "scope": "SOURCE_ONLY_OFFLINE_CONTRACT_COMPATIBILITY",
+  "requestedBaseline": {
+    "mergedMainCommit": "06897c895354b45d290cfc6ea1d7d0ccb9367243",
+    "mergedMainTree": "18feadb96a8da14fe102999d744155df5d8c7cf4",
+    "productionDeploymentId": "dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk",
+    "preparationPacketSha256": "425fa7ca434c638669223239568caef2d3ad62c655fd38c0b5500fae5e78e0f4",
+    "unissuedDraftSha256": "88b986914c54040503f1fdbbea4d48f3a181462e62fb0d1c6302ecdac462b210",
+    "launcherClosureSha256": "da063f17489e95a2a8bbf55e9e32da40fca93866291d673e22276305408fc1c1",
+    "independentIssuerClosureSha256": "f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb",
+    "reconciliationPacketSha256": "ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c"
+  },
+  "sourceEvidence": {
+    "oneUseCoordinator": {
+      "path": "server/cadPhase5Package8OneUseCoordinator.js",
+      "sha256": "85a4d7d7f186ff477da2a8ac872840f072a7666f6c7010b46be11c6c15f419ea",
+      "baselineCommit": "228320e174d23cbe9b43d9c192c2216733f4c477",
+      "baselineTree": "cb22fc27d6bc741f2abc61ed0e456d66e2bfc336",
+      "requestBuilder": "approvalIssuanceVerificationRequest"
+    },
+    "approvalIssuanceContract": {
+      "path": "server/cadPhase5Package8ApprovalIssuanceContract.js",
+      "sha256": "e95f0ac2a0851b84446c33919d6b347b9ab22b1560cd1650c47d4e996d1f46a7",
+      "acceptedBaselineCommit": "1512dedb5c240765bf87c749e07ed2f6709ec5b1",
+      "acceptedBaselineTree": "a1378dc31e79690fcc717f2414b39074133773a5",
+      "validator": "validVerificationRequest"
+    },
+    "approvalIssuerAdapter": {
+      "path": "server/cadPhase5Package8ApprovalIssuerAdapter.js",
+      "sha256": "a73ace1c863fcd1a07f0f126fc2881fe4a3b04f1cf294f60f2f20ce9d2b3a8c9"
+    },
+    "qualificationLauncher": {
+      "path": "server/cadPhase5Package8IndependentQualificationLauncher.js",
+      "sha256": "60998a0021ef553d5cdb9085c7c64e0765f89c6df5919d6be7c882a890830cb1",
+      "sequence": [
+        "VERIFY_INDEPENDENT_RUNTIME_ISSUER_AUTHORITY",
+        "VERIFY_APPROVAL_ISSUANCE",
+        "CONSUME_APPROVAL_ISSUANCE"
+      ]
+    }
+  },
+  "offlineProbe": {
+    "providerRequests": 0,
+    "credentialsOrEnvironmentValuesRead": false,
+    "launcherRequestBaselineCommit": "228320e174d23cbe9b43d9c192c2216733f4c477",
+    "launcherRequestBaselineTree": "cb22fc27d6bc741f2abc61ed0e456d66e2bfc336",
+    "issuerAcceptedBaselineCommit": "1512dedb5c240765bf87c749e07ed2f6709ec5b1",
+    "issuerAcceptedBaselineTree": "a1378dc31e79690fcc717f2414b39074133773a5",
+    "issuerAcceptsLauncherRequest": false,
+    "issuerCanProduceReceipt": false,
+    "classification": "BASELINE_CONTRACT_MISMATCH"
+  },
+  "impact": {
+    "authorityVerifierCouldMakePipelineExecutable": false,
+    "reason": "Even a valid authority receipt would be followed by issuer verification of the same launcher-generated request, which the durable issuer contract rejects before consumption.",
+    "safeToImplementVerifierAgainstCurrentContracts": false,
+    "runtimeActivationAuthorized": false,
+    "approvalIssuanceAuthorized": false,
+    "qualificationAuthorized": false
+  },
+  "implementationDisposition": {
+    "verifierSourceFilesCreated": 0,
+    "verifierTestsCreated": 0,
+    "existingSourceFilesModified": 0,
+    "stopReasonCodes": [
+      "UNSUPPORTED_BASELINE_CONTRACT",
+      "ISSUER_REJECTS_LAUNCHER_VERIFICATION_REQUEST",
+      "SOURCE_CONTRACT_DRIFT"
+    ]
+  },
+  "actionsPerformed": {
+    "providerRequests": 0,
+    "credentialOrEnvironmentValuesRead": 0,
+    "configurationChanges": 0,
+    "deployments": 0,
+    "functionOrProviderInvocations": 0,
+    "approvalArtifactsIssued": 0,
+    "sessionIssuances": 0,
+    "runtimeActivations": 0,
+    "requestBodyAdmissions": 0,
+    "cadReads": 0,
+    "r2Objects": 0,
+    "sandboxJobs": 0,
+    "conversions": 0,
+    "downloads": 0,
+    "payments": 0,
+    "commits": 0,
+    "pushes": 0,
+    "pullRequests": 0,
+    "merges": 0,
+    "retries": 0,
+    "externalMessages": 0
+  },
+  "nextGate": {
+    "type": "SOURCE_ONLY_BASELINE_CONTRACT_RECONCILIATION",
+    "verifierImplementationAuthorized": false,
+    "runtimeActivationAllowed": false
+  }
+}
