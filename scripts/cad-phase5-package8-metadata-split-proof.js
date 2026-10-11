@@ -18,6 +18,11 @@ const EXPECTED_TARGET = Object.freeze({
 });
 const MAX_IDENTITY_AGE_MS = 15 * 60 * 1000;
 const ISSUER_SUCCESSOR_BASE_COMMIT = '1512dedb5c240765bf87c749e07ed2f6709ec5b1';
+const LAUNCHER_SUCCESSOR_BASE_COMMIT = 'a24ac3f3e18e8ce5eb03d36fbc18c669e149e328';
+const APPROVED_SUCCESSOR_MANIFEST_BASES = Object.freeze({
+  88: ISSUER_SUCCESSOR_BASE_COMMIT,
+  89: LAUNCHER_SUCCESSOR_BASE_COMMIT,
+});
 const ISSUER_SUCCESSOR_MODULE = 'cadPhase5Package8ApprovalIssuance';
 const ISSUER_SUCCESSOR_FUNCTIONS = Object.freeze([
   'close', 'consume', 'issue', 'readSanitized', 'revoke', 'verify',
@@ -113,13 +118,14 @@ function collectSourceInventory(rootPath = root) {
 }
 
 function approvedIssuerSuccessor(historical, current, manifest) {
+  const approvedManifestBase = APPROVED_SUCCESSOR_MANIFEST_BASES[manifest?.version];
   if (historical?.moduleCount !== 11 || historical?.functionCount !== 50
       || historical?.visibilityCounts?.public !== 9
       || historical?.visibilityCounts?.internal !== 41
       || current?.moduleCount !== 12 || current?.functionCount !== 56
       || current?.visibilityCounts?.public !== 9
       || current?.visibilityCounts?.internal !== 47
-      || manifest?.version !== 88 || manifest?.baseCommit !== ISSUER_SUCCESSOR_BASE_COMMIT) {
+      || !approvedManifestBase || manifest?.baseCommit !== approvedManifestBase) {
     return false;
   }
   const historicalModules = new Map(historical.modules.map(item => [item.name, item]));
@@ -175,9 +181,11 @@ function validateProof(proof, inventory, manifest) {
   expect(new Set((proof?.sourceInventory?.functions || []).map(entry => entry.name)).size
     === proof?.sourceInventory?.functionCount, 'function names unique');
 
-  expect(manifest?.version === (additiveIssuerSuccessor ? 88 : 87), 'contract manifest version');
+  expect(additiveIssuerSuccessor
+    ? Boolean(APPROVED_SUCCESSOR_MANIFEST_BASES[manifest?.version])
+    : manifest?.version === 87, 'contract manifest version');
   expect(manifest?.baseCommit === (additiveIssuerSuccessor
-    ? ISSUER_SUCCESSOR_BASE_COMMIT : MAIN_COMMIT), 'contract manifest base');
+    ? APPROVED_SUCCESSOR_MANIFEST_BASES[manifest.version] : MAIN_COMMIT), 'contract manifest base');
   expect(manifest?.mode === 'offline-source-unqualified', 'contract manifest mode');
   expect(proof?.contractManifest?.path === 'offline/cad-convex/manifest.json', 'contract manifest path');
   expect(proof?.contractManifest?.version === 87, 'packet contract manifest version');
