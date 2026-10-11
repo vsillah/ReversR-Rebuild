@@ -119,6 +119,7 @@ function checkPacket(packet, rootPath = root) {
     'cadPhase5Package8SourceBridges.js',
     'cadPhase5Package8ConvexDurableInvoker.js',
     'cadPhase5Package8DevelopmentQualificationBinding.js',
+    'cadPhase5Package8IndependentQualificationLauncher.js',
     'cadPhase5Package8OneUseAdapters.js',
     'cadPhase5Package8OneUseCoordinator.js',
   ]);
@@ -140,6 +141,27 @@ function checkPacket(packet, rootPath = root) {
       || !/createPackage8OfflineSandboxBridge/.test(bridgeSource)
       || /process\.env|fetch\s*\(|https?\.request/.test(bridgeSource)) {
     throw Error('review source bridge wiring');
+  }
+  const launcherSource = fs.readFileSync(path.join(rootPath, 'server',
+    'cadPhase5Package8IndependentQualificationLauncher.js'), 'utf8');
+  if (!/configured:\s*false/.test(launcherSource)
+      || !/enabled:\s*false/.test(launcherSource)
+      || !/mounted:\s*false/.test(launcherSource)
+      || !/routeMounted:\s*false/.test(launcherSource)
+      || !/runtimeActivationAllowed:\s*false/.test(launcherSource)
+      || !/providerDispatchEnabled:\s*false/.test(launcherSource)
+      || !/applicationRetries:\s*0/.test(launcherSource)
+      || !/transportRetries:\s*0/.test(launcherSource)
+      || !/providerRetries:\s*0/.test(launcherSource)
+      || /process\.env|fetch\s*\(|https?\.request|\.issueExact\s*\(/.test(launcherSource)) {
+    throw Error('review launcher wiring');
+  }
+  for (const runtime of ['server/index.js', 'server/cadUserUploadRouter.js',
+    'server/cadProductionExecutionBinding.js', 'server/cadLiveOpeningRuntimeActivation.js']) {
+    if (fs.readFileSync(path.join(rootPath, runtime), 'utf8')
+      .includes('cadPhase5Package8IndependentQualificationLauncher')) {
+      throw Error('runtime import');
+    }
   }
   const serverFiles = fs.readdirSync(path.join(rootPath, 'server'))
     .filter(name => name.endsWith('.js') && !reviewConsumers.has(name));

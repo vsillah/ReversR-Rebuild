@@ -1,7 +1,7 @@
 {
-  "version": 88,
+  "version": 89,
   "mode": "offline-source-unqualified",
-  "baseCommit": "1512dedb5c240765bf87c749e07ed2f6709ec5b1",
+  "baseCommit": "a24ac3f3e18e8ce5eb03d36fbc18c669e149e328",
   "productionWiring": false,
   "liveQualification": false,
   "functions": {
@@ -812,7 +812,7 @@
     "offline/cad-convex/backend.d.ts": "cc830265f54522491e66d9c1b9b2561ae6bf6ce2e616b426cc9e329441d7e954",
     "scripts/cad-convex-source.test.js": "80afd92f83b190cef6e08f498302b4ac564a30f6828339da1a23699459d0aca0",
     "scripts/helpers/cad-convex-source-loader.js": "8d0adc77285a030f0c997d3ba5356e1eaa595108f935aebe9875148d3f53f3da",
-    "scripts/cad-convex-source-audit.js": "d273fa07d3290db09eebf0debf927b35e532ffa105a729eb5acfd8bccaaaf537",
+    "scripts/cad-convex-source-audit.js": "82308efd3db9aa4093dd9c6740e4b11a06c09c9bad388f2e87fd3e2c2b5d52b7",
     "docs/cad-convex-schema-functions-review.md": "5feb0cad8b741607f355307cbd3c242e14ce9ee01853f3ebce2af3fb64f5b1ee",
     "offline/cad-convex/README.md": "224463120df541d54e70b2d68815ea88a80c3a7c11af79d2159c08bdd438bb7d",
     "offline/cad-convex/backend.js": "4c77926bc9e6526e2b199df46f8e58f1cded82990b12885f45bb1689aa9e8477",
@@ -879,7 +879,7 @@
     "convex/cadDevUploadSessionQualificationAuthority.ts": "0cc7b7e74713936ae5fc0831dbe5a2b27436ec0911fc0ca611c45165580b7dbe",
     "docs/cad-phase5-package8-public-evidence/convex-metadata-split-proof.json": "51bd69a71349275c631c16eb4849303657fa9c5b3d1dbdd9b7161bd4cd6c77b1",
     "docs/cad-phase5-package8-public-evidence/convex-metadata-split-proof.md": "923bb1113027fc07c3dfbaa1e9e6d29a7d4a0b03e367cbf515889d443c747e37",
-    "scripts/cad-phase5-package8-metadata-split-proof.js": "f892559a1e8a5e3ff19aa28bfea3189da88391ededb176270d1155d6691de11b",
+    "scripts/cad-phase5-package8-metadata-split-proof.js": "a7f618666bfc78c9c421f736babcbbe6e1f8b9d29d613d231a32a34f8eab9031",
     "scripts/cad-phase5-package8-metadata-split-proof.test.js": "180863564ee5b1eb122cbe8ce8992a9fb75136bf58ea3ef0ea70660d6b78c670",
     "server/cadPhase5Package8ApprovalIssuanceContract.js": "e95f0ac2a0851b84446c33919d6b347b9ab22b1560cd1650c47d4e996d1f46a7",
     "server/cadPhase5Package8ApprovalIssuerAdapter.js": "a73ace1c863fcd1a07f0f126fc2881fe4a3b04f1cf294f60f2f20ce9d2b3a8c9",
@@ -888,6 +888,10 @@
     "scripts/cad-phase5-package8-independent-approval-issuer-checker.js": "aa1363af01e237b08b19ab90374d3f9fb79949c8a93c403068a67727fbf01c51",
     "scripts/cad-phase5-package8-independent-approval-issuer-checker.test.js": "8d260346405ab199582c6896fef1600bf8b36e99b7f5ba7b1c252c9bc25fd440",
     "docs/cad-phase5-package8-public-evidence/independent-approval-issuer-source-closure.json": "f14dd1a403d2513e039ecb6ba72af321f0899c6cd549ff0d77eaa10ce5a4eceb",
-    "scripts/cad-convex-contract-manifest.js": "b835b827cdf164ee1b5c1f184d50864d677951dc7a17c6121d579be8b14940cb"
+    "server/cadPhase5Package8IndependentQualificationLauncher.js": "60998a0021ef553d5cdb9085c7c64e0765f89c6df5919d6be7c882a890830cb1",
+    "scripts/cad-phase5-package8-independent-qualification-launcher.test.js": "4906b4389aeac6927b3ab307b114301e54206921d3a6e4605ab2c596518ee537",
+    "scripts/cad-phase5-package8-independent-qualification-launcher-checker.js": "9fcca9bdfd97c05bbdfbc4c43aeafb63ed1b7c3ac6858034ce798aad482fb3ba",
+    "docs/cad-phase5-package8-public-evidence/independent-qualification-launcher-source-closure.json": "da063f17489e95a2a8bbf55e9e32da40fca93866291d673e22276305408fc1c1",
+    "scripts/cad-convex-contract-manifest.js": "049fdf182646a5ed093733f066059ba6d101731c6089e2d22504ec5bb0c18c44"
   }
 }

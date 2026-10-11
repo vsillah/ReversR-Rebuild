@@ -18,8 +18,31 @@ const ZERO_ACTIONS = Object.freeze(['providerRequests', 'environmentValuesRead',
   'configurationChanges', 'deployments', 'liveInvocations', 'runtimeActivations',
   'sessionIssuances', 'requestBodyAdmissions', 'privateOrCustomerCadReads',
   'r2Objects', 'sandboxJobs', 'downloads', 'payments', 'retries']);
-const APPROVED_SOURCE_AUDIT_SUCCESSOR_SHA256 =
-  'd273fa07d3290db09eebf0debf927b35e532ffa105a729eb5acfd8bccaaaf537';
+const APPROVED_SOURCE_AUDIT_SUCCESSORS = Object.freeze({
+  d273fa07d3290db09eebf0debf927b35e532ffa105a729eb5acfd8bccaaaf537: Object.freeze([
+    'cadPhase5Package8ApprovalIssuanceContract.js',
+    'cadPhase5Package8ApprovalIssuerAdapter.js',
+    'cadPhase5Package8ApprovalIssuance.ts',
+    'independent-approval-issuer-source-closure.json',
+  ]),
+  '82308efd3db9aa4093dd9c6740e4b11a06c09c9bad388f2e87fd3e2c2b5d52b7': Object.freeze([
+    'cadPhase5Package8ApprovalIssuanceContract.js',
+    'cadPhase5Package8ApprovalIssuerAdapter.js',
+    'cadPhase5Package8ApprovalIssuance.ts',
+    'independent-approval-issuer-source-closure.json',
+    'cadPhase5Package8IndependentQualificationLauncher.js',
+    'cad-phase5-package8-independent-qualification-launcher.test.js',
+    'cad-phase5-package8-independent-qualification-launcher-checker.js',
+    'independent-qualification-launcher-source-closure.json',
+  ]),
+});
+const APPROVED_LIFECYCLE_CHECKER_SUCCESSORS = Object.freeze({
+  '6c7ab18be0d1de8d84bbd0f9624f3eca5faca06b7d4296b053dcc8d33ff1da27': Object.freeze([
+    'cadPhase5Package8IndependentQualificationLauncher.js',
+    'review launcher wiring',
+    'runtime import',
+  ]),
+});
 
 function checkPacket(packet, rootPath = root) {
   if (packet?.schemaVersion !== 1
@@ -47,13 +70,16 @@ function checkPacket(packet, rootPath = root) {
     }
     const currentDigest = hashFile(path.join(rootPath, binding.path));
     if (currentDigest === binding.sha256) continue;
-    if (binding.path !== 'scripts/cad-convex-source-audit.js'
-        || currentDigest !== APPROVED_SOURCE_AUDIT_SUCCESSOR_SHA256) throw Error('source digest');
+    const requiredSuccessorFiles = binding.path === 'scripts/cad-convex-source-audit.js'
+      ? APPROVED_SOURCE_AUDIT_SUCCESSORS[currentDigest]
+      : APPROVED_LIFECYCLE_CHECKER_SUCCESSORS[currentDigest];
+    if (!requiredSuccessorFiles
+        || (binding.path !== 'scripts/cad-convex-source-audit.js'
+          && binding.path !== 'scripts/cad-phase5-package8-readiness-monitoring-checker.js')) {
+      throw Error('source digest');
+    }
     const successor = fs.readFileSync(path.join(rootPath, binding.path), 'utf8');
-    for (const file of ['cadPhase5Package8ApprovalIssuanceContract.js',
-      'cadPhase5Package8ApprovalIssuerAdapter.js',
-      'cadPhase5Package8ApprovalIssuance.ts',
-      'independent-approval-issuer-source-closure.json']) {
+    for (const file of requiredSuccessorFiles) {
       if (!successor.includes(file)) throw Error('source audit successor');
     }
   }
