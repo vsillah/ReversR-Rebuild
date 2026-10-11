@@ -8,15 +8,15 @@ const {
 const {
   EXECUTION_BASELINE,
   expectedAncestryDigest,
+  expectedRuntimeReceiptDigest,
 } = require('./cadPhase5Package8OneUseCoordinator');
 const {
   expectedRuntimeAuthorityReceipt,
 } = require('./cadPhase5Package8IndependentQualificationLauncher');
 
 const VERIFIER_SOURCE_BINDING = Object.freeze({
-  reviewedMainCommit: '06897c895354b45d290cfc6ea1d7d0ccb9367243',
-  reviewedMainTree: '18feadb96a8da14fe102999d744155df5d8c7cf4',
-  productionEvidenceDeploymentId: 'dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk',
+  runtimeInstallRootCommit: 'c9dfd22a230869ef618c3c8fdfcc95ab86b8aaa0',
+  runtimeInstallRootTree: '6db5b4f3c774e79aabb51ffa97d24d1d54c1e5dd',
   baselineReconciliationPacketSha256:
     'cc369119f75ab8357f17ef22c236ba02ec4870b5d119043525633e87d54fd1a7',
   preparationPacketSha256:
@@ -141,8 +141,6 @@ function validSourceReview(value) {
     && value.schemaVersion === 1
     && value.baselineCommit === EXECUTION_BASELINE.mergedMainCommit
     && value.baselineTree === EXECUTION_BASELINE.mergedMainTree
-    && value.executionHeadCommit === VERIFIER_SOURCE_BINDING.reviewedMainCommit
-    && value.executionHeadTree === VERIFIER_SOURCE_BINDING.reviewedMainTree
     && value.executionHeadCommit !== value.baselineCommit
     && commit(value.executionHeadCommit)
     && commit(value.executionHeadTree)
@@ -161,7 +159,8 @@ function validRuntimeDeployment(value, sourceReview) {
     && value.tree === sourceReview.executionHeadTree
     && digest(value.receiptDigest)
     && value.identityMetadataSupported === true
-    && value.functionSchemaEquivalenceClaimed === false;
+    && value.functionSchemaEquivalenceClaimed === false
+    && value.receiptDigest === expectedRuntimeReceiptDigest(value);
 }
 
 function validEvidence(value) {
@@ -247,7 +246,6 @@ function validConsumption(value, authorityCommitment, requestCommitment) {
 
 function createCadPhase5Package8RuntimeIssuerAuthorityVerifier({
   reviewOnly = false,
-  testOnly = false,
   reviewGate,
   verifierPrincipalCommitment,
   authorityEvidence,
@@ -258,7 +256,6 @@ function createCadPhase5Package8RuntimeIssuerAuthorityVerifier({
   const evidence = evidenceValid ? plainClone(authorityEvidence) : null;
   const expectedRequest = evidence ? requestFromEvidence(evidence) : null;
   const reviewConfigured = reviewOnly === true
-    && testOnly === true
     && same(reviewGate, VERIFIER_REVIEW_GATE)
     && digest(verifierPrincipalCommitment)
     && evidence?.verifierPrincipalCommitment === verifierPrincipalCommitment

@@ -234,7 +234,6 @@ function createConsumedApprovalVerifier(expectedRequest, activeReceipt, counters
 
 function createCadPhase5Package8IndependentQualificationLauncher({
   reviewOnly = false,
-  testOnly = false,
   launchGate,
   issuerPrincipalDigest,
   issuerAuthorityVerifier,
@@ -245,7 +244,6 @@ function createCadPhase5Package8IndependentQualificationLauncher({
   now = Date.now,
 } = {}) {
   const reviewConfigured = reviewOnly === true
-    && testOnly === true
     && same(launchGate, LAUNCH_REVIEW_GATE)
     && digest(issuerPrincipalDigest)
     && validAuthorityVerifier(issuerAuthorityVerifier)

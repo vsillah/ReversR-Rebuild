@@ -35,7 +35,8 @@ function fixture() {
     environment: 'development',
     commit: REVIEWED_HEAD,
     tree: REVIEWED_TREE,
-    functionEquivalence: 'VERIFIED_EXACT',
+    identityMetadataSupported: true,
+    functionSchemaEquivalenceClaimed: false,
     receiptDigest: '',
   };
   runtime.receiptDigest = expectedCoordinatorRuntimeReceiptDigest(runtime);
@@ -74,9 +75,6 @@ function fixture() {
     clean: true,
     descendantOfBaseline: true,
     ancestryReceiptDigest: '',
-    productionEvidenceDeploymentId: ISSUER_BASELINE.productionEvidenceDeploymentId,
-    preparationSha256: ISSUER_BASELINE.preparationSha256,
-    unissuedDraftSha256: ISSUER_BASELINE.unissuedDraftSha256,
   };
   sourceReview.ancestryReceiptDigest = expectedAncestryDigest(sourceReview);
   return {

@@ -10,11 +10,8 @@ import {
 } from './schema';
 
 const BASELINE = {
-  commit: '1512dedb5c240765bf87c749e07ed2f6709ec5b1',
-  tree: 'a1378dc31e79690fcc717f2414b39074133773a5',
-  productionDeployment: 'dpl_7LvYWCimHGDd2TK7i9qGiYutv1ut',
-  preparation: '024e183dd84087fe9c6d685a59dda95d14ea1b1f4b3f63b590b8fa73aaed69eb',
-  unissuedDraft: '647d4c500bf79904c1c139cb015f759600437e76d51f97e284120b22dbed514f',
+  commit: '228320e174d23cbe9b43d9c192c2216733f4c477',
+  tree: 'cb22fc27d6bc741f2abc61ed0e456d66e2bfc336',
 } as const;
 const LIMITS = {
   schemaVersion: 1 as const,
@@ -144,12 +141,11 @@ type SourceReview = {
   schemaVersion: 1; baselineCommit: string; baselineTree: string;
   executionHeadCommit: string; executionHeadTree: string; clean: true;
   descendantOfBaseline: true; ancestryReceiptDigest: string;
-  productionEvidenceDeploymentId: string; preparationSha256: string;
-  unissuedDraftSha256: string;
 };
 type RuntimeDeployment = {
   schemaVersion: 1; deploymentId: string; state: 'READY'; environment: 'development';
-  commit: string; tree: string; functionEquivalence: 'VERIFIED_EXACT'; receiptDigest: string;
+  commit: string; tree: string; identityMetadataSupported: true;
+  functionSchemaEquivalenceClaimed: false; receiptDigest: string;
 };
 
 function orderedRequest(request: Request) {
@@ -207,21 +203,19 @@ async function validSourceReview(value: SourceReview, request: Request) {
     && value.executionHeadCommit === request.executionHeadCommit
     && value.executionHeadTree === request.executionHeadTree
     && value.clean === true && value.descendantOfBaseline === true
-    && value.ancestryReceiptDigest === expected
-    && value.productionEvidenceDeploymentId === BASELINE.productionDeployment
-    && value.preparationSha256 === BASELINE.preparation
-    && value.unissuedDraftSha256 === BASELINE.unissuedDraft;
+    && value.ancestryReceiptDigest === expected;
 }
 
 async function validRuntime(value: RuntimeDeployment, request: Request) {
   const expected = await sha256([
     value.deploymentId, value.state, value.environment, value.commit, value.tree,
-    value.functionEquivalence,
+    String(value.identityMetadataSupported), String(value.functionSchemaEquivalenceClaimed),
   ].join('|'));
   return value.schemaVersion === 1 && value.deploymentId === request.runtimeDeploymentId
     && value.state === 'READY' && value.environment === 'development'
     && value.commit === request.executionHeadCommit && value.tree === request.executionHeadTree
-    && value.functionEquivalence === 'VERIFIED_EXACT'
+    && value.identityMetadataSupported === true
+    && value.functionSchemaEquivalenceClaimed === false
     && value.receiptDigest === request.runtimeReceiptDigest && value.receiptDigest === expected;
 }
 

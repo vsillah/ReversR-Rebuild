@@ -15,9 +15,6 @@ const {
 const ISSUER_BASELINE = Object.freeze({
   reviewedMainCommit: EXECUTION_BASELINE.mergedMainCommit,
   reviewedMainTree: EXECUTION_BASELINE.mergedMainTree,
-  productionEvidenceDeploymentId: 'dpl_4Dq2J7w4yZ6B32ZXMmcuLrzdM3Tk',
-  preparationSha256: '425fa7ca434c638669223239568caef2d3ad62c655fd38c0b5500fae5e78e0f4',
-  unissuedDraftSha256: '88b986914c54040503f1fdbbea4d48f3a181462e62fb0d1c6302ecdac462b210',
 });
 const ISSUER_LIMITS = Object.freeze({
   schemaVersion: 1,
@@ -95,7 +92,8 @@ function expectedRuntimeReceiptDigest(runtime) {
     runtime.environment,
     runtime.commit,
     runtime.tree,
-    runtime.functionEquivalence,
+    String(runtime.identityMetadataSupported),
+    String(runtime.functionSchemaEquivalenceClaimed),
   ].join('|'));
 }
 
@@ -121,29 +119,26 @@ function validVerificationRequest(value) {
 function validSourceReview(value, request) {
   return exactKeys(value, ['schemaVersion', 'baselineCommit', 'baselineTree',
     'executionHeadCommit', 'executionHeadTree', 'clean', 'descendantOfBaseline',
-    'ancestryReceiptDigest', 'productionEvidenceDeploymentId', 'preparationSha256',
-    'unissuedDraftSha256'])
+    'ancestryReceiptDigest'])
     && value.schemaVersion === 1
     && value.baselineCommit === ISSUER_BASELINE.reviewedMainCommit
     && value.baselineTree === ISSUER_BASELINE.reviewedMainTree
     && value.executionHeadCommit === request.executionHeadCommit
     && value.executionHeadTree === request.executionHeadTree
     && value.clean === true && value.descendantOfBaseline === true
-    && value.ancestryReceiptDigest === expectedAncestryDigest(value)
-    && value.productionEvidenceDeploymentId
-      === ISSUER_BASELINE.productionEvidenceDeploymentId
-    && value.preparationSha256 === ISSUER_BASELINE.preparationSha256
-    && value.unissuedDraftSha256 === ISSUER_BASELINE.unissuedDraftSha256;
+    && value.ancestryReceiptDigest === expectedAncestryDigest(value);
 }
 
 function validRuntimeDeployment(value, request) {
   return exactKeys(value, ['schemaVersion', 'deploymentId', 'state', 'environment',
-    'commit', 'tree', 'functionEquivalence', 'receiptDigest'])
+    'commit', 'tree', 'identityMetadataSupported',
+    'functionSchemaEquivalenceClaimed', 'receiptDigest'])
     && value.schemaVersion === 1 && value.deploymentId === request.runtimeDeploymentId
     && value.state === 'READY' && value.environment === 'development'
     && value.commit === request.executionHeadCommit
     && value.tree === request.executionHeadTree
-    && value.functionEquivalence === 'VERIFIED_EXACT'
+    && value.identityMetadataSupported === true
+    && value.functionSchemaEquivalenceClaimed === false
     && value.receiptDigest === request.runtimeReceiptDigest
     && value.receiptDigest === expectedRuntimeReceiptDigest(value);
 }

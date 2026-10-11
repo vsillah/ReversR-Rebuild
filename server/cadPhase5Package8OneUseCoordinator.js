@@ -121,7 +121,8 @@ function expectedRuntimeReceiptDigest(runtime) {
     runtime.environment,
     runtime.commit,
     runtime.tree,
-    runtime.functionEquivalence,
+    String(runtime.identityMetadataSupported),
+    String(runtime.functionSchemaEquivalenceClaimed),
   ].join('|'));
 }
 
@@ -136,11 +137,13 @@ function validExecutionBinding(value) {
     || value.ancestryReceiptDigest !== expectedAncestryDigest(value)) return false;
   const runtime = value.runtimeDeployment;
   return exactKeys(runtime, ['schemaVersion', 'deploymentId', 'state', 'environment',
-    'commit', 'tree', 'functionEquivalence', 'receiptDigest'])
+    'commit', 'tree', 'identityMetadataSupported',
+    'functionSchemaEquivalenceClaimed', 'receiptDigest'])
     && runtime.schemaVersion === 1 && id(runtime.deploymentId)
     && runtime.state === 'READY' && runtime.environment === 'development'
     && runtime.commit === value.executionHeadCommit && runtime.tree === value.executionHeadTree
-    && runtime.functionEquivalence === 'VERIFIED_EXACT'
+    && runtime.identityMetadataSupported === true
+    && runtime.functionSchemaEquivalenceClaimed === false
     && runtime.receiptDigest === expectedRuntimeReceiptDigest(runtime);
 }
 
@@ -256,7 +259,8 @@ function createCadPhase5Package8OneUseCoordinator({
       deployedCommit: executionBinding.executionHeadCommit,
       deployedTree: executionBinding.executionHeadTree,
       deploymentState: 'READY',
-      functionEquivalence: 'VERIFIED_EXACT',
+      identityMetadataSupported: true,
+      functionSchemaEquivalenceClaimed: false,
     };
     if (!same(receipt, expected)) throw Error('PACKAGE8_EXECUTION_RECEIPT_UNKNOWN');
     return receipt;
@@ -533,7 +537,8 @@ function createCadPhase5Package8OneUseCoordinator({
         reviewedBaselineCommit: EXECUTION_BASELINE.mergedMainCommit,
         executionHeadCommit: approvalArtifact.executionBinding.executionHeadCommit,
         runtimeDeploymentId: approvalArtifact.executionBinding.runtimeDeployment.deploymentId,
-        sourceToDeploymentFunctionEquivalence: 'VERIFIED_EXACT',
+        deploymentIdentityMetadataSupported: true,
+        sourceToDeploymentFunctionEquivalenceClaimed: false,
         routeMounted: false,
         sessionIssuanceEnabled: false,
         requestBodyAdmissionAuthorized: false,
