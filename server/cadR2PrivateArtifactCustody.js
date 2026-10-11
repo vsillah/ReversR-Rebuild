@@ -36,6 +36,7 @@ const POLICY = Object.freeze({
 });
 const AUTHENTICATED_IGS_POLICY = Object.freeze({
   ...POLICY,
+  derivedRetentionMs: 24 * 60 * 60 * 1000,
   maxObjectBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES,
   maxOriginalBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES,
   maxStoredBytes: 12 * 1024 * 1024,

@@ -124,6 +124,30 @@ function inspectAuthenticatedIgsPreview(locationLike) {
   return Object.freeze({ enabled: true, code: 'CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED' });
 }
 
+function exactApiOrigin(value, allowedHostnames) {
+  try {
+    const parsed = new URL(String(value || ''));
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password
+      || parsed.pathname !== '/' || parsed.search || parsed.hash
+      || !allowedHostnames.has(parsed.hostname.toLowerCase())) return null;
+    return parsed.origin;
+  } catch { return null; }
+}
+
+function resolveAuthenticatedIgsApiBase(locationLike, configuredApiBase) {
+  const preview = inspectAuthenticatedIgsPreview(locationLike);
+  if (!preview.enabled) return null;
+  const hostname = String(locationLike?.hostname || '').trim().toLowerCase();
+  if (isNonProductionVercelPreview(hostname)) {
+    const origin = exactApiOrigin(locationLike?.origin, new Set([hostname]));
+    return origin?.startsWith('https://') ? origin : null;
+  }
+  if (['localhost', '127.0.0.1', '::1'].includes(hostname)) {
+    return exactApiOrigin(configuredApiBase, new Set(['localhost', '127.0.0.1', '::1']));
+  }
+  return null;
+}
+
 function inspectCadInternalTesterPreview(locationLike) {
   if (!locationLike || !isAllowedPreviewHostname(locationLike.hostname)) {
     return Object.freeze({ enabled: false, code: 'CAD_TEST_PREVIEW_HOST_BLOCKED' });
@@ -212,4 +236,5 @@ module.exports = {
   isAllowedPreviewHostname,
   isNonProductionVercelPreview,
   inspectAuthenticatedIgsPreview,
+  resolveAuthenticatedIgsApiBase,
 };

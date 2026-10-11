@@ -6,8 +6,12 @@ const path = require('node:path');
 const { test } = require('node:test');
 const express = require('express');
 const { createSandboxRouter } = require('../server/cadSandboxRouter');
+const { createCadAuthenticatedIgsLocalApp }
+  = require('../server/cadAuthenticatedIgsLocalServer');
 const { createCadR2PrivateArtifactCustody, AUTHENTICATED_IGS_POLICY }
   = require('../server/cadR2PrivateArtifactCustody');
+const { COOKIE, uploadHeaders, uploadSessionCookie }
+  = require('../server/cadAuthenticatedIgsRouter');
 const { createUploadSessionService, createInMemoryUploadSessionStoreForTests }
   = require('../server/uploadSessionStore');
 const { upload, meshPayload } = require('../server/cadAuthenticatedIgsWorkerContract');
@@ -116,7 +120,12 @@ function createMemoryRuntime() {
   const job = {
     async claim(owner, input) {
       const priorId = state.idempotency.get(input.idempotencyDigest);
-      if (priorId) return { accepted: true, duplicate: true, job: state.jobs.get(priorId).view() };
+      if (priorId) {
+        const prior = state.jobs.get(priorId);
+        return prior.requestDigest === input.requestDigest
+          ? { accepted: true, duplicate: true, job: prior.view() }
+          : { accepted: false, code: 'IDEMPOTENCY_CONFLICT' };
+      }
       const record = { ...input, owner, state: 'admitted', attemptCount: 0, createdAt: Date.now(),
         updatedAt: Date.now() };
       record.view = () => ({ schemaVersion: 1, jobId: input.jobId, state: record.state,
@@ -199,6 +208,73 @@ async function issue(base) {
   return { cookie: response.headers.get('set-cookie').split(';')[0], csrf: body.session.csrfToken };
 }
 
+test('upload commitments require one exact lowercase SHA-256 and bind the request digest', () => {
+  const makeRequest = contentSha256 => {
+    const headers = { 'content-type': 'model/iges', 'content-length': '1024',
+      'x-reversr-cad-extension': 'igs', 'x-reversr-cad-content-sha256': contentSha256,
+      'x-reversr-idempotency-key': 'a'.repeat(32) };
+    return { headers, rawHeaders: Object.entries(headers).flatMap(([name, value]) => [name, value]) };
+  };
+  const first = uploadHeaders(makeRequest('b'.repeat(64)));
+  const second = uploadHeaders(makeRequest('c'.repeat(64)));
+  assert.equal(first.ok, true);
+  assert.equal(second.ok, true);
+  assert.notEqual(first.requestDigest, second.requestDigest);
+  assert.equal(uploadHeaders(makeRequest('B'.repeat(64))).code, 'UPLOAD_MALFORMED');
+  assert.equal(uploadHeaders(makeRequest('b'.repeat(63))).code, 'UPLOAD_MALFORMED');
+  const duplicate = makeRequest('b'.repeat(64));
+  duplicate.rawHeaders.push('X-ReversR-CAD-Content-SHA256', 'c'.repeat(64));
+  assert.equal(uploadHeaders(duplicate).code, 'UPLOAD_MALFORMED');
+});
+
+test('session issuance renews one stale upload cookie, rejects request bodies, and clears invalid sessions', async t => {
+  const { runtime, base } = await mounted(t);
+  const staleCookie = `${COOKIE}=us1.${'A'.repeat(43)}`;
+  const beforeRenewalReads = runtime.state.bodyReads;
+  const renewed = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token', cookie: staleCookie,
+  } });
+  assert.equal(renewed.status, 200);
+  const renewedCookie = renewed.headers.get('set-cookie');
+  assert.match(renewedCookie, new RegExp(`^${COOKIE}=us1\\.[A-Za-z0-9_-]{43};`));
+  const renewedBody = await renewed.json();
+  const maxAge = Number(/Max-Age=(\d+)/.exec(renewedCookie)?.[1]);
+  assert.ok(Number.isSafeInteger(maxAge) && maxAge > 0 && maxAge <= 300);
+  assert.ok(Date.now() + (maxAge * 1000) <= renewedBody.session.expiresAt + 1000);
+  assert.equal(runtime.state.bodyReads, beforeRenewalReads);
+
+  const malformed = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token', cookie: 'arbitrary=value',
+  } });
+  assert.equal(malformed.status, 401);
+  assert.match(malformed.headers.get('set-cookie'), new RegExp(`^${COOKIE}=; Max-Age=0;`));
+  assert.equal(runtime.state.bodyReads, beforeRenewalReads);
+
+  const duplicate = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token',
+    cookie: `${staleCookie}; ${staleCookie}`,
+  } });
+  assert.equal(duplicate.status, 401);
+  assert.equal(runtime.state.bodyReads, beforeRenewalReads);
+
+  const withBody = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token', cookie: staleCookie,
+    'content-type': 'text/plain',
+  }, body: 'must-not-be-read' });
+  assert.equal(withBody.status, 400);
+  assert.equal((await withBody.json()).code, 'UPLOAD_MALFORMED');
+  assert.equal(runtime.state.bodyReads, beforeRenewalReads);
+
+  const invalidSession = await fetch(`${base}/authenticated-import/latest`, { headers: {
+    origin: ORIGIN, cookie: staleCookie, 'x-upload-csrf': 'B'.repeat(43),
+  } });
+  assert.equal(invalidSession.status, 401);
+  assert.match(invalidSession.headers.get('set-cookie'), new RegExp(`^${COOKIE}=; Max-Age=0;`));
+  assert.equal(uploadSessionCookie(`us1.${'C'.repeat(43)}`, 3500, 1000),
+    `${COOKIE}=us1.${'C'.repeat(43)}; Max-Age=2; Path=/; Secure; HttpOnly; SameSite=None`);
+  assert.equal(uploadSessionCookie(`us1.${'C'.repeat(43)}`, 1500, 1000), null);
+});
+
 test('denied requests never subscribe to private bytes and duplicate credentials fail closed', async t => {
   const { runtime, base } = await mounted(t);
   const source = fs.readFileSync(fixturePath);
@@ -244,7 +320,8 @@ test('mounted preview route converts the public dispenser fixture once and serve
   const uploadResponse = await fetch(`${base}/authenticated-import`, { method: 'POST', headers: {
     origin: ORIGIN, cookie: auth.cookie, 'x-upload-csrf': auth.csrf,
     'content-type': 'model/iges', 'content-length': String(before.length),
-    'x-reversr-cad-extension': 'igs', 'x-reversr-idempotency-key': 'c'.repeat(32),
+    'x-reversr-cad-extension': 'igs', 'x-reversr-cad-content-sha256': beforeDigest,
+    'x-reversr-idempotency-key': 'c'.repeat(32),
   }, body: before });
   const uploaded = await uploadResponse.json();
   assert.equal(uploadResponse.status, 201, JSON.stringify(uploaded));
@@ -253,6 +330,34 @@ test('mounted preview route converts the public dispenser fixture once and serve
   assert.equal(runtime.state.attempts, 1);
   assert.equal(runtime.state.networkPolicy, 'deny-all');
   assert.ok(runtime.state.bodyReads > 0);
+  const altered = Buffer.from(before);
+  altered[0] = altered[0] === 0x53 ? 0x73 : 0x53;
+  assert.equal(altered.length, before.length);
+  assert.notEqual(hash(altered), beforeDigest);
+  const readsAfterSuccess = runtime.state.bodyReads;
+  const attemptsAfterSuccess = runtime.state.attempts;
+  const conflicting = await fetch(`${base}/authenticated-import`, { method: 'POST', headers: {
+    origin: ORIGIN, cookie: auth.cookie, 'x-upload-csrf': auth.csrf,
+    'content-type': 'model/iges', 'content-length': String(altered.length),
+    'x-reversr-cad-extension': 'igs', 'x-reversr-cad-content-sha256': hash(altered),
+    'x-reversr-idempotency-key': 'c'.repeat(32),
+  }, body: altered });
+  assert.equal(conflicting.status, 409);
+  assert.equal((await conflicting.json()).code, 'IDEMPOTENCY_CONFLICT');
+  assert.equal(runtime.state.bodyReads, readsAfterSuccess);
+  assert.equal(runtime.state.attempts, attemptsAfterSuccess);
+
+  const mismatched = await fetch(`${base}/authenticated-import`, { method: 'POST', headers: {
+    origin: ORIGIN, cookie: auth.cookie, 'x-upload-csrf': auth.csrf,
+    'content-type': 'model/iges', 'content-length': String(altered.length),
+    'x-reversr-cad-extension': 'igs', 'x-reversr-cad-content-sha256': beforeDigest,
+    'x-reversr-idempotency-key': 'e'.repeat(32),
+  }, body: altered });
+  assert.equal(mismatched.status, 400);
+  assert.equal((await mismatched.json()).code, 'UPLOAD_DIGEST_MISMATCH');
+  assert.ok(runtime.state.bodyReads > readsAfterSuccess);
+  assert.equal(runtime.state.attempts, attemptsAfterSuccess);
+  assert.equal([...runtime.state.jobs.values()].filter(job => job.state === 'failed').length, 1);
   const headers = { origin: ORIGIN, cookie: auth.cookie, 'x-upload-csrf': auth.csrf };
   const originalGrantResponse = await fetch(
     `${base}/authenticated-import/${uploaded.job.jobId}/grants/original`,
@@ -295,4 +400,42 @@ test('mounted preview route converts the public dispenser fixture once and serve
     method: 'DELETE', headers,
   });
   assert.equal(repeatedDeletion.status, 200);
+});
+
+test('the local wrapper handles exact authenticated preflights before legacy global CORS', async t => {
+  const downstream = require('../server/index');
+  const app = createCadAuthenticatedIgsLocalApp({ app: downstream,
+    runtime: { configured: true, allowedOrigins: [ORIGIN] } });
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const preflightHeaders = {
+    origin: ORIGIN,
+    'access-control-request-method': 'POST',
+    'access-control-request-headers': [
+      'authorization', 'content-type', 'x-upload-csrf', 'x-reversr-cad-extension',
+      'x-reversr-cad-content-sha256', 'x-reversr-idempotency-key',
+      'x-reversr-download-grant',
+    ].join(', '),
+  };
+  const allowed = await fetch(`${base}/api/cad/authenticated-import`, {
+    method: 'OPTIONS', headers: preflightHeaders,
+  });
+  assert.equal(allowed.status, 204);
+  assert.equal(allowed.headers.get('access-control-allow-origin'), ORIGIN);
+  assert.equal(allowed.headers.get('access-control-allow-credentials'), 'true');
+  assert.match(allowed.headers.get('access-control-allow-headers'), /X-ReversR-CAD-Content-SHA256/);
+  assert.match(allowed.headers.get('access-control-allow-headers'), /X-Upload-CSRF/);
+  assert.match(allowed.headers.get('access-control-allow-headers'), /X-ReversR-Download-Grant/);
+
+  const denied = await fetch(`${base}/api/cad/authenticated-import`, { method: 'OPTIONS', headers: {
+    ...preflightHeaders, origin: 'https://attacker.invalid',
+  } });
+  assert.equal(denied.status, 403);
+  assert.equal(denied.headers.get('access-control-allow-origin'), null);
+
+  const legacy = await fetch(`${base}/api/cad/import`, { method: 'OPTIONS', headers: preflightHeaders });
+  assert.equal(legacy.status, 204);
+  assert.doesNotMatch(legacy.headers.get('access-control-allow-headers') || '', /X-Upload-CSRF/i);
 });

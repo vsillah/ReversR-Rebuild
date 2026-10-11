@@ -87,6 +87,11 @@ export function inspectAuthenticatedIgsPreview(locationLike?: {
   hostname?: unknown;
   search?: unknown;
 } | null): Readonly<{ enabled: boolean; code: string }>;
+export function resolveAuthenticatedIgsApiBase(locationLike: {
+  hostname?: unknown;
+  origin?: unknown;
+  search?: unknown;
+} | null | undefined, configuredApiBase: unknown): string | null;
 export function isCadNativeEmbeddedPreview(locationLike?: {
   hostname?: unknown;
   search?: unknown;

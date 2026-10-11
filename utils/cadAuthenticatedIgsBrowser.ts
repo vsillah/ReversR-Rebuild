@@ -1,5 +1,6 @@
 import { getApiBase } from './apiBase';
-import type { CadInternalTesterFixture } from './cadInternalTesterPreview';
+import { resolveAuthenticatedIgsApiBase, type CadInternalTesterFixture }
+  from './cadInternalTesterPreview';
 
 export const AUTHENTICATED_IGS_MAX_BYTES = 8 * 1024 * 1024;
 const SESSION_KEY = 'reversr_authenticated_igs_session_v1';
@@ -16,8 +17,16 @@ const extensionFor = (name: string) => /\.iges$/i.test(name) ? 'iges' as const
   : /\.igs$/i.test(name) ? 'igs' as const : null;
 const randomKey = () => {
   const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
+  globalThis.crypto.getRandomValues(bytes);
   return Array.from(bytes, value => value.toString(16).padStart(2, '0')).join('');
+};
+const contentSha256 = async (file: File) => {
+  if (!globalThis.crypto?.subtle) throw new Error('Secure CAD upload hashing is unavailable.');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  try {
+    const digest = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
+    return Array.from(digest, value => value.toString(16).padStart(2, '0')).join('');
+  } finally { bytes.fill(0); }
 };
 const readJson = async (response: Response) => {
   try { return await response.json(); } catch { return null; }
@@ -81,15 +90,18 @@ function fixtureFor(job: Job, preview: Preview): CadInternalTesterFixture {
 }
 
 export function createCadAuthenticatedIgsBrowserClient({
-  apiBase = getApiBase(),
+  apiBase,
   getAuthorizationHeaders,
   fetchImpl = globalThis.fetch,
   storage = typeof window !== 'undefined' ? window.sessionStorage : null,
 }: { apiBase?: string; getAuthorizationHeaders: () => Promise<Record<string, string>>;
   fetchImpl?: typeof fetch; storage?: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> | null }) {
+  const resolvedApiBase = apiBase || (typeof window !== 'undefined'
+    ? resolveAuthenticatedIgsApiBase(window.location, getApiBase()) : null);
+  if (!resolvedApiBase) throw new Error('Authenticated CAD preview transport is unavailable.');
   let session: Session | null = null;
   const request = async (path: string, init: RequestInit = {}) => {
-    const response = await fetchImpl(`${apiBase}${path}`, { credentials: 'include', ...init });
+    const response = await fetchImpl(`${resolvedApiBase}${path}`, { credentials: 'include', ...init });
     const body = await readJson(response);
     if (response.status === 401) {
       session = null;
@@ -126,7 +138,7 @@ export function createCadAuthenticatedIgsBrowserClient({
     const headers = await csrfHeaders();
     const issued = await request(`/api/cad/authenticated-import/${encodeURIComponent(jobId)}/grants/${kind}`,
       { method: 'POST', headers });
-    const response = await fetchImpl(`${apiBase}${issued.grant.url}`, { credentials: 'include', headers: {
+    const response = await fetchImpl(`${resolvedApiBase}${issued.grant.url}`, { credentials: 'include', headers: {
       ...headers, 'X-ReversR-Download-Grant': issued.grant.token,
     } });
     if (!response.ok) {
@@ -156,10 +168,13 @@ export function createCadAuthenticatedIgsBrowserClient({
       const valid = validateAuthenticatedIgsFile(file);
       if (!valid.ok) throw new Error(valid.message);
       const current = await ensureSession();
+      const sourceSha256 = await contentSha256(file);
       const body = await request('/api/cad/authenticated-import', { method: 'POST', body: file,
         headers: { 'Content-Type': ['model/iges', 'application/iges'].includes(file.type)
           ? file.type : 'application/octet-stream', 'X-Upload-CSRF': current.csrfToken,
-        'X-ReversR-CAD-Extension': valid.extension, 'X-ReversR-Idempotency-Key': randomKey() } });
+        'X-ReversR-CAD-Extension': valid.extension,
+        'X-ReversR-CAD-Content-SHA256': sourceSha256,
+        'X-ReversR-Idempotency-Key': randomKey() } });
       return ready(body.job);
     },
     status,

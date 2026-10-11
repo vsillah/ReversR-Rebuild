@@ -1,5 +1,5 @@
 const express = require('express');
-const { createHash, randomUUID } = require('node:crypto');
+const { createHash, randomUUID, timingSafeEqual } = require('node:crypto');
 const { createCadAuthenticatedIgsSessionVerifier } = require('./cadAuthenticatedIgsSessionVerifier');
 const { createCadAuthenticatedIgsDurableClient }
   = require('./cadAuthenticatedIgsDurableClient');
@@ -15,14 +15,16 @@ const { createInspectionStl, normalizeGeometry }
   = require('./cadPhase5DerivedArtifactOrchestrator');
 const { inspectAuthenticatedIgesSource }
   = require('../utils/cadAuthenticatedIgesAdmission');
+const { createCadAuthenticatedIgsPreflight, setAuthenticatedIgsCorsHeaders }
+  = require('./cadAuthenticatedIgsCors');
 
 const COOKIE = '__Host-reversr-upload-session';
 const SESSION_LIFETIME_MS = 5 * 60 * 1000;
 const BODY_TIMEOUT_MS = 10_000;
 const SENSITIVE_HEADERS = new Set(['authorization', 'cookie', 'origin', 'content-length',
   'content-type', 'content-encoding', 'transfer-encoding', 'x-upload-csrf',
-  'x-reversr-cad-extension', 'x-reversr-idempotency-key', 'x-reversr-download-grant']);
-const AUTHENTICATED_PATH = /^\/authenticated-(?:upload-session(?:\/|$)|import(?:\/|$)|artifacts(?:\/|$))/;
+  'x-reversr-cad-extension', 'x-reversr-cad-content-sha256',
+  'x-reversr-idempotency-key', 'x-reversr-download-grant']);
 const hash = value => createHash('sha256').update(value).digest('hex');
 const safeId = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
 
@@ -35,6 +37,7 @@ const ERRORS = Object.freeze({
   UPLOAD_MALFORMED: [400, 'Choose a valid standalone .igs or .iges file.'],
   UPLOAD_UNSUPPORTED: [415, 'Only standalone .igs and .iges files are accepted.'],
   UPLOAD_TOO_LARGE: [413, 'The CAD source exceeds the 8 MiB limit.'],
+  UPLOAD_DIGEST_MISMATCH: [400, 'The CAD source did not match its upload commitment.'],
   UPLOAD_QUOTA_EXHAUSTED: [429, 'The shop CAD import quota is exhausted for this period.'],
   IDEMPOTENCY_CONFLICT: [409, 'This upload request key was already used for different input.'],
   CONVERSION_BUSY: [429, 'Another shop conversion is already running.'],
@@ -113,6 +116,7 @@ function readExactBody(req, expectedBytes) {
 function uploadHeaders(req) {
   if (hasDuplicateSensitiveHeaders(req)) return { ok: false, code: 'UPLOAD_MALFORMED' };
   const extension = req.headers['x-reversr-cad-extension'];
+  const contentSha256 = req.headers['x-reversr-cad-content-sha256'];
   const idempotencyKey = req.headers['x-reversr-idempotency-key'];
   const contentType = req.headers['content-type'];
   const contentLength = req.headers['content-length'];
@@ -132,8 +136,41 @@ function uploadHeaders(req) {
   if (typeof idempotencyKey !== 'string' || !/^[A-Za-z0-9_-]{32,128}$/.test(idempotencyKey)) {
     return { ok: false, code: 'UPLOAD_MALFORMED' };
   }
-  return { ok: true, extension, idempotencyDigest: hash(idempotencyKey), byteCount,
-    requestDigest: hash(`${extension}:${byteCount}`) };
+  if (typeof contentSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(contentSha256)) {
+    return { ok: false, code: 'UPLOAD_MALFORMED' };
+  }
+  return { ok: true, extension, contentSha256,
+    idempotencyDigest: hash(idempotencyKey), byteCount,
+    requestDigest: hash(`${extension}:${byteCount}:${contentSha256}`) };
+}
+
+function issuanceCookieAccepted(value) {
+  if (value === undefined) return true;
+  if (typeof value !== 'string' || value.length > 8192) return false;
+  const cookies = value.split(';').map(part => part.trim()).filter(Boolean);
+  if (cookies.length !== 1) return false;
+  const prefix = `${COOKIE}=`;
+  return cookies[0].startsWith(prefix)
+    && /^us1\.[A-Za-z0-9_-]{43}$/.test(cookies[0].slice(prefix.length));
+}
+
+function issuanceBodyEmpty(req) {
+  const contentLength = req.headers['content-length'];
+  return req.headers['transfer-encoding'] === undefined
+    && req.headers['content-encoding'] === undefined
+    && (contentLength === undefined || contentLength === '0');
+}
+
+function uploadSessionCookie(credential, expiresAt, now = Date.now()) {
+  if (typeof credential !== 'string' || !/^us1\.[A-Za-z0-9_-]{43}$/.test(credential)
+    || !Number.isSafeInteger(expiresAt) || !Number.isSafeInteger(now)) return null;
+  const lifetimeMs = Math.min(SESSION_LIFETIME_MS, expiresAt - now);
+  if (lifetimeMs < 1000) return null;
+  return `${COOKIE}=${credential}; Max-Age=${Math.floor(lifetimeMs / 1000)}; Path=/; Secure; HttpOnly; SameSite=None`;
+}
+
+function clearUploadSessionCookie(res) {
+  res.set('Set-Cookie', `${COOKIE}=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; HttpOnly; SameSite=None`);
 }
 
 function sessionError(code) {
@@ -173,41 +210,35 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
     lookupTimeoutMs: 5000,
   });
 
+  router.use(createCadAuthenticatedIgsPreflight({ configured, allowedOrigins }));
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.set('X-Content-Type-Options', 'nosniff');
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.set('Access-Control-Allow-Origin', origin);
-      res.set('Access-Control-Allow-Credentials', 'true');
-      res.set('Vary', 'Origin');
-    }
-    if (req.method === 'OPTIONS') {
-      if (!AUTHENTICATED_PATH.test(req.path)) return next();
-      if (!configured || !origin || !allowedOrigins.includes(origin)) return sendError(res, 'ORIGIN_OR_CSRF_REJECTED');
-      res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-      res.set('Access-Control-Allow-Headers', [
-        'Authorization', 'Content-Type', 'X-Upload-CSRF', 'X-ReversR-CAD-Extension',
-        'X-ReversR-Idempotency-Key', 'X-ReversR-Download-Grant',
-      ].join(', '));
-      return res.sendStatus(204);
-    }
+    setAuthenticatedIgsCorsHeaders(req, res, allowedOrigins);
     next();
   });
 
   router.post('/authenticated-upload-session', async (req, res) => {
     if (!configured) return sendError(res, 'CAD_PREVIEW_DISABLED');
     if (hasDuplicateSensitiveHeaders(req) || !allowedOrigins.includes(req.headers.origin)
-      || typeof req.headers.authorization !== 'string' || req.headers.cookie !== undefined) {
+      || typeof req.headers.authorization !== 'string'
+      || !issuanceCookieAccepted(req.headers.cookie)) {
+      if (req.headers.cookie !== undefined) clearUploadSessionCookie(res);
       return sendError(res, 'USER_SESSION_REQUIRED');
     }
+    if (!issuanceBodyEmpty(req)) return sendError(res, 'UPLOAD_MALFORMED');
     const issued = await runtime.sessionService.issueSession({ authorization: req.headers.authorization }, {
       transport: 'cookie', lifetimeMs: SESSION_LIFETIME_MS,
     });
-    if (!issued.ok) return sendError(res, issued.code === 'AUTHORIZATION_REQUIRED'
-      ? 'USER_SESSION_REQUIRED' : issued.code === 'CAD_PERMISSION_REQUIRED'
-        ? 'USER_UPLOAD_FORBIDDEN' : 'CAD_RUNTIME_UNAVAILABLE');
-    res.set('Set-Cookie', `${COOKIE}=${issued.credential}; Max-Age=${Math.floor(SESSION_LIFETIME_MS / 1000)}; Path=/; Secure; HttpOnly; SameSite=None`);
+    if (!issued.ok) {
+      if (req.headers.cookie !== undefined) clearUploadSessionCookie(res);
+      return sendError(res, issued.code === 'AUTHORIZATION_REQUIRED'
+        ? 'USER_SESSION_REQUIRED' : issued.code === 'CAD_PERMISSION_REQUIRED'
+          ? 'USER_UPLOAD_FORBIDDEN' : 'CAD_RUNTIME_UNAVAILABLE');
+    }
+    const cookie = uploadSessionCookie(issued.credential, issued.expiresAt);
+    if (!cookie) { clearUploadSessionCookie(res); return sendError(res, 'CAD_RUNTIME_UNAVAILABLE'); }
+    res.set('Set-Cookie', cookie);
     return res.json({ schemaVersion: 1, status: 'success', session: {
       expiresAt: issued.expiresAt, csrfToken: issued.csrf,
     } });
@@ -216,7 +247,11 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
   async function verifyRequest(req, res) {
     if (!configured) { sendError(res, 'CAD_PREVIEW_DISABLED'); return null; }
     const result = await verify(req);
-    if (!result.ok) { sendError(res, sessionError(result.code)); return null; }
+    if (!result.ok) {
+      if (['SESSION_MALFORMED', 'SESSION_INVALID', 'SESSION_REVOKED',
+        'SESSION_EXPIRED'].includes(result.code)) clearUploadSessionCookie(res);
+      sendError(res, sessionError(result.code)); return null;
+    }
     return result.principal;
   }
 
@@ -246,12 +281,18 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
     let conversionClaimed = false;
     try {
       sourceBytes = await readExactBody(req, header.byteCount);
+      const sourceDigest = hash(sourceBytes);
+      if (!timingSafeEqual(Buffer.from(sourceDigest, 'hex'),
+        Buffer.from(header.contentSha256, 'hex'))) {
+        throw Object.assign(new Error('UPLOAD_DIGEST_MISMATCH'), {
+          code: 'UPLOAD_DIGEST_MISMATCH',
+        });
+      }
       const inspection = inspectAuthenticatedIgesSource({
         fileName: `upload.${header.extension}`, bytes: sourceBytes,
       });
       if (!inspection.ok) throw Object.assign(new Error(inspection.code), { code: inspection.code === 'TOO_LARGE'
         ? 'UPLOAD_TOO_LARGE' : inspection.code === 'UNSUPPORTED' ? 'UPLOAD_UNSUPPORTED' : 'UPLOAD_MALFORMED' });
-      const sourceDigest = hash(sourceBytes);
       const original = await custody.reserveArtifact(owner, { kind: 'original-igs', format: 'model/iges',
         byteCount: sourceBytes.length, restrictedDigest: sourceDigest });
       if (!original.ok) throw Object.assign(new Error(original.code), { code: 'CAD_RUNTIME_UNAVAILABLE' });
@@ -301,7 +342,8 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
         try { await custody.deleteArtifact(owner, artifactId); } catch {}
       }
       return sendError(res, error?.code === 'CONVERSION_BUSY' ? 'CONVERSION_BUSY'
-        : ['UPLOAD_MALFORMED', 'UPLOAD_UNSUPPORTED', 'UPLOAD_TOO_LARGE'].includes(error?.code)
+        : ['UPLOAD_MALFORMED', 'UPLOAD_UNSUPPORTED', 'UPLOAD_TOO_LARGE',
+          'UPLOAD_DIGEST_MISMATCH'].includes(error?.code)
           ? error.code : error?.code === 'UPLOAD_QUOTA_EXHAUSTED' ? error.code
             : error?.code === 'CAD_RUNTIME_UNAVAILABLE' || unknownOutcome
               ? 'CAD_RUNTIME_UNAVAILABLE' : 'CONVERSION_FAILED');
@@ -410,4 +452,5 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
 
 module.exports = { BODY_TIMEOUT_MS, COOKIE, SESSION_LIFETIME_MS,
   createCadAuthenticatedIgsRouter, createCadAuthenticatedIgsRuntime,
-  createPreviewBytes, hasDuplicateSensitiveHeaders, readExactBody, uploadHeaders };
+  createPreviewBytes, hasDuplicateSensitiveHeaders, issuanceBodyEmpty,
+  issuanceCookieAccepted, readExactBody, uploadHeaders, uploadSessionCookie };

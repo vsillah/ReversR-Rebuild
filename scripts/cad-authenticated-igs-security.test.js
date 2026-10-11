@@ -10,6 +10,7 @@ const { createCadAuthenticatedIgsSandboxExecutor }
   = require('../server/cadAuthenticatedIgsSandboxExecutor');
 const { authenticatedAssets, SANDBOX_LIMITS }
   = require('../server/cadAuthenticatedIgsSandboxConfig');
+const { AUTHENTICATED_IGS_POLICY } = require('../server/cadR2PrivateArtifactCustody');
 const { LIMITS } = require('../server/cadAuthenticatedIgsWorkerContract');
 const { inspectAuthenticatedIgsPreview } = require('../utils/cadInternalTesterPreview');
 
@@ -105,6 +106,13 @@ test('R2 adapter uses private conditional writes, verifies bytes, and confirms d
     expectedSha256: hash(bytes) })).bytes, bytes);
   assert.equal(await provider.deleteExact(put.Key), true);
   assert.equal(await provider.headExact(put.Key), null);
+});
+
+test('authenticated source and derived retention never exceed the one-day R2 lifecycle backstop', () => {
+  const day = 24 * 60 * 60 * 1000;
+  assert.equal(AUTHENTICATED_IGS_POLICY.lifecycleBackstopMs, day);
+  assert.ok(AUTHENTICATED_IGS_POLICY.originalRetentionMs <= day);
+  assert.ok(AUTHENTICATED_IGS_POLICY.derivedRetentionMs <= day);
 });
 
 test('authenticated asset pack keeps the 8 MiB contract inside one deny-all Sandbox dispatch', async () => {
