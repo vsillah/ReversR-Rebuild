@@ -5,7 +5,8 @@ const path = require('node:path');
 const { test } = require('node:test');
 const { createCadAuthenticatedIgsDurableClient, readConfig: readDurableConfig }
   = require('../server/cadAuthenticatedIgsDurableClient');
-const { createCadR2S3Provider } = require('../server/cadR2S3Provider');
+const { R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error, createCadR2S3Provider }
+  = require('../server/cadR2S3Provider');
 const { createCadAuthenticatedIgsSandboxExecutor }
   = require('../server/cadAuthenticatedIgsSandboxExecutor');
 const { authenticatedAssets, SANDBOX_LIMITS }
@@ -106,6 +107,48 @@ test('R2 adapter uses private conditional writes, verifies bytes, and confirms d
     expectedSha256: hash(bytes) })).bytes, bytes);
   assert.equal(await provider.deleteExact(put.Key), true);
   assert.equal(await provider.headExact(put.Key), null);
+});
+
+test('R2 adapter separates write and acknowledgement budgets with privacy-safe failures', async () => {
+  assert.equal(R2_PROVIDER_PHASE_BUDGET_MS, 15 * 1000);
+  const signals = [];
+  const client = { async send(command, options) {
+    signals.push({ name: command.constructor.name, signal: options.abortSignal });
+    if (command.constructor.name === 'PutObjectCommand') return {};
+    if (command.constructor.name === 'HeadObjectCommand') {
+      return { ContentLength: 3, Metadata: { sha256: hash(Buffer.from('igs')) } };
+    }
+    throw new Error('unexpected command');
+  } };
+  const provider = createCadR2S3Provider({ env: { CAD_R2_BUCKET: 'private-cad-fixtures' }, client });
+  assert.deepEqual(await provider.putExact({ objectKey: `phase5/${'b'.repeat(64)}`,
+    bytes: Buffer.from('igs'), contentType: 'model/iges', storageClass: 'STANDARD',
+    ifNoneMatch: '*', cacheControl: 'no-store' }), {
+    committed: true, byteCount: 3, sha256: hash(Buffer.from('igs')),
+  });
+  assert.deepEqual(signals.map(call => call.name), ['PutObjectCommand', 'HeadObjectCommand']);
+  assert.notEqual(signals[0].signal, signals[1].signal);
+
+  assert.equal(classifyR2Error({ name: 'AccessDenied', $metadata: { httpStatusCode: 403 } }),
+    'R2_AUTH_REJECTED');
+  assert.equal(classifyR2Error({ name: 'SignatureDoesNotMatch' }), 'R2_AUTH_REJECTED');
+  assert.equal(classifyR2Error({ name: 'NoSuchBucket', $metadata: { httpStatusCode: 404 } }),
+    'R2_TARGET_MISMATCH');
+  assert.equal(classifyR2Error({ name: 'NotFound', $metadata: { httpStatusCode: 404 } }),
+    'R2_OBJECT_ABSENT');
+  assert.equal(classifyR2Error({ name: 'Error', code: 'ENOTFOUND' }), 'R2_NETWORK_UNAVAILABLE');
+  assert.equal(classifyR2Error({ name: 'TimeoutError', code: 'ETIMEDOUT' }), 'R2_TIMEOUT');
+});
+
+test('R2 adapter never treats a missing bucket as an absent object', async () => {
+  const client = { async send() {
+    throw Object.assign(new Error('private provider detail'), {
+      name: 'NoSuchBucket', $metadata: { httpStatusCode: 404 },
+    });
+  } };
+  const provider = createCadR2S3Provider({ env: { CAD_R2_BUCKET: 'private-cad-fixtures' }, client });
+  await assert.rejects(provider.headExact(`phase5/${'c'.repeat(64)}`),
+    error => error.name === 'NoSuchBucket');
 });
 
 test('authenticated source and derived retention never exceed the one-day R2 lifecycle backstop', () => {

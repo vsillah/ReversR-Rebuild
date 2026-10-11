@@ -9,6 +9,51 @@ const {
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 const unavailable = () => { throw new Error('R2_UNAVAILABLE'); };
+const R2_PROVIDER_PHASE_BUDGET_MS = 15 * 1000;
+const AUTH_FAILURE_NAMES = new Set([
+  'AccessDenied', 'AccessDeniedException', 'AuthFailure', 'ExpiredToken',
+  'InvalidAccessKeyId', 'InvalidSignatureException', 'InvalidToken',
+  'RequestExpired', 'RequestTimeTooSkewed', 'SignatureDoesNotMatch',
+]);
+const NETWORK_FAILURE_CODES = new Set([
+  'EAI_AGAIN', 'ECONNREFUSED', 'ECONNRESET', 'EHOSTUNREACH', 'ENETUNREACH',
+  'ENOTFOUND', 'EPIPE',
+]);
+const TIMEOUT_FAILURE_CODES = new Set(['ETIMEDOUT', 'ERR_HTTP2_STREAM_ERROR']);
+
+function classifyR2Error(error) {
+  const status = error?.$metadata?.httpStatusCode;
+  if (error?.name === 'NoSuchKey' || error?.name === 'NotFound') return 'R2_OBJECT_ABSENT';
+  if (error?.name === 'NoSuchBucket') return 'R2_TARGET_MISMATCH';
+  if (AUTH_FAILURE_NAMES.has(error?.name) || status === 401 || status === 403) {
+    return 'R2_AUTH_REJECTED';
+  }
+  if (error?.name === 'AbortError' || error?.name === 'TimeoutError'
+    || TIMEOUT_FAILURE_CODES.has(error?.code)) return 'R2_TIMEOUT';
+  if (NETWORK_FAILURE_CODES.has(error?.code)) return 'R2_NETWORK_UNAVAILABLE';
+  if (status === 404) return 'R2_NOT_FOUND_UNCLASSIFIED';
+  return 'R2_PROVIDER_REJECTED';
+}
+
+async function sendBounded(client, command, parentSignal) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  const timer = setTimeout(abort, R2_PROVIDER_PHASE_BUDGET_MS);
+  try {
+    if (parentSignal?.aborted) throw Object.assign(new Error('R2_ABORTED'), { name: 'AbortError' });
+    parentSignal?.addEventListener('abort', abort, { once: true });
+    return await client.send(command, { abortSignal: controller.signal });
+  } catch (error) {
+    if (controller.signal.aborted && error?.name !== 'AbortError') {
+      throw Object.assign(new Error('R2_PHASE_TIMEOUT'), { name: 'AbortError' });
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+    parentSignal?.removeEventListener('abort', abort);
+    controller.abort();
+  }
+}
 
 function readConfig(env = process.env) {
   const accountId = env.CAD_R2_ACCOUNT_ID;
@@ -52,9 +97,8 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
     credentials: { accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey },
     maxAttempts: 1,
   });
-  const send = (command, signal) => client.send(command, { abortSignal: signal });
-  const missing = error => error?.name === 'NoSuchKey' || error?.name === 'NotFound'
-    || error?.$metadata?.httpStatusCode === 404;
+  const send = (command, signal) => sendBounded(client, command, signal);
+  const missing = error => classifyR2Error(error) === 'R2_OBJECT_ABSENT';
   return Object.freeze({
     async putExact(input, { signal } = {}) {
       if (!input || !Buffer.isBuffer(input.bytes) || !input.bytes.length
@@ -94,4 +138,5 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
   });
 }
 
-module.exports = { createCadR2S3Provider, readConfig };
+module.exports = { R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error,
+  createCadR2S3Provider, readConfig };

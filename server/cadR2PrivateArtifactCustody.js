@@ -6,7 +6,8 @@ const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES }
   = require('../utils/cadAuthenticatedIgesAdmission');
 
 const OPERATION_BUDGET_MS = 2000;
-const PROVIDER_OPERATION_BUDGET_MS = 15 * 1000;
+// A provider write and its acknowledgement each receive an independent bounded window.
+const PROVIDER_OPERATION_BUDGET_MS = 31 * 1000;
 const DOWNLOAD_GRANT_MS = 60 * 1000;
 const POLICY = Object.freeze({
   schemaVersion: 1,
