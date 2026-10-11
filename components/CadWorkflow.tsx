@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
@@ -14,6 +14,9 @@ import AuthenticatedIgsQualificationPanel from './AuthenticatedIgsQualificationP
 import { createAuthenticatedImportQualificationAdapter, createAuthenticatedImportStateStore,
   inspectAuthenticatedImportQualification, type AuthenticatedImportState }
   from '../utils/cadAuthenticatedImportQualification';
+import { inspectAuthenticatedIgsPreview } from '../utils/cadInternalTesterPreview';
+import { createCadAuthenticatedIgsBrowserClient } from '../utils/cadAuthenticatedIgsBrowser';
+import { getCommercialRequestHeaders } from '../hooks/useCommercialization';
 
 type Props = {
   preview: Extract<CadInternalTesterPreview, { enabled: true }>;
@@ -30,8 +33,12 @@ const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
 export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false }: Props) {
   const { colors } = useAppTheme();
+  const onPhaseRef = useRef(onPhase);
+  useEffect(() => { onPhaseRef.current = onPhase; }, [onPhase]);
   const authenticatedMode = useMemo(() => typeof window !== 'undefined'
     && inspectAuthenticatedImportQualification(window.location).enabled, []);
+  const authenticatedLiveMode = useMemo(() => typeof window !== 'undefined'
+    && inspectAuthenticatedIgsPreview(window.location).enabled, []);
   const authenticatedAdapter = useMemo(() => {
     if (!authenticatedMode || typeof window === 'undefined') return null;
     return createAuthenticatedImportQualificationAdapter({
@@ -46,10 +53,51 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
   const [authenticatedState, setAuthenticatedState] = useState<AuthenticatedImportState | null>(
     () => authenticatedAdapter?.status() ?? null);
   const [fixture, setFixture] = useState(() => authenticatedAdapter?.fixture() ?? preview.fixture);
+  const authenticatedLiveClient = useMemo(() => authenticatedLiveMode && typeof window !== 'undefined'
+    ? createCadAuthenticatedIgsBrowserClient({ getAuthorizationHeaders: () => getCommercialRequestHeaders() })
+    : null, [authenticatedLiveMode]);
+  const [authenticatedLiveJobId, setAuthenticatedLiveJobId] = useState<string | null>(null);
+  const [authenticatedLiveResume, setAuthenticatedLiveResume] = useState('');
   const [selectedBuildGate, setSelectedBuildGate] = useState(0);
   const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(preview.fixture.derivedInspectionStl);
   const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
+  useEffect(() => {
+    if (!authenticatedLiveClient) return undefined;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const resume = async () => {
+      try {
+        let job = await authenticatedLiveClient.resume();
+        while (!cancelled && job && ['admitted', 'converting'].includes(job.state)) {
+          setAuthenticatedLiveResume('Restoring the durable private conversion…');
+          await new Promise<void>(resolve => { timer = setTimeout(resolve, 1000); });
+          if (!cancelled) job = await authenticatedLiveClient.status(job.jobId);
+        }
+        if (!cancelled && job?.state === 'ready') {
+          const ready = await authenticatedLiveClient.ready(job);
+          if (!cancelled) {
+            setFixture(ready.fixture);
+            setAuthenticatedLiveJobId(job.jobId);
+            setAuthenticatedLiveResume('');
+            onPhaseRef.current(3);
+          }
+        } else if (!cancelled) setAuthenticatedLiveResume('');
+      } catch { if (!cancelled) setAuthenticatedLiveResume(''); }
+    };
+    void resume();
+    return () => { cancelled = true; if (timer) clearTimeout(timer); };
+  }, [authenticatedLiveClient]);
+  const authenticatedArtifacts = useMemo(() => authenticatedLiveClient && authenticatedLiveJobId ? {
+    downloadOriginal: () => authenticatedLiveClient.download(authenticatedLiveJobId, 'original'),
+    downloadStl: () => authenticatedLiveClient.download(authenticatedLiveJobId, 'stl'),
+    deleteAll: async () => {
+      await authenticatedLiveClient.delete(authenticatedLiveJobId);
+      setAuthenticatedLiveJobId(null);
+      setFixture(preview.fixture);
+      onPhase(1);
+    },
+  } : null, [authenticatedLiveClient, authenticatedLiveJobId, onPhase, preview.fixture]);
   const panelStyle = compact
     ? { padding: 0, gap: Spacing.sm, borderWidth: 0, backgroundColor: 'transparent' }
     : {};
@@ -71,10 +119,19 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
         {authenticatedMode && authenticatedAdapter && authenticatedState
           ? <AuthenticatedIgsQualificationPanel adapter={authenticatedAdapter} state={authenticatedState}
             onState={setAuthenticatedState} onReady={result => { setFixture(result); onPhase(3); }} />
-          : publicIgsJourney ? <PublicIgsImportPanel onReady={result => {
+          : publicIgsJourney ? <>
+            {authenticatedLiveResume ? <CadNotice>{authenticatedLiveResume}</CadNotice> : null}
+            <PublicIgsImportPanel onReady={result => {
           setFixture(result);
+          if (result.qualificationProvenance?.kind !== 'authenticated-igs-preview') {
+            setAuthenticatedLiveJobId(null);
+          }
           onPhase(3);
-        }} /> : <CadImportPanel
+        }} onAuthenticatedFile={authenticatedLiveClient ? async file => {
+          const ready = await authenticatedLiveClient.upload(file);
+          setAuthenticatedLiveJobId(ready.job.jobId);
+          return ready.fixture;
+        } : undefined} /></> : <CadImportPanel
           internalPreview={preview}
           desktop={desktop}
           onReviewQualifiedResult={() => {
@@ -104,22 +161,25 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
           ? <AuthenticatedIgsQualificationPanel adapter={authenticatedAdapter} state={authenticatedState!}
             onState={setAuthenticatedState} onReady={result => { setFixture(result); onPhase(3); }} />
           : <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} desktop={desktop}
-            onReadiness={authenticatedMode ? undefined : () => onPhase(4)}
+            onReadiness={authenticatedMode || authenticatedLiveMode ? undefined : () => onPhase(4)}
             qualificationArtifacts={authenticatedMode ? authenticatedAdapter?.artifacts() : null}
+            authenticatedArtifacts={authenticatedArtifacts}
             onDeleteQualificationArtifacts={authenticatedMode && authenticatedAdapter ? () => {
               setAuthenticatedState(authenticatedAdapter.deleteArtifacts());
             } : undefined} />}
-        {!desktop && !authenticatedMode && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
+        {!desktop && !authenticatedMode && !authenticatedLiveMode && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
       </>}
       {phase === 4 && <>
-        {authenticatedMode ? <View testID="cad-auth-import-build-locked" style={{ gap: Spacing.sm,
+        {authenticatedMode || authenticatedLiveMode ? <View testID="cad-auth-import-build-locked" style={{ gap: Spacing.sm,
           borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md,
           backgroundColor: colors.elevated }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
             <Ionicons name="lock-closed-outline" size={18} color={colors.mutedText} accessible={false} />
             <Text style={[Typography.bodyStrong, { color: colors.text }]}>Build remains locked</Text>
           </View>
-          <Text style={text}>Review the synthetic model in Design. Manufacturing actions are unavailable.</Text>
+          <Text style={text}>{authenticatedLiveMode
+            ? 'Review the private inspection geometry in Design. Manufacturing actions and production activation remain unavailable.'
+            : 'Review the synthetic model in Design. Manufacturing actions are unavailable.'}</Text>
           <CadAction label="Return to Design" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
         </View> : <><View testID="cad-build-locked" style={{ gap: Spacing.md }}>
           <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>

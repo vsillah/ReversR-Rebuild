@@ -16,7 +16,7 @@ export async function session(ctx: MutationCtx) {
   if (!current || !user || current.userId !== userId || current.expirationTime <= Date.now()) {
     throw new ConvexError('SESSION_EXPIRED');
   }
-  return { user, expiresAt: current.expirationTime };
+  return { user, sessionId, expiresAt: current.expirationTime };
 }
 
 export async function membership(ctx: MutationCtx, ownerOnly = false) {

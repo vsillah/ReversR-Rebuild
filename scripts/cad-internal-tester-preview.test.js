@@ -9,6 +9,7 @@ const {
   getCadCapabilitiesRequest,
   isCadNativeEmbeddedPreview,
   inspectCadInternalTesterPreview,
+  resolveAuthenticatedIgsApiBase,
 } = require('../utils/cadInternalTesterPreview');
 
 test('enables the fixed public cube only on local or ReversR Vercel hosts with an explicit preview query', () => {
@@ -189,4 +190,40 @@ test('keeps preview status checks on the protected preview origin', () => {
     url: 'https://reversr.vercel.app/api/cad/capabilities',
     credentials: 'omit',
   });
+});
+
+test('binds live authenticated preview transport to its exact host and never production', () => {
+  const previous = {
+    enabled: process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED,
+    environment: process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_ENVIRONMENT,
+  };
+  process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED = 'true';
+  process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_ENVIRONMENT = 'preview';
+  try {
+    const query = '?cadPreview=authenticated-igs-live-v1';
+    assert.equal(resolveAuthenticatedIgsApiBase({
+      hostname: 'reversr-git-live-vsillahs-projects.vercel.app',
+      origin: 'https://reversr-git-live-vsillahs-projects.vercel.app', search: query,
+    }, 'https://reversr.vercel.app'),
+    'https://reversr-git-live-vsillahs-projects.vercel.app');
+    assert.equal(resolveAuthenticatedIgsApiBase({ hostname: 'reversr.vercel.app',
+      origin: 'https://reversr.vercel.app', search: query,
+    }, 'https://reversr.vercel.app'), null);
+    assert.equal(resolveAuthenticatedIgsApiBase({
+      hostname: 'reversr-git-live-vsillahs-projects.vercel.app',
+      origin: 'https://attacker.invalid', search: query,
+    }, 'https://reversr.vercel.app'), null);
+    process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_ENVIRONMENT = 'development';
+    assert.equal(resolveAuthenticatedIgsApiBase({ hostname: 'localhost',
+      origin: 'http://localhost:5001', search: query,
+    }, 'http://localhost:3001'), 'http://localhost:3001');
+    assert.equal(resolveAuthenticatedIgsApiBase({ hostname: 'localhost',
+      origin: 'http://localhost:5001', search: query,
+    }, 'https://reversr.vercel.app'), null);
+  } finally {
+    if (previous.enabled === undefined) delete process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED;
+    else process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED = previous.enabled;
+    if (previous.environment === undefined) delete process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_ENVIRONMENT;
+    else process.env.EXPO_PUBLIC_CAD_AUTHENTICATED_IGS_ENVIRONMENT = previous.environment;
+  }
 });

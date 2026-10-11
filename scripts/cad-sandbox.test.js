@@ -298,7 +298,7 @@ test('Sandbox graph permits only SDK provider access and fixed guest assets', ()
   const allowed = {
     'cadSandboxConfig.js': ['node:fs', 'node:path', 'node:crypto'],
     'cadSandboxExecutor.js': ['node:crypto', './cadWorkerContract', './cadSandboxConfig'],
-    'cadSandboxRouter.js': ['express', 'node:crypto', './cadWorkerContract', './cadReadiness', './cadSandboxConfig', './cadSandboxExecutor'],
+    'cadSandboxRouter.js': ['express', 'node:crypto', './cadWorkerContract', './cadReadiness', './cadSandboxConfig', './cadSandboxExecutor', './cadAuthenticatedIgsRouter'],
     'cadSandboxRunner.js': ['node:fs', 'node:os', 'node:crypto', './cadWorkerContract', './occt.js'],
   };
   for (const [file, expected] of Object.entries(allowed)) {

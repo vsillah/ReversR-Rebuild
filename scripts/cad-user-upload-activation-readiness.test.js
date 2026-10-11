@@ -4,8 +4,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const packet = require('../offline/cad-convex/userUploadActivationReadiness.json');
-const { LIMITS, upload } = require('../server/cadWorkerContract');
+const { LIMITS, upload } = require('../server/cadAuthenticatedIgsWorkerContract');
 const { SANDBOX_LIMITS } = require('../server/cadSandboxConfig');
+const { IGES_SOURCE_MAX_BYTES } = require('../utils/igesAdmission');
+const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES }
+  = require('../utils/cadAuthenticatedIgesAdmission');
 const root = path.resolve(__dirname, '..');
 
 test('readiness evidence records reviewed source gates while approvals stay closed', () => {
@@ -93,11 +96,13 @@ test('latest development upload-session qualification is recorded without activa
   });
 });
 
-test('proposed admission and Sandbox bounds cannot silently drift from worker limits', () => {
+test('legacy proposal stays bounded while authenticated worker and Sandbox limits cannot drift', () => {
   const b = packet.proposedBounds;
-  assert.equal(b.jsonBytes, LIMITS.jsonBytes);
-  assert.equal(b.decodedBytes, LIMITS.inputBytes);
-  assert.equal(b.encodedCharacters, Math.ceil(LIMITS.inputBytes / 3) * 4);
+  assert.equal(b.decodedBytes, IGES_SOURCE_MAX_BYTES);
+  assert.equal(b.encodedCharacters, Math.ceil(IGES_SOURCE_MAX_BYTES / 3) * 4);
+  assert.ok(b.jsonBytes >= b.encodedCharacters && b.jsonBytes < 512 * 1024);
+  assert.equal(LIMITS.inputBytes, AUTHENTICATED_IGES_SOURCE_MAX_BYTES);
+  assert.equal(LIMITS.jsonBytes, Math.ceil(AUTHENTICATED_IGES_SOURCE_MAX_BYTES / 3) * 4 + 1024);
   for (const key of ['vcpus', 'memoryMb', 'lifetimeMs', 'requestMs', 'commandMs', 'cleanupMs'])
     assert.equal(b.sandbox[key], SANDBOX_LIMITS[key]);
   for (const key of ['outputBytes', 'meshes', 'vertices', 'triangles'])
@@ -126,7 +131,7 @@ test('pure IGES payload checks reject unsafe names, unknown fields and external 
 test('canonical base64, encoded and decoded limits fail before any conversion', () => {
   for (const value of ['%%%%', 'Zg=', 'Zh==', 'Zg==\n', ''])
     assert.throws(() => upload({ ...body(), contentBase64: value }));
-  assert.throws(() => upload({ ...body(), contentBase64: 'A'.repeat(packet.proposedBounds.encodedCharacters + 4) }), { code: 'TOO_LARGE' });
+  assert.throws(() => upload({ ...body(), contentBase64: 'A'.repeat(LIMITS.jsonBytes + 4) }), { code: 'TOO_LARGE' });
   assert.throws(() => upload({ ...body(), contentBase64: Buffer.alloc(LIMITS.inputBytes + 1, 65).toString('base64') }), { code: 'TOO_LARGE' });
 });
 

@@ -1797,7 +1797,7 @@ export default function HomeScreen() {
       )}
 
       <ScrollView
-        key={`workflow-surface:${context.id}:${activeCadPreview.enabled ? `cad-review:${cadPhase}` : context.phase}`}
+        key={`workflow-surface:${context.id}:${activeCadPreview.enabled ? 'cad-review' : context.phase}`}
         ref={workflowScrollRef}
         testID="reversr-workflow-scroll"
         style={[styles.content, nativeEmbeddedCadPreview && styles.embeddedPreviewContent]}

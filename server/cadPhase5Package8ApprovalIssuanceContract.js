@@ -12,6 +12,7 @@ const {
   PACKAGE8_APPROVAL_ISSUER_LIMITS,
   PACKAGE8_QUALIFICATION_LIMITS_JSON,
 } = require('./cadPhase5Package8Limits');
+const { parseCanonicalIssuedAtUtc } = require('../utils/cadIssuedAtUtc');
 
 // Approval issuance must validate the same immutable baseline that the
 // coordinator serializes into verification requests. The reviewed source and
@@ -62,12 +63,7 @@ const exactKeys = (value, keys) => Boolean(value && typeof value === 'object'
   && !Array.isArray(value) && Object.keys(value).length === keys.length
   && keys.every(key => Object.hasOwn(value, key)));
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-const parseUtc = value => {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) {
-    return NaN;
-  }
-  return Date.parse(value);
-};
+const parseUtc = parseCanonicalIssuedAtUtc;
 
 function expectedAncestryDigest(sourceReview) {
   return hash([

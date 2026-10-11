@@ -1,6 +1,8 @@
 export const costs: Record<string, number> = { analyze: 1, 'match-machine': 0, 'technical-spec': 0,
   'generate-3d': 0, 'generate-2d': 0, 'generate-2d-single-angle': 0, 'generate-2d-angles': 0,
   'generate-bom': 0, 'export-packet': 0 };
+export const canUseAuthenticatedCadUpload = (planId: 'free' | 'pro_shop' | 'team') =>
+  planId === 'pro_shop' || planId === 'team';
 export function credits(planId: 'free' | 'pro_shop' | 'team', now = Date.now()) {
   const date = new Date(now);
   const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));

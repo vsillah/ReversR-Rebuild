@@ -4,8 +4,17 @@ const { LIMITS, ERRORS, failure } = require('./cadWorkerContract');
 const { getCadReadiness } = require('./cadReadiness');
 const { sandboxReadiness } = require('./cadSandboxConfig');
 const { createSandboxExecutor } = require('./cadSandboxExecutor');
-function createSandboxRouter({ env = process.env, executor = createSandboxExecutor({ env }) } = {}) {
+const { createCadAuthenticatedIgsRouter, createCadAuthenticatedIgsRuntime }
+  = require('./cadAuthenticatedIgsRouter');
+function createSandboxRouter({ env = process.env, executor = createSandboxExecutor({ env }),
+  authenticatedIgsRuntime } = {}) {
   const router = express.Router();
+  // The authenticated route shares this pre-body-parser mount point, while its
+  // own runtime independently requires every development/preview gate. Keeping
+  // it here leaves the historical production upload binding unchanged.
+  router.use(createCadAuthenticatedIgsRouter({
+    runtime: authenticatedIgsRuntime || createCadAuthenticatedIgsRuntime({ env }),
+  }));
   // Capture operator configuration once; requests cannot select or alter execution gates.
   const readiness = sandboxReadiness(env);
   const accessToken = env.CAD_SANDBOX_ACCESS_TOKEN || '';
