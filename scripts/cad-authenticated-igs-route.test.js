@@ -232,7 +232,8 @@ test('session issuance renews one stale upload cookie, rejects request bodies, a
   const staleCookie = `${COOKIE}=us1.${'A'.repeat(43)}`;
   const beforeRenewalReads = runtime.state.bodyReads;
   const renewed = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
-    origin: ORIGIN, authorization: 'Bearer commercial-test-token', cookie: staleCookie,
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token',
+    cookie: `_vercel_jwt=protected-preview; ${staleCookie}`,
   } });
   assert.equal(renewed.status, 200);
   const renewedCookie = renewed.headers.get('set-cookie');
@@ -244,10 +245,20 @@ test('session issuance renews one stale upload cookie, rejects request bodies, a
   assert.equal(runtime.state.bodyReads, beforeRenewalReads);
 
   const malformed = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {
-    origin: ORIGIN, authorization: 'Bearer commercial-test-token', cookie: 'arbitrary=value',
+    origin: ORIGIN, authorization: 'Bearer commercial-test-token',
+    cookie: `_vercel_jwt=protected-preview; ${COOKIE}=malformed`,
   } });
   assert.equal(malformed.status, 401);
   assert.match(malformed.headers.get('set-cookie'), new RegExp(`^${COOKIE}=; Max-Age=0;`));
+  assert.equal(runtime.state.bodyReads, beforeRenewalReads);
+
+  const protectedPreview = await fetch(`${base}/authenticated-upload-session`, {
+    method: 'POST', headers: { origin: ORIGIN,
+      authorization: 'Bearer commercial-test-token', cookie: '_vercel_jwt=protected-preview' },
+  });
+  assert.equal(protectedPreview.status, 200);
+  assert.match(protectedPreview.headers.get('set-cookie'),
+    new RegExp(`^${COOKIE}=us1\\.[A-Za-z0-9_-]{43};`));
   assert.equal(runtime.state.bodyReads, beforeRenewalReads);
 
   const duplicate = await fetch(`${base}/authenticated-upload-session`, { method: 'POST', headers: {

@@ -147,11 +147,12 @@ function uploadHeaders(req) {
 function issuanceCookieAccepted(value) {
   if (value === undefined) return true;
   if (typeof value !== 'string' || value.length > 8192) return false;
-  const cookies = value.split(';').map(part => part.trim()).filter(Boolean);
-  if (cookies.length !== 1) return false;
   const prefix = `${COOKIE}=`;
-  return cookies[0].startsWith(prefix)
-    && /^us1\.[A-Za-z0-9_-]{43}$/.test(cookies[0].slice(prefix.length));
+  const uploadCookies = value.split(';').map(part => part.trim()).filter(Boolean)
+    .filter(cookie => cookie.startsWith(prefix));
+  if (uploadCookies.length === 0) return true;
+  return uploadCookies.length === 1
+    && /^us1\.[A-Za-z0-9_-]{43}$/.test(uploadCookies[0].slice(prefix.length));
 }
 
 function issuanceBodyEmpty(req) {
