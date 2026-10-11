@@ -77,11 +77,12 @@ test('integrated import preserves privacy and production fail-closed boundaries'
   assert.match(home, /'CAD_TEST_PREVIEW_PUBLIC_CUBE'/);
   assert.match(home, /url\.searchParams\.get\('cadPhase'\) !== phaseName/);
   assert.match(home, /\[activeCadPreview\.enabled, cadPhase, context\.id, context\.phase, showHistory, started, welcomeIntroVisible\]/);
-  assert.match(home, /activeCadPreview\.enabled \? 'cad-review' : context\.phase/);
-  assert.doesNotMatch(home, /activeCadPreview\.enabled \? `cad-review:\$\{cadPhase\}` : context\.phase/);
+  assert.match(home, /activeCadPreview\.enabled \? `cad-review:\$\{activeCadPreview\.fixture\.sha256\}` : context\.phase/);
+  assert.doesNotMatch(home, /activeCadPreview\.enabled \? 'cad-review' : context\.phase/);
   assert.match(home, /testID="reversr-workflow-scroll"/);
   assert.match(workflow, /onPhase\(3\)/);
-  assert.match(workflow, /Boolean\(preview\.fixture\.derivedInspectionStl\)/);
+  assert.match(workflow, /preview\.fixture\.qualificationProvenance\?\.kind === 'authenticated-igs-preview'/);
+  assert.doesNotMatch(workflow, /Boolean\(preview\.fixture\.derivedInspectionStl\)/);
   assert.match(workflow, /Qualification boundaries & roadmap/);
   assert.match(workflow, /Browser account and upload-session adapters are not production authentication/);
   assert.match(workflow, /Production upload, hosted conversion, cloud storage, and provider dispatch remain disabled/);
