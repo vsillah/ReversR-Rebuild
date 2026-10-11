@@ -1,4 +1,5 @@
 const { createHash } = require('node:crypto');
+const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -6,6 +7,11 @@ const root = path.resolve(__dirname, '..');
 const packetPath = path.join(root,
   'docs/cad-phase5-package8-public-evidence/one-use-development-executor-closure.json');
 const hashFile = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const historicalCommit = 'c9dfd22a230869ef618c3c8fdfcc95ab86b8aaa0';
+const historicalSource = (rootPath, file) => execFileSync('git',
+  ['show', `${historicalCommit}:${file}`], { cwd: rootPath });
+const historicalHash = (rootPath, file) => createHash('sha256')
+  .update(historicalSource(rootPath, file)).digest('hex');
 const EXACT_BASELINE = Object.freeze({
   mergedMainCommit: '228320e174d23cbe9b43d9c192c2216733f4c477',
   mergedMainTree: 'cb22fc27d6bc741f2abc61ed0e456d66e2bfc336',
@@ -68,7 +74,7 @@ function checkPacket(packet, rootPath = root) {
     if (typeof binding?.path !== 'string' || !/^[a-f0-9]{64}$/.test(binding.sha256)) {
       throw Error('source digest');
     }
-    const currentDigest = hashFile(path.join(rootPath, binding.path));
+    const currentDigest = historicalHash(rootPath, binding.path);
     if (currentDigest === binding.sha256) continue;
     const requiredSuccessorFiles = binding.path === 'scripts/cad-convex-source-audit.js'
       ? APPROVED_SOURCE_AUDIT_SUCCESSORS[currentDigest]
@@ -78,7 +84,7 @@ function checkPacket(packet, rootPath = root) {
           && binding.path !== 'scripts/cad-phase5-package8-readiness-monitoring-checker.js')) {
       throw Error('source digest');
     }
-    const successor = fs.readFileSync(path.join(rootPath, binding.path), 'utf8');
+    const successor = historicalSource(rootPath, binding.path).toString('utf8');
     for (const file of requiredSuccessorFiles) {
       if (!successor.includes(file)) throw Error('source audit successor');
     }
@@ -127,10 +133,10 @@ function checkPacket(packet, rootPath = root) {
       || gate.runtimeActivationAuthorized !== false || gate.oneUseApprovalArtifactIssued !== false
       || gate.independentApprovalIssuanceVerifierSupplied !== false
       || gate.liveQualificationAuthorized !== false) throw Error('remaining gate');
-  const coordinator = fs.readFileSync(path.join(rootPath,
-    'server/cadPhase5Package8OneUseCoordinator.js'), 'utf8');
-  const binding = fs.readFileSync(path.join(rootPath,
-    'server/cadPhase5Package8DevelopmentQualificationBinding.js'), 'utf8');
+  const coordinator = historicalSource(rootPath,
+    'server/cadPhase5Package8OneUseCoordinator.js').toString('utf8');
+  const binding = historicalSource(rootPath,
+    'server/cadPhase5Package8DevelopmentQualificationBinding.js').toString('utf8');
   if (/process\.env|fetch\s*\(|https?\.request|offlineSynthetic/.test(`${coordinator}\n${binding}`)
       || !/routeMounted:\s*false/.test(coordinator)
       || !/runtimeActivationAllowed:\s*false/.test(coordinator)

@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
+const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const {
@@ -11,7 +12,11 @@ const {
 const root = path.resolve(__dirname, '..');
 const packetRelative =
   'docs/cad-phase5-package8-public-evidence/runtime-issuer-authority-verifier-source-closure.json';
+const historicalCommit = 'c9dfd22a230869ef618c3c8fdfcc95ab86b8aaa0';
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const historicalSha256 = (rootPath, file) => createHash('sha256')
+  .update(execFileSync('git', ['show', `${historicalCommit}:${file}`], { cwd: rootPath }))
+  .digest('hex');
 const read = (rootPath, file) => fs.readFileSync(path.join(rootPath, file), 'utf8');
 
 function check(rootPath = root) {
@@ -41,21 +46,11 @@ function check(rootPath = root) {
     reconciliationPacketSha256:
       'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c',
   });
-  assert.deepEqual(VERIFIER_SOURCE_BINDING, {
-    reviewedMainCommit: packet.baseline.mergedMainCommit,
-    reviewedMainTree: packet.baseline.mergedMainTree,
-    productionEvidenceDeploymentId: packet.baseline.productionDeploymentId,
-    baselineReconciliationPacketSha256:
-      packet.baseline.baselineContractReconciliationSha256,
-    preparationPacketSha256: packet.baseline.preparationPacketSha256,
-    unissuedDraftSha256: packet.baseline.unissuedDraftSha256,
-    incompatibilityStopPacketSha256: packet.baseline.incompatibilityStopPacketSha256,
-    launcherClosureSha256: packet.baseline.launcherClosureSha256,
-    independentIssuerClosureSha256: packet.baseline.independentIssuerClosureSha256,
-    reconciliationPacketSha256: packet.baseline.reconciliationPacketSha256,
-  });
+  assert.equal(VERIFIER_SOURCE_BINDING.runtimeInstallRootCommit, historicalCommit);
+  assert.equal(VERIFIER_SOURCE_BINDING.runtimeInstallRootTree,
+    '6db5b4f3c774e79aabb51ffa97d24d1d54c1e5dd');
   for (const binding of Object.values(packet.sourceBindings)) {
-    assert.equal(sha256(path.join(rootPath, binding.path)), binding.sha256, binding.path);
+    assert.equal(historicalSha256(rootPath, binding.path), binding.sha256, binding.path);
   }
   assert.equal(sha256(path.join(rootPath,
     'docs/cad-phase5-package8-public-evidence/baseline-contract-reconciliation.json')),

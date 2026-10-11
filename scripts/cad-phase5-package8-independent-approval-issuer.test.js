@@ -33,7 +33,8 @@ const CLOSED = Object.freeze({ sourceOnly: true, internalOnly: true, routeMounte
 function command(overrides = {}) {
   const runtime = { schemaVersion: 1, deploymentId: 'dpl_package8_exact_development',
     state: 'READY', environment: 'development', commit: '1'.repeat(40), tree: '2'.repeat(40),
-    functionEquivalence: 'VERIFIED_EXACT', receiptDigest: '' };
+    identityMetadataSupported: true, functionSchemaEquivalenceClaimed: false,
+    receiptDigest: '' };
   runtime.receiptDigest = expectedRuntimeReceiptDigest(runtime);
   const request = {
     schemaVersion: 1,
@@ -60,10 +61,7 @@ function command(overrides = {}) {
     executionHeadTree: runtime.tree,
     clean: true,
     descendantOfBaseline: true,
-    ancestryReceiptDigest: '',
-    productionEvidenceDeploymentId: ISSUER_BASELINE.productionEvidenceDeploymentId,
-    preparationSha256: ISSUER_BASELINE.preparationSha256,
-    unissuedDraftSha256: ISSUER_BASELINE.unissuedDraftSha256 };
+    ancestryReceiptDigest: '' };
   review.ancestryReceiptDigest = expectedAncestryDigest(review);
   const value = { schemaVersion: 1, issuerPrincipalDigest: ISSUER, request,
     sourceReview: review, runtimeDeployment: runtime, limits: { ...ISSUER_LIMITS },

@@ -45,13 +45,23 @@ export const package8ApprovalSourceReview = {
   schemaVersion: v.literal(1), baselineCommit: v.string(), baselineTree: v.string(),
   executionHeadCommit: v.string(), executionHeadTree: v.string(), clean: v.literal(true),
   descendantOfBaseline: v.literal(true), ancestryReceiptDigest: v.string(),
-  productionEvidenceDeploymentId: v.string(), preparationSha256: v.string(),
-  unissuedDraftSha256: v.string(),
 };
 export const package8ApprovalRuntimeDeployment = {
   schemaVersion: v.literal(1), deploymentId: v.string(), state: v.literal('READY'),
   environment: v.literal('development'), commit: v.string(), tree: v.string(),
-  functionEquivalence: v.literal('VERIFIED_EXACT'), receiptDigest: v.string(),
+  identityMetadataSupported: v.literal(true),
+  functionSchemaEquivalenceClaimed: v.literal(false), receiptDigest: v.string(),
+};
+export const package8RuntimeAuthorityRequest = {
+  schemaVersion: v.literal(1), issuerPrincipalCommitment: v.string(),
+  issuanceReference: v.string(), approvalCommitment: v.string(),
+  baselineCommit: v.string(), baselineTree: v.string(), executionHeadCommit: v.string(),
+  executionHeadTree: v.string(), runtimeDeploymentId: v.string(),
+  runtimeReceiptDigest: v.string(), ownerCommitment: v.string(),
+  sessionCommitment: v.string(), windowIdDigest: v.string(), windowStartUtc: v.string(),
+  windowEndUtc: v.string(), limitsCommitment: v.string(), authorityExpiresAtUtc: v.string(),
+  sourceClosureSha256: v.string(), sourceOwnershipSeparated: v.literal(true),
+  independentRuntimeIssuerCustodyBound: v.literal(true),
 };
 export const package8ApprovalLimits = {
   schemaVersion: v.literal(1), maximumSessions: v.literal(1), maximumFiles: v.literal(1),
@@ -200,5 +210,20 @@ export default defineSchema({
     closedAtMs: v.optional(v.number()), reasonDigest: v.optional(v.string()),
   }).index('by_issuanceReference', ['issuanceReference'])
     .index('by_approvalCommitment', ['approvalCommitment'])
+    .index('by_status_and_authorityExpiresAtMs', ['status', 'authorityExpiresAtMs']),
+  cadPackage8RuntimeIssuerAuthorities: defineTable({
+    schemaVersion: v.literal(1), verifierPrincipalCommitment: v.string(),
+    issuerPrincipalCommitment: v.string(), issuanceReference: v.string(),
+    approvalCommitment: v.string(), authorityCommitment: v.string(),
+    requestCommitment: v.string(), request: v.object(package8RuntimeAuthorityRequest),
+    issuedAtMs: v.number(), authorityExpiresAtMs: v.number(),
+    status: v.union(v.literal('active'), v.literal('consumed'), v.literal('revoked'),
+      v.literal('closed')),
+    generation: v.number(), consumedAtMs: v.optional(v.number()),
+    revokedAtMs: v.optional(v.number()), closedAtMs: v.optional(v.number()),
+    reasonDigest: v.optional(v.string()),
+  }).index('by_authorityCommitment', ['authorityCommitment'])
+    .index('by_requestCommitment', ['requestCommitment'])
+    .index('by_issuanceReference', ['issuanceReference'])
     .index('by_status_and_authorityExpiresAtMs', ['status', 'authorityExpiresAtMs']),
 });

@@ -38,7 +38,8 @@ function executionBinding() {
     descendantOfBaseline: true, ancestryReceiptDigest: '', runtimeDeployment: {
       schemaVersion: 1, deploymentId: 'dpl_package8_development_exact', state: 'READY',
       environment: 'development', commit: '1'.repeat(40), tree: '2'.repeat(40),
-      functionEquivalence: 'VERIFIED_EXACT', receiptDigest: '',
+      identityMetadataSupported: true, functionSchemaEquivalenceClaimed: false,
+      receiptDigest: '',
     } };
   value.ancestryReceiptDigest = expectedAncestryDigest(value);
   value.runtimeDeployment.receiptDigest = expectedRuntimeReceiptDigest(value.runtimeDeployment);
@@ -205,7 +206,8 @@ function fixture(options = {}) {
         executionHeadTree: binding.executionHeadTree, clean: true, descendantOfBaseline: true,
         deploymentId: binding.runtimeDeployment.deploymentId,
         deployedCommit: binding.executionHeadCommit, deployedTree: binding.executionHeadTree,
-        deploymentState: 'READY', functionEquivalence: 'VERIFIED_EXACT' }; } },
+        deploymentState: 'READY', identityMetadataSupported: true,
+        functionSchemaEquivalenceClaimed: false }; } },
     lifecycleMetadata: { async readSanitized() { calls.push('lifecycle:read'); return {
       convex: { teamSlug: 'vambah-sillah', projectSlug: 'reversr-cad-auth-dev',
         deploymentName: 'majestic-alligator-31', identityVerified: true,

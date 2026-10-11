@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
+const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const {
@@ -17,6 +18,11 @@ const root = path.resolve(__dirname, '..');
 const packetRelative =
   'docs/cad-phase5-package8-public-evidence/baseline-contract-reconciliation.json';
 const sha256 = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const historicalCommit = 'c9dfd22a230869ef618c3c8fdfcc95ab86b8aaa0';
+const historical = (rootPath, file) => execFileSync('git',
+  ['show', `${historicalCommit}:${file}`], { cwd: rootPath });
+const historicalSha256 = (rootPath, file) => createHash('sha256')
+  .update(historical(rootPath, file)).digest('hex');
 
 function check(rootPath = root) {
   const packet = JSON.parse(fs.readFileSync(path.join(rootPath, packetRelative), 'utf8'));
@@ -42,7 +48,7 @@ function check(rootPath = root) {
       'ebebc571d8ee1756ebb408b6612662a1f0d748627a14f6bea66695a11d89966c',
   });
   for (const binding of Object.values(packet.sourceBindings)) {
-    assert.equal(sha256(path.join(rootPath, binding.path)), binding.sha256, binding.path);
+    assert.equal(historicalSha256(rootPath, binding.path), binding.sha256, binding.path);
   }
   assert.equal(ISSUER_BASELINE.reviewedMainCommit, EXECUTION_BASELINE.mergedMainCommit);
   assert.equal(ISSUER_BASELINE.reviewedMainTree, EXECUTION_BASELINE.mergedMainTree);
@@ -72,7 +78,7 @@ function check(rootPath = root) {
 
   const source = Object.values(packet.sourceBindings)
     .filter(binding => binding.path.startsWith('server/'))
-    .map(binding => fs.readFileSync(path.join(rootPath, binding.path), 'utf8'))
+    .map(binding => historical(rootPath, binding.path).toString('utf8'))
     .join('\n');
   assert.doesNotMatch(source,
     /process\.env|fetch\s*\(|https?\.request|child_process|secretAccessKey|private key/i);

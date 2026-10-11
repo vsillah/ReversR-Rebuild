@@ -8,6 +8,7 @@ const {
 const {
   EXECUTION_BASELINE,
   expectedAncestryDigest,
+  expectedRuntimeReceiptDigest,
 } = require('../server/cadPhase5Package8OneUseCoordinator');
 const {
   expectedRuntimeAuthorityReceipt,
@@ -33,8 +34,8 @@ function evidence(overrides = {}) {
     schemaVersion: 1,
     baselineCommit: EXECUTION_BASELINE.mergedMainCommit,
     baselineTree: EXECUTION_BASELINE.mergedMainTree,
-    executionHeadCommit: VERIFIER_SOURCE_BINDING.reviewedMainCommit,
-    executionHeadTree: VERIFIER_SOURCE_BINDING.reviewedMainTree,
+    executionHeadCommit: VERIFIER_SOURCE_BINDING.runtimeInstallRootCommit,
+    executionHeadTree: VERIFIER_SOURCE_BINDING.runtimeInstallRootTree,
     clean: true,
     descendantOfBaseline: true,
     ancestryReceiptDigest: '',
@@ -52,9 +53,9 @@ function evidence(overrides = {}) {
       deploymentId: 'dpl_package8_development_runtime_exact',
       state: 'READY',
       environment: 'development',
-      commit: VERIFIER_SOURCE_BINDING.reviewedMainCommit,
-      tree: VERIFIER_SOURCE_BINDING.reviewedMainTree,
-      receiptDigest: hash('package8-development-runtime-receipt'),
+      commit: VERIFIER_SOURCE_BINDING.runtimeInstallRootCommit,
+      tree: VERIFIER_SOURCE_BINDING.runtimeInstallRootTree,
+      receiptDigest: '',
       identityMetadataSupported: true,
       functionSchemaEquivalenceClaimed: false,
     },
@@ -69,6 +70,7 @@ function evidence(overrides = {}) {
     sourceOwnershipSeparated: true,
     independentRuntimeIssuerCustodyBound: true,
   };
+  value.runtimeDeployment.receiptDigest = expectedRuntimeReceiptDigest(value.runtimeDeployment);
   return Object.assign(value, overrides);
 }
 
@@ -125,7 +127,6 @@ function verifier(options = {}) {
   const authorityLedger = options.authorityLedger || ledger().port;
   return createCadPhase5Package8RuntimeIssuerAuthorityVerifier({
     reviewOnly: true,
-    testOnly: true,
     reviewGate: VERIFIER_REVIEW_GATE,
     verifierPrincipalCommitment: options.verifierPrincipalCommitment || VERIFIER,
     authorityEvidence,

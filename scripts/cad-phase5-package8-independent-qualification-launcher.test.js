@@ -61,7 +61,8 @@ function executionBinding() {
       environment: 'development',
       commit: '1'.repeat(40),
       tree: '2'.repeat(40),
-      functionEquivalence: 'VERIFIED_EXACT',
+      identityMetadataSupported: true,
+      functionSchemaEquivalenceClaimed: false,
       receiptDigest: '',
     },
   };
@@ -228,7 +229,6 @@ function fixture(options = {}) {
   });
   const launcher = createCadPhase5Package8IndependentQualificationLauncher({
     reviewOnly: true,
-    testOnly: true,
     launchGate: LAUNCH_REVIEW_GATE,
     issuerPrincipalDigest: 'f'.repeat(64),
     issuerAuthorityVerifier,
@@ -304,7 +304,6 @@ test('issuer principal cannot equal owner or session commitment', async () => {
   const f = fixture({ artifact });
   const launcher = createCadPhase5Package8IndependentQualificationLauncher({
     reviewOnly: true,
-    testOnly: true,
     launchGate: LAUNCH_REVIEW_GATE,
     issuerPrincipalDigest: ownerDigest,
     issuerAuthorityVerifier: {
