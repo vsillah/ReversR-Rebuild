@@ -94,8 +94,10 @@ const retryProjection = () => ({
 
 function validReceipt(value, request) {
   const expected = verificationReceipt(request);
-  return exactKeys(value, [...Object.keys(request), 'verified', 'status', 'revoked',
-    'consumed', 'receiptDigest']) && expected !== null && same(value, expected);
+  const keys = [...Object.keys(request), 'verified', 'status', 'revoked',
+    'consumed', 'receiptDigest'];
+  return exactKeys(value, keys) && expected !== null
+    && keys.every(key => value[key] === expected[key]);
 }
 
 function sanitizeResult(operation, raw, request) {

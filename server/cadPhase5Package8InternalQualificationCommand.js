@@ -26,6 +26,19 @@ const COMMAND_REVIEW_GATE = Object.freeze({
 const hash = value => createHash('sha256').update(value).digest('hex');
 const digest = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const FAILURE_STAGE_CODES = new Set([
+  'PACKAGE8_INDEPENDENT_QUALIFICATION_LAUNCHER_DISABLED',
+  'PACKAGE8_QUALIFICATION_TIME_UNKNOWN',
+  'PACKAGE8_APPROVAL_INVALID',
+  'PACKAGE8_ISSUER_OWNERSHIP_NOT_INDEPENDENT',
+  'PACKAGE8_ISSUER_AUTHORITY_INVALID',
+  'PACKAGE8_ISSUER_AUTHORITY_UNKNOWN',
+  'PACKAGE8_APPROVAL_ISSUANCE_UNKNOWN',
+  'PACKAGE8_APPROVAL_CONSUMPTION_UNKNOWN',
+  'PACKAGE8_QUALIFICATION_TERMINAL_UNKNOWN',
+  'PACKAGE8_APPROVAL_TERMINAL_EVIDENCE_UNKNOWN',
+  'PACKAGE8_QUALIFICATION_CLOSED_AFTER_FAILURE',
+]);
 const deny = code => Object.freeze({ ok: false, code, sourceOnly: true,
   developmentOnly: true, authorityRegistered: false, authorityConsumed: false,
   authorityClosed: false, applicationRetries: 0, transportRetries: 0,
@@ -169,6 +182,9 @@ function createCadPhase5Package8InternalQualificationCommand({
       && qualification.code === 'PACKAGE8_INDEPENDENT_QUALIFICATION_QUALIFIED_CLOSED';
     const qualificationUnknown = qualification?.code
       === 'PACKAGE8_INTERNAL_QUALIFICATION_OUTCOME_UNKNOWN';
+    const failureStageCode = qualified ? null
+      : FAILURE_STAGE_CODES.has(qualification?.code) ? qualification.code
+        : 'PACKAGE8_QUALIFICATION_FAILURE_UNCLASSIFIED';
     return Object.freeze({
       ok: qualified,
       code: qualified ? 'PACKAGE8_INTERNAL_QUALIFICATION_QUALIFIED_CLOSED'
@@ -181,6 +197,7 @@ function createCadPhase5Package8InternalQualificationCommand({
       authorityClosed: true,
       approvalConsumed: qualification?.approvalConsumed === true,
       approvalClosed: qualification?.approvalClosed === true,
+      failureStageCode,
       applicationRetries: 0,
       transportRetries: 0,
       providerRetries: 0,
