@@ -1,9 +1,10 @@
-// Source-only Cloudflare R2 custody candidate. No route, provider client,
-// credentials, environment selector, or default instance imports this module.
+// Reusable private Cloudflare R2 custody boundary. It has no default credentials
+// or provider and dispatches only through explicitly supplied adapters.
 const { createHash, randomBytes, randomUUID } = require('node:crypto');
-const { IGES_SOURCE_MAX_BYTES } = require('../utils/igesAdmission');
+const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, IGES_SOURCE_MAX_BYTES }
+  = require('../utils/igesAdmission');
 
-const OPERATION_BUDGET_MS = 800;
+const OPERATION_BUDGET_MS = 2000;
 const DOWNLOAD_GRANT_MS = 60 * 1000;
 const POLICY = Object.freeze({
   schemaVersion: 1,
@@ -31,6 +32,12 @@ const POLICY = Object.freeze({
   maxDeleteOperations: 1000,
   maxPilotCostMicros: 9_000_000,
   incidentOwnerRole: 'ReversR security operator',
+});
+const AUTHENTICATED_IGS_POLICY = Object.freeze({
+  ...POLICY,
+  maxObjectBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES,
+  maxOriginalBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES,
+  maxStoredBytes: 12 * 1024 * 1024,
 });
 const KINDS = new Set(['original-igs', 'preview-geometry', 'derived-stl']);
 const FORMATS = Object.freeze({
@@ -86,7 +93,28 @@ async function bounded(operation, parentSignal) {
   }
 }
 
-function validateRecord(record) {
+function validPolicy(policy) {
+  return policy && typeof policy === 'object' && !Array.isArray(policy)
+    && policy.schemaVersion === POLICY.schemaVersion
+    && policy.provider === POLICY.provider
+    && policy.jurisdiction === POLICY.jurisdiction
+    && policy.storageClass === POLICY.storageClass
+    && policy.publicAccess === false && policy.customDomain === false
+    && policy.cache === false && policy.versioning === false
+    && policy.providerAccessLogging === false && policy.providerBackups === false
+    && [policy.originalRetentionMs, policy.derivedRetentionMs, policy.temporaryQuarantineMs,
+      policy.deletionSlaMs, policy.lifecycleBackstopMs, policy.applicationLogRetentionMs,
+      policy.maxObjectBytes, policy.maxOriginalBytes, policy.maxStoredBytes, policy.maxObjects,
+      policy.maxClassAOperations, policy.maxClassBOperations, policy.maxDeleteOperations,
+      policy.maxPilotCostMicros].every(value => Number.isSafeInteger(value) && value > 0)
+    && policy.maxOriginalBytes <= policy.maxObjectBytes
+    && policy.maxObjectBytes <= AUTHENTICATED_IGES_SOURCE_MAX_BYTES
+    && policy.maxStoredBytes >= policy.maxObjectBytes
+    && policy.maxPilotCostMicros < 10_000_000
+    && policy.incidentOwnerRole === POLICY.incidentOwnerRole;
+}
+
+function validateRecord(record, policy = POLICY) {
   const derived = record?.kind === 'preview-geometry' || record?.kind === 'derived-stl';
   const bindingValid = derived
     ? id(record.sourceArtifactId) && digest(record.sourceDigest) && digest(record.geometryDigest)
@@ -96,8 +124,8 @@ function validateRecord(record) {
   if (!allowed(record, RECORD_KEYS) || record.schemaVersion !== 1 || !id(record.artifactId) || !id(record.userId)
     || !id(record.shopId) || !id(record.uploadSessionId) || !KINDS.has(record.kind)
     || !FORMATS[record.kind].has(record.format) || !Number.isSafeInteger(record.byteCount)
-    || record.byteCount <= 0 || record.byteCount > POLICY.maxObjectBytes
-    || (record.kind === 'original-igs' && record.byteCount > POLICY.maxOriginalBytes)
+    || record.byteCount <= 0 || record.byteCount > policy.maxObjectBytes
+    || (record.kind === 'original-igs' && record.byteCount > policy.maxOriginalBytes)
     || !digest(record.restrictedDigest) || !digest(record.objectKeyDigest)
     || typeof record.providerObjectKey !== 'string'
     || !/^phase5\/[a-f0-9]{64}$/.test(record.providerObjectKey)
@@ -111,13 +139,16 @@ function validateRecord(record) {
   return record;
 }
 
-function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, now = Date.now } = {}) {
+function createCadR2PrivateArtifactCustody({ enabled = false, runtimeEnabled = false,
+  provider, store, now = Date.now, policy = POLICY } = {}) {
   const storeMethods = ['reserve', 'consumeOperation', 'readForOwner', 'markStored', 'markUnknown', 'beginDelete',
     'confirmDeleted', 'issueGrant', 'resolveGrant'];
   const providerMethods = ['putExact', 'getExact', 'deleteExact', 'headExact'];
-  const reviewConfigured = enabled === true && POLICY.provider === 'cloudflare-r2'
+  const reviewConfigured = enabled === true && validPolicy(policy)
     && storeMethods.every(name => typeof store?.[name] === 'function')
     && providerMethods.every(name => typeof provider?.[name] === 'function') && typeof now === 'function';
+  const runtimeConfigured = reviewConfigured && runtimeEnabled === true
+    && policy === AUTHENTICATED_IGS_POLICY;
   const clock = () => { const value = now(); if (!time(value)) fail(); return value; };
 
   async function quarantine(artifactId, reason) {
@@ -127,12 +158,12 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
   }
 
   return Object.freeze({
-    sourceOnly: true,
-    configured: false,
+    sourceOnly: !runtimeConfigured,
+    configured: runtimeConfigured,
     reviewConfigured,
-    providerDispatchEnabled: false,
-    downloadRouteEnabled: false,
-    policy: POLICY,
+    providerDispatchEnabled: runtimeConfigured,
+    downloadRouteEnabled: runtimeConfigured,
+    policy,
     async reserveArtifact(identity, input, { signal } = {}) {
       try {
         if (!reviewConfigured) return deny('CUSTODY_UNAVAILABLE');
@@ -141,15 +172,15 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         const derived = input?.kind === 'preview-geometry' || input?.kind === 'derived-stl';
         if (!exact(input, reserveKeys) || !KINDS.has(input.kind)
           || !FORMATS[input.kind].has(input.format) || !Number.isSafeInteger(input.byteCount)
-          || input.byteCount <= 0 || input.byteCount > POLICY.maxObjectBytes
-          || (input.kind === 'original-igs' && input.byteCount > POLICY.maxOriginalBytes)
+          || input.byteCount <= 0 || input.byteCount > policy.maxObjectBytes
+          || (input.kind === 'original-igs' && input.byteCount > policy.maxOriginalBytes)
           || !digest(input.restrictedDigest) || (derived && (!id(input.sourceArtifactId)
             || !digest(input.sourceDigest) || !digest(input.geometryDigest)
             || input.units !== 'millimeter' || input.warning !== DERIVED_WARNING))) {
           return deny('CUSTODY_INVALID');
         }
         const createdAt = clock();
-        const retention = input.kind === 'original-igs' ? POLICY.originalRetentionMs : POLICY.derivedRetentionMs;
+        const retention = input.kind === 'original-igs' ? policy.originalRetentionMs : policy.derivedRetentionMs;
         const providerObjectKey = `phase5/${randomBytes(32).toString('hex')}`;
         const record = Object.freeze({ schemaVersion: 1, artifactId: randomUUID(), ...owner,
           kind: input.kind, format: input.format, byteCount: input.byteCount,
@@ -158,7 +189,7 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
             geometryDigest: input.geometryDigest, units: input.units, warning: input.warning } : {}), providerObjectKey,
           objectKeyDigest: hash(providerObjectKey), state: 'reserved', createdAt,
           retainedUntil: createdAt + retention, generation: 1 });
-        const accepted = await bounded(s => store.reserve(record, POLICY, { signal: s }), signal);
+        const accepted = await bounded(s => store.reserve(record, policy, { signal: s }), signal);
         if (accepted !== true) return deny('CUSTODY_QUOTA_EXHAUSTED');
         return Object.freeze({ ok: true, code: 'ARTIFACT_RESERVED', artifactId: record.artifactId,
           retainedUntil: record.retainedUntil });
@@ -172,17 +203,17 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         if (!id(artifactId) || !Buffer.isBuffer(bytes)) return deny('CUSTODY_INVALID');
         const owned = await bounded(s => store.readForOwner(artifactId, owner, { signal: s }), signal);
         if (owned == null) return deny('CUSTODY_DENIED');
-        record = validateRecord(owned);
+        record = validateRecord(owned, policy);
         if (record.state !== 'reserved' || record.byteCount !== bytes.byteLength
           || record.restrictedDigest !== hash(bytes) || record.retainedUntil <= clock()) {
           return deny('CUSTODY_DENIED');
         }
-        if (await bounded(s => store.consumeOperation('class-a', 1, POLICY, { signal: s }), signal) !== true) {
+        if (await bounded(s => store.consumeOperation('class-a', 1, policy, { signal: s }), signal) !== true) {
           return deny('CUSTODY_QUOTA_EXHAUSTED');
         }
         const result = await bounded(s => provider.putExact(Object.freeze({
           objectKey: record.providerObjectKey, bytes, contentType: record.format,
-          storageClass: POLICY.storageClass, ifNoneMatch: '*', cacheControl: 'no-store',
+          storageClass: policy.storageClass, ifNoneMatch: '*', cacheControl: 'no-store',
         }), { signal: s }), signal);
         if (!result || result.committed !== true || result.byteCount !== record.byteCount
           || result.sha256 !== record.restrictedDigest) {
@@ -209,7 +240,7 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         if (!id(artifactId)) return deny('CUSTODY_INVALID');
         const owned = await bounded(s => store.readForOwner(artifactId, owner, { signal: s }), signal);
         if (owned == null) return deny('CUSTODY_DENIED');
-        const record = validateRecord(owned);
+        const record = validateRecord(owned, policy);
         const issuedAt = clock();
         if (record.state !== 'stored' || record.retainedUntil <= issuedAt) return deny('CUSTODY_DENIED');
         const token = `dg1.${randomBytes(32).toString('base64url')}`;
@@ -230,9 +261,9 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         const granted = await bounded(s => store.resolveGrant(hash(token), owner,
           clock(), { signal: s }), signal);
         if (granted == null) return deny('CUSTODY_DENIED');
-        const record = validateRecord(granted);
+        const record = validateRecord(granted, policy);
         if (record.state !== 'stored' || record.retainedUntil <= clock()) return deny('CUSTODY_DENIED');
-        if (await bounded(s => store.consumeOperation('class-b', 1, POLICY, { signal: s }), signal) !== true) {
+        if (await bounded(s => store.consumeOperation('class-b', 1, policy, { signal: s }), signal) !== true) {
           return deny('CUSTODY_QUOTA_EXHAUSTED');
         }
         const result = await bounded(s => provider.getExact(Object.freeze({
@@ -241,8 +272,8 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         }), { signal: s }), signal);
         if (!result || !Buffer.isBuffer(result.bytes) || result.bytes.byteLength !== record.byteCount
           || hash(result.bytes) !== record.restrictedDigest) return deny('CUSTODY_UNKNOWN');
-        return Object.freeze({ ok: true, code: 'ARTIFACT_READ', bytes: result.bytes,
-          format: record.format, byteCount: record.byteCount });
+        return Object.freeze({ ok: true, code: 'ARTIFACT_READ', artifactId: record.artifactId,
+          kind: record.kind, bytes: result.bytes, format: record.format, byteCount: record.byteCount });
       } catch { return deny('CUSTODY_UNAVAILABLE'); }
     },
     async deleteArtifact(identity, artifactId, { signal } = {}) {
@@ -254,15 +285,15 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
         const deletable = await bounded(s => store.beginDelete(artifactId, owner,
           clock(), { signal: s }), signal);
         if (deletable == null) return deny('CUSTODY_DENIED');
-        record = validateRecord(deletable);
+        record = validateRecord(deletable, policy);
         if (!['deleting', 'quarantined'].includes(record.state)) return deny('CUSTODY_DENIED');
-        if (await bounded(s => store.consumeOperation('delete', 1, POLICY, { signal: s }), signal) !== true) {
+        if (await bounded(s => store.consumeOperation('delete', 1, policy, { signal: s }), signal) !== true) {
           return deny('CUSTODY_QUOTA_EXHAUSTED');
         }
         const deleted = await bounded(s => provider.deleteExact(record.providerObjectKey,
           { signal: s }), signal);
         if (deleted !== true) throw new Error('DELETE_UNKNOWN');
-        if (await bounded(s => store.consumeOperation('class-b', 1, POLICY, { signal: s }), signal) !== true) {
+        if (await bounded(s => store.consumeOperation('class-b', 1, policy, { signal: s }), signal) !== true) {
           throw new Error('CUSTODY_QUOTA_EXHAUSTED');
         }
         const remaining = await bounded(s => provider.headExact(record.providerObjectKey,
@@ -281,5 +312,6 @@ function createCadR2PrivateArtifactCustody({ enabled = false, provider, store, n
   });
 }
 
-module.exports = { DERIVED_WARNING, DOWNLOAD_GRANT_MS, OPERATION_BUDGET_MS, POLICY,
+module.exports = { AUTHENTICATED_IGS_POLICY, DERIVED_WARNING, DOWNLOAD_GRANT_MS,
+  OPERATION_BUDGET_MS, POLICY,
   createCadR2PrivateArtifactCustody };

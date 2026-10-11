@@ -1,6 +1,7 @@
 // Internal-only, source-disabled Package 8 approval issuance ledger.
 // No public query/mutation/action or HTTP route imports these functions.
 import { v } from 'convex/values';
+import { parseCanonicalIssuedAtUtc } from '../utils/cadIssuedAtUtc';
 import { internalMutation, internalQuery } from './_generated/server';
 import {
   package8ApprovalLimits,
@@ -99,8 +100,7 @@ const sha256 = async (value: string) => {
   return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
 };
 const safeTime = (value: number) => Number.isSafeInteger(value) && value >= 0;
-const parseUtc = (value: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)
-  ? Date.parse(value) : NaN;
+const parseUtc = parseCanonicalIssuedAtUtc;
 const canonical = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(canonical);
   if (value && typeof value === 'object') return Object.fromEntries(

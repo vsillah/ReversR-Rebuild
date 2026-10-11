@@ -12,6 +12,7 @@ import {
   type IgsImportState,
 } from '../utils/igsImportJourney';
 import SyntheticIgsQualificationPanel from './SyntheticIgsQualificationPanel';
+import { validateAuthenticatedIgsFile } from '../utils/cadAuthenticatedIgsBrowser';
 
 const initialState: IgsImportState = { status: 'idle', message: '' };
 
@@ -19,7 +20,10 @@ function wait(milliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: CadInternalTesterFixture) => void }) {
+export default function PublicIgsImportPanel({ onReady, onAuthenticatedFile }: {
+  onReady: (fixture: CadInternalTesterFixture) => void;
+  onAuthenticatedFile?: (file: File) => Promise<CadInternalTesterFixture>;
+}) {
   const { colors } = useAppTheme();
   const styles = createStyles(colors);
   const picker = useRef<HTMLInputElement | null>(null);
@@ -33,7 +37,8 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
   const busy = state.status === 'queued' || state.status === 'processing';
   const sourceBusy = busy || syntheticBusy;
   const ready = state.status === 'ready';
-  const canRetry = Boolean(selectedFile.current) || selectedSource.current === 'sample';
+  const canRetry = !onAuthenticatedFile
+    && (Boolean(selectedFile.current) || selectedSource.current === 'sample');
 
   useEffect(() => () => { runId.current += 1; }, []);
 
@@ -49,7 +54,9 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
     if (syntheticBusy) return;
     selectedSource.current = source;
     setSourceChoice(source);
-    const metadata = validateIgsFileMetadata(file);
+    const metadata = source === 'file' && onAuthenticatedFile
+      ? validateAuthenticatedIgsFile(file)
+      : validateIgsFileMetadata(file);
     if (!metadata.ok) {
       selectedFile.current = null;
       dispatch({ type: 'ERROR', message: metadata.message });
@@ -62,6 +69,13 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
     if (currentRun !== runId.current) return;
     dispatch({ type: 'PROCESS' });
     try {
+      if (source === 'file' && onAuthenticatedFile) {
+        const result = await onAuthenticatedFile(file);
+        if (currentRun !== runId.current) return;
+        dispatch({ type: 'READY' });
+        onReady(result);
+        return;
+      }
       const result = await verifyPublicIgsFixture(file);
       await wait(360);
       if (currentRun !== runId.current) return;
@@ -73,6 +87,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
       onReady(PUBLIC_CUBE_RESULT);
     } catch (error) {
       if (currentRun !== runId.current) return;
+      if (source === 'file' && onAuthenticatedFile) selectedFile.current = null;
       dispatch({ type: 'ERROR', message: error instanceof Error ? error.message : 'The public .igs file could not be verified locally.' });
     }
   };
@@ -112,7 +127,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
           ref={picker}
           type="file"
           accept={IGS_FILE_ACCEPT}
-          aria-label="Choose approved public IGS file"
+          aria-label={onAuthenticatedFile ? 'Choose private IGS or IGES file' : 'Choose approved public IGS file'}
           data-testid="igs-import-file-input"
           style={{ display: 'none' }}
           onChange={event => {
@@ -127,7 +142,9 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
         <View style={styles.iconCircle}><Ionicons name="document-text-outline" size={21} color={colors.primary} /></View>
         <View style={{ flex: 1, gap: 3 }}>
           <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Import an IGS file</Text>
-          <Text style={styles.body}>Choose an approved public .igs file. ReversR verifies it locally, prepares inventory, and opens the 3D review automatically.</Text>
+          <Text style={styles.body}>{onAuthenticatedFile
+            ? 'Choose one private .igs or .iges file for the protected preview path, or use the included public sample. ReversR opens the 3D review automatically.'
+            : 'Choose an approved public .igs file. ReversR verifies it locally, prepares inventory, and opens the 3D review automatically.'}</Text>
         </View>
       </View>
 
@@ -136,7 +153,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
           {Platform.OS === 'web' ? (
             <View testID="igs-source-choice-panel" style={styles.sourceChoiceGrid}>
               <div
-                aria-label="Drop approved public IGS file here"
+                aria-label={onAuthenticatedFile ? 'Drop private IGS or IGES file here' : 'Drop approved public IGS file here'}
                 aria-disabled={sourceBusy}
                 data-testid="igs-import-drop-zone"
                 data-selected={sourceChoice === 'file'}
@@ -165,8 +182,8 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
                 }}
               >
                 <Ionicons name={sourceChoice === 'file' ? 'checkmark-circle-outline' : 'cloud-upload-outline'} size={27} color={colors.primary} />
-                <Text style={[Typography.bodyStrong, { color: colors.text }]}>Local .igs file</Text>
-                <Text style={[Typography.caption, { color: colors.mutedText }]}>IGS or IGES · 2 MB maximum</Text>
+                <Text style={[Typography.bodyStrong, { color: colors.text }]}>{onAuthenticatedFile ? 'Private IGS file' : 'Local .igs file'}</Text>
+                <Text style={[Typography.caption, { color: colors.mutedText }]}>IGS or IGES · {onAuthenticatedFile ? '8 MiB' : '2 MB'} maximum</Text>
                 <TouchableOpacity testID="igs-source-local-action" disabled={sourceBusy} accessibilityRole="button" accessibilityLabel={sourceChoice === 'file' ? 'Selected local IGS file' : 'Choose local IGS file'} accessibilityState={{ disabled: sourceBusy }} aria-pressed={sourceChoice === 'file'} onPress={() => picker.current?.click()} style={[styles.chooseAction, sourceBusy && styles.disabled]}>
                   <Text style={[Typography.label, { color: colors.primary }]}>{sourceChoice === 'file' ? 'Selected' : 'Choose'}</Text>
                 </TouchableOpacity>
@@ -187,7 +204,7 @@ export default function PublicIgsImportPanel({ onReady }: { onReady: (fixture: C
             <View style={styles.blockedCard}><Text style={styles.body}>Local IGS import currently requires the ReversR web app.</Text></View>
           )}
           {sourceBusy ? <Text accessibilityLiveRegion="polite" style={[Typography.caption, { color: colors.mutedText, textAlign: 'center' }]}>{busy ? state.message : 'Preparing synthetic fixture…'}</Text> : null}
-          <SyntheticIgsQualificationPanel disabled={busy} onBusyChange={setSyntheticBusy} onReady={onReady} />
+          {!onAuthenticatedFile ? <SyntheticIgsQualificationPanel disabled={busy} onBusyChange={setSyntheticBusy} onReady={onReady} /> : null}
         </>
       ) : (
         <View testID="igs-import-ready" accessibilityLiveRegion="polite" style={styles.readyCard}>

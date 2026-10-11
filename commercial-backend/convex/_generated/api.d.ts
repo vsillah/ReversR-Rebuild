@@ -13,6 +13,8 @@
 import type * as auth from "../auth.js";
 import type * as billing from "../billing.js";
 import type * as billingState from "../billingState.js";
+import type * as cadAuthenticatedIgs from "../cadAuthenticatedIgs.js";
+import type * as cadAuthenticatedIgsGateway from "../cadAuthenticatedIgsGateway.js";
 import type * as catalog from "../catalog.js";
 import type * as commercialPassword from "../commercialPassword.js";
 import type * as configuration from "../configuration.js";
@@ -33,6 +35,8 @@ import type * as session from "../session.js";
 "auth": typeof auth,
 "billing": typeof billing,
 "billingState": typeof billingState,
+"cadAuthenticatedIgs": typeof cadAuthenticatedIgs,
+"cadAuthenticatedIgsGateway": typeof cadAuthenticatedIgsGateway,
 "catalog": typeof catalog,
 "commercialPassword": typeof commercialPassword,
 "configuration": typeof configuration,

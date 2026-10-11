@@ -4,6 +4,7 @@
 import { v } from 'convex/values';
 import { internalMutation, internalQuery } from './_generated/server';
 import { package8RuntimeAuthorityRequest } from './schema';
+import { parseCanonicalIssuedAtUtc } from '../utils/cadIssuedAtUtc';
 
 const BASELINE = {
   commit: '228320e174d23cbe9b43d9c192c2216733f4c477',
@@ -82,8 +83,7 @@ const accept = (resultCode: TransitionCode, record: any) => ({ sourceOnly: true 
   code: resultCode, authorityCommitment: record.authorityCommitment,
   requestCommitment: record.requestCommitment, generation: record.generation,
   replayed: false as const });
-const parseUtc = (value: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)
-  ? Date.parse(value) : NaN;
+const parseUtc = parseCanonicalIssuedAtUtc;
 const safeTime = (value: number) => Number.isSafeInteger(value) && value >= 0;
 const sha256 = async (value: string) => {
   const bytes = new TextEncoder().encode(value);

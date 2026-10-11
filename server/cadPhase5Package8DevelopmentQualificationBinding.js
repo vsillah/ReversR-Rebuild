@@ -30,6 +30,7 @@ const {
 const {
   SYNTHETIC_PRIVATE_IGES_FIXTURE,
 } = require('./cadPhase5SyntheticPrivatePathQualification');
+const { parseCanonicalIssuedAtUtc } = require('../utils/cadIssuedAtUtc');
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 const exactKeys = (value, keys) => Boolean(value && typeof value === 'object'
@@ -150,11 +151,11 @@ function validateApprovalArtifact(artifact, nowMs) {
       || artifact.observedCostMicros >= LIMITS.maximumCostUsdExclusive * 1_000_000) {
     return 'PACKAGE8_APPROVAL_INVALID';
   }
-  const issuedAt = Date.parse(artifact.issuedAtUtc);
-  const expiresAt = Date.parse(artifact.authorityExpiresAtUtc);
+  const issuedAt = parseCanonicalIssuedAtUtc(artifact.issuedAtUtc);
+  const expiresAt = parseCanonicalIssuedAtUtc(artifact.authorityExpiresAtUtc);
   const window = artifact.window || {};
-  const start = Date.parse(window.startUtc);
-  const end = Date.parse(window.endUtc);
+  const start = parseCanonicalIssuedAtUtc(window.startUtc);
+  const end = parseCanonicalIssuedAtUtc(window.endUtc);
   if (!exactKeys(window, ['schemaVersion', 'idDigest', 'startUtc', 'endUtc', 'activated'])
       || window.schemaVersion !== 1 || !digest(window.idDigest) || window.activated !== true
       || !Number.isFinite(start) || !Number.isFinite(end) || end <= start

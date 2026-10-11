@@ -55,7 +55,7 @@ test('integrated import preserves privacy and production fail-closed boundaries'
   const workflow = fs.readFileSync('components/CadWorkflow.tsx', 'utf8');
   const syntheticPanel = fs.readFileSync('components/SyntheticIgsQualificationPanel.tsx', 'utf8');
   assert.doesNotMatch(route, /console\.|localStorage|AsyncStorage|\/api\/cad\/user-import|fetch\([^)]*api/);
-  assert.match(route, /aria-label="Drop approved public IGS file here"/);
+  assert.match(route, /aria-label=\{onAuthenticatedFile \? 'Drop private IGS or IGES file here' : 'Drop approved public IGS file here'\}/);
   assert.match(route, /testID="igs-source-choice-panel"/);
   assert.match(route, /testID="igs-source-sample-tile"/);
   assert.match(route, /testID="igs-source-local-action"[^>]+accessibilityRole="button"/);

@@ -1,4 +1,5 @@
 const IGES_SOURCE_MAX_BYTES = 256 * 1024;
+const AUTHENTICATED_IGES_SOURCE_MAX_BYTES = 8 * 1024 * 1024;
 
 function rejection(code, reason) {
   return Object.freeze({ ok: false, code, reason });
@@ -13,12 +14,14 @@ function inspectIgesFileName(fileName) {
   return Object.freeze({ ok: true, code: 'IGES_FILENAME_ACCEPTED' });
 }
 
-function inspectIgesSource({ fileName, bytes } = {}) {
+function inspectIgesSource({ fileName, bytes, maxBytes = IGES_SOURCE_MAX_BYTES } = {}) {
   const fileNameInspection = inspectIgesFileName(fileName);
   if (!fileNameInspection.ok) return fileNameInspection;
   if (!(bytes instanceof Uint8Array)) return rejection('MALFORMED', 'bytes-type');
   if (!bytes.byteLength) return rejection('NO_SOURCE', 'empty');
-  if (bytes.byteLength > IGES_SOURCE_MAX_BYTES) return rejection('TOO_LARGE', 'size');
+  if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0
+    || maxBytes > AUTHENTICATED_IGES_SOURCE_MAX_BYTES) return rejection('MALFORMED', 'limit');
+  if (bytes.byteLength > maxBytes) return rejection('TOO_LARGE', 'size');
   if (bytes.some(value => value > 126 || (value < 32 && value !== 10 && value !== 13))) {
     return rejection('MALFORMED', 'ascii');
   }
@@ -37,4 +40,5 @@ function inspectIgesSource({ fileName, bytes } = {}) {
   return Object.freeze({ ok: true, code: 'IGES_SOURCE_ACCEPTED', sourceBytes: bytes.byteLength });
 }
 
-module.exports = { IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource };
+module.exports = { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, IGES_SOURCE_MAX_BYTES,
+  inspectIgesFileName, inspectIgesSource };

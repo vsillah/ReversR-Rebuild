@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { IGES_SOURCE_MAX_BYTES, inspectIgesSource } = require('../utils/igesAdmission');
+const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, IGES_SOURCE_MAX_BYTES, inspectIgesSource }
+  = require('../utils/igesAdmission');
 const { upload } = require('../server/cadWorkerContract');
 const { createSyntheticIgsQualificationPipeline, createSyntheticIgsSource } = require('../utils/igsPrivatePipelineQualification');
 
@@ -37,7 +38,6 @@ test('shared browser/server admission agrees for extension, filename, size, ASCI
     [{ ...base, fileName: 'generated-synthetic-qualification.iges' }, 'IGES_SOURCE_ACCEPTED'],
     [{ ...base, fileName: '../invalid.igs' }, 'MALFORMED'],
     [{ ...base, fileName: 'invalid.step' }, 'UNSUPPORTED'],
-    [{ ...base, bytes: new Uint8Array(IGES_SOURCE_MAX_BYTES + 1) }, 'TOO_LARGE'],
     [{ ...base, bytes: nonAscii }, 'MALFORMED'],
     [{ ...base, bytes: encoder.encode(`${brokenSection.join('\n')}\n`) }, 'MALFORMED'],
     [withoutDirectoryPair(base), 'MALFORMED'],
@@ -55,4 +55,13 @@ test('shared browser/server admission agrees for extension, filename, size, ASCI
       assert.equal(result.ok, false);
     }
   }
+  const legacyOversize = { ...base, bytes: new Uint8Array(IGES_SOURCE_MAX_BYTES + 1) };
+  assert.equal(inspectIgesSource(legacyOversize).code, 'TOO_LARGE');
+  let conversions = 0;
+  const legacyResult = await createSyntheticIgsQualificationPipeline({ sourceFactory: () => legacyOversize,
+    converter: { convert: async () => { conversions += 1; } } }).run();
+  assert.equal(legacyResult.code, 'TOO_LARGE');
+  assert.equal(conversions, 0);
+  assert.equal(serverCode({ ...base,
+    bytes: new Uint8Array(AUTHENTICATED_IGES_SOURCE_MAX_BYTES + 1) }), 'TOO_LARGE');
 });

@@ -11,9 +11,11 @@ import { createPublicCubeDerivedStl, PUBLIC_CUBE_SHA256 } from '../utils/igsImpo
 import type { SyntheticArtifacts } from '../utils/cadAuthenticatedImportQualification';
 
 export default function CadDesignReview({ fixture, onChangeSource, desktop = false, onReadiness,
-  qualificationArtifacts, onDeleteQualificationArtifacts }: { fixture: CadInternalTesterFixture;
+    qualificationArtifacts, onDeleteQualificationArtifacts, authenticatedArtifacts }: { fixture: CadInternalTesterFixture;
   onChangeSource?: () => void; desktop?: boolean; onReadiness?: () => void;
-  qualificationArtifacts?: SyntheticArtifacts | null; onDeleteQualificationArtifacts?: () => void }) {
+  qualificationArtifacts?: SyntheticArtifacts | null; onDeleteQualificationArtifacts?: () => void;
+  authenticatedArtifacts?: { downloadOriginal: () => Promise<void>; downloadStl: () => Promise<void>;
+    deleteAll: () => Promise<void> } | null }) {
   const { viewerHeight } = useCadDesktopWorkspace();
   const { colors } = useAppTheme();
   const DetailsContainer = desktop ? ScrollView : View;
@@ -21,10 +23,12 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const isSyntheticQualification = fixture.qualificationProvenance?.kind === 'synthetic-igs-local';
-  const canDownloadSource = Boolean(fixture.sourceAssetUrl || qualificationArtifacts?.original);
-  const canDownloadDerived = Boolean(qualificationArtifacts?.stl)
+  const isAuthenticatedPreview = fixture.qualificationProvenance?.kind === 'authenticated-igs-preview';
+  const canDownloadSource = Boolean(fixture.sourceAssetUrl || qualificationArtifacts?.original || authenticatedArtifacts);
+  const canDownloadDerived = Boolean(qualificationArtifacts?.stl || authenticatedArtifacts)
     || fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
   const [downloadMenuOpen, setDownloadMenuOpen] = React.useState(false);
+  const [artifactError, setArtifactError] = React.useState('');
   const downloadMenuRef = React.useRef<View>(null);
 
   React.useEffect(() => {
@@ -50,8 +54,13 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
       window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
-  const downloadSource = () => {
+  const downloadSource = async () => {
     if (!fixture || !canDownloadSource || Platform.OS !== 'web' || typeof document === 'undefined') return;
+    if (authenticatedArtifacts) {
+      try { setArtifactError(''); await authenticatedArtifacts.downloadOriginal(); }
+      catch (error) { setArtifactError(error instanceof Error ? error.message : 'The original IGS download failed.'); }
+      return;
+    }
     const link = document.createElement('a');
     let href = fixture.sourceAssetUrl;
     if (qualificationArtifacts?.original) {
@@ -66,8 +75,13 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     link.remove();
     if (qualificationArtifacts?.original) window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
-  const downloadDerivedMesh = () => {
+  const downloadDerivedMesh = async () => {
     if (!canDownloadDerived || Platform.OS !== 'web' || typeof document === 'undefined') return;
+    if (authenticatedArtifacts) {
+      try { setArtifactError(''); await authenticatedArtifacts.downloadStl(); }
+      catch (error) { setArtifactError(error instanceof Error ? error.message : 'The inspection STL download failed.'); }
+      return;
+    }
     const content = qualificationArtifacts?.stl
       ? qualificationArtifacts.stl.bytes.slice().buffer as ArrayBuffer
       : fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
@@ -82,9 +96,9 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
-  const chooseDownload = (download: () => void) => {
+  const chooseDownload = (download: () => void | Promise<void>) => {
     setDownloadMenuOpen(false);
-    download();
+    void download();
   };
   return (
     <View testID="cad-qualified-result" style={{ gap: Spacing.md }}>
@@ -95,6 +109,7 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
           <Ionicons name="checkmark-circle" size={16} color={colors.success} accessible={false} />
           <Text style={[Typography.caption, { color: colors.success }]}>{isSyntheticQualification
             ? 'Deterministic synthetic inspection ready · Real converter unqualified'
+            : isAuthenticatedPreview ? 'Private conversion ready · Development/preview only'
             : isLocalPreview ? 'Local render ready · Internal preview' : 'Local validation passed · Public IGS file'}</Text>
         </View>
       </View>
@@ -154,6 +169,8 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
           </TouchableOpacity> : null}
         </View> : null}
       </View> : null}
+      {artifactError ? <Text testID="cad-private-artifact-error" accessibilityLiveRegion="polite"
+        style={[Typography.caption, { color: colors.danger }]}>{artifactError}</Text> : null}
       {qualificationArtifacts && onDeleteQualificationArtifacts ? <TouchableOpacity
         testID="cad-delete-synthetic-artifacts" accessibilityRole="button"
         accessibilityLabel="Delete synthetic artifacts and revoke access"
@@ -161,6 +178,15 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
         style={[downloadStyles.deleteAction, { borderColor: colors.border }]}>
         <Ionicons name="trash-outline" size={16} color={colors.danger} accessible={false} />
         <Text style={[Typography.caption, { color: colors.danger, fontWeight: '700' }]}>Delete synthetic artifacts</Text>
+      </TouchableOpacity> : null}
+      {authenticatedArtifacts ? <TouchableOpacity
+        testID="cad-delete-private-artifacts" accessibilityRole="button"
+        accessibilityLabel="Delete private CAD artifacts and revoke access"
+        onPress={() => { setArtifactError(''); void authenticatedArtifacts.deleteAll()
+          .catch(error => setArtifactError(error instanceof Error ? error.message : 'Private artifact deletion failed.')); }}
+        style={[downloadStyles.deleteAction, { borderColor: colors.border }]}>
+        <Ionicons name="trash-outline" size={16} color={colors.danger} accessible={false} />
+        <Text style={[Typography.caption, { color: colors.danger, fontWeight: '700' }]}>Delete private artifacts</Text>
       </TouchableOpacity> : null}
       {isDispenserReview && <View testID="cad-reference-comparison" style={{ gap: Spacing.sm }}>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Supplied reference views</Text>
@@ -184,6 +210,8 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
           ? 'The interactive model is the calibrated display mesh derived from the authorized CAD source. Reference images remain independent visual checks.'
           : isSyntheticQualification
             ? 'The interactive cube is a deterministic synthetic inspection adapter output. It proves the bounded local journey only; it is not converted from the generated IGS geometry, and production authentication remains unqualified.'
+          : isAuthenticatedPreview
+            ? 'The interactive model was converted once inside a deny-all-network Sandbox and loaded through an owner-scoped private grant. Production activation remains off.'
           : isLocalPreview
             ? 'The interactive model was generated locally in this browser from the selected CAD file. It is an internal preview only and does not activate production upload or conversion.'
             : 'This interactive model represents the digest-verified public IGS file as a deterministic inspection mesh. It does not activate production upload or conversion.'}</Text>
