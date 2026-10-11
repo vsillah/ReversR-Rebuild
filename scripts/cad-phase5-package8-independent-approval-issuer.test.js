@@ -17,6 +17,8 @@ const {
 } = require('../server/cadPhase5Package8ApprovalIssuanceContract');
 const { FUNCTIONS, createCadPhase5Package8ApprovalIssuerAdapter }
   = require('../server/cadPhase5Package8ApprovalIssuerAdapter');
+const { createPackage8SetupTerminalGuard }
+  = require('../server/cadPhase5Package8SetupTerminal');
 
 const root = path.resolve(__dirname, '..');
 const NOW = Date.parse('2026-10-11T00:05:00.000Z');
@@ -190,7 +192,19 @@ function backend(options = {}) {
     }
     throw Error('unknown operation');
   }
-  return { state, runMutation: invoke, runQuery: invoke };
+  const canonicalTransport = async (reference, input) => {
+    const value = await invoke(reference, input);
+    const canonical = item => {
+      if (Array.isArray(item)) return item.map(canonical);
+      if (!item || typeof item !== 'object') return item;
+      return Object.fromEntries(Object.entries(item)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, child]) => [key, canonical(child)]));
+    };
+    return canonical(value);
+  };
+  const transport = options.canonicalTransport ? canonicalTransport : invoke;
+  return { state, runMutation: transport, runQuery: transport };
 }
 
 function fixture(options = {}) {
@@ -240,6 +254,49 @@ test('exact source, runtime, owner, session, window and cost commitments issue a
   assert.equal(f.adapter.status().platformOccReexecutionPossible, true);
   assert.equal(f.adapter.status().atMostOneCommittedTransition, true);
   assert.equal(f.adapter.status().externalSideEffectsInsideTransaction, false);
+});
+
+test('Convex-canonical transport preserves issue, verify, atomic consume and close', async () => {
+  const f = fixture({ canonicalTransport: true });
+  const value = command();
+  assert.equal((await f.adapter.issueExact(value)).code, 'PACKAGE8_APPROVAL_ISSUED');
+  assert.deepEqual(await f.adapter.verifyExact(value.request),
+    verificationReceipt(value.request));
+  const consumed = await f.adapter.consumeExact(value.request);
+  assert.equal(consumed.code, 'PACKAGE8_APPROVAL_CONSUMED');
+  assert.equal(consumed.generation, 2);
+  const closed = await f.adapter.closeExact({
+    issuanceReference: value.request.issuanceReference,
+    approvalCommitment: value.request.approvalCommitment,
+    reasonDigest: hash('package8-cross-module-terminal-close'),
+  });
+  assert.equal(closed.code, 'PACKAGE8_APPROVAL_CLOSED');
+  const evidence = await f.adapter.readSanitized({
+    issuanceReference: value.request.issuanceReference,
+    approvalCommitment: value.request.approvalCommitment,
+  });
+  assert.equal(evidence.status, 'ISSUED_CLOSED');
+  assert.equal(evidence.consumed, false);
+  assert.equal(evidence.closed, true);
+  assert.deepEqual(f.state.calls, ['issue', 'verify', 'consume', 'close', 'readSanitized']);
+
+  let exactSessionActive = true;
+  let terminalEvidence;
+  const terminal = createPackage8SetupTerminalGuard({
+    async signOut() { exactSessionActive = false; },
+    async verifySignedOut() { return exactSessionActive === false; },
+    async writeTerminalEvidence(value) { terminalEvidence = value; },
+    now: () => NOW,
+  });
+  await assert.rejects(terminal.run(async ({ markSessionObserved }) => {
+    markSessionObserved();
+    const error = Error('PACKAGE8_APPROVAL_DENIED');
+    error.code = 'PACKAGE8_APPROVAL_DENIED';
+    throw error;
+  }), error => error.code === 'PACKAGE8_APPROVAL_DENIED');
+  assert.equal(exactSessionActive, false);
+  assert.equal(terminalEvidence.signOutAttempts, 1);
+  assert.equal(terminalEvidence.signOutVerified, true);
 });
 
 test('atomic one-use consume refuses concurrent replay and survives adapter restart', async () => {

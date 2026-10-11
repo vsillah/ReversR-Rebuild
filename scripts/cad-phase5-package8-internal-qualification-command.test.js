@@ -177,11 +177,39 @@ test('command atomically consumes runtime authority before any provider-capable 
   assert.equal(result.ok, true);
   assert.equal(result.authorityConsumed, true);
   assert.equal(result.authorityClosed, true);
+  assert.equal(result.failureStageCode, null);
   assert.deepEqual(calls.slice(0, 5), ['authority:register', 'authority:consume',
     'approval:verify', 'approval:consume', 'qualification:run']);
   assert.equal(calls.at(-2), 'authority:close');
   assert.equal(calls.at(-1), 'authority:read');
   assert.equal((await command.execute()).code, 'PACKAGE8_INTERNAL_QUALIFICATION_COMMAND_DISABLED');
+});
+
+test('command preserves a fixed privacy-safe pre-consumption failure stage', async () => {
+  const calls = [];
+  const artifact = approval();
+  const issuer = approvalIssuer(artifact, calls);
+  issuer.verifyExact = async () => {
+    calls.push('approval:verify');
+    return null;
+  };
+  const command = createCadPhase5Package8InternalQualificationCommand({
+    reviewOnly: true, commandGate: COMMAND_REVIEW_GATE,
+    verifierPrincipalCommitment: VERIFIER, issuerPrincipalDigest: ISSUER,
+    authorityEvidence: authorityEvidence(artifact), approvalArtifact: artifact,
+    runtimeAuthorityLedger: runtimeLedger(calls), approvalIssuer: issuer,
+    qualificationSources: { convex: {}, exactSession: {}, executionReceipt: {},
+      lifecycleMetadata: {}, r2: {}, sandbox: {} },
+    qualificationBindingFactory: () => { throw Error('must not run'); },
+    now: () => NOW,
+  });
+  const result = await command.execute();
+  assert.equal(result.code, 'PACKAGE8_INTERNAL_QUALIFICATION_CLOSED_AFTER_FAILURE');
+  assert.equal(result.failureStageCode, 'PACKAGE8_APPROVAL_ISSUANCE_UNKNOWN');
+  assert.equal(result.approvalConsumed, false);
+  assert.equal(result.authorityClosed, true);
+  assert.equal(calls.includes('approval:consume'), false);
+  assert.equal(calls.includes('qualification:run'), false);
 });
 
 test('command remains disabled without exact evidence and exposes no route or env lookup', () => {
