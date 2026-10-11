@@ -26,6 +26,7 @@ import type * as cadDevUploadSessionQualificationBinding from "../cadDevUploadSe
 import type * as cadDevUploadSessionQualificationSession from "../cadDevUploadSessionQualificationSession.js";
 import type * as cadDurableEngine from "../cadDurableEngine.js";
 import type * as cadPhase5DurableAdapters from "../cadPhase5DurableAdapters.js";
+import type * as cadPhase5Package8ApprovalIssuance from "../cadPhase5Package8ApprovalIssuance.js";
 import type * as cadUploadSessionGateway from "../cadUploadSessionGateway.js";
 import type * as developmentAuth from "../developmentAuth.js";
 import type * as http from "../http.js";
@@ -57,6 +58,7 @@ import type * as librarySession from "../librarySession.js";
 "cadDevUploadSessionQualificationSession": typeof cadDevUploadSessionQualificationSession,
 "cadDurableEngine": typeof cadDurableEngine,
 "cadPhase5DurableAdapters": typeof cadPhase5DurableAdapters,
+"cadPhase5Package8ApprovalIssuance": typeof cadPhase5Package8ApprovalIssuance,
 "cadUploadSessionGateway": typeof cadUploadSessionGateway,
 "developmentAuth": typeof developmentAuth,
 "http": typeof http,

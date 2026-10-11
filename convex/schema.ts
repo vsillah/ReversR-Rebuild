@@ -33,6 +33,31 @@ export const qualificationRecord = {
   status: v.union(v.literal('reserved'), v.literal('fenced'), v.literal('unknown'), v.literal('settled')),
   outcome: v.union(v.null(), v.literal('not-started'), v.literal('completed'), v.literal('failed')),
 };
+export const package8ApprovalVerificationRequest = {
+  schemaVersion: v.literal(1), issuanceReference: v.string(), approvalCommitment: v.string(),
+  baselineCommit: v.string(), baselineTree: v.string(), executionHeadCommit: v.string(),
+  executionHeadTree: v.string(), runtimeDeploymentId: v.string(), runtimeReceiptDigest: v.string(),
+  ownerCommitment: v.string(), sessionCommitment: v.string(), windowIdDigest: v.string(),
+  windowStartUtc: v.string(), windowEndUtc: v.string(), limitsCommitment: v.string(),
+  authorityExpiresAtUtc: v.string(),
+};
+export const package8ApprovalSourceReview = {
+  schemaVersion: v.literal(1), baselineCommit: v.string(), baselineTree: v.string(),
+  executionHeadCommit: v.string(), executionHeadTree: v.string(), clean: v.literal(true),
+  descendantOfBaseline: v.literal(true), ancestryReceiptDigest: v.string(),
+  productionEvidenceDeploymentId: v.string(), preparationSha256: v.string(),
+  unissuedDraftSha256: v.string(),
+};
+export const package8ApprovalRuntimeDeployment = {
+  schemaVersion: v.literal(1), deploymentId: v.string(), state: v.literal('READY'),
+  environment: v.literal('development'), commit: v.string(), tree: v.string(),
+  functionEquivalence: v.literal('VERIFIED_EXACT'), receiptDigest: v.string(),
+};
+export const package8ApprovalLimits = {
+  schemaVersion: v.literal(1), maximumSessions: v.literal(1), maximumFiles: v.literal(1),
+  maximumAttempts: v.literal(1), maximumRetries: v.literal(0), maximumWindowMs: v.number(),
+  maximumCostMicrosExclusive: v.number(), reservationMicros: v.number(), currency: v.literal('USD'),
+};
 export const custodyBinding = {
   artifactId: v.string(), userId: v.id('users'), shopId: v.string(), uploadSessionId: v.string(),
 };
@@ -160,4 +185,20 @@ export default defineSchema({
   }).index('by_ledger_binding_kind', [
     'ledgerId', 'userId', 'shopId', 'sessionId', 'loginSessionId', 'kind',
   ]),
+  cadPackage8ApprovalIssuances: defineTable({
+    schemaVersion: v.literal(1), issuerPrincipalDigest: v.string(), issuanceReference: v.string(),
+    approvalCommitment: v.string(), request: v.object(package8ApprovalVerificationRequest),
+    sourceReview: v.object(package8ApprovalSourceReview),
+    runtimeDeployment: v.object(package8ApprovalRuntimeDeployment),
+    limits: v.object(package8ApprovalLimits), calculatedMaximumCostMicros: v.number(),
+    issuedAtMs: v.number(), authorityExpiresAtMs: v.number(), windowStartMs: v.number(),
+    windowEndMs: v.number(), receiptDigest: v.string(),
+    consumptionReceiptDigest: v.optional(v.string()),
+    status: v.union(v.literal('active'), v.literal('consumed'), v.literal('revoked'),
+      v.literal('closed')),
+    generation: v.number(), consumedAtMs: v.optional(v.number()), revokedAtMs: v.optional(v.number()),
+    closedAtMs: v.optional(v.number()), reasonDigest: v.optional(v.string()),
+  }).index('by_issuanceReference', ['issuanceReference'])
+    .index('by_approvalCommitment', ['approvalCommitment'])
+    .index('by_status_and_authorityExpiresAtMs', ['status', 'authorityExpiresAtMs']),
 });
