@@ -84,12 +84,44 @@ test('revoked legacy bearer sessions remain inert while active storage stays coo
   } as never))).rejects.toThrow();
 });
 
-test('resource and all-in daily reservations are fixed below ten dollars', () => {
+test('resource and all-in daily reservations are fixed at five attempts and ten dollars', () => {
   expect(AUTHENTICATED_IGS_LIMITS.SOURCE_MAX_BYTES).toBe(8 * 1024 * 1024);
+  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_ATTEMPTS).toBe(5);
   expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_ATTEMPTS
     * AUTHENTICATED_IGS_LIMITS.COST_PER_ATTEMPT_MICROS)
-    .toBeLessThanOrEqual(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS);
-  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS).toBeLessThan(10_000_000);
+    .toBe(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS);
+  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS).toBe(10_000_000);
+});
+
+test('daily quota admits five attempts and rejects a sixth before insertion', async () => {
+  const t = setup();
+  const account = await identity(t);
+  const now = Date.now();
+  const uploadSessionId = 'five-attempt-session';
+  const record = { schemaVersion: 2, userId: account.userId, shopId: account.shopId,
+    loginSessionId: account.sessionId, sessionId: uploadSessionId, authMethod: 'password',
+    cadUploadAllowed: true, transport: 'cookie', issuedAt: now,
+    expiresAt: now + 5 * 60_000, status: 'active', csrfDigest: '0'.repeat(64) };
+  expect(await invoke(t, 'session.insert', { credentialDigest: 'f'.repeat(64), record }, now)).toBe(true);
+  const owner = { userId: account.userId, shopId: account.shopId, uploadSessionId };
+  const idempotencyDigests = ['1', '2', '3', '4', '5', '6'];
+  const requestDigests = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+  for (let index = 0; index < 5; index += 1) {
+    expect(await invoke(t, 'job.claim', { owner, jobId: `daily-job-${index + 1}`,
+      idempotencyDigest: idempotencyDigests[index].repeat(64),
+      requestDigest: requestDigests[index].repeat(64), extension: 'igs', contentLength: 1024 },
+    now + index + 1)).toMatchObject({ accepted: true, duplicate: false });
+  }
+
+  expect(await invoke(t, 'job.claim', { owner, jobId: 'daily-job-6',
+    idempotencyDigest: idempotencyDigests[5].repeat(64),
+    requestDigest: requestDigests[5].repeat(64), extension: 'igs', contentLength: 1024 }, now + 6))
+    .toEqual({ accepted: false, code: 'UPLOAD_QUOTA_EXHAUSTED' });
+  const quota = await t.run(ctx => ctx.db.query('cadAuthenticatedIgsQuota')
+    .withIndex('by_scopeKey', q => q.eq('scopeKey', String(account.shopId))).unique());
+  expect(quota).toMatchObject({ attemptCount: 5, reservedCostMicros: 10_000_000 });
+  expect(await t.run(ctx => ctx.db.query('cadAuthenticatedIgsJobs').collect())).toHaveLength(5);
 });
 
 test('current login, membership and paid CAD entitlement are all required', async () => {
