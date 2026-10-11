@@ -23,9 +23,25 @@ const openTour = async page => {
   await page.getByTestId('reversr-tour-guide').waitFor();
 };
 
-const nextStep = async (page, stepId, phase) => {
+const completeStep = async (page, stepId, limit = 3) => {
+  const nextButton = page.getByRole('button', { name: 'Next manufacturer tour step' });
+  const finishButton = page.getByRole('button', { name: 'Confirm hold and finish manufacturer tour' });
+  const advanceButton = await finishButton.count() ? finishButton : nextButton;
+  const subtasks = page.locator(`[data-testid^="manufacturer-tour-subtask-${stepId}-"]`);
+  assert.equal(await subtasks.count(), 3, `${stepId} should expose three granular subtasks`);
+  assert.equal(await advanceButton.isDisabled(), true, `${stepId} should block advancement while subtasks remain`);
+  for (let index = 0; index < limit; index += 1) {
+    await subtasks.nth(index).click();
+    assert.equal(await subtasks.nth(index).getAttribute('aria-checked'), 'true');
+    await pauseForWalkthrough(page, 220);
+  }
+  if (limit === 3) assert.equal(await advanceButton.isDisabled(), false, `${stepId} should unlock after all subtasks complete`);
+};
+
+const nextStep = async (page, currentStepId, nextStepId, phase) => {
+  await completeStep(page, currentStepId);
   await page.getByRole('button', { name: 'Next manufacturer tour step' }).click();
-  await page.getByTestId(`manufacturer-tour-step-${stepId}`).waitFor();
+  await page.getByTestId(`manufacturer-tour-step-${nextStepId}`).waitFor();
   await page.getByTestId(`cad-phase-${phase}`).waitFor();
 };
 
@@ -93,13 +109,13 @@ const expandIfMinimized = async (page, minimized) => {
       await pauseForWalkthrough(page, 1200);
       await page.screenshot({ path: `${out}/${viewport.name}-01-source.png` });
 
-      await nextStep(page, 'inventory', 2);
+      await nextStep(page, 'source', 'inventory', 2);
       const inventoryTour = await page.getByTestId('manufacturer-tour-step-inventory').innerText();
       assert.match(inventoryTour, /55\.74 × 69\.42 × 114\.83 mm/);
-      assert.match(inventoryTour, /Four connected components/);
+      assert.match(inventoryTour, /four connected components/i);
       await pauseForWalkthrough(page);
 
-      await nextStep(page, 'controls', 3);
+      await nextStep(page, 'inventory', 'controls', 3);
       await page.getByTestId('cad-command-view').waitFor();
       await page.waitForFunction(() => !document.querySelector('[data-testid="cad-command-view"]')?.disabled);
       const minimizedForControls = await minimizeIfAvailable(page);
@@ -118,7 +134,7 @@ const expandIfMinimized = async (page, minimized) => {
       await page.getByTestId('cad-command-zoom').click();
       await expandIfMinimized(page, minimizedForControls);
 
-      await nextStep(page, 'traceability', 3);
+      await nextStep(page, 'controls', 'traceability', 3);
       const minimizedForDownload = await minimizeIfAvailable(page);
       const downloadTrigger = page.getByTestId('cad-download-menu-trigger');
       await downloadTrigger.scrollIntoViewIfNeeded();
@@ -133,31 +149,39 @@ const expandIfMinimized = async (page, minimized) => {
       await page.keyboard.press('Escape');
       await expandIfMinimized(page, minimizedForDownload);
 
-      await nextStep(page, 'privacy', 3);
+      await nextStep(page, 'traceability', 'privacy', 3);
       await page.getByText(/does not upload, persist, convert, or delete private CAD/i).waitFor();
+      await completeStep(page, 'privacy', 1);
       await pauseForWalkthrough(page);
       await page.getByRole('button', { name: 'Exit manufacturer tour' }).click();
       assert.equal(await page.getByTestId('reversr-tour-guide').count(), 0);
       await openTour(page);
       await page.getByTestId('manufacturer-tour-step-privacy').waitFor();
+      assert.equal(await page.getByTestId('manufacturer-tour-subtask-privacy-privacy-resume').getAttribute('aria-checked'), 'true');
+      await page.getByTestId('manufacturer-tour-step-privacy').getByText('1/3 complete', { exact: true }).waitFor();
       await page.getByRole('button', { name: 'Restart manufacturer tour' }).click();
       await page.getByTestId('manufacturer-tour-step-source').waitFor();
+      await page.getByTestId('manufacturer-tour-step-source').getByText('0/3 complete', { exact: true }).waitFor();
+      assert.equal(await page.getByRole('button', { name: 'Next manufacturer tour step' }).isDisabled(), true);
 
-      await nextStep(page, 'inventory', 2);
-      await nextStep(page, 'controls', 3);
-      await nextStep(page, 'traceability', 3);
-      await nextStep(page, 'privacy', 3);
-      await nextStep(page, 'decision', 4);
+      await nextStep(page, 'source', 'inventory', 2);
+      await nextStep(page, 'inventory', 'controls', 3);
+      await nextStep(page, 'controls', 'traceability', 3);
+      await nextStep(page, 'traceability', 'privacy', 3);
+      await nextStep(page, 'privacy', 'decision', 4);
       await page.getByTestId('cad-build-locked').waitFor();
       await page.getByTestId('manufacturer-tour-decision').waitFor();
       await page.getByText(/tolerances, materials, threads, surface finish, wall thickness, supports, orientation, or fabrication readiness/i).waitFor();
       await pauseForWalkthrough(page, 1500);
       await page.screenshot({ path: `${out}/${viewport.name}-06-decision.png` });
+      await completeStep(page, 'decision');
+      await page.getByText('18/18 total', { exact: true }).waitFor();
       await page.getByRole('button', { name: 'Confirm hold and finish manufacturer tour' }).click();
       assert.equal(await page.getByTestId('reversr-tour-guide').count(), 0);
 
       await openTour(page);
       await page.getByTestId('manufacturer-tour-step-source').waitFor();
+      await page.getByTestId('manufacturer-tour-step-source').getByText('0/3 complete', { exact: true }).waitFor();
       await page.getByRole('button', { name: 'Exit manufacturer tour' }).click();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       assert.equal(writes, 0);
@@ -171,8 +195,9 @@ const expandIfMinimized = async (page, minimized) => {
         writes,
         blockedExternalRequests: blockedExternal.length,
         noHorizontalOverflow: true,
-        resumedAtPrivacy: true,
-        restartedAtSource: true,
+        resumedAtPrivacyWithGranularProgress: true,
+        restartedAtSourceWithProgressReset: true,
+        completedSubtasks: 18,
         completedWithBuildLocked: true,
       });
       console.log(`PASS ${viewport.name} ${viewport.width}x${viewport.height}`);

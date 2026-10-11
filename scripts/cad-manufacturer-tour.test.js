@@ -11,10 +11,12 @@ const fixtureTypes = fs.readFileSync('utils/cadInternalTesterPreview.d.ts', 'utf
 test('active Tour entry is a resumable and restartable Dispenser manufacturer tour', () => {
   assert.match(app, /import ManufacturerTourGuide, \{ ManufacturerTourStep \}/);
   assert.doesNotMatch(app, /from ["']\.\.\/components\/TourGuide["']/);
-  assert.match(app, /reversr-manufacturer-tour:dispenser-v1/);
+  assert.match(app, /reversr-manufacturer-tour:dispenser-v1:v2/);
   assert.match(app, /const MANUFACTURER_TOUR_PREVIEW[\s\S]*MARK_DISPENSER_RESULT/);
   assert.match(app, /const shouldRestart = Boolean\(tourCompletedAt\)/);
+  assert.match(app, /completedSubtaskKeys: tourCompletedSubtaskKeys/);
   assert.match(app, /onRestart=\{restartTour\}/);
+  assert.match(app, /onToggleSubtask=\{toggleTourSubtask\}/);
   assert.match(app, /restoreTourOrigin\(\)/);
   assert.match(app, /accessibilityLabel="Resume or start manufacturer tour"/);
 
@@ -23,6 +25,9 @@ test('active Tour entry is a resumable and restartable Dispenser manufacturer to
     app.indexOf('const MANUFACTURER_TOUR_PREVIEW'),
   );
   assert.doesNotMatch(activeTourBlock, /FarmBot|checklist|Structure ID|mock journey/i);
+  assert.doesNotMatch(activeTourBlock, /points:/);
+  assert.equal((activeTourBlock.match(/subtasks:/g) || []).length, 6);
+  assert.equal((activeTourBlock.match(/\{ id: '[^']+', label:/g) || []).length, 18);
   for (const id of ['source', 'inventory', 'controls', 'traceability', 'privacy', 'decision']) {
     assert.match(activeTourBlock, new RegExp(`id: '${id}'`));
   }
@@ -31,11 +36,11 @@ test('active Tour entry is a resumable and restartable Dispenser manufacturer to
 test('tour copy covers manufacturer facts, recovery, and the full certification boundary', () => {
   for (const expected of [
     'Dispenser.IGS',
-    'Format: IGES',
-    'Units: millimeters',
+    'source format is IGES',
+    'imported units are millimeters',
     '55.74 × 69.42 × 114.83 mm',
     'Four connected components',
-    'original IGS',
+    'original Dispenser.IGS',
     'derived inspection artifact',
     'single Download menu',
     'does not upload, persist, convert, or delete private CAD',
@@ -47,6 +52,11 @@ test('tour copy covers manufacturer facts, recovery, and the full certification 
   }
   assert.match(guide, /accessibilityLabel="Restart manufacturer tour"/);
   assert.match(guide, /accessibilityLabel="Exit manufacturer tour"/);
+  assert.match(guide, />Subtasks</);
+  assert.match(guide, /disabled=\{!stepComplete\}/);
+  assert.match(guide, /completedSubtaskCount}\/\{totalSubtaskCount} total/);
+  assert.match(guide, /accessibilityRole="checkbox"/);
+  assert.match(guide, /aria-checked=\{complete\}/);
   assert.match(guide, /Confirm hold & finish/);
   assert.doesNotMatch(guide, /Structure ID|Actions for you|Mark manual|FarmBot/i);
 });

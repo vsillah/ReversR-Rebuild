@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   StyleProp,
@@ -28,7 +28,10 @@ export type ManufacturerTourStep = {
   body: string;
   focus: string;
   phase: 1 | 2 | 3 | 4;
-  points: readonly string[];
+  subtasks: readonly {
+    id: string;
+    label: string;
+  }[];
   decision?: {
     label: string;
     body: string;
@@ -42,10 +45,14 @@ type Props = {
   step: ManufacturerTourStep;
   stepIndex: number;
   stepCount: number;
+  completedSubtaskIds: readonly string[];
+  completedSubtaskCount: number;
+  totalSubtaskCount: number;
   placement: ManufacturerTourPlacement;
   onRestart: () => void;
   onBack: () => void;
   onNext: () => void;
+  onToggleSubtask: (subtaskId: string) => void;
   onExit: () => void;
 };
 
@@ -54,19 +61,27 @@ export default function ManufacturerTourGuide({
   step,
   stepIndex,
   stepCount,
+  completedSubtaskIds,
+  completedSubtaskCount,
+  totalSubtaskCount,
   placement,
   onRestart,
   onBack,
   onNext,
+  onToggleSubtask,
   onExit,
 }: Props) {
   const { colors } = useAppTheme();
   const { width } = useWindowDimensions();
   const styles = createStyles(colors);
   const [isMinimized, setIsMinimized] = useState(false);
+  const scrollBodyRef = useRef<ScrollView>(null);
   const isCompact = width < 900;
   const isLastStep = stepIndex === stepCount - 1;
-  const progress = Math.round(((stepIndex + 1) / Math.max(1, stepCount)) * 100);
+  const completedSubtaskSet = new Set(completedSubtaskIds);
+  const stepComplete = completedSubtaskIds.length === step.subtasks.length;
+  const currentSubtaskId = step.subtasks.find(subtask => !completedSubtaskSet.has(subtask.id))?.id;
+  const progress = Math.round((completedSubtaskCount / Math.max(1, totalSubtaskCount)) * 100);
   const progressWidth = `${progress}%` as `${number}%`;
   const placementStyle: StyleProp<ViewStyle> = isCompact
     ? styles.dockBottom
@@ -76,6 +91,7 @@ export default function ManufacturerTourGuide({
 
   useEffect(() => {
     setIsMinimized(false);
+    scrollBodyRef.current?.scrollTo({ y: 0, animated: false });
   }, [step.id]);
 
   if (!active) return null;
@@ -91,6 +107,7 @@ export default function ManufacturerTourGuide({
         <View style={styles.miniCopy}>
           <Text style={styles.miniEyebrow}>Step {stepIndex + 1} of {stepCount}</Text>
           <Text style={styles.miniTitle} numberOfLines={1}>{step.title}</Text>
+          <Text style={styles.miniProgress}>{completedSubtaskIds.length}/{step.subtasks.length} subtasks complete</Text>
         </View>
         <TouchableOpacity style={styles.iconButton} onPress={() => setIsMinimized(false)} accessibilityRole="button" accessibilityLabel="Expand manufacturer tour">
           <Ionicons name="expand-outline" size={18} color={colors.accent} />
@@ -126,13 +143,18 @@ export default function ManufacturerTourGuide({
       <View
         style={styles.progressTrack}
         accessibilityRole="progressbar"
-        accessibilityLabel={`Manufacturer tour progress: ${progress}%`}
+        accessibilityLabel={`Manufacturer tour progress: ${completedSubtaskCount} of ${totalSubtaskCount} subtasks complete, ${progress}%`}
         accessibilityValue={{ min: 0, max: 100, now: progress }}
       >
         <View style={[styles.progressFill, { width: progressWidth }]} />
       </View>
+      <View style={styles.progressSummary}>
+        <Text style={styles.progressSummaryText}>{completedSubtaskIds.length}/{step.subtasks.length} this step</Text>
+        <Text style={styles.progressSummaryText}>{completedSubtaskCount}/{totalSubtaskCount} total</Text>
+      </View>
 
       <ScrollView
+        ref={scrollBodyRef}
         style={styles.scrollBody}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator
@@ -148,13 +170,44 @@ export default function ManufacturerTourGuide({
         <View style={styles.focusCard} testID={`manufacturer-tour-step-${step.id}`}>
           <Text style={styles.focusLabel}>On this screen</Text>
           <Text style={styles.focusText}>{step.focus}</Text>
-          <View style={styles.pointList}>
-            {step.points.map(point => (
-              <View key={point} style={styles.pointRow}>
-                <View style={styles.pointDot} />
-                <Text style={styles.pointText}>{point}</Text>
-              </View>
-            ))}
+          <View style={styles.subtaskHeading}>
+            <Text style={styles.subtaskHeadingText}>Subtasks</Text>
+            <Text style={styles.subtaskCount}>{completedSubtaskIds.length}/{step.subtasks.length} complete</Text>
+          </View>
+          <View style={styles.subtaskList}>
+            {step.subtasks.map((subtask, index) => {
+              const complete = completedSubtaskSet.has(subtask.id);
+              const current = currentSubtaskId === subtask.id;
+              return (
+                <TouchableOpacity
+                  key={subtask.id}
+                  style={[
+                    styles.subtaskRow,
+                    current && styles.subtaskRowCurrent,
+                    complete && styles.subtaskRowComplete,
+                  ]}
+                  onPress={() => onToggleSubtask(subtask.id)}
+                  accessibilityRole="checkbox"
+                  accessibilityLabel={`${complete ? 'Completed' : 'Mark complete'}: ${subtask.label}`}
+                  accessibilityHint={complete ? 'Marks this subtask unfinished' : 'Marks this subtask complete'}
+                  accessibilityState={{ checked: complete }}
+                  aria-checked={complete}
+                  testID={`manufacturer-tour-subtask-${step.id}-${subtask.id}`}
+                >
+                  <Ionicons
+                    name={complete ? 'checkmark-circle' : current ? 'radio-button-on-outline' : 'ellipse-outline'}
+                    size={19}
+                    color={complete ? colors.success : current ? colors.accent : colors.mutedText}
+                  />
+                  <View style={styles.subtaskCopy}>
+                    <Text style={[styles.subtaskIndex, complete && styles.subtaskIndexComplete]}>
+                      {complete ? 'Complete' : current ? 'Current' : `Up next · ${index + 1}`}
+                    </Text>
+                    <Text style={[styles.subtaskText, complete && styles.subtaskTextComplete]}>{subtask.label}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
@@ -185,12 +238,25 @@ export default function ManufacturerTourGuide({
           >
             <Text style={[styles.stepButtonText, stepIndex === 0 && styles.buttonTextDisabled]}>Back</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.primaryButton} onPress={onNext} accessibilityRole="button" accessibilityLabel={isLastStep ? 'Confirm hold and finish manufacturer tour' : 'Next manufacturer tour step'}>
+          <TouchableOpacity
+            style={[styles.primaryButton, !stepComplete && styles.buttonDisabled]}
+            onPress={onNext}
+            disabled={!stepComplete}
+            accessibilityRole="button"
+            accessibilityLabel={isLastStep ? 'Confirm hold and finish manufacturer tour' : 'Next manufacturer tour step'}
+            accessibilityHint={stepComplete ? undefined : 'Complete every subtask in this step to continue'}
+            accessibilityState={{ disabled: !stepComplete }}
+          >
             <Text style={styles.primaryButtonText}>{isLastStep ? 'Confirm hold & finish' : 'Next'}</Text>
             <Ionicons name={isLastStep ? 'checkmark-outline' : 'arrow-forward-outline'} size={16} color={colors.black} />
           </TouchableOpacity>
         </View>
       </View>
+      <Text style={[styles.gateText, stepComplete && styles.gateTextComplete]} accessibilityLiveRegion="polite">
+        {stepComplete
+          ? 'Step complete. Continue when ready.'
+          : `Complete ${step.subtasks.length - completedSubtaskIds.length} remaining ${step.subtasks.length - completedSubtaskIds.length === 1 ? 'subtask' : 'subtasks'} to continue.`}
+      </Text>
     </View>
   );
 }
@@ -226,6 +292,7 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   miniCopy: { flex: 1, minWidth: 0 },
   miniEyebrow: { color: colors.accent, fontSize: FontSizes.xs, fontFamily: Fonts.bold, textTransform: 'uppercase' },
   miniTitle: { color: colors.text, fontSize: FontSizes.sm, fontFamily: Fonts.heading, marginTop: 2 },
+  miniProgress: { color: colors.mutedText, fontSize: FontSizes.xs, marginTop: 2 },
   kickerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm },
   eyebrow: { flex: 1, color: colors.accent, fontSize: FontSizes.xs, fontFamily: Fonts.bold, textTransform: 'uppercase' },
   stepCounter: { color: colors.mutedText, fontSize: FontSizes.xs, fontWeight: '800' },
@@ -235,6 +302,8 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   iconButton: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center', borderRadius: Radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
   progressTrack: { height: 5, borderRadius: Radii.pill, backgroundColor: colors.gray[800], overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: Radii.pill, backgroundColor: colors.accent },
+  progressSummary: { flexDirection: 'row', justifyContent: 'space-between', gap: Spacing.sm },
+  progressSummaryText: { color: colors.mutedText, fontSize: FontSizes.xs, fontWeight: '800' },
   scrollBody: { flexShrink: 1, minHeight: 0 },
   scrollContent: { gap: Spacing.sm, paddingRight: 2 },
   fixtureBadge: { alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 9, paddingVertical: 6, borderRadius: Radii.pill, borderWidth: 1, borderColor: colors.accent + '66', backgroundColor: colors.accent + '12' },
@@ -243,10 +312,18 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   focusCard: { gap: 5, padding: Spacing.sm, borderRadius: Radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
   focusLabel: { color: colors.accent, fontSize: FontSizes.xs, fontWeight: '900', textTransform: 'uppercase' },
   focusText: { color: colors.text, fontSize: FontSizes.sm, fontWeight: '800', lineHeight: 18 },
-  pointList: { gap: 4, marginTop: 2 },
-  pointRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
-  pointDot: { width: 5, height: 5, borderRadius: Radii.pill, backgroundColor: colors.accent, marginTop: 7 },
-  pointText: { flex: 1, color: colors.mutedText, fontSize: FontSizes.xs, lineHeight: 17 },
+  subtaskHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm, marginTop: 4 },
+  subtaskHeadingText: { color: colors.text, fontSize: FontSizes.xs, fontWeight: '900', textTransform: 'uppercase' },
+  subtaskCount: { color: colors.mutedText, fontSize: FontSizes.xs, fontWeight: '800' },
+  subtaskList: { gap: 6, marginTop: 2 },
+  subtaskRow: { minHeight: 52, flexDirection: 'row', alignItems: 'flex-start', gap: 9, padding: 9, borderRadius: Radii.sm, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.panel },
+  subtaskRowCurrent: { borderColor: colors.accent, backgroundColor: colors.accentSoft },
+  subtaskRowComplete: { borderColor: colors.success, backgroundColor: colors.successSoft },
+  subtaskCopy: { flex: 1, minWidth: 0, gap: 2 },
+  subtaskIndex: { color: colors.mutedText, fontSize: FontSizes.xs, fontWeight: '900', textTransform: 'uppercase' },
+  subtaskIndexComplete: { color: colors.success },
+  subtaskText: { color: colors.text, fontSize: FontSizes.xs, fontWeight: '700', lineHeight: 17 },
+  subtaskTextComplete: { color: colors.mutedText },
   decisionCard: { gap: 5, padding: Spacing.sm, borderRadius: Radii.md, borderWidth: 1, borderColor: colors.warning, backgroundColor: colors.warningSoft },
   decisionHeading: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   decisionLabel: { flex: 1, color: colors.warning, fontSize: FontSizes.sm, fontWeight: '900' },
@@ -259,6 +336,8 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   stepButtonText: { color: colors.text, fontSize: FontSizes.xs, fontWeight: '800' },
   primaryButton: { minHeight: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingHorizontal: 12, borderRadius: Radii.md, backgroundColor: colors.accent },
   primaryButtonText: { color: colors.black, fontSize: FontSizes.xs, fontFamily: Fonts.extrabold },
+  gateText: { color: colors.mutedText, fontSize: FontSizes.xs, fontWeight: '700', textAlign: 'right' },
+  gateTextComplete: { color: colors.success },
   buttonDisabled: { opacity: 0.45 },
   buttonTextDisabled: { color: colors.mutedText },
 });

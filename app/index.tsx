@@ -114,11 +114,14 @@ const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   4: 'hammer-outline',
 };
 
-const TOUR_STORAGE_KEY = 'reversr-manufacturer-tour:dispenser-v1';
+const TOUR_STORAGE_KEY = 'reversr-manufacturer-tour:dispenser-v1:v2';
+const TOUR_STATE_VERSION = 2;
 const LEGACY_MOCK_TOUR_FIXTURE_CACHE_KEY = 'reversr-rebuild-mock-tour:farmbot-genesis-v1.8:v1';
 type TourSavedState = {
+  version: typeof TOUR_STATE_VERSION;
   active: boolean;
   stepIndex: number;
+  completedSubtaskKeys: string[];
   completedAt: string | null;
 };
 type TourOriginState = {
@@ -137,10 +140,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'This tour uses the ReversR-owned public Dispenser.IGS fixture. It never asks for customer CAD and never activates the private upload path.',
     focus: 'Input · authorized public fixture',
     phase: 1,
-    points: [
-      'Source file: Dispenser.IGS',
-      'Format: IGES',
-      'The original file remains the source asset; the viewer does not overwrite it.',
+    subtasks: [
+      { id: 'source-name', label: 'Verify the source file is Dispenser.IGS.' },
+      { id: 'source-format', label: 'Confirm the source format is IGES.' },
+      { id: 'source-boundary', label: 'Confirm the original file remains the source asset and is not overwritten by the viewer.' },
     ],
   },
   {
@@ -150,10 +153,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'The inventory view reports what the importer observed. It does not turn mesh groups into a verified bill of materials.',
     focus: 'Inventory · dimensions and connected geometry',
     phase: 2,
-    points: [
-      'Units: millimeters',
-      'Imported extents: 55.74 × 69.42 × 114.83 mm',
-      'Four connected components; component count is not a certified parts count.',
+    subtasks: [
+      { id: 'inventory-units', label: 'Confirm the imported units are millimeters.' },
+      { id: 'inventory-extents', label: 'Record the imported extents: 55.74 × 69.42 × 114.83 mm.' },
+      { id: 'inventory-components', label: 'Treat four connected components as geometry, not a certified parts count.' },
     ],
   },
   {
@@ -163,10 +166,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'Use the viewer as an inspection aid. Orbit, move, fixed views, zoom, and fit help you find questions that need engineering follow-up.',
     focus: 'Design · interactive model controls',
     phase: 3,
-    points: [
-      'Drag to orbit; switch the shared control to Move for directional panning.',
-      'Use fixed views, zoom, and fit to recover a useful inspection angle.',
-      'The supplied images are independent visual comparisons, not geometry inputs.',
+    subtasks: [
+      { id: 'controls-orbit', label: 'Drag to orbit and inspect the model from another angle.' },
+      { id: 'controls-move', label: 'Switch the shared control to Move, pan directionally, then recover with fixed view, zoom, or fit.' },
+      { id: 'controls-images', label: 'Compare the supplied images without treating them as geometry inputs.' },
     ],
   },
   {
@@ -176,10 +179,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'ReversR preserves the original IGS and labels the STL as a derived inspection artifact. Their separate fingerprints keep the review chain legible.',
     focus: 'Design · the single Download menu',
     phase: 3,
-    points: [
-      'Original: Dispenser.IGS · source digest 1e52…f0b8',
-      'Derived: dispenser-derived.stl · review digest 9b5b…096e',
-      'Use one Download menu to choose the original or the derived inspection mesh.',
+    subtasks: [
+      { id: 'trace-source', label: 'Verify the original Dispenser.IGS source digest: 1e52…f0b8.' },
+      { id: 'trace-derived', label: 'Verify the derived dispenser-derived.stl review digest: 9b5b…096e.' },
+      { id: 'trace-downloads', label: 'Open the single Download menu and confirm both artifact choices remain distinct.' },
     ],
   },
   {
@@ -189,10 +192,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'This tour reads checked-in public assets only. It does not upload, persist, convert, or delete private CAD, and it does not contact a provider.',
     focus: 'Design · public-fixture privacy boundary',
     phase: 3,
-    points: [
-      'Closing the tour preserves your current app work and saves only the tour step on this device.',
-      'Restart begins again with the same public fixture; Change source returns to the existing Import journey.',
-      'The static public source and derived mesh are repository assets, so this review exposes no customer-delete action.',
+    subtasks: [
+      { id: 'privacy-resume', label: 'Confirm closing preserves current app work and saves only tour progress on this device.' },
+      { id: 'privacy-recovery', label: 'Confirm Restart uses the same public fixture and Change source returns to the existing Import journey.' },
+      { id: 'privacy-delete', label: 'Confirm the repository-owned public assets expose no customer-delete action.' },
     ],
   },
   {
@@ -202,10 +205,10 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     body: 'Rendering and conversion do not certify tolerances, materials, threads, surface finish, wall thickness, supports, orientation, or fabrication readiness.',
     focus: 'Build · implementation remains locked',
     phase: 4,
-    points: [
-      'Resolve manufacturing dimensions and feature intent against authoritative drawings.',
-      'Confirm material, process, finish, orientation, supports, and acceptance criteria with engineering.',
-      'Keep the package on hold until those decisions are reviewed and recorded.',
+    subtasks: [
+      { id: 'decision-dimensions', label: 'Identify the manufacturing dimensions and feature intent that still require authoritative drawings.' },
+      { id: 'decision-process', label: 'Confirm material, process, finish, orientation, supports, and acceptance criteria still require engineering review.' },
+      { id: 'decision-hold', label: 'Record the decision to keep the package on hold until those decisions are reviewed.' },
     ],
     decision: {
       label: 'Decision: hold for engineering and manufacturing review',
@@ -213,6 +216,12 @@ const TOUR_STEPS: readonly ManufacturerTourStep[] = [
     },
   },
 ];
+
+const tourSubtaskKey = (stepId: ManufacturerTourStep['id'], subtaskId: string) => `${stepId}:${subtaskId}`;
+const TOUR_SUBTASK_KEYS = new Set(TOUR_STEPS.flatMap(step => (
+  step.subtasks.map(subtask => tourSubtaskKey(step.id, subtask.id))
+)));
+const TOUR_SUBTASK_COUNT = TOUR_SUBTASK_KEYS.size;
 
 const MANUFACTURER_TOUR_PREVIEW: Extract<CadInternalTesterPreview, { enabled: true }> = {
   enabled: true,
@@ -555,6 +564,7 @@ export default function HomeScreen() {
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [tourActive, setTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
+  const [tourCompletedSubtaskKeys, setTourCompletedSubtaskKeys] = useState<string[]>([]);
   const [tourCompletedAt, setTourCompletedAt] = useState<string | null>(null);
   const [tourStateLoaded, setTourStateLoaded] = useState(false);
   const [tourHistoryResumeDetected, setTourHistoryResumeDetected] = useState(false);
@@ -629,6 +639,11 @@ export default function HomeScreen() {
   
   const { generate2DVisualization } = useGemini();
   const tourStep = TOUR_STEPS[tourStepIndex];
+  const tourCompletedSubtaskSet = useMemo(() => new Set(tourCompletedSubtaskKeys), [tourCompletedSubtaskKeys]);
+  const activeTourCompletedSubtaskIds = tourStep.subtasks
+    .filter(subtask => tourCompletedSubtaskSet.has(tourSubtaskKey(tourStep.id, subtask.id)))
+    .map(subtask => subtask.id);
+  const activeTourStepComplete = activeTourCompletedSubtaskIds.length === tourStep.subtasks.length;
 
   useEffect(() => {
     if (!WELCOME_INTRO_ENABLED) return;
@@ -693,9 +708,15 @@ export default function HomeScreen() {
           ? Math.min(Math.max(parsed.stepIndex ?? 0, 0), TOUR_STEPS.length - 1)
           : 0;
         const shouldResume = parsed.active === true;
+        const completedSubtaskKeys = Array.isArray(parsed.completedSubtaskKeys)
+          ? [...new Set(parsed.completedSubtaskKeys.filter((key): key is string => (
+              typeof key === 'string' && TOUR_SUBTASK_KEYS.has(key)
+            )))]
+          : [];
 
         setTourActive(shouldResume);
         setTourStepIndex(stepIndex);
+        setTourCompletedSubtaskKeys(completedSubtaskKeys);
         setTourCompletedAt(typeof parsed.completedAt === 'string' ? parsed.completedAt : null);
         if (shouldResume) {
           setManufacturerTourPreviewActive(true);
@@ -726,8 +747,10 @@ export default function HomeScreen() {
     const saveTourState = async () => {
       try {
         await AsyncStorage.setItem(TOUR_STORAGE_KEY, JSON.stringify({
+          version: TOUR_STATE_VERSION,
           active: tourActive,
           stepIndex: tourStepIndex,
+          completedSubtaskKeys: tourCompletedSubtaskKeys,
           completedAt: tourCompletedAt,
         }));
       } catch (error) {
@@ -736,7 +759,7 @@ export default function HomeScreen() {
     };
 
     saveTourState();
-  }, [tourActive, tourStepIndex, tourCompletedAt, tourStateLoaded]);
+  }, [tourActive, tourCompletedAt, tourCompletedSubtaskKeys, tourStateLoaded, tourStepIndex]);
 
   const restoreTourOrigin = useCallback(() => {
     const origin = tourOriginRef.current;
@@ -759,6 +782,7 @@ export default function HomeScreen() {
     }
     const shouldRestart = Boolean(tourCompletedAt);
     setTourStepIndex(shouldRestart ? 0 : tourStepIndex);
+    if (shouldRestart) setTourCompletedSubtaskKeys([]);
     setTourActive(true);
     setTourCompletedAt(null);
     setManufacturerTourPreviewActive(true);
@@ -772,6 +796,7 @@ export default function HomeScreen() {
 
   const restartTour = useCallback(() => {
     setTourStepIndex(0);
+    setTourCompletedSubtaskKeys([]);
     setTourCompletedAt(null);
     setTourActive(true);
     setManufacturerTourPreviewActive(true);
@@ -809,6 +834,7 @@ export default function HomeScreen() {
     imageGenInnovationId.current = null;
     setTourActive(true);
     setTourStepIndex(3);
+    setTourCompletedSubtaskKeys([]);
     setTourCompletedAt(null);
     setTourHistoryResumeDetected(false);
   }, []);
@@ -826,6 +852,7 @@ export default function HomeScreen() {
     setGeneratedMultiAngleImages([]);
     imageGenInnovationId.current = null;
     setTourStepIndex(0);
+    setTourCompletedSubtaskKeys([]);
     setTourHistoryResumeDetected(false);
   }, []);
 
@@ -849,13 +876,24 @@ export default function HomeScreen() {
     setTourStepIndex(nextStepIndex);
   }, []);
 
+  const toggleTourSubtask = useCallback((subtaskId: string) => {
+    if (!tourStep.subtasks.some(subtask => subtask.id === subtaskId)) return;
+    const key = tourSubtaskKey(tourStep.id, subtaskId);
+    setTourCompletedSubtaskKeys(current => (
+      current.includes(key)
+        ? current.filter(currentKey => currentKey !== key)
+        : [...current, key]
+    ));
+  }, [tourStep]);
+
   const goToNextTourStep = useCallback(() => {
+    if (!activeTourStepComplete) return;
     if (tourStepIndex >= TOUR_STEPS.length - 1) {
       finishTour();
       return;
     }
     moveToTourStep(Math.min(TOUR_STEPS.length - 1, tourStepIndex + 1));
-  }, [finishTour, moveToTourStep, tourStepIndex]);
+  }, [activeTourStepComplete, finishTour, moveToTourStep, tourStepIndex]);
 
   const goToPreviousTourStep = useCallback(() => {
     moveToTourStep(Math.max(0, tourStepIndex - 1));
@@ -1408,10 +1446,14 @@ export default function HomeScreen() {
       step={tourStep}
       stepIndex={tourStepIndex}
       stepCount={TOUR_STEPS.length}
+      completedSubtaskIds={activeTourCompletedSubtaskIds}
+      completedSubtaskCount={tourCompletedSubtaskKeys.length}
+      totalSubtaskCount={TOUR_SUBTASK_COUNT}
       placement={tourStep.phase >= 3 ? 'bottom-left' : 'top-right'}
       onRestart={restartTour}
       onBack={goToPreviousTourStep}
       onNext={goToNextTourStep}
+      onToggleSubtask={toggleTourSubtask}
       onExit={closeTour}
     />
   );
