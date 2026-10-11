@@ -8,22 +8,14 @@ import {
   package8ApprovalSourceReview,
   package8ApprovalVerificationRequest,
 } from './schema';
+import package8Limits from '../server/cadPhase5Package8Limits.json';
 
 const BASELINE = {
   commit: '228320e174d23cbe9b43d9c192c2216733f4c477',
   tree: 'cb22fc27d6bc741f2abc61ed0e456d66e2bfc336',
 } as const;
-const LIMITS = {
-  schemaVersion: 1 as const,
-  maximumSessions: 1 as const,
-  maximumFiles: 1 as const,
-  maximumAttempts: 1 as const,
-  maximumRetries: 0 as const,
-  maximumWindowMs: 15 * 60_000,
-  maximumCostMicrosExclusive: 9_000_000,
-  reservationMicros: 8_999_999,
-  currency: 'USD' as const,
-};
+const LIMITS = package8Limits.issuer;
+const QUALIFICATION_LIMITS_JSON = JSON.stringify(package8Limits.qualification);
 const MAXIMUM_EVIDENCE_AGE_MS = 120_000;
 const RETRY_SEMANTICS = {
   applicationRetries: 0 as const,
@@ -109,7 +101,16 @@ const sha256 = async (value: string) => {
 const safeTime = (value: number) => Number.isSafeInteger(value) && value >= 0;
 const parseUtc = (value: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)
   ? Date.parse(value) : NaN;
-const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
+const canonical = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') return Object.fromEntries(
+    Object.entries(value).sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, item]) => [key, canonical(item)]),
+  );
+  return value;
+};
+const same = (left: unknown, right: unknown) => JSON.stringify(canonical(left))
+  === JSON.stringify(canonical(right));
 type ResultCode = 'PACKAGE8_APPROVAL_ISSUED' | 'PACKAGE8_APPROVAL_VERIFIED'
   | 'PACKAGE8_APPROVAL_CONSUMED' | 'PACKAGE8_APPROVAL_REVOKED'
   | 'PACKAGE8_APPROVAL_CLOSED' | 'PACKAGE8_APPROVAL_DENIED'
@@ -188,7 +189,7 @@ async function validRequest(request: Request) {
     && HEX.test(request.ownerCommitment) && HEX.test(request.sessionCommitment)
     && request.ownerCommitment !== request.sessionCommitment
     && HEX.test(request.windowIdDigest) && HEX.test(request.limitsCommitment)
-    && request.limitsCommitment === await sha256(JSON.stringify(LIMITS))
+    && request.limitsCommitment === await sha256(QUALIFICATION_LIMITS_JSON)
     && Number.isFinite(start) && Number.isFinite(end) && Number.isFinite(expires)
     && end > start && end - start <= LIMITS.maximumWindowMs && expires === end;
 }

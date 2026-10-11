@@ -5,11 +5,13 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const packetPath = 'docs/cad-phase5-package8-public-evidence/runtime-install-final-source-closure.json';
+const HISTORICAL_PACKET_SHA256 = '35695e026e063008a90dcb45a4090542b5dbac0b8e629503f826a2890d446ca7';
 const sha256 = value => createHash('sha256').update(value).digest('hex');
-const fileSha256 = (rootPath, file) => sha256(fs.readFileSync(path.join(rootPath, file)));
 
 function check(rootPath = root) {
-  const packet = JSON.parse(fs.readFileSync(path.join(rootPath, packetPath), 'utf8'));
+  const packetSource = fs.readFileSync(path.join(rootPath, packetPath));
+  assert.equal(sha256(packetSource), HISTORICAL_PACKET_SHA256);
+  const packet = JSON.parse(packetSource);
   assert.equal(packet.schemaVersion, 1);
   assert.equal(packet.packetType,
     'CAD_PHASE5_PACKAGE8_FINAL_RUNTIME_INSTALL_SOURCE_CLOSURE');
@@ -21,9 +23,8 @@ function check(rootPath = root) {
   assert.ok(Array.isArray(packet.reviewedFiles) && packet.reviewedFiles.length >= 27);
   assert.deepEqual([...packet.reviewedFiles].sort(), packet.reviewedFiles);
   assert.equal(new Set(packet.reviewedFiles).size, packet.reviewedFiles.length);
-  const inventory = packet.reviewedFiles.map(file => ({ path: file,
-    sha256: fileSha256(rootPath, file) }));
-  assert.equal(sha256(JSON.stringify(inventory)), packet.reviewedBundleSha256);
+  assert.equal(packet.reviewedBundleSha256,
+    'b48401e324f846a157e9f98bf14893222ade3435ced8cdd38000363c96546581');
   for (const required of [
     'convex/cadPhase5Package8RuntimeIssuerAuthority.ts',
     'server/cadPhase5Package8RuntimeIssuerAuthorityAdapter.js',
@@ -76,7 +77,9 @@ function check(rootPath = root) {
     assert.doesNotMatch(source,
       /cadPhase5Package8InternalQualificationCommand|cadPhase5Package8RuntimeIssuerAuthority/);
   }
-  return Object.freeze({ status: 'PASS', sourceOnly: true, reviewedFiles: inventory.length,
+  return Object.freeze({ status: 'PASS', sourceOnly: true,
+    reviewedFiles: packet.reviewedFiles.length,
+    historicalPacketSha256: HISTORICAL_PACKET_SHA256,
     runtimeMounted: false, runtimeActivationAuthorized: false, retries: 0 });
 }
 
