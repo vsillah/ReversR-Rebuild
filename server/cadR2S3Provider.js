@@ -10,6 +10,8 @@ const {
 const hash = value => createHash('sha256').update(value).digest('hex');
 const unavailable = () => { throw new Error('R2_UNAVAILABLE'); };
 const R2_PROVIDER_PHASE_BUDGET_MS = 15 * 1000;
+const R2_JURISDICTION = 'us';
+const r2Endpoint = accountId => `https://${accountId}.${R2_JURISDICTION}.r2.cloudflarestorage.com`;
 const AUTH_FAILURE_NAMES = new Set([
   'AccessDenied', 'AccessDeniedException', 'AuthFailure', 'ExpiredToken',
   'InvalidAccessKeyId', 'InvalidSignatureException', 'InvalidToken',
@@ -93,7 +95,7 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
   if (!bucket) return null;
   const client = injectedClient || new S3Client({
     region: 'auto',
-    endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+    endpoint: r2Endpoint(config.accountId),
     credentials: { accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey },
     maxAttempts: 1,
   });
@@ -138,5 +140,5 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
   });
 }
 
-module.exports = { R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error,
+module.exports = { R2_JURISDICTION, R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error, r2Endpoint,
   createCadR2S3Provider, readConfig };

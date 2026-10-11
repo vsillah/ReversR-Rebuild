@@ -5,7 +5,8 @@ const path = require('node:path');
 const { test } = require('node:test');
 const { createCadAuthenticatedIgsDurableClient, readConfig: readDurableConfig }
   = require('../server/cadAuthenticatedIgsDurableClient');
-const { R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error, createCadR2S3Provider }
+const { R2_JURISDICTION, R2_PROVIDER_PHASE_BUDGET_MS, classifyR2Error,
+  createCadR2S3Provider, r2Endpoint }
   = require('../server/cadR2S3Provider');
 const { createCadAuthenticatedIgsSandboxExecutor }
   = require('../server/cadAuthenticatedIgsSandboxExecutor');
@@ -111,6 +112,9 @@ test('R2 adapter uses private conditional writes, verifies bytes, and confirms d
 
 test('R2 adapter separates write and acknowledgement budgets with privacy-safe failures', async () => {
   assert.equal(R2_PROVIDER_PHASE_BUDGET_MS, 15 * 1000);
+  assert.equal(R2_JURISDICTION, 'us');
+  assert.equal(r2Endpoint('a'.repeat(32)),
+    `https://${'a'.repeat(32)}.us.r2.cloudflarestorage.com`);
   const signals = [];
   const client = { async send(command, options) {
     signals.push({ name: command.constructor.name, signal: options.abortSignal });
