@@ -5,6 +5,7 @@ const test = require('node:test');
 const {
   ISSUER_BASELINE,
   ISSUER_LIMITS,
+  QUALIFICATION_LIMITS,
   REVIEW_GATE,
   expectedSourceReviewAuthorityReceipt,
   expectedAncestryDigest,
@@ -49,7 +50,7 @@ function command(overrides = {}) {
     windowIdDigest: hash('package8-window-1'),
     windowStartUtc: new Date(NOW - 60_000).toISOString(),
     windowEndUtc: new Date(NOW + 9 * 60_000).toISOString(),
-    limitsCommitment: hash(JSON.stringify(ISSUER_LIMITS)),
+    limitsCommitment: hash(JSON.stringify(QUALIFICATION_LIMITS)),
     authorityExpiresAtUtc: new Date(NOW + 9 * 60_000).toISOString(),
   };
   const review = { schemaVersion: 1,
