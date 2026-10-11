@@ -9,6 +9,21 @@ const cadArtifactState = v.union(v.literal('reserved'), v.literal('stored'),
   v.literal('quarantined'), v.literal('deleting'));
 const cadJobState = v.union(v.literal('admitted'), v.literal('converting'), v.literal('ready'),
   v.literal('failed'), v.literal('quarantined'), v.literal('deleted'));
+const cadUploadSessionBinding = {
+  credentialDigest: v.string(), userId: v.id('users'), shopId: v.id('shops'),
+  loginSessionId: v.id('authSessions'), sessionId: v.string(),
+  authMethod: v.literal('password'), cadUploadAllowed: v.boolean(),
+  issuedAt: v.number(), expiresAt: v.number(),
+};
+const cadUploadSession = v.union(
+  v.object({ ...cadUploadSessionBinding, transport: v.literal('cookie'),
+    status: v.literal('active'), csrfDigest: v.string() }),
+  v.object({ ...cadUploadSessionBinding,
+    transport: v.union(v.literal('cookie'), v.literal('bearer')),
+    status: v.literal('revoked'), csrfDigest: v.optional(v.string()),
+    userGeneration: v.optional(v.number()), membershipGeneration: v.optional(v.number()),
+    revokedAt: v.optional(v.number()) }),
+);
 export default defineSchema({
   ...authTables,
   shops: defineTable({ ownerId: v.id('users'), name: v.string(), planId: plan,
@@ -26,11 +41,7 @@ export default defineSchema({
   stripeEvents: defineTable({ eventId: v.string(), subscriptionId: v.string() }).index('by_eventId', ['eventId']),
   subscriptions: defineTable({ subscriptionId: v.string(), shopId: v.id('shops') })
     .index('by_subscriptionId', ['subscriptionId']),
-  cadUploadSessions: defineTable({ credentialDigest: v.string(), userId: v.id('users'),
-    shopId: v.id('shops'), loginSessionId: v.id('authSessions'), sessionId: v.string(),
-    authMethod: v.literal('password'), cadUploadAllowed: v.boolean(), transport: v.literal('cookie'),
-    issuedAt: v.number(), expiresAt: v.number(), status: v.union(v.literal('active'), v.literal('revoked')),
-    csrfDigest: v.string(), revokedAt: v.optional(v.number()) })
+  cadUploadSessions: defineTable(cadUploadSession)
     .index('by_credentialDigest', ['credentialDigest']).index('by_sessionId', ['sessionId']),
   cadAuthenticatedIgsJobs: defineTable({ jobId: v.string(), idempotencyDigest: v.string(),
     requestDigest: v.string(), userId: v.id('users'), shopId: v.id('shops'),

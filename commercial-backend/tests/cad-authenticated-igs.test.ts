@@ -7,6 +7,9 @@ import { AUTHENTICATED_IGS_LIMITS } from '../convex/cadAuthenticatedIgs';
 
 const modules = import.meta.glob('../convex/**/*.{ts,js}');
 const setup = () => {
+  vi.stubEnv('COMMERCIAL_AUTH_ISSUER', 'https://commercial-synthetic.convex.site');
+  vi.stubEnv('COMMERCIAL_ASSEMBLY', 'ordinary-customers-v1');
+  vi.stubEnv('CONVEX_SITE_URL', 'https://commercial-synthetic.convex.site');
   vi.stubEnv('CAD_AUTHENTICATED_IGS_PREVIEW_ENABLED', 'true');
   vi.stubEnv('CAD_AUTHENTICATED_IGS_ENVIRONMENT', 'development');
   return convexTest(schema, modules);
@@ -33,6 +36,39 @@ const invoke = async (t: ReturnType<typeof setup>, operation: string, payload: u
   });
   return JSON.parse(result.resultJson);
 };
+
+test('revoked legacy bearer sessions remain inert while active storage stays cookie and CSRF bound', async () => {
+  const t = setup();
+  const account = await identity(t);
+  const now = Date.now();
+  const credentialDigest = '1'.repeat(64);
+  const legacy = { credentialDigest, userId: account.userId, shopId: account.shopId,
+    loginSessionId: account.sessionId, sessionId: 'legacy-revoked-session',
+    authMethod: 'password' as const, cadUploadAllowed: true, transport: 'bearer' as const,
+    issuedAt: now - 120_000, expiresAt: now + 120_000, status: 'revoked' as const,
+    userGeneration: 1, membershipGeneration: 1, revokedAt: now - 60_000 };
+  const legacyId = await t.run(ctx => ctx.db.insert('cadUploadSessions', legacy));
+
+  expect(await invoke(t, 'session.read', { credentialDigest }, now)).toBeNull();
+  expect(await invoke(t, 'job.claim', { owner: { userId: account.userId, shopId: account.shopId,
+    uploadSessionId: legacy.sessionId }, jobId: 'legacy-job', idempotencyDigest: '2'.repeat(64),
+    requestDigest: '3'.repeat(64), extension: 'igs', contentLength: 1024 }, now))
+    .toEqual({ accepted: false, code: 'UPLOAD_DENIED' });
+  await expect(t.run(ctx => ctx.db.patch(legacyId, { status: 'active' })))
+    .rejects.toThrow();
+  expect(await t.run(ctx => ctx.db.get(legacyId))).toMatchObject({ status: 'revoked',
+    transport: 'bearer', revokedAt: legacy.revokedAt });
+
+  const { userGeneration: _userGeneration, membershipGeneration: _membershipGeneration,
+    revokedAt: _revokedAt, ...legacyBinding } = legacy;
+  const active = { ...legacyBinding, credentialDigest: '4'.repeat(64), sessionId: 'invalid-active-session',
+    issuedAt: now, expiresAt: now + 60_000, status: 'active' as const };
+  await expect(t.run(ctx => ctx.db.insert('cadUploadSessions', active as never))).rejects.toThrow();
+  await expect(t.run(ctx => ctx.db.insert('cadUploadSessions', {
+    ...active, credentialDigest: '5'.repeat(64), sessionId: 'missing-csrf-session',
+    transport: 'cookie' as const,
+  } as never))).rejects.toThrow();
+});
 
 test('resource and all-in daily reservations are fixed below ten dollars', () => {
   expect(AUTHENTICATED_IGS_LIMITS.SOURCE_MAX_BYTES).toBe(8 * 1024 * 1024);
