@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { createCadDevAuthSessionIssuerRouter } = require('./cadDevAuthSessionIssuerRouter');
-const { createCadAuthenticatedIgsRouter } = require('./cadAuthenticatedIgsRouter');
 const { createCadUploadSessionGatewayService } = require('./cadUploadSessionGatewayService');
 const { createCadProductionExecutionBinding } = require('./cadProductionExecutionBinding');
 const { createCadProductionExecutableRuntimeMount } = require('./cadProductionExecutableRuntimeMountCompletion');
@@ -55,11 +54,7 @@ const cadUserUploadSessionService = createCadStartupLiveGateSessionService({
   fallbackSessionService: cadFallbackUploadSessionService,
 });
 
-// Authenticated IGS is executable only when the development/preview runtime,
-// commercial authority, private custody, and bounded Sandbox are all configured.
-// The runtime factory rejects production even if a feature flag is copied there.
-app.use('/api/cad', createCadAuthenticatedIgsRouter());
-// Legacy CAD auth/session issuance remains closed without explicit development adapters.
+// CAD auth/session issuance is mounted but closed without explicit development adapters.
 // It must run before general body parsers and never opens upload admission.
 app.use('/api/cad', createCadDevAuthSessionIssuerRouter());
 // Reviewed server-owned execution binding remains disabled without a later live gate.

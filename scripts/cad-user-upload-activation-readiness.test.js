@@ -4,10 +4,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const packet = require('../offline/cad-convex/userUploadActivationReadiness.json');
-const { LIMITS, upload } = require('../server/cadWorkerContract');
+const { LIMITS, upload } = require('../server/cadAuthenticatedIgsWorkerContract');
 const { SANDBOX_LIMITS } = require('../server/cadSandboxConfig');
-const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, IGES_SOURCE_MAX_BYTES }
-  = require('../utils/igesAdmission');
+const { IGES_SOURCE_MAX_BYTES } = require('../utils/igesAdmission');
+const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES }
+  = require('../utils/cadAuthenticatedIgesAdmission');
 const root = path.resolve(__dirname, '..');
 
 test('readiness evidence records reviewed source gates while approvals stay closed', () => {

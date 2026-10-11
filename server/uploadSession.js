@@ -51,25 +51,18 @@ function readCredential(req) {
  * Record schema and issuer requirements: docs/cad-upload-session-foundation.md.
  * Only the credential digest leaves this verifier. The adapter never receives req.
  */
-function createUploadSessionVerifier({ lookupSession, allowedOrigins = [], now = Date.now,
-  lookupTimeoutMs = 1000 } = {}) {
+function createUploadSessionVerifier({ lookupSession, allowedOrigins = [], now = Date.now } = {}) {
   let origins;
   try {
     if (!Array.isArray(allowedOrigins)) throw new Error();
     origins = new Set(allowedOrigins.map(origin => {
       const url = new URL(origin);
-      const localHttp = url.protocol === 'http:'
-        && ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
-      if ((!localHttp && url.protocol !== 'https:') || url.origin !== origin
-        || url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new Error();
+      if (url.protocol !== 'https:' || url.origin !== origin) throw new Error();
       return origin;
     }));
   } catch { origins = null; }
   return async function verifyUploadSession(req) {
-    if (typeof lookupSession !== 'function' || typeof now !== 'function' || !origins
-      || !Number.isSafeInteger(lookupTimeoutMs) || lookupTimeoutMs < 1 || lookupTimeoutMs > 5000) {
-      return deny('AUTH_UNAVAILABLE');
-    }
+    if (typeof lookupSession !== 'function' || typeof now !== 'function' || !origins) return deny('AUTH_UNAVAILABLE');
     let timer;
     const controller = new AbortController();
     try {
@@ -80,7 +73,7 @@ function createUploadSessionVerifier({ lookupSession, allowedOrigins = [], now =
       }
       const record = await Promise.race([
         Promise.resolve().then(() => lookupSession(digest(credential.token), { signal: controller.signal })),
-        new Promise((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(new Error()); }, lookupTimeoutMs); }),
+        new Promise((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(new Error()); }, 1000); }),
       ]);
       if (record === null || record === undefined) return deny('SESSION_INVALID');
       if (typeof record !== 'object' || Array.isArray(record)

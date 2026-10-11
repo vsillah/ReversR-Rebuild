@@ -1,9 +1,16 @@
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const { test } = require('node:test');
 const { createCadAuthenticatedIgsDurableClient, readConfig: readDurableConfig }
   = require('../server/cadAuthenticatedIgsDurableClient');
 const { createCadR2S3Provider } = require('../server/cadR2S3Provider');
+const { createCadAuthenticatedIgsSandboxExecutor }
+  = require('../server/cadAuthenticatedIgsSandboxExecutor');
+const { authenticatedAssets, SANDBOX_LIMITS }
+  = require('../server/cadAuthenticatedIgsSandboxConfig');
+const { LIMITS } = require('../server/cadAuthenticatedIgsWorkerContract');
 const { inspectAuthenticatedIgsPreview } = require('../utils/cadInternalTesterPreview');
 
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -98,4 +105,53 @@ test('R2 adapter uses private conditional writes, verifies bytes, and confirms d
     expectedSha256: hash(bytes) })).bytes, bytes);
   assert.equal(await provider.deleteExact(put.Key), true);
   assert.equal(await provider.headExact(put.Key), null);
+});
+
+test('authenticated asset pack keeps the 8 MiB contract inside one deny-all Sandbox dispatch', async () => {
+  assert.equal(LIMITS.inputBytes, 8 * 1024 * 1024);
+  const pack = authenticatedAssets();
+  const paths = pack.map(file => file.path);
+  for (const expected of ['/vercel/sandbox/runner.js',
+    '/vercel/sandbox/cadAuthenticatedIgsWorkerContract.js',
+    '/vercel/utils/cadAuthenticatedIgesAdmission.js']) assert.ok(paths.includes(expected));
+  assert.ok(pack.reduce((total, file) => total + file.content.length, 0)
+    < SANDBOX_LIMITS.assetBytes);
+
+  const fixture = fs.readFileSync(path.join(__dirname,
+    '../public/cad-fixtures/mark-dispenser-v1/Dispenser.IGS'));
+  const calls = [];
+  let sourceBytes;
+  const sandbox = { persistent: false, vcpus: 1, memory: 2048,
+    timeout: SANDBOX_LIMITS.lifetimeMs, networkPolicy: 'deny-all',
+    async writeFiles(files) {
+      calls.push('write');
+      sourceBytes = Buffer.from(files.find(file => file.path.endsWith('/source.bin')).content);
+    },
+    async runCommand() { calls.push('run'); return { exitCode: 0 }; },
+    async readFileToBuffer() {
+      calls.push('read');
+      return Buffer.from(JSON.stringify({ status: 'ready', sourceSha256: hash(sourceBytes),
+        guestMemoryBytes: 1024 * 1024, meshes: [{
+          positions: [0, 0, 0, 1, 0, 0, 0, 1, 0], indices: [0, 1, 2],
+        }] }));
+    },
+    async stop() { calls.push('stop'); return { status: 'stopped' }; },
+  };
+  let creations = 0;
+  const executor = createCadAuthenticatedIgsSandboxExecutor({
+    create: async options => {
+      creations += 1;
+      assert.equal(options.networkPolicy, 'deny-all');
+      assert.equal(options.persistent, false);
+      assert.equal(options.resources.vcpus, 1);
+      return sandbox;
+    },
+  });
+  const result = await executor.convert({ fileName: 'Dispenser.IGS',
+    contentBase64: fixture.toString('base64') });
+  assert.equal(result.status, 'ready');
+  assert.equal(creations, 1);
+  assert.deepEqual(calls, ['write', 'run', 'read', 'stop']);
+  assert.equal(executor.activeCount(), 0);
+  assert.equal(executor.cleanupBlocked(), false);
 });

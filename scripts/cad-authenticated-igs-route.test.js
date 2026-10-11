@@ -5,14 +5,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const express = require('express');
-const { createCadAuthenticatedIgsRouter } = require('../server/cadAuthenticatedIgsRouter');
+const { createSandboxRouter } = require('../server/cadSandboxRouter');
 const { createCadR2PrivateArtifactCustody, AUTHENTICATED_IGS_POLICY }
   = require('../server/cadR2PrivateArtifactCustody');
 const { createUploadSessionService, createInMemoryUploadSessionStoreForTests }
   = require('../server/uploadSessionStore');
-const { upload, meshPayload } = require('../server/cadWorkerContract');
+const { upload, meshPayload } = require('../server/cadAuthenticatedIgsWorkerContract');
 
-const ORIGIN = 'https://preview.reversr.invalid';
+const ORIGIN = 'http://127.0.0.1:5173';
 const fixturePath = path.join(__dirname, '../public/cad-fixtures/mark-dispenser-v1/Dispenser.IGS');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sameOwner = (left, right) => left.userId === right.userId && left.shopId === right.shopId
@@ -182,7 +182,8 @@ async function mounted(t) {
     };
     next();
   });
-  app.use('/api/cad', createCadAuthenticatedIgsRouter({ runtime }));
+  app.use('/api/cad', createSandboxRouter({ env: {}, executor: runtime.executor,
+    authenticatedIgsRuntime: runtime }));
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
@@ -201,6 +202,8 @@ async function issue(base) {
 test('denied requests never subscribe to private bytes and duplicate credentials fail closed', async t => {
   const { runtime, base } = await mounted(t);
   const source = fs.readFileSync(fixturePath);
+  const legacyCapabilities = await fetch(`${base}/capabilities`);
+  assert.equal(legacyCapabilities.status, 200);
   const missing = await fetch(`${base}/authenticated-import`, { method: 'POST', headers: {
     origin: ORIGIN, 'content-type': 'model/iges', 'content-length': String(source.length),
     'x-reversr-cad-extension': 'igs', 'x-reversr-idempotency-key': 'a'.repeat(32),

@@ -1,8 +1,9 @@
 // Reusable private Cloudflare R2 custody boundary. It has no default credentials
 // or provider and dispatches only through explicitly supplied adapters.
 const { createHash, randomBytes, randomUUID } = require('node:crypto');
-const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, IGES_SOURCE_MAX_BYTES }
-  = require('../utils/igesAdmission');
+const { IGES_SOURCE_MAX_BYTES } = require('../utils/igesAdmission');
+const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES }
+  = require('../utils/cadAuthenticatedIgesAdmission');
 
 const OPERATION_BUDGET_MS = 2000;
 const DOWNLOAD_GRANT_MS = 60 * 1000;

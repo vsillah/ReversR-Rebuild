@@ -1,17 +1,20 @@
 const express = require('express');
 const { createHash, randomUUID } = require('node:crypto');
-const { createUploadSessionVerifier } = require('./uploadSession');
+const { createCadAuthenticatedIgsSessionVerifier } = require('./cadAuthenticatedIgsSessionVerifier');
 const { createCadAuthenticatedIgsDurableClient }
   = require('./cadAuthenticatedIgsDurableClient');
 const { createCadR2PrivateArtifactCustody, AUTHENTICATED_IGS_POLICY, DERIVED_WARNING }
   = require('./cadR2PrivateArtifactCustody');
 const { createCadR2S3Provider } = require('./cadR2S3Provider');
-const { createSandboxExecutor } = require('./cadSandboxExecutor');
-const { sandboxReadiness } = require('./cadSandboxConfig');
-const { LIMITS } = require('./cadWorkerContract');
+const { createCadAuthenticatedIgsSandboxExecutor }
+  = require('./cadAuthenticatedIgsSandboxExecutor');
+const { authenticatedSandboxReadiness }
+  = require('./cadAuthenticatedIgsSandboxConfig');
+const { LIMITS } = require('./cadAuthenticatedIgsWorkerContract');
 const { createInspectionStl, normalizeGeometry }
   = require('./cadPhase5DerivedArtifactOrchestrator');
-const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, inspectIgesSource } = require('../utils/igesAdmission');
+const { inspectAuthenticatedIgesSource }
+  = require('../utils/cadAuthenticatedIgesAdmission');
 
 const COOKIE = '__Host-reversr-upload-session';
 const SESSION_LIFETIME_MS = 5 * 60 * 1000;
@@ -19,6 +22,7 @@ const BODY_TIMEOUT_MS = 10_000;
 const SENSITIVE_HEADERS = new Set(['authorization', 'cookie', 'origin', 'content-length',
   'content-type', 'content-encoding', 'transfer-encoding', 'x-upload-csrf',
   'x-reversr-cad-extension', 'x-reversr-idempotency-key', 'x-reversr-download-grant']);
+const AUTHENTICATED_PATH = /^\/authenticated-(?:upload-session(?:\/|$)|import(?:\/|$)|artifacts(?:\/|$))/;
 const hash = value => createHash('sha256').update(value).digest('hex');
 const safeId = value => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
 
@@ -143,8 +147,9 @@ function sessionError(code) {
 function createCadAuthenticatedIgsRuntime({ env = process.env,
   durable = createCadAuthenticatedIgsDurableClient({ env }),
   provider = createCadR2S3Provider({ env }), executor } = {}) {
-  const readiness = sandboxReadiness(env);
-  const sandbox = executor || (readiness.configured ? createSandboxExecutor({ env }) : null);
+  const readiness = authenticatedSandboxReadiness(env);
+  const sandbox = executor
+    || (readiness.configured ? createCadAuthenticatedIgsSandboxExecutor({ env }) : null);
   if (!durable?.configured || !provider || !sandbox
     || typeof sandbox.convert !== 'function' || typeof sandbox.activeCount !== 'function'
     || typeof sandbox.cleanupBlocked !== 'function') {
@@ -162,7 +167,7 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
   const router = express.Router();
   const configured = runtime?.configured === true;
   const allowedOrigins = configured ? runtime.allowedOrigins : [];
-  const verify = createUploadSessionVerifier({
+  const verify = createCadAuthenticatedIgsSessionVerifier({
     lookupSession: configured ? runtime.sessionService.lookupSession : undefined,
     allowedOrigins,
     lookupTimeoutMs: 5000,
@@ -178,6 +183,7 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
       res.set('Vary', 'Origin');
     }
     if (req.method === 'OPTIONS') {
+      if (!AUTHENTICATED_PATH.test(req.path)) return next();
       if (!configured || !origin || !allowedOrigins.includes(origin)) return sendError(res, 'ORIGIN_OR_CSRF_REJECTED');
       res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
       res.set('Access-Control-Allow-Headers', [
@@ -240,8 +246,9 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
     let conversionClaimed = false;
     try {
       sourceBytes = await readExactBody(req, header.byteCount);
-      const inspection = inspectIgesSource({ fileName: `upload.${header.extension}`, bytes: sourceBytes,
-        maxBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES });
+      const inspection = inspectAuthenticatedIgesSource({
+        fileName: `upload.${header.extension}`, bytes: sourceBytes,
+      });
       if (!inspection.ok) throw Object.assign(new Error(inspection.code), { code: inspection.code === 'TOO_LARGE'
         ? 'UPLOAD_TOO_LARGE' : inspection.code === 'UNSUPPORTED' ? 'UPLOAD_UNSUPPORTED' : 'UPLOAD_MALFORMED' });
       const sourceDigest = hash(sourceBytes);

@@ -1,10 +1,6 @@
 const crypto = require('node:crypto');
-const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource }
-  = require('../utils/igesAdmission');
-const LIMITS = Object.freeze({ inputBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES,
-  jsonBytes: Math.ceil(AUTHENTICATED_IGES_SOURCE_MAX_BYTES / 3) * 4 + 1024,
-  outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000,
-  timeoutMs: 5000, concurrency: 1 });
+const { IGES_SOURCE_MAX_BYTES, inspectIgesFileName, inspectIgesSource } = require('../utils/igesAdmission');
+const LIMITS = Object.freeze({ inputBytes: IGES_SOURCE_MAX_BYTES, jsonBytes: 384 * 1024, outputBytes: 1024 * 1024, meshes: 16, vertices: 20000, triangles: 10000, timeoutMs: 5000, concurrency: 1 });
 const ERRORS = Object.freeze({
   DISABLED: [503, 'Hosted CAD import remains disabled pending executor qualification and operator configuration.'],
   UNAUTHORIZED: [401, 'A valid operator CAD access token is required.'],
@@ -12,7 +8,7 @@ const ERRORS = Object.freeze({
   NO_SOURCE: [400, 'Select a nonempty IGES source file.'],
   MALFORMED: [400, 'Provide a valid IGES upload as fileName and contentBase64.'],
   UNSUPPORTED: [415, 'Only standalone IGES source uploads are accepted.'],
-  TOO_LARGE: [413, 'The upload exceeds the 8 MiB source limit.'],
+  TOO_LARGE: [413, 'The upload exceeds the 256 KiB source or 384 KiB request limit.'],
   NO_GEOMETRY: [422, 'No triangle geometry was found.'],
   INVALID_GEOMETRY: [422, 'The model contains invalid geometry.'],
   OUTPUT_LIMIT: [413, 'The model exceeds the mesh, vertex, triangle or response limit.'],
@@ -31,11 +27,10 @@ function upload(body) {
   const fileNameInspection = inspectIgesFileName(body.fileName);
   if (!fileNameInspection.ok) fail(fileNameInspection.code);
   if (body.contentBase64.length > Math.ceil(LIMITS.inputBytes / 3) * 4) fail('TOO_LARGE');
+  if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body.contentBase64)) fail('MALFORMED');
   const bytes = Buffer.from(body.contentBase64, 'base64');
-  if (bytes.length > LIMITS.inputBytes) fail('TOO_LARGE');
   if (bytes.toString('base64') !== body.contentBase64) fail('MALFORMED');
-  const inspection = inspectIgesSource({ fileName: body.fileName, bytes,
-    maxBytes: AUTHENTICATED_IGES_SOURCE_MAX_BYTES });
+  const inspection = inspectIgesSource({ fileName: body.fileName, bytes });
   if (!inspection.ok) fail(inspection.code);
   return { bytes, sha256: crypto.createHash('sha256').update(bytes).digest('hex') };
 }
