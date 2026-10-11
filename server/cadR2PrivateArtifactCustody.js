@@ -6,6 +6,7 @@ const { AUTHENTICATED_IGES_SOURCE_MAX_BYTES }
   = require('../utils/cadAuthenticatedIgesAdmission');
 
 const OPERATION_BUDGET_MS = 2000;
+const PROVIDER_OPERATION_BUDGET_MS = 15 * 1000;
 const DOWNLOAD_GRANT_MS = 60 * 1000;
 const POLICY = Object.freeze({
   schemaVersion: 1,
@@ -73,7 +74,7 @@ function principal(value) {
     uploadSessionId: value.uploadSessionId });
 }
 
-async function bounded(operation, parentSignal) {
+async function bounded(operation, parentSignal, budgetMs = OPERATION_BUDGET_MS) {
   const controller = new AbortController();
   const abort = () => controller.abort();
   let timer;
@@ -84,7 +85,7 @@ async function bounded(operation, parentSignal) {
     const cancelled = new Promise((_, reject) => {
       onAbort = () => reject(new Error('CUSTODY_UNAVAILABLE'));
       controller.signal.addEventListener('abort', onAbort, { once: true });
-      timer = setTimeout(abort, OPERATION_BUDGET_MS);
+      timer = setTimeout(abort, budgetMs);
     });
     return await Promise.race([Promise.resolve().then(() => operation(controller.signal)), cancelled]);
   } finally {
@@ -216,7 +217,7 @@ function createCadR2PrivateArtifactCustody({ enabled = false, runtimeEnabled = f
         const result = await bounded(s => provider.putExact(Object.freeze({
           objectKey: record.providerObjectKey, bytes, contentType: record.format,
           storageClass: policy.storageClass, ifNoneMatch: '*', cacheControl: 'no-store',
-        }), { signal: s }), signal);
+        }), { signal: s }), signal, PROVIDER_OPERATION_BUDGET_MS);
         if (!result || result.committed !== true || result.byteCount !== record.byteCount
           || result.sha256 !== record.restrictedDigest) {
           await quarantine(record.artifactId, 'put-unknown');
@@ -271,7 +272,7 @@ function createCadR2PrivateArtifactCustody({ enabled = false, runtimeEnabled = f
         const result = await bounded(s => provider.getExact(Object.freeze({
           objectKey: record.providerObjectKey, expectedBytes: record.byteCount,
           expectedSha256: record.restrictedDigest,
-        }), { signal: s }), signal);
+        }), { signal: s }), signal, PROVIDER_OPERATION_BUDGET_MS);
         if (!result || !Buffer.isBuffer(result.bytes) || result.bytes.byteLength !== record.byteCount
           || hash(result.bytes) !== record.restrictedDigest) return deny('CUSTODY_UNKNOWN');
         return Object.freeze({ ok: true, code: 'ARTIFACT_READ', artifactId: record.artifactId,
@@ -293,13 +294,13 @@ function createCadR2PrivateArtifactCustody({ enabled = false, runtimeEnabled = f
           return deny('CUSTODY_QUOTA_EXHAUSTED');
         }
         const deleted = await bounded(s => provider.deleteExact(record.providerObjectKey,
-          { signal: s }), signal);
+          { signal: s }), signal, PROVIDER_OPERATION_BUDGET_MS);
         if (deleted !== true) throw new Error('DELETE_UNKNOWN');
         if (await bounded(s => store.consumeOperation('class-b', 1, policy, { signal: s }), signal) !== true) {
           throw new Error('CUSTODY_QUOTA_EXHAUSTED');
         }
         const remaining = await bounded(s => provider.headExact(record.providerObjectKey,
-          { signal: s }), signal);
+          { signal: s }), signal, PROVIDER_OPERATION_BUDGET_MS);
         if (remaining !== null) throw new Error('DELETE_UNCONFIRMED');
         const receipt = await bounded(s => store.confirmDeleted(record.artifactId,
           record.generation, clock(), { signal: s }), signal);
@@ -315,5 +316,5 @@ function createCadR2PrivateArtifactCustody({ enabled = false, runtimeEnabled = f
 }
 
 module.exports = { AUTHENTICATED_IGS_POLICY, DERIVED_WARNING, DOWNLOAD_GRANT_MS,
-  OPERATION_BUDGET_MS, POLICY,
+  OPERATION_BUDGET_MS, POLICY, PROVIDER_OPERATION_BUDGET_MS,
   createCadR2PrivateArtifactCustody };

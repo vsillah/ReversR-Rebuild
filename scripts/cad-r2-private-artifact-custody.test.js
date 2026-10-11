@@ -1,7 +1,9 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
-const { DERIVED_WARNING, POLICY, DOWNLOAD_GRANT_MS, createCadR2PrivateArtifactCustody }
+const { DERIVED_WARNING, POLICY, DOWNLOAD_GRANT_MS, OPERATION_BUDGET_MS,
+  PROVIDER_OPERATION_BUDGET_MS,
+  createCadR2PrivateArtifactCustody }
   = require('../server/cadR2PrivateArtifactCustody');
 
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -233,6 +235,36 @@ test('unknown put, partial acknowledgement and metadata uncertainty quarantine w
     byteCount: source.byteLength, restrictedDigest: hash(source) });
   assert.equal((await f.custody.commitArtifact(owner, reserved.artifactId, source)).code, 'CUSTODY_UNKNOWN');
   assert.equal(f.state.calls.filter(call => call === 'put').length, 1);
+});
+
+test('a single confirmed provider write may outlive the durable-store operation budget', async () => {
+  assert.ok(PROVIDER_OPERATION_BUDGET_MS > OPERATION_BUDGET_MS);
+  const f = setup();
+  let attempts = 0;
+  const provider = { ...f.provider, async putExact(request, { signal }) {
+    attempts += 1;
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(resolve, OPERATION_BUDGET_MS + 100);
+      signal.addEventListener('abort', () => {
+        clearTimeout(timer);
+        reject(new Error('provider-operation-aborted'));
+      }, { once: true });
+    });
+    return { committed: true, byteCount: request.bytes.byteLength,
+      sha256: hash(request.bytes) };
+  } };
+  const custody = createCadR2PrivateArtifactCustody({ ...f.options, provider });
+  const reserved = await custody.reserveArtifact(owner, { kind: 'original-igs',
+    format: 'model/iges', byteCount: source.byteLength, restrictedDigest: hash(source) });
+
+  assert.deepEqual(await custody.commitArtifact(owner, reserved.artifactId, source), {
+    ok: true,
+    code: 'ARTIFACT_STORED',
+    artifactId: reserved.artifactId,
+    byteCount: source.byteLength,
+    retainedUntil: f.state.records.get(reserved.artifactId).retainedUntil,
+  });
+  assert.equal(attempts, 1);
 });
 
 test('unknown delete is quarantined and never reported as deleted', async () => {
