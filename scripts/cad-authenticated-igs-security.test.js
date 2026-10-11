@@ -144,6 +144,25 @@ test('R2 adapter separates write and acknowledgement budgets with privacy-safe f
   assert.equal(classifyR2Error({ name: 'TimeoutError', code: 'ETIMEDOUT' }), 'R2_TIMEOUT');
 });
 
+test('R2 adapter consumes a GET response body before aborting its request signal', async () => {
+  const bytes = Buffer.from('streamed private synthetic CAD bytes');
+  let getSignal;
+  const client = { async send(command, options) {
+    if (command.constructor.name !== 'GetObjectCommand') throw new Error('unexpected command');
+    getSignal = options.abortSignal;
+    return { Body: { async transformToByteArray() {
+      await Promise.resolve();
+      if (getSignal.aborted) throw Object.assign(new Error('aborted'), { name: 'AbortError' });
+      return Uint8Array.from(bytes);
+    } } };
+  } };
+  const provider = createCadR2S3Provider({ env: { CAD_R2_BUCKET: 'private-cad-fixtures' }, client });
+  const result = await provider.getExact({ objectKey: `phase5/${'d'.repeat(64)}`,
+    expectedBytes: bytes.length, expectedSha256: hash(bytes) });
+  assert.deepEqual(result.bytes, bytes);
+  assert.equal(getSignal.aborted, true);
+});
+
 test('R2 adapter never treats a missing bucket as an absent object', async () => {
   const client = { async send() {
     throw Object.assign(new Error('private provider detail'), {

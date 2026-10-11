@@ -37,14 +37,15 @@ function classifyR2Error(error) {
   return 'R2_PROVIDER_REJECTED';
 }
 
-async function sendBounded(client, command, parentSignal) {
+async function sendBounded(client, command, parentSignal, consume = response => response) {
   const controller = new AbortController();
   const abort = () => controller.abort();
   const timer = setTimeout(abort, R2_PROVIDER_PHASE_BUDGET_MS);
   try {
     if (parentSignal?.aborted) throw Object.assign(new Error('R2_ABORTED'), { name: 'AbortError' });
     parentSignal?.addEventListener('abort', abort, { once: true });
-    return await client.send(command, { abortSignal: controller.signal });
+    const response = await client.send(command, { abortSignal: controller.signal });
+    return await consume(response);
   } catch (error) {
     if (controller.signal.aborted && error?.name !== 'AbortError') {
       throw Object.assign(new Error('R2_PHASE_TIMEOUT'), { name: 'AbortError' });
@@ -99,7 +100,7 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
     credentials: { accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey },
     maxAttempts: 1,
   });
-  const send = (command, signal) => sendBounded(client, command, signal);
+  const send = (command, signal, consume) => sendBounded(client, command, signal, consume);
   const missing = error => classifyR2Error(error) === 'R2_OBJECT_ABSENT';
   return Object.freeze({
     async putExact(input, { signal } = {}) {
@@ -117,8 +118,8 @@ function createCadR2S3Provider({ env = process.env, client: injectedClient } = {
     async getExact(input, { signal } = {}) {
       if (!input || typeof input.objectKey !== 'string' || !Number.isSafeInteger(input.expectedBytes)
         || !/^[a-f0-9]{64}$/.test(input.expectedSha256 || '')) unavailable();
-      const response = await send(new GetObjectCommand({ Bucket: bucket, Key: input.objectKey }), signal);
-      const bytes = await bytesFromBody(response.Body, input.expectedBytes);
+      const bytes = await send(new GetObjectCommand({ Bucket: bucket, Key: input.objectKey }), signal,
+        response => bytesFromBody(response.Body, input.expectedBytes));
       if (bytes.length !== input.expectedBytes || hash(bytes) !== input.expectedSha256) unavailable();
       return { bytes };
     },
