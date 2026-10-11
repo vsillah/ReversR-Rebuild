@@ -84,44 +84,44 @@ test('revoked legacy bearer sessions remain inert while active storage stays coo
   } as never))).rejects.toThrow();
 });
 
-test('resource and all-in daily reservations are fixed at six attempts and twelve dollars', () => {
+test('resource and all-in daily reservations are fixed at seven attempts and fourteen dollars', () => {
   expect(AUTHENTICATED_IGS_LIMITS.SOURCE_MAX_BYTES).toBe(8 * 1024 * 1024);
-  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_ATTEMPTS).toBe(6);
+  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_ATTEMPTS).toBe(7);
   expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_ATTEMPTS
     * AUTHENTICATED_IGS_LIMITS.COST_PER_ATTEMPT_MICROS)
     .toBe(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS);
-  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS).toBe(12_000_000);
+  expect(AUTHENTICATED_IGS_LIMITS.MAX_DAILY_RESERVED_COST_MICROS).toBe(14_000_000);
 });
 
-test('daily quota admits six attempts and rejects a seventh before insertion', async () => {
+test('daily quota admits seven attempts and rejects an eighth before insertion', async () => {
   const t = setup();
   const account = await identity(t);
   const now = Date.now();
-  const uploadSessionId = 'six-attempt-session';
+  const uploadSessionId = 'seven-attempt-session';
   const record = { schemaVersion: 2, userId: account.userId, shopId: account.shopId,
     loginSessionId: account.sessionId, sessionId: uploadSessionId, authMethod: 'password',
     cadUploadAllowed: true, transport: 'cookie', issuedAt: now,
     expiresAt: now + 5 * 60_000, status: 'active', csrfDigest: '0'.repeat(64) };
   expect(await invoke(t, 'session.insert', { credentialDigest: 'f'.repeat(64), record }, now)).toBe(true);
   const owner = { userId: account.userId, shopId: account.shopId, uploadSessionId };
-  const idempotencyDigests = ['1', '2', '3', '4', '5', '6', '7'];
-  const requestDigests = ['a', 'b', 'c', 'd', 'e', 'f', '0'];
+  const idempotencyDigests = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  const requestDigests = ['a', 'b', 'c', 'd', 'e', 'f', '0', '9'];
 
-  for (let index = 0; index < 6; index += 1) {
+  for (let index = 0; index < 7; index += 1) {
     expect(await invoke(t, 'job.claim', { owner, jobId: `daily-job-${index + 1}`,
       idempotencyDigest: idempotencyDigests[index].repeat(64),
       requestDigest: requestDigests[index].repeat(64), extension: 'igs', contentLength: 1024 },
     now + index + 1)).toMatchObject({ accepted: true, duplicate: false });
   }
 
-  expect(await invoke(t, 'job.claim', { owner, jobId: 'daily-job-7',
-    idempotencyDigest: idempotencyDigests[6].repeat(64),
-    requestDigest: requestDigests[6].repeat(64), extension: 'igs', contentLength: 1024 }, now + 7))
+  expect(await invoke(t, 'job.claim', { owner, jobId: 'daily-job-8',
+    idempotencyDigest: idempotencyDigests[7].repeat(64),
+    requestDigest: requestDigests[7].repeat(64), extension: 'igs', contentLength: 1024 }, now + 8))
     .toEqual({ accepted: false, code: 'UPLOAD_QUOTA_EXHAUSTED' });
   const quota = await t.run(ctx => ctx.db.query('cadAuthenticatedIgsQuota')
     .withIndex('by_scopeKey', q => q.eq('scopeKey', String(account.shopId))).unique());
-  expect(quota).toMatchObject({ attemptCount: 6, reservedCostMicros: 12_000_000 });
-  expect(await t.run(ctx => ctx.db.query('cadAuthenticatedIgsJobs').collect())).toHaveLength(6);
+  expect(quota).toMatchObject({ attemptCount: 7, reservedCostMicros: 14_000_000 });
+  expect(await t.run(ctx => ctx.db.query('cadAuthenticatedIgsJobs').collect())).toHaveLength(7);
 });
 
 test('current login, membership and paid CAD entitlement are all required', async () => {
