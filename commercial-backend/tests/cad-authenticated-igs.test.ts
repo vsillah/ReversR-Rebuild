@@ -42,9 +42,10 @@ test('revoked legacy bearer sessions remain inert while active storage stays coo
   const account = await identity(t);
   const now = Date.now();
   const credentialDigest = '1'.repeat(64);
-  const legacy = { credentialDigest, userId: account.userId, shopId: account.shopId,
+  const legacy = { schemaVersion: 2 as const, credentialDigest, userId: account.userId,
+    shopId: 'cad-controlled-upload-development-qualification',
     loginSessionId: account.sessionId, sessionId: 'legacy-revoked-session',
-    authMethod: 'password' as const, cadUploadAllowed: true, transport: 'bearer' as const,
+    authMethod: 'password' as const, cadUploadAllowed: false, transport: 'bearer' as const,
     issuedAt: now - 120_000, expiresAt: now + 120_000, status: 'revoked' as const,
     userGeneration: 1, membershipGeneration: 1, revokedAt: now - 60_000 };
   const legacyId = await t.run(ctx => ctx.db.insert('cadUploadSessions', legacy));
@@ -61,12 +62,25 @@ test('revoked legacy bearer sessions remain inert while active storage stays coo
 
   const { userGeneration: _userGeneration, membershipGeneration: _membershipGeneration,
     revokedAt: _revokedAt, ...legacyBinding } = legacy;
-  const active = { ...legacyBinding, credentialDigest: '4'.repeat(64), sessionId: 'invalid-active-session',
+  const legacyAllowedDigest = '6'.repeat(64);
+  await t.run(ctx => ctx.db.insert('cadUploadSessions', {
+    ...legacyBinding, credentialDigest: legacyAllowedDigest,
+    sessionId: 'legacy-revoked-allowed-session', cadUploadAllowed: true,
+  }));
+  expect(await invoke(t, 'session.read', { credentialDigest: legacyAllowedDigest }, now)).toBeNull();
+
+  const active = { ...legacyBinding, credentialDigest: '4'.repeat(64), shopId: account.shopId,
+    sessionId: 'invalid-active-session', cadUploadAllowed: true, csrfDigest: '7'.repeat(64),
     issuedAt: now, expiresAt: now + 60_000, status: 'active' as const };
   await expect(t.run(ctx => ctx.db.insert('cadUploadSessions', active as never))).rejects.toThrow();
+  const { csrfDigest: _csrfDigest, ...missingCsrf } = active;
   await expect(t.run(ctx => ctx.db.insert('cadUploadSessions', {
-    ...active, credentialDigest: '5'.repeat(64), sessionId: 'missing-csrf-session',
+    ...missingCsrf, credentialDigest: '5'.repeat(64), sessionId: 'missing-csrf-session',
     transport: 'cookie' as const,
+  } as never))).rejects.toThrow();
+  await expect(t.run(ctx => ctx.db.insert('cadUploadSessions', {
+    ...active, credentialDigest: '8'.repeat(64), shopId: legacy.shopId,
+    sessionId: 'legacy-shop-active-session', transport: 'cookie' as const,
   } as never))).rejects.toThrow();
 });
 

@@ -10,15 +10,15 @@ const cadArtifactState = v.union(v.literal('reserved'), v.literal('stored'),
 const cadJobState = v.union(v.literal('admitted'), v.literal('converting'), v.literal('ready'),
   v.literal('failed'), v.literal('quarantined'), v.literal('deleted'));
 const cadUploadSessionBinding = {
-  credentialDigest: v.string(), userId: v.id('users'), shopId: v.id('shops'),
+  schemaVersion: v.literal(2), credentialDigest: v.string(), userId: v.id('users'),
   loginSessionId: v.id('authSessions'), sessionId: v.string(),
   authMethod: v.literal('password'), cadUploadAllowed: v.boolean(),
   issuedAt: v.number(), expiresAt: v.number(),
 };
 const cadUploadSession = v.union(
-  v.object({ ...cadUploadSessionBinding, transport: v.literal('cookie'),
+  v.object({ ...cadUploadSessionBinding, shopId: v.id('shops'), transport: v.literal('cookie'),
     status: v.literal('active'), csrfDigest: v.string() }),
-  v.object({ ...cadUploadSessionBinding,
+  v.object({ ...cadUploadSessionBinding, shopId: v.union(v.id('shops'), v.string()),
     transport: v.union(v.literal('cookie'), v.literal('bearer')),
     status: v.literal('revoked'), csrfDigest: v.optional(v.string()),
     userGeneration: v.optional(v.number()), membershipGeneration: v.optional(v.number()),

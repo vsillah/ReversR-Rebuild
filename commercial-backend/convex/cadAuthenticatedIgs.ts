@@ -221,7 +221,7 @@ async function serviceOperation(db: DatabaseWriter, operation: string, payload: 
     const authority = await refreshAuthority(db, { userId, shopId, loginSessionId,
       authMethod: 'password' }, now);
     if (!authority || record.expiresAt > authority.expiresAt) return false;
-    await db.insert('cadUploadSessions', { credentialDigest: payload.credentialDigest,
+    await db.insert('cadUploadSessions', { schemaVersion: 2, credentialDigest: payload.credentialDigest,
       userId, shopId, loginSessionId, sessionId: record.sessionId, authMethod: 'password',
       cadUploadAllowed: true, transport: 'cookie', issuedAt: record.issuedAt,
       expiresAt: record.expiresAt, status: 'active', csrfDigest: record.csrfDigest });
