@@ -36,7 +36,7 @@ import PhaseFour from "../components/PhaseFour";
 import HistoryScreen from "../components/HistoryScreen";
 import SettingsModal, { SettingsSection } from "../components/SettingsModal";
 import ImageGenerationNotification, { ImageGenStatus } from "../components/ImageGenerationNotification";
-import TourGuide, { TourStep, tourCheckKey } from "../components/TourGuide";
+import ManufacturerTourGuide, { ManufacturerTourStep } from "../components/ManufacturerTourGuide";
 import {
   AnalysisResult,
   InnovationResult,
@@ -61,7 +61,12 @@ import { useCommercialization } from "../hooks/useCommercialization";
 import { useAndroidKeyboardInset } from "../hooks/useAndroidKeyboardInset";
 import { formatJourneyCreditShortLabel, formatResetCountdown } from "../utils/commercialUsage";
 import { ensureFocusedFieldVisible } from "../utils/focusVisibility";
-import { getCadInternalTesterPreview, isCadNativeEmbeddedPreview, type CadInternalTesterPreview } from "../utils/cadInternalTesterPreview";
+import {
+  getCadInternalTesterPreview,
+  isCadNativeEmbeddedPreview,
+  MARK_DISPENSER_RESULT,
+  type CadInternalTesterPreview,
+} from "../utils/cadInternalTesterPreview";
 
 const WELCOME_INTRO_ENABLED = process.env.EXPO_PUBLIC_ENABLE_WELCOME_INTRO !== 'false';
 
@@ -109,134 +114,120 @@ const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   4: 'hammer-outline',
 };
 
-const TOUR_STORAGE_KEY = 'reversr-rebuild-guided-tour:v2';
-const MOCK_TOUR_FIXTURE_CACHE_KEY = 'reversr-rebuild-mock-tour:farmbot-genesis-v1.8:v1';
+const TOUR_STORAGE_KEY = 'reversr-manufacturer-tour:dispenser-v1:v2';
+const TOUR_STATE_VERSION = 2;
+const LEGACY_MOCK_TOUR_FIXTURE_CACHE_KEY = 'reversr-rebuild-mock-tour:farmbot-genesis-v1.8:v1';
 type TourSavedState = {
+  version: typeof TOUR_STATE_VERSION;
   active: boolean;
   stepIndex: number;
-  completedChecks: string[];
+  completedSubtaskKeys: string[];
   completedAt: string | null;
 };
+type TourOriginState = {
+  started: boolean;
+  showHistory: boolean;
+  showSettings: boolean;
+  cadPhase: number;
+  entryMode: InputMode | undefined;
+};
 
-const TOUR_STEPS: TourStep[] = [
+const TOUR_STEPS: readonly ManufacturerTourStep[] = [
   {
-    id: 'welcome',
-    eyebrow: 'Orientation',
-    title: 'Start from the reconstruction map',
-    body: 'The welcome screen shows the full path: scan a machine, match inventory, design the reconstruction, then prepare build artifacts.',
-    structureId: 'reversr-tour-welcome',
-    checks: [
-      { id: 'map', label: 'Read the four-phase map' },
-      { id: 'start', label: 'Locate New Reconstruction' },
-      { id: 'settings', label: 'Locate the menu' },
-    ],
-  },
-  {
-    id: 'settings',
-    eyebrow: 'Settings',
-    title: 'Review account, support, and AI remediation settings',
-    body: 'Settings is where users confirm plan credits, managed AI status, inventory sources, and Support reports. Super admins can review session logs, preview AI remediation actions, run safe fixes, queue engineering handoffs, and send in-app updates.',
-    structureId: 'reversr-tour-settings',
-    opensSettings: true,
-    checks: [
-      { id: 'account', label: 'Open account settings', completion: 'auto' },
-      { id: 'ai', label: 'Review AI status' },
-      { id: 'support', label: 'Find Support issue reporting' },
-      { id: 'remediation', label: 'Review Super Admin AI remediation path' },
-    ],
-  },
-  {
-    id: 'phase-nav',
-    eyebrow: 'Navigation',
-    title: 'Use the phase rail as the workflow compass',
-    body: 'The phase rail shows progress through Input, Inventory, Design, and Build. Completed earlier phases can be reopened from the rail with save/reset safeguards.',
-    structureId: 'reversr-tour-phase-nav',
-    checks: [
-      { id: 'current', label: 'Open the phase rail', completion: 'auto' },
-      { id: 'complete', label: 'Notice completed phases' },
-      { id: 'safeguards', label: 'Open a completed phase prompt' },
-    ],
-  },
-  {
-    id: 'scan',
-    eyebrow: 'Phase 1',
-    title: 'Choose your machine input',
-    body: 'Input offers Import, Scan, Describe, and Sample. Import verifies the approved public .igs file locally before 3D review; live uploads remain gated.',
-    structureId: 'reversr-tour-scan',
+    id: 'source',
+    eyebrow: 'Source identity',
+    title: 'Begin with the file you were given',
+    body: 'This tour uses the ReversR-owned public Dispenser.IGS fixture. It never asks for customer CAD and never activates the private upload path.',
+    focus: 'Input · authorized public fixture',
     phase: 1,
-    checks: [
-      { id: 'modes', label: 'Open scan input modes', completion: 'auto' },
-      { id: 'notes', label: 'Enter or inspect machine notes', completion: 'auto' },
-      { id: 'action', label: 'Complete machine scan', completion: 'auto' },
+    subtasks: [
+      { id: 'source-name', label: 'Verify the source file is Dispenser.IGS.' },
+      { id: 'source-format', label: 'Confirm the source format is IGES.' },
+      { id: 'source-boundary', label: 'Confirm the original file remains the source asset and is not overwritten by the viewer.' },
     ],
   },
   {
     id: 'inventory',
-    eyebrow: 'Phase 2',
-    title: 'Match the scan to inventory',
-    body: 'Inventory opens on candidate matches first. Source details live behind the info control, and each match can expand to show the machine summary.',
-    structureId: 'reversr-tour-inventory',
+    eyebrow: 'Imported facts',
+    title: 'Separate geometry facts from part claims',
+    body: 'The inventory view reports what the importer observed. It does not turn mesh groups into a verified bill of materials.',
+    focus: 'Inventory · dimensions and connected geometry',
     phase: 2,
-    checks: [
-      { id: 'candidate', label: 'Select a candidate match', completion: 'auto' },
-      { id: 'summary', label: 'Expand a match summary', completion: 'auto' },
-      { id: 'source', label: 'Open source details', completion: 'auto' },
+    subtasks: [
+      { id: 'inventory-units', label: 'Confirm the imported units are millimeters.' },
+      { id: 'inventory-extents', label: 'Record the imported extents: 55.74 × 69.42 × 114.83 mm.' },
+      { id: 'inventory-components', label: 'Treat four connected components as geometry, not a certified parts count.' },
     ],
   },
   {
-    id: 'design',
-    eyebrow: 'Phase 3',
-    title: 'Generate specs and visual handoff',
-    body: 'Design turns the selected inventory match into technical specifications, 2D references, and optional 3D scene data for downstream fabrication work.',
-    structureId: 'reversr-tour-design',
+    id: 'controls',
+    eyebrow: 'Geometry inspection',
+    title: 'Inspect the shape from more than one view',
+    body: 'Use the viewer as an inspection aid. Orbit, move, fixed views, zoom, and fit help you find questions that need engineering follow-up.',
+    focus: 'Design · interactive model controls',
     phase: 3,
-    checks: [
-      { id: 'specs', label: 'Generate or load specs', completion: 'auto' },
-      { id: 'visuals', label: 'Load visual reference data', completion: 'auto' },
-      { id: 'build', label: 'Locate Continue to Build', completion: 'auto' },
+    subtasks: [
+      { id: 'controls-orbit', label: 'Drag to orbit and inspect the model from another angle.' },
+      { id: 'controls-move', label: 'Switch the shared control to Move, pan directionally, then recover with fixed view, zoom, or fit.' },
+      { id: 'controls-images', label: 'Compare the supplied images without treating them as geometry inputs.' },
     ],
   },
   {
-    id: 'build',
-    eyebrow: 'Phase 4',
-    title: 'Prepare BOM and manufacturer handoff',
-    body: 'Build packages the reconstruction into BOM, material treatment guidance, reviewer approval records, quote routing, and manufacturer-ready handoff artifacts.',
-    structureId: 'reversr-tour-build',
+    id: 'traceability',
+    eyebrow: 'Artifact traceability',
+    title: 'Keep the original and the review mesh distinct',
+    body: 'ReversR preserves the original IGS and labels the STL as a derived inspection artifact. Their separate fingerprints keep the review chain legible.',
+    focus: 'Design · the single Download menu',
+    phase: 3,
+    subtasks: [
+      { id: 'trace-source', label: 'Verify the original Dispenser.IGS source digest: 1e52…f0b8.' },
+      { id: 'trace-derived', label: 'Verify the derived dispenser-derived.stl review digest: 9b5b…096e.' },
+      { id: 'trace-downloads', label: 'Open the single Download menu and confirm both artifact choices remain distinct.' },
+    ],
+  },
+  {
+    id: 'privacy',
+    eyebrow: 'Boundaries & recovery',
+    title: 'Know what this review keeps—and what it cannot delete',
+    body: 'This tour reads checked-in public assets only. It does not upload, persist, convert, or delete private CAD, and it does not contact a provider.',
+    focus: 'Design · public-fixture privacy boundary',
+    phase: 3,
+    subtasks: [
+      { id: 'privacy-resume', label: 'Confirm closing preserves current app work and saves only tour progress on this device.' },
+      { id: 'privacy-recovery', label: 'Confirm Restart uses the same public fixture and Change source returns to the existing Import journey.' },
+      { id: 'privacy-delete', label: 'Confirm the repository-owned public assets expose no customer-delete action.' },
+    ],
+  },
+  {
+    id: 'decision',
+    eyebrow: 'Manufacturer checkpoint',
+    title: 'Make the stop decision before fabrication',
+    body: 'Rendering and conversion do not certify tolerances, materials, threads, surface finish, wall thickness, supports, orientation, or fabrication readiness.',
+    focus: 'Build · implementation remains locked',
     phase: 4,
-    checks: [
-      { id: 'bom', label: 'Generate or load BOM', completion: 'auto' },
-      { id: 'approval', label: 'Save reviewer approval', completion: 'auto' },
-      { id: 'packet', label: 'Prepare handoff packet' },
+    subtasks: [
+      { id: 'decision-dimensions', label: 'Identify the manufacturing dimensions and feature intent that still require authoritative drawings.' },
+      { id: 'decision-process', label: 'Confirm material, process, finish, orientation, supports, and acceptance criteria still require engineering review.' },
+      { id: 'decision-hold', label: 'Record the decision to keep the package on hold until those decisions are reviewed.' },
     ],
-  },
-  {
-    id: 'history',
-    eyebrow: 'Continuity',
-    title: 'Resume prior reconstruction work',
-    body: 'History keeps saved reconstructions available so users can return to a scan, spec, BOM, or approval record instead of starting over.',
-    structureId: 'reversr-tour-history',
-    opensHistory: true,
-    checks: [
-      { id: 'list', label: 'Open saved reconstructions', completion: 'auto' },
-      { id: 'resume', label: 'Resume a reconstruction', completion: 'auto' },
-      { id: 'boundary', label: 'Confirm saved work stays local' },
-    ],
+    decision: {
+      label: 'Decision: hold for engineering and manufacturing review',
+      body: 'Finishing this tour records no fabrication approval. Build stays locked and no vendor package is sent.',
+    },
   },
 ];
 
-const guidedTourCheckKeysForStep = (stepIndex: number) => (
-  TOUR_STEPS[stepIndex].checks.map(check => tourCheckKey(stepIndex, check.id))
-);
+const tourSubtaskKey = (stepId: ManufacturerTourStep['id'], subtaskId: string) => `${stepId}:${subtaskId}`;
+const TOUR_SUBTASK_KEYS = new Set(TOUR_STEPS.flatMap(step => (
+  step.subtasks.map(subtask => tourSubtaskKey(step.id, subtask.id))
+)));
+const TOUR_SUBTASK_COUNT = TOUR_SUBTASK_KEYS.size;
 
-const guidedTourManualCheckKeysForStep = (stepIndex: number) => (
-  TOUR_STEPS[stepIndex].checks
-    .filter(check => check.completion !== 'auto')
-    .map(check => tourCheckKey(stepIndex, check.id))
-);
-
-const allGuidedTourCheckKeys = () => new Set(
-  TOUR_STEPS.flatMap((_, stepIndex) => guidedTourCheckKeysForStep(stepIndex))
-);
+const MANUFACTURER_TOUR_PREVIEW: Extract<CadInternalTesterPreview, { enabled: true }> = {
+  enabled: true,
+  code: 'CAD_TEST_PREVIEW_MARK_DISPENSER',
+  fixture: MARK_DISPENSER_RESULT,
+};
 
 const MOCK_TOUR_INPUT = 'Mock tour: FarmBot Genesis v1.8 gantry farming robot with tracks, gantry beam, z-axis, Farmduino, Raspberry Pi, motors, camera, UTM, seeder, watering nozzle, and power supply.';
 
@@ -436,7 +427,7 @@ const createStorableMockTourFixture = (fixture: MockTourFixture): MockTourFixtur
 
 const readCachedMockTourFixture = async (): Promise<MockTourFixture | null> => {
   try {
-    const raw = await AsyncStorage.getItem(MOCK_TOUR_FIXTURE_CACHE_KEY);
+    const raw = await AsyncStorage.getItem(LEGACY_MOCK_TOUR_FIXTURE_CACHE_KEY);
     if (!raw) return null;
 
     const parsed = JSON.parse(raw) as {
@@ -465,7 +456,7 @@ const loadMockTourFixture = async (): Promise<MockTourFixture | null> => {
     if (getValidMockTourFixtureImages(fixture).length > 0) {
       const storableFixture = createStorableMockTourFixture(fixture);
       try {
-        await AsyncStorage.setItem(MOCK_TOUR_FIXTURE_CACHE_KEY, JSON.stringify({
+        await AsyncStorage.setItem(LEGACY_MOCK_TOUR_FIXTURE_CACHE_KEY, JSON.stringify({
           cachedAt: new Date().toISOString(),
           fixture: storableFixture,
         }));
@@ -531,7 +522,10 @@ export default function HomeScreen() {
   const [cadHighestPhase, setCadHighestPhase] = useState(3);
   const cadInternalPreview: CadInternalTesterPreview = routeCadInternalPreview;
   const [integratedIgsPreview, setIntegratedIgsPreview] = useState<Extract<CadInternalTesterPreview, { enabled: true }> | null>(null);
-  const activeCadPreview: CadInternalTesterPreview = integratedIgsPreview ?? cadInternalPreview;
+  const [manufacturerTourPreviewActive, setManufacturerTourPreviewActive] = useState(false);
+  const activeCadPreview: CadInternalTesterPreview = manufacturerTourPreviewActive
+    ? MANUFACTURER_TOUR_PREVIEW
+    : integratedIgsPreview ?? cadInternalPreview;
   const desktopCadWorkspace = desktopWorkspace && activeCadPreview.enabled;
   const navigateCadPhase = (phase: number) => {
     if (phase < 1 || phase > 4) return;
@@ -570,7 +564,7 @@ export default function HomeScreen() {
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [tourActive, setTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
-  const [tourCompletedChecks, setTourCompletedChecks] = useState<Set<string>>(() => new Set());
+  const [tourCompletedSubtaskKeys, setTourCompletedSubtaskKeys] = useState<string[]>([]);
   const [tourCompletedAt, setTourCompletedAt] = useState<string | null>(null);
   const [tourStateLoaded, setTourStateLoaded] = useState(false);
   const [tourHistoryResumeDetected, setTourHistoryResumeDetected] = useState(false);
@@ -640,91 +634,16 @@ export default function HomeScreen() {
   } | null>(null);
   const workflowScrollRef = useRef<ScrollView>(null);
   const pendingWorkflowScrollResetRef = useRef(false);
+  const tourOriginRef = useRef<TourOriginState | null>(null);
   const [workflowInputActive, setWorkflowInputActive] = useState(false);
   
   const { generate2DVisualization } = useGemini();
   const tourStep = TOUR_STEPS[tourStepIndex];
-  const completedTourCheckCount = TOUR_STEPS.reduce((count, step, stepIndex) => {
-    return count + step.checks.filter(check => tourCompletedChecks.has(tourCheckKey(stepIndex, check.id))).length;
-  }, 0);
-  const totalTourCheckCount = TOUR_STEPS.reduce((count, step) => count + step.checks.length, 0);
-  const canFocusTourStep = mockJourneyActive || !tourStep.phase || context.phase >= tourStep.phase;
-  const focusBlockedReason = !mockJourneyActive && tourStep.phase && context.phase < tourStep.phase
-    ? `This scene opens after Phase ${context.phase}. Complete the current phase to unlock ${PHASE_LABELS[tourStep.phase - 1]}.`
-    : undefined;
-  const detectedTourCheckKeys = useMemo(() => {
-    const detected = new Set<string>();
-    const mark = (stepId: TourStep['id'], checkId: string) => {
-      const stepIndex = TOUR_STEPS.findIndex(step => step.id === stepId);
-      if (stepIndex >= 0) detected.add(tourCheckKey(stepIndex, checkId));
-    };
-
-    if (showSettings && settingsInitialSection === 'account') {
-      mark('settings', 'account');
-    }
-    if (started && !showSettings && !showHistory) {
-      mark('phase-nav', 'current');
-    }
-
-    if (started && context.phase === 1 && !showSettings && !showHistory) {
-      mark('scan', 'modes');
-    }
-    if (context.input.trim().length > 0 || mockJourneyActive) {
-      mark('scan', 'notes');
-    }
-    if (context.analysis || context.phase > 1) {
-      mark('scan', 'action');
-    }
-
-    if (context.analysis && context.phase >= 2) {
-      mark('inventory', 'summary');
-      mark('inventory', 'source');
-    }
-    if (context.innovation || context.phase >= 3) {
-      mark('inventory', 'candidate');
-    }
-
-    if (context.spec) {
-      mark('design', 'specs');
-      mark('design', 'build');
-    }
-    if (context.imageUrl || context.threeDScene || generatedMultiAngleImages.some(image => image.imageData)) {
-      mark('design', 'visuals');
-    }
-
-    if (context.bom) {
-      mark('build', 'bom');
-    }
-    if (context.reviewerApprovalRecords.length > 0) {
-      mark('build', 'approval');
-    }
-
-    if (showHistory) {
-      mark('history', 'list');
-    }
-    if (tourHistoryResumeDetected) {
-      mark('history', 'resume');
-    }
-
-    return detected;
-  }, [
-    context.analysis,
-    context.bom,
-    context.imageUrl,
-    context.input,
-    context.innovation,
-    context.phase,
-    context.reviewerApprovalRecords.length,
-    context.spec,
-    context.threeDScene,
-    generatedMultiAngleImages,
-    mockJourneyActive,
-    settingsInitialSection,
-    showHistory,
-    showSettings,
-    started,
-    tourHistoryResumeDetected,
-  ]);
+  const tourCompletedSubtaskSet = useMemo(() => new Set(tourCompletedSubtaskKeys), [tourCompletedSubtaskKeys]);
+  const activeTourCompletedSubtaskIds = tourStep.subtasks
+    .filter(subtask => tourCompletedSubtaskSet.has(tourSubtaskKey(tourStep.id, subtask.id)))
+    .map(subtask => subtask.id);
+  const activeTourStepComplete = activeTourCompletedSubtaskIds.length === tourStep.subtasks.length;
 
   useEffect(() => {
     if (!WELCOME_INTRO_ENABLED) return;
@@ -785,19 +704,28 @@ export default function HomeScreen() {
         }
 
         const parsed = JSON.parse(raw) as Partial<TourSavedState>;
-        const validKeys = allGuidedTourCheckKeys();
         const stepIndex = Number.isInteger(parsed.stepIndex)
           ? Math.min(Math.max(parsed.stepIndex ?? 0, 0), TOUR_STEPS.length - 1)
           : 0;
+        const shouldResume = parsed.active === true;
+        const completedSubtaskKeys = Array.isArray(parsed.completedSubtaskKeys)
+          ? [...new Set(parsed.completedSubtaskKeys.filter((key): key is string => (
+              typeof key === 'string' && TOUR_SUBTASK_KEYS.has(key)
+            )))]
+          : [];
 
-        setTourActive(parsed.active === true);
+        setTourActive(shouldResume);
         setTourStepIndex(stepIndex);
-        setTourCompletedChecks(new Set(
-          Array.isArray(parsed.completedChecks)
-            ? parsed.completedChecks.filter(key => typeof key === 'string' && validKeys.has(key))
-            : []
-        ));
+        setTourCompletedSubtaskKeys(completedSubtaskKeys);
         setTourCompletedAt(typeof parsed.completedAt === 'string' ? parsed.completedAt : null);
+        if (shouldResume) {
+          setManufacturerTourPreviewActive(true);
+          setStarted(true);
+          setShowSettings(false);
+          setShowHistory(false);
+          setEntryMode('import');
+          setCadPhase(TOUR_STEPS[stepIndex].phase);
+        }
       } catch (error) {
         console.warn('Failed to load guided tour state', error);
       } finally {
@@ -819,9 +747,10 @@ export default function HomeScreen() {
     const saveTourState = async () => {
       try {
         await AsyncStorage.setItem(TOUR_STORAGE_KEY, JSON.stringify({
+          version: TOUR_STATE_VERSION,
           active: tourActive,
           stepIndex: tourStepIndex,
-          completedChecks: Array.from(tourCompletedChecks),
+          completedSubtaskKeys: tourCompletedSubtaskKeys,
           completedAt: tourCompletedAt,
         }));
       } catch (error) {
@@ -830,68 +759,63 @@ export default function HomeScreen() {
     };
 
     saveTourState();
-  }, [tourActive, tourStepIndex, tourCompletedChecks, tourCompletedAt, tourStateLoaded]);
+  }, [tourActive, tourCompletedAt, tourCompletedSubtaskKeys, tourStateLoaded, tourStepIndex]);
 
-  useEffect(() => {
-    if (!tourStateLoaded || detectedTourCheckKeys.size === 0) return;
-
-    setTourCompletedChecks(current => {
-      let changed = false;
-      const next = new Set(current);
-      detectedTourCheckKeys.forEach(key => {
-        if (!next.has(key)) {
-          next.add(key);
-          changed = true;
-        }
-      });
-      return changed ? next : current;
-    });
-  }, [detectedTourCheckKeys, tourStateLoaded]);
-
-  const toggleTourCheck = useCallback((stepIndex: number, checkId: string) => {
-    setTourCompletedChecks(current => {
-      const next = new Set(current);
-      const key = tourCheckKey(stepIndex, checkId);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  }, []);
-
-  const toggleTourStepDone = useCallback((stepIndex: number) => {
-    setTourCompletedChecks(current => {
-      const next = new Set(current);
-      const stepKeys = guidedTourManualCheckKeysForStep(stepIndex);
-      const isStepComplete = stepKeys.every(key => next.has(key));
-      stepKeys.forEach(key => {
-        if (isStepComplete) {
-          next.delete(key);
-        } else {
-          next.add(key);
-        }
-      });
-      return next;
-    });
-  }, []);
+  const restoreTourOrigin = useCallback(() => {
+    const origin = tourOriginRef.current;
+    setManufacturerTourPreviewActive(false);
+    if (origin) {
+      setStarted(origin.started);
+      setShowHistory(origin.showHistory);
+      setShowSettings(origin.showSettings);
+      setCadPhase(origin.cadPhase);
+      setEntryMode(origin.entryMode);
+    } else if (!cadInternalPreview.enabled && !integratedIgsPreview) {
+      setStarted(false);
+    }
+    tourOriginRef.current = null;
+  }, [cadInternalPreview.enabled, integratedIgsPreview]);
 
   const startTour = useCallback(() => {
-    setTourStepIndex(0);
-    setTourHistoryResumeDetected(false);
+    if (!tourActive) {
+      tourOriginRef.current = { started, showHistory, showSettings, cadPhase, entryMode };
+    }
+    const shouldRestart = Boolean(tourCompletedAt);
+    setTourStepIndex(shouldRestart ? 0 : tourStepIndex);
+    if (shouldRestart) setTourCompletedSubtaskKeys([]);
     setTourActive(true);
     setTourCompletedAt(null);
+    setManufacturerTourPreviewActive(true);
+    setStarted(true);
+    setShowSettings(false);
+    setShowHistory(false);
+    setEntryMode('import');
+    setWorkflowMenuOpen(false);
+    setWelcomeIntroVisible(false);
+  }, [cadPhase, entryMode, showHistory, showSettings, started, tourActive, tourCompletedAt, tourStepIndex]);
+
+  const restartTour = useCallback(() => {
+    setTourStepIndex(0);
+    setTourCompletedSubtaskKeys([]);
+    setTourCompletedAt(null);
+    setTourActive(true);
+    setManufacturerTourPreviewActive(true);
+    setStarted(true);
+    setShowSettings(false);
+    setShowHistory(false);
+    setEntryMode('import');
   }, []);
 
   const closeTour = useCallback(() => {
     setTourActive(false);
-  }, []);
+    restoreTourOrigin();
+  }, [restoreTourOrigin]);
 
   const finishTour = useCallback(() => {
     setTourCompletedAt(new Date().toISOString());
     setTourActive(false);
-  }, []);
+    restoreTourOrigin();
+  }, [restoreTourOrigin]);
 
   const startMockJourney = useCallback(async () => {
     setEntryMode(undefined);
@@ -910,6 +834,7 @@ export default function HomeScreen() {
     imageGenInnovationId.current = null;
     setTourActive(true);
     setTourStepIndex(3);
+    setTourCompletedSubtaskKeys([]);
     setTourCompletedAt(null);
     setTourHistoryResumeDetected(false);
   }, []);
@@ -927,51 +852,20 @@ export default function HomeScreen() {
     setGeneratedMultiAngleImages([]);
     imageGenInnovationId.current = null;
     setTourStepIndex(0);
+    setTourCompletedSubtaskKeys([]);
     setTourHistoryResumeDetected(false);
   }, []);
 
   const applyTourStepFocus = useCallback((stepIndex: number) => {
     const step = TOUR_STEPS[stepIndex];
     setPhaseActionModal(null);
-
-    if (step.id === 'welcome') {
-      setShowSettings(false);
-      setShowHistory(false);
-      setStarted(false);
-      return;
-    }
-
-    if (step.opensSettings) {
-      setShowHistory(false);
-      openSettings('account');
-      return;
-    }
-
-    if (step.opensHistory) {
-      setShowSettings(false);
-      setHistoryRefreshKey(prev => prev + 1);
-      setShowHistory(true);
-      setStarted(true);
-      return;
-    }
-
     setShowSettings(false);
     setShowHistory(false);
     setStarted(true);
-
-    if (mockJourneyActive && step.phase) {
-      setContext(prev => ({ ...prev, phase: step.phase || prev.phase }));
-      return;
-    }
-
-    if (step.phase && context.phase < step.phase) {
-      return;
-    }
-
-    if (step.phase && step.phase < context.phase) {
-      setPhaseActionModal(step.phase);
-    }
-  }, [context.phase, mockJourneyActive, openSettings]);
+    setEntryMode('import');
+    setManufacturerTourPreviewActive(true);
+    setCadPhase(step.phase);
+  }, []);
 
   useEffect(() => {
     if (!tourActive || !tourStateLoaded) return;
@@ -982,13 +876,24 @@ export default function HomeScreen() {
     setTourStepIndex(nextStepIndex);
   }, []);
 
+  const toggleTourSubtask = useCallback((subtaskId: string) => {
+    if (!tourStep.subtasks.some(subtask => subtask.id === subtaskId)) return;
+    const key = tourSubtaskKey(tourStep.id, subtaskId);
+    setTourCompletedSubtaskKeys(current => (
+      current.includes(key)
+        ? current.filter(currentKey => currentKey !== key)
+        : [...current, key]
+    ));
+  }, [tourStep]);
+
   const goToNextTourStep = useCallback(() => {
+    if (!activeTourStepComplete) return;
     if (tourStepIndex >= TOUR_STEPS.length - 1) {
       finishTour();
       return;
     }
     moveToTourStep(Math.min(TOUR_STEPS.length - 1, tourStepIndex + 1));
-  }, [finishTour, moveToTourStep, tourStepIndex]);
+  }, [activeTourStepComplete, finishTour, moveToTourStep, tourStepIndex]);
 
   const goToPreviousTourStep = useCallback(() => {
     moveToTourStep(Math.max(0, tourStepIndex - 1));
@@ -1218,6 +1123,9 @@ export default function HomeScreen() {
 
   const executeReset = () => {
     setIntegratedIgsPreview(null);
+    setManufacturerTourPreviewActive(false);
+    setTourActive(false);
+    tourOriginRef.current = null;
     setCadHighestPhase(3);
     setMockJourneyActive(false);
     setMockTourFixture(null);
@@ -1446,6 +1354,9 @@ export default function HomeScreen() {
 
   const handleStartNew = (mode: InputMode = 'type') => {
     setIntegratedIgsPreview(null);
+    setManufacturerTourPreviewActive(false);
+    setTourActive(false);
+    tourOriginRef.current = null;
     setCadHighestPhase(3);
     setEntryMode(mode);
     setMockJourneyActive(false);
@@ -1462,6 +1373,9 @@ export default function HomeScreen() {
 
   const handleResume = (saved: SavedInnovation) => {
     setIntegratedIgsPreview(null);
+    setManufacturerTourPreviewActive(false);
+    setTourActive(false);
+    tourOriginRef.current = null;
     setCadHighestPhase(3);
     setEntryMode(undefined);
     setMockJourneyActive(false);
@@ -1494,6 +1408,9 @@ export default function HomeScreen() {
 
   const goHome = useCallback(() => {
     setIntegratedIgsPreview(null);
+    setManufacturerTourPreviewActive(false);
+    setTourActive(false);
+    tourOriginRef.current = null;
     setCadHighestPhase(3);
     setShowSettings(false);
     setShowHistory(false);
@@ -1502,6 +1419,9 @@ export default function HomeScreen() {
 
   const enterHome = useCallback(() => {
     setIntegratedIgsPreview(null);
+    setManufacturerTourPreviewActive(false);
+    setTourActive(false);
+    tourOriginRef.current = null;
     setCadHighestPhase(3);
     setWelcomeIntroVisible(false);
     setShowSettings(false);
@@ -1521,24 +1441,19 @@ export default function HomeScreen() {
   ) : null;
 
   const renderTourGuide = () => (
-    <TourGuide
+    <ManufacturerTourGuide
       active={tourActive}
       step={tourStep}
       stepIndex={tourStepIndex}
       stepCount={TOUR_STEPS.length}
-      completedChecks={tourCompletedChecks}
-      completedCount={completedTourCheckCount}
-      totalCount={totalTourCheckCount}
-      canFocusStep={canFocusTourStep}
-      focusBlockedReason={focusBlockedReason}
-      placement={tourStep.phase ? 'top-right' : 'bottom-left'}
-      mockJourneyActive={mockJourneyActive}
-      onStartMockJourney={startMockJourney}
-      onStopMockJourney={stopMockJourney}
-      onToggleCheck={toggleTourCheck}
-      onToggleStepDone={toggleTourStepDone}
+      completedSubtaskIds={activeTourCompletedSubtaskIds}
+      completedSubtaskCount={tourCompletedSubtaskKeys.length}
+      totalSubtaskCount={TOUR_SUBTASK_COUNT}
+      placement={tourStep.phase >= 3 ? 'bottom-left' : 'top-right'}
+      onRestart={restartTour}
       onBack={goToPreviousTourStep}
       onNext={goToNextTourStep}
+      onToggleSubtask={toggleTourSubtask}
       onExit={closeTour}
     />
   );
@@ -1749,7 +1664,7 @@ export default function HomeScreen() {
                   style={styles.menuItem}
                   onPress={() => handleWorkflowMenuAction(startTour)}
                   accessibilityRole="button"
-                  accessibilityLabel="Start guided tour"
+                  accessibilityLabel="Resume or start manufacturer tour"
                   testID="reversr-tour-start-header"
                 >
                   <Ionicons name="compass-outline" size={18} color={Colors.primary} />
@@ -1797,7 +1712,7 @@ export default function HomeScreen() {
       )}
 
       <ScrollView
-        key={`workflow-surface:${context.id}:${activeCadPreview.enabled ? 'cad-review' : context.phase}`}
+        key={`workflow-surface:${context.id}:${activeCadPreview.enabled ? `cad-review:${activeCadPreview.fixture.sha256}` : context.phase}`}
         ref={workflowScrollRef}
         testID="reversr-workflow-scroll"
         style={[styles.content, nativeEmbeddedCadPreview && styles.embeddedPreviewContent]}

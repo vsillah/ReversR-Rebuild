@@ -59,7 +59,8 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
   const [authenticatedLiveJobId, setAuthenticatedLiveJobId] = useState<string | null>(null);
   const [authenticatedLiveResume, setAuthenticatedLiveResume] = useState('');
   const [selectedBuildGate, setSelectedBuildGate] = useState(0);
-  const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(preview.fixture.derivedInspectionStl);
+  const publicIgsJourney = preview.fixture.sha256 === PUBLIC_CUBE_SHA256
+    || preview.fixture.qualificationProvenance?.kind === 'authenticated-igs-preview';
   const buildStep = CAD_BUILD_READINESS.userSteps[selectedBuildGate] ?? CAD_BUILD_READINESS.userSteps[0];
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   useEffect(() => {

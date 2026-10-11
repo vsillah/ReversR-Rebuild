@@ -10,6 +10,8 @@ import CadFixtureViewer from './CadFixtureViewer';
 import { createPublicCubeDerivedStl, PUBLIC_CUBE_SHA256 } from '../utils/igsImportJourney';
 import type { SyntheticArtifacts } from '../utils/cadAuthenticatedImportQualification';
 
+const shortDigest = (digest: string) => `${digest.slice(0, 4)}…${digest.slice(-4)}`;
+
 export default function CadDesignReview({ fixture, onChangeSource, desktop = false, onReadiness,
     qualificationArtifacts, onDeleteQualificationArtifacts, authenticatedArtifacts }: { fixture: CadInternalTesterFixture;
   onChangeSource?: () => void; desktop?: boolean; onReadiness?: () => void;
@@ -24,9 +26,21 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
   const isSyntheticQualification = fixture.qualificationProvenance?.kind === 'synthetic-igs-local';
   const isAuthenticatedPreview = fixture.qualificationProvenance?.kind === 'authenticated-igs-preview';
+  const staticDerivedAsset = fixture.previewGeometry.kind === 'stl' ? {
+    assetUrl: fixture.previewGeometry.assetUrl,
+    content: undefined,
+    fileName: 'dispenser-derived.stl',
+    sha256: fixture.previewGeometry.sha256,
+    sourceSha256: fixture.sha256,
+  } : null;
+  const derivedAsset = fixture.derivedInspectionStl ? {
+    assetUrl: undefined,
+    sourceSha256: fixture.sha256,
+    ...fixture.derivedInspectionStl,
+  } : staticDerivedAsset;
   const canDownloadSource = Boolean(fixture.sourceAssetUrl || qualificationArtifacts?.original || authenticatedArtifacts);
   const canDownloadDerived = Boolean(qualificationArtifacts?.stl || authenticatedArtifacts)
-    || fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(fixture.derivedInspectionStl);
+    || fixture.sha256 === PUBLIC_CUBE_SHA256 || Boolean(derivedAsset);
   const [downloadMenuOpen, setDownloadMenuOpen] = React.useState(false);
   const [artifactError, setArtifactError] = React.useState('');
   const downloadMenuRef = React.useRef<View>(null);
@@ -84,17 +98,20 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     }
     const content = qualificationArtifacts?.stl
       ? qualificationArtifacts.stl.bytes.slice().buffer as ArrayBuffer
-      : fixture.derivedInspectionStl?.content ?? createPublicCubeDerivedStl();
-    const href = URL.createObjectURL(new Blob([content], { type: 'model/stl' }));
+      : derivedAsset?.content;
+    const href = derivedAsset?.assetUrl && !qualificationArtifacts
+      ? derivedAsset.assetUrl
+      : URL.createObjectURL(new Blob([content ?? createPublicCubeDerivedStl()], { type: 'model/stl' }));
+    const shouldRevokeUrl = href.startsWith('blob:');
     const link = document.createElement('a');
     link.href = href;
-    link.download = qualificationArtifacts?.stl.fileName ?? fixture.derivedInspectionStl?.fileName
+    link.download = qualificationArtifacts?.stl.fileName ?? derivedAsset?.fileName
       ?? 'reversr-public-cube-derived-inspection-mesh-mm.stl';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
     link.click();
     link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(href), 1000);
+    if (shouldRevokeUrl) window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
   const chooseDownload = (download: () => void | Promise<void>) => {
     setDownloadMenuOpen(false);
@@ -206,6 +223,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
       <CadDetails title="Geometry, source & review limits" testID="cad-design-details">
         {fixture.warnings.map(warning => <Text key={warning} style={text}>• {warning}</Text>)}
         <CadProvenance fixture={fixture} />
+        {derivedAsset ? <>
+          <Text testID="cad-source-fingerprint" style={text}>Original {fixture.sourceFileName} · source fingerprint {shortDigest(fixture.sha256)}</Text>
+          <Text testID="cad-derived-fingerprint" style={text}>Derived {derivedAsset.fileName} · review fingerprint {shortDigest(derivedAsset.sha256)}
+            {derivedAsset.sourceSha256 ? ` · traced to source ${shortDigest(derivedAsset.sourceSha256)}` : ''}</Text>
+        </> : null}
         <Text style={text}>{isDispenserReview
           ? 'The interactive model is the calibrated display mesh derived from the authorized CAD source. Reference images remain independent visual checks.'
           : isSyntheticQualification
