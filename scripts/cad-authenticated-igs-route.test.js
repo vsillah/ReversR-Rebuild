@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { once } = require('node:events');
 const fs = require('node:fs');
+const http = require('node:http');
 const path = require('node:path');
 const { test } = require('node:test');
 const express = require('express');
@@ -21,6 +22,21 @@ const fixturePath = path.join(__dirname, '../public/cad-fixtures/mark-dispenser-
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sameOwner = (left, right) => left.userId === right.userId && left.shopId === right.shopId
   && left.uploadSessionId === right.uploadSessionId;
+
+function getWithExactHost(url, headers) {
+  const target = new URL(url);
+  return new Promise((resolve, reject) => {
+    const request = http.get({ hostname: target.hostname, port: target.port,
+      path: `${target.pathname}${target.search}`, headers }, response => {
+      const chunks = [];
+      response.on('data', chunk => chunks.push(chunk));
+      response.once('error', reject);
+      response.once('end', () => resolve({ status: response.statusCode,
+        bytes: Buffer.concat(chunks) }));
+    });
+    request.once('error', reject);
+  });
+}
 
 function createMemoryRuntime() {
   const state = { records: new Map(), objects: new Map(), grants: new Map(), jobs: new Map(),
@@ -370,6 +386,55 @@ test('mounted preview route converts the public dispenser fixture once and serve
   assert.equal(runtime.state.attempts, attemptsAfterSuccess);
   assert.equal([...runtime.state.jobs.values()].filter(job => job.state === 'failed').length, 1);
   const headers = { origin: ORIGIN, cookie: auth.cookie, 'x-upload-csrf': auth.csrf };
+  const grantFor = async kind => {
+    const response = await fetch(`${base}/authenticated-import/${uploaded.job.jobId}/grants/${kind}`,
+      { method: 'POST', headers });
+    const body = await response.json();
+    assert.equal(response.status, 200, JSON.stringify(body));
+    return body.grant;
+  };
+  const sameOriginReadHeaders = grant => ({
+    cookie: auth.cookie,
+    'x-upload-csrf': auth.csrf,
+    'x-reversr-download-grant': grant.token,
+    'sec-fetch-site': 'same-origin',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-dest': 'empty',
+    host: new URL(ORIGIN).host,
+    'x-forwarded-proto': new URL(ORIGIN).protocol.slice(0, -1),
+  });
+
+  const browserPreviewGrant = await grantFor('preview');
+  const browserPreview = await getWithExactHost(
+    `${base}/authenticated-artifacts/${uploaded.job.jobId}/preview`,
+    sameOriginReadHeaders(browserPreviewGrant),
+  );
+  assert.equal(browserPreview.status, 200);
+  assert.equal(JSON.parse(browserPreview.bytes).format, 'reversr-inspection-mesh-v1');
+
+  const noMetadataGrant = await grantFor('preview');
+  const noMetadata = await fetch(
+    `${base}/authenticated-artifacts/${uploaded.job.jobId}/preview`,
+    { headers: { cookie: auth.cookie, 'x-upload-csrf': auth.csrf,
+      'x-reversr-download-grant': noMetadataGrant.token } },
+  );
+  assert.equal(noMetadata.status, 403);
+
+  const wrongHostGrant = await grantFor('preview');
+  const wrongHost = await getWithExactHost(
+    `${base}/authenticated-artifacts/${uploaded.job.jobId}/preview`,
+    { ...sameOriginReadHeaders(wrongHostGrant), host: 'attacker.invalid' },
+  );
+  assert.equal(wrongHost.status, 403);
+
+  const crossOriginGrant = await grantFor('preview');
+  const crossOrigin = await fetch(
+    `${base}/authenticated-artifacts/${uploaded.job.jobId}/preview`,
+    { headers: { ...sameOriginReadHeaders(crossOriginGrant), origin: 'https://attacker.invalid',
+      'sec-fetch-site': 'cross-site' } },
+  );
+  assert.equal(crossOrigin.status, 403);
+
   const originalGrantResponse = await fetch(
     `${base}/authenticated-import/${uploaded.job.jobId}/grants/original`,
     { method: 'POST', headers },

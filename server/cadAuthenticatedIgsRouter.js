@@ -182,6 +182,22 @@ function sessionError(code) {
   return 'CAD_RUNTIME_UNAVAILABLE';
 }
 
+function sameOriginReadOrigin(req, allowedOrigins) {
+  if (req.method !== 'GET' || req.headers.origin !== undefined
+    || req.headers['sec-fetch-site'] !== 'same-origin'
+    || req.headers['sec-fetch-mode'] !== 'cors'
+    || req.headers['sec-fetch-dest'] !== 'empty') return null;
+  const host = req.headers.host;
+  const protocol = req.headers['x-forwarded-proto']
+    || (req.socket?.encrypted ? 'https' : 'http');
+  if (typeof host !== 'string' || typeof protocol !== 'string'
+    || host.includes(',') || protocol.includes(',')) return null;
+  try {
+    const origin = new URL(`${protocol}://${host}`).origin;
+    return allowedOrigins.includes(origin) ? origin : null;
+  } catch { return null; }
+}
+
 function createCadAuthenticatedIgsRuntime({ env = process.env,
   durable = createCadAuthenticatedIgsDurableClient({ env }),
   provider = createCadR2S3Provider({ env }), executor } = {}) {
@@ -245,9 +261,15 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
     } });
   });
 
-  async function verifyRequest(req, res) {
+  async function verifyRequest(req, res, { allowSameOriginRead = false } = {}) {
     if (!configured) { sendError(res, 'CAD_PREVIEW_DISABLED'); return null; }
-    const result = await verify(req);
+    let verificationRequest = req;
+    if (allowSameOriginRead && req.headers.origin === undefined) {
+      const origin = sameOriginReadOrigin(req, allowedOrigins);
+      if (origin) verificationRequest = { headers: { ...req.headers, origin },
+        rawHeaders: [...req.rawHeaders, 'Origin', origin] };
+    }
+    const result = await verify(verificationRequest);
     if (!result.ok) {
       if (['SESSION_MALFORMED', 'SESSION_INVALID', 'SESSION_REVOKED',
         'SESSION_EXPIRED'].includes(result.code)) clearUploadSessionCookie(res);
@@ -393,7 +415,7 @@ function createCadAuthenticatedIgsRouter({ runtime = createCadAuthenticatedIgsRu
   });
 
   router.get('/authenticated-artifacts/:jobId/:kind', async (req, res) => {
-    const principal = await verifyRequest(req, res);
+    const principal = await verifyRequest(req, res, { allowSameOriginRead: true });
     if (!principal) return;
     const token = req.headers['x-reversr-download-grant'];
     if (hasDuplicateSensitiveHeaders(req) || !safeId(req.params.jobId)
