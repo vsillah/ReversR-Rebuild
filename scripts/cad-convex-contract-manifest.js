@@ -860,6 +860,11 @@ const files = [
   'scripts/cad-phase5-package8-runtime-issuer-authority-adapter.test.js',
   'scripts/cad-phase5-package8-internal-qualification-command.test.js',
   'scripts/cad-phase5-package8-runtime-issuer-authority-verifier-checker.js',
+  'server/cadPhase5Package8Limits.json',
+  'server/cadPhase5Package8Limits.js',
+  'server/cadPhase5Package8SetupTerminal.js',
+  'scripts/cad-phase5-package8-limits-terminal-repair.test.js',
+  'commercial-backend/tests/cad-package8-approval-issuance.test.ts',
   'scripts/cad-convex-contract-manifest.js',
 ];
 const manifest = { version: 90, mode: 'offline-source-unqualified',

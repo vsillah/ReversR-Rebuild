@@ -2,6 +2,9 @@
 // adapters behind an unmounted coordinator and accepts only a separately issued
 // approval artifact bound to a verified clean descendant and runtime receipt.
 const { createHash } = require('node:crypto');
+const {
+  PACKAGE8_QUALIFICATION_LIMITS,
+} = require('./cadPhase5Package8Limits');
 const { createCadPhase5Package8ConvexDurableInvoker, FUNCTIONS: CONVEX_FUNCTIONS }
   = require('./cadPhase5Package8ConvexDurableInvoker');
 const { createCadR2PrivateArtifactCustody }
@@ -16,7 +19,6 @@ const {
 } = require('./cadPhase5Package8OneUseAdapters');
 const {
   EXECUTION_BASELINE,
-  RESERVATION_MICROS,
   createCadPhase5Package8OneUseCoordinator,
   validExecutionBinding,
 } = require('./cadPhase5Package8OneUseCoordinator');
@@ -52,15 +54,7 @@ const ENVIRONMENT_VARIABLE_REFERENCES = Object.freeze([
   'CAD_R2_SECRET_ACCESS_KEY',
   'VERCEL_OIDC_TOKEN',
 ]);
-const LIMITS = Object.freeze({
-  maximumSessions: 1,
-  maximumFiles: 1,
-  maximumAttempts: 1,
-  maximumRetries: 0,
-  maximumWindowMs: 15 * 60_000,
-  maximumCostUsdExclusive: 9,
-  reservationMicros: RESERVATION_MICROS,
-});
+const LIMITS = PACKAGE8_QUALIFICATION_LIMITS;
 const APPROVAL_ID_DIGEST = hash('cad-phase5-package8-one-use-development-approval-v2');
 const QUALIFICATION_REVIEW_GATE = Object.freeze({
   schemaVersion: 1,

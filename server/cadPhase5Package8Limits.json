@@ -1,0 +1,22 @@
+{
+  "qualification": {
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumWindowMs": 900000,
+    "maximumCostUsdExclusive": 9,
+    "reservationMicros": 8999999
+  },
+  "issuer": {
+    "schemaVersion": 1,
+    "maximumSessions": 1,
+    "maximumFiles": 1,
+    "maximumAttempts": 1,
+    "maximumRetries": 0,
+    "maximumWindowMs": 900000,
+    "maximumCostMicrosExclusive": 9000000,
+    "reservationMicros": 8999999,
+    "currency": "USD"
+  }
+}

@@ -7,6 +7,11 @@ const {
   COMMAND_REVIEW_GATE,
   createCadPhase5Package8InternalQualificationCommand,
 } = require('../server/cadPhase5Package8InternalQualificationCommand');
+const {
+  classifyPackage8SetupFailure,
+  createPackage8SetupTerminalGuard,
+  requirePackage8ApprovalIssued,
+} = require('../server/cadPhase5Package8SetupTerminal');
 
 const fail = code => {
   process.stdout.write(`${JSON.stringify({ ok: false, code })}\n`);
@@ -32,9 +37,14 @@ async function main(argv = process.argv.slice(2)) {
   try {
     const loaded = require(bindingPath);
     if (typeof loaded.createPackage8QualificationCommandInputs !== 'function') throw Error();
-    binding = await loaded.createPackage8QualificationCommandInputs();
-  } catch {
-    fail('PACKAGE8_INTERNAL_BINDING_LOAD_UNKNOWN');
+    binding = await loaded.createPackage8QualificationCommandInputs(Object.freeze({
+      setupTerminal: Object.freeze({
+        createGuard: createPackage8SetupTerminalGuard,
+        requireApprovalIssued: requirePackage8ApprovalIssued,
+      }),
+    }));
+  } catch (error) {
+    fail(classifyPackage8SetupFailure(error));
     return;
   }
   const command = createCadPhase5Package8InternalQualificationCommand({

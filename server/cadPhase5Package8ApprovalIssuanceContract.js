@@ -8,6 +8,10 @@ const {
 const {
   LIMITS: QUALIFICATION_LIMITS,
 } = require('./cadPhase5Package8DevelopmentQualificationBinding');
+const {
+  PACKAGE8_APPROVAL_ISSUER_LIMITS,
+  PACKAGE8_QUALIFICATION_LIMITS_JSON,
+} = require('./cadPhase5Package8Limits');
 
 // Approval issuance must validate the same immutable baseline that the
 // coordinator serializes into verification requests. The reviewed source and
@@ -16,17 +20,7 @@ const ISSUER_BASELINE = Object.freeze({
   reviewedMainCommit: EXECUTION_BASELINE.mergedMainCommit,
   reviewedMainTree: EXECUTION_BASELINE.mergedMainTree,
 });
-const ISSUER_LIMITS = Object.freeze({
-  schemaVersion: 1,
-  maximumSessions: 1,
-  maximumFiles: 1,
-  maximumAttempts: 1,
-  maximumRetries: 0,
-  maximumWindowMs: 15 * 60_000,
-  maximumCostMicrosExclusive: 9_000_000,
-  reservationMicros: 8_999_999,
-  currency: 'USD',
-});
+const ISSUER_LIMITS = PACKAGE8_APPROVAL_ISSUER_LIMITS;
 const REVIEW_GATE = Object.freeze({
   schemaVersion: 1,
   mode: 'SOURCE_ONLY_INDEPENDENT_APPROVAL_ISSUER_REVIEW',
@@ -152,7 +146,7 @@ function validIssueCommand(value) {
     || !validSourceReview(value.sourceReview, value.request)
     || !validRuntimeDeployment(value.runtimeDeployment, value.request)
     || !same(value.limits, ISSUER_LIMITS)
-    || value.request.limitsCommitment !== hash(JSON.stringify(QUALIFICATION_LIMITS))
+    || value.request.limitsCommitment !== hash(PACKAGE8_QUALIFICATION_LIMITS_JSON)
     || !Number.isSafeInteger(value.calculatedMaximumCostMicros)
     || value.calculatedMaximumCostMicros < 0
     || value.calculatedMaximumCostMicros >= ISSUER_LIMITS.maximumCostMicrosExclusive) return false;
