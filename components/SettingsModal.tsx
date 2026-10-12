@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Linking, ScrollView, Platform, Image, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Linking, ScrollView, Platform, Image, Alert, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
@@ -150,6 +150,8 @@ const shortFingerprint = (value = '') => {
 
 export default function SettingsModal({ visible, onClose, initialSection = 'account' }: SettingsModalProps) {
   const { colors: Colors } = useAppTheme();
+  const { width } = useWindowDimensions();
+  const desktop = Platform.OS === 'web' && width >= 1024;
   const {
     account,
     profile,
@@ -1335,7 +1337,7 @@ export default function SettingsModal({ visible, onClose, initialSection = 'acco
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 24 : 0}
       >
-        <View style={styles.modalContent} testID="reversr-tour-settings">
+        <View style={[styles.modalContent, desktop && styles.desktopModalContent]} testID="reversr-tour-settings">
           <View style={styles.header}>
             <Text style={styles.title}>Settings</Text>
             <TouchableOpacity
@@ -1343,7 +1345,7 @@ export default function SettingsModal({ visible, onClose, initialSection = 'acco
               accessibilityRole="button"
               accessibilityLabel="Close settings"
             >
-              <Ionicons name="close" size={24} color={Colors.white} />
+              <Ionicons name="close" size={24} color={Colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -2815,6 +2817,11 @@ const createStyles = (Colors: AppColors) => StyleSheet.create({
     shadowRadius: 24,
     elevation: 16,
     zIndex: 1001,
+  },
+  desktopModalContent: {
+    maxWidth: 880,
+    maxHeight: '90%',
+    paddingHorizontal: 32,
   },
   header: {
     flexDirection: 'row',

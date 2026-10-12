@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { AppColors } from '../constants/theme';
 import { useAndroidKeyboardInset } from '../hooks/useAndroidKeyboardInset';
 import { CommercialPlanId, useCommercialization } from '../hooks/useCommercialization';
@@ -9,10 +10,13 @@ import { formatCreditPeriod, formatJourneyCreditLabel, formatResetCountdown } fr
 import { ensureFocusedFieldVisible } from '../utils/focusVisibility';
 import { CommercialLogin } from '../components/CommercialLogin';
 import { useCommercialAuth } from '../hooks/useCommercialAuth';
+import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
+import DesktopCadWorkspace from '../components/DesktopCadWorkspace';
 
 export default function AccountScreen() {
   const auth = useCommercialAuth();
-  const { colors: Colors } = useAppTheme();
+  const { colors: Colors, mode, setMode } = useAppTheme();
+  const { desktop } = useDesktopWorkspace();
   const styles = createStyles(Colors);
   const {
     account,
@@ -82,7 +86,7 @@ export default function AccountScreen() {
     }
   };
 
-  return (
+  const accountContent = (
     <KeyboardAvoidingView
       style={styles.screen}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -244,6 +248,30 @@ export default function AccountScreen() {
       {(error || status) && <Text accessibilityRole="alert" style={styles.statusText}>{error || status}</Text>}
     </ScrollView>
     </KeyboardAvoidingView>
+  );
+
+  if (!desktop) return accountContent;
+
+  const userDisplayName = profile.name?.trim() || account?.profile.name?.trim() || 'Guest';
+  return (
+    <DesktopCadWorkspace
+      active="more"
+      workspaceName="Account"
+      userDisplayName={userDisplayName}
+      userHasProfileIdentity={Boolean(account?.access)}
+      appearanceIcon={mode === 'dark' ? 'sunny-outline' : 'moon-outline'}
+      canvasScrollable={false}
+      paddedCanvas={false}
+      onHome={() => router.replace('/')}
+      onProjects={() => router.replace('/?workspace=projects')}
+      onNew={() => router.replace('/?workspace=new')}
+      onTour={() => router.replace('/?workspace=tour')}
+      onMore={() => router.replace('/?workspace=settings')}
+      onProfile={() => router.replace('/?workspace=profile')}
+      onToggleAppearance={() => { void setMode(mode === 'dark' ? 'light' : 'dark'); }}
+    >
+      {accountContent}
+    </DesktopCadWorkspace>
   );
 }
 
