@@ -1594,6 +1594,7 @@ export default function HomeScreen() {
         <DesktopCadWorkspace
           phaseRail={phaseRail}
           inspector={inspector}
+          wideCanvas={cadPhase > 1 && !tourActive}
           userDisplayName={userDisplayName}
           workspaceName={PHASE_STEP_LABELS[cadPhase - 1]}
           userAvatarUri={userAvatarUri}
@@ -1607,7 +1608,7 @@ export default function HomeScreen() {
           onProfile={() => openSettings('profile')}
           onToggleAppearance={handleToggleTheme}
         >
-          <CadWorkflow preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop />
+          <CadWorkflow preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop desktopTourActive={tourActive} />
         </DesktopCadWorkspace>
         <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
         <CadNativeInternalUploadPreview visible={nativeCadUploadPreviewVisible} onClose={() => setNativeCadUploadPreviewVisible(false)} />

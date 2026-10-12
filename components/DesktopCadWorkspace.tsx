@@ -10,6 +10,7 @@ type Props = {
   children: React.ReactNode;
   phaseRail: React.ReactNode;
   inspector?: React.ReactNode;
+  wideCanvas?: boolean;
   userDisplayName: string;
   workspaceName: string;
   userAvatarUri?: string;
@@ -28,6 +29,7 @@ export default function DesktopCadWorkspace({
   children,
   phaseRail,
   inspector,
+  wideCanvas = false,
   userDisplayName,
   workspaceName,
   userAvatarUri,
@@ -95,7 +97,7 @@ export default function DesktopCadWorkspace({
           <ScrollView
             testID="desktop-workspace-canvas"
             style={styles.canvasScroll}
-            contentContainerStyle={styles.canvasContent}
+            contentContainerStyle={[styles.canvasContent, wideCanvas && styles.canvasContentWide]}
             showsVerticalScrollIndicator
             keyboardShouldPersistTaps="handled"
           >
@@ -146,6 +148,7 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   workArea: { flex: 1, minHeight: 0, minWidth: 0, flexDirection: 'row' },
   canvasScroll: { flex: 1, minWidth: 0 },
   canvasContent: { flexGrow: 1, width: '100%', maxWidth: 1120, alignSelf: 'center', padding: Spacing.lg },
+  canvasContentWide: { maxWidth: 1600 },
   inspector: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', borderLeftWidth: 1, borderLeftColor: colors.hairline, backgroundColor: colors.panel },
   inspectorContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md },
 });

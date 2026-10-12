@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
@@ -17,6 +17,7 @@ import { createAuthenticatedImportQualificationAdapter, createAuthenticatedImpor
 import { inspectAuthenticatedIgsPreview } from '../utils/cadInternalTesterPreview';
 import { createCadAuthenticatedIgsBrowserClient } from '../utils/cadAuthenticatedIgsBrowser';
 import { getCommercialRequestHeaders } from '../hooks/useCommercialization';
+import CadDesktopPhaseLayout from './CadDesktopPhaseLayout';
 
 type Props = {
   preview: Extract<CadInternalTesterPreview, { enabled: true }>;
@@ -24,6 +25,7 @@ type Props = {
   onPhase: (phase: number) => void;
   compact?: boolean;
   desktop?: boolean;
+  desktopTourActive?: boolean;
 };
 const icons = ['document-text-outline', 'layers-outline', 'cube-outline', 'construct-outline'] as const;
 const titles = ['CAD source', 'Source inventory', 'Design review', 'Implementation readiness'];
@@ -31,7 +33,7 @@ const subtitles = ['Public IGS file · Local validation', 'Imported geometry · 
 
 const formatDimensionValue = (value: number) => `${value.toFixed(1)} mm`;
 
-export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false }: Props) {
+export default function CadWorkflow({ preview, phase, onPhase, compact = false, desktop = false, desktopTourActive = false }: Props) {
   const { colors } = useAppTheme();
   const onPhaseRef = useRef(onPhase);
   useEffect(() => { onPhaseRef.current = onPhase; }, [onPhase]);
@@ -107,6 +109,83 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
     warning: { color: colors.warning, backgroundColor: colors.warningSoft },
     muted: { color: colors.mutedText, backgroundColor: colors.elevated },
   };
+  const desktopInspectorCard = { borderColor: colors.border, backgroundColor: colors.panel };
+  const inventoryCanvas = <>
+    <View style={phaseStyles.titleRow}>
+      <View style={{ flex: 1, minWidth: 0, gap: Spacing.xs }}>
+        <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Auto-generated inventory</Text>
+        <Text style={text}>A scan-friendly summary of the imported geometry. Part identities still require review.</Text>
+      </View>
+      <View style={[phaseStyles.statusPill, { backgroundColor: colors.warningSoft }]}>
+        <Ionicons name="alert-circle-outline" size={14} color={colors.warning} accessible={false} />
+        <Text style={[Typography.caption, { color: colors.warning, fontWeight: '800' }]}>Review required</Text>
+      </View>
+    </View>
+    <View testID="cad-inventory-metrics" style={phaseStyles.metricGrid}>
+      <View style={[phaseStyles.metricCard, desktopInspectorCard]}>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>Source</Text>
+        <Text numberOfLines={2} style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.sourceFileName}</Text>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>{fixture.format} · {fixture.units}</Text>
+      </View>
+      <View style={[phaseStyles.metricCard, desktopInspectorCard]}>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>Geometry</Text>
+        <Text style={[Typography.title, { color: colors.text }]}>{fixture.meshes}</Text>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>{fixture.previewGeometry.kind === 'stl' ? 'connected components' : 'mesh'}</Text>
+      </View>
+      <View style={[phaseStyles.metricCard, desktopInspectorCard]}>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>Triangles</Text>
+        <Text style={[Typography.title, { color: colors.text }]}>{fixture.triangles.toLocaleString()}</Text>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>inspection geometry</Text>
+      </View>
+      <View style={[phaseStyles.metricCard, desktopInspectorCard]}>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>Envelope</Text>
+        <Text style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.expectedDimensions.map(formatDimensionValue).join(' × ')}</Text>
+        <Text style={[Typography.caption, { color: colors.mutedText }]}>X × Y × Z</Text>
+      </View>
+    </View>
+    <View style={[phaseStyles.reviewPanel, { borderColor: colors.border, backgroundColor: colors.elevated }]}>
+      <View style={phaseStyles.inlineHeading}>
+        <Ionicons name="layers-outline" size={18} color={colors.primary} accessible={false} />
+        <Text style={[Typography.bodyStrong, { color: colors.text }]}>What the import established</Text>
+      </View>
+      <Text style={text}>The source identity, unit system, geometry envelope, and connected component count are available for inspection.</Text>
+      <CadNotice>Connected components are not a verified parts list. Features and manufacturing dimensions still need review.</CadNotice>
+    </View>
+  </>;
+  const inventoryInspector = <View style={phaseStyles.inspectorStack}>
+    <Text style={[Typography.heading, { color: colors.text }]}>Inventory review</Text>
+    <CadSourceFacts fixture={fixture} />
+    <CadAction label="Review in Design" primary onPress={() => onPhase(3)} />
+    <CadAction label="Review source in Input" icon="arrow-back-outline" onPress={() => onPhase(1)} />
+    <CadDetails title="Source, provenance & limits" testID="cad-inventory-details">
+      <CadProvenance fixture={fixture} />
+      <Text style={text}>This inventory does not certify part names, tolerances, materials, finish, threads, or fabrication readiness.</Text>
+    </CadDetails>
+  </View>;
+  const buildInspector = <View testID="cad-build-inspector-content" style={phaseStyles.inspectorStack}>
+    <View style={phaseStyles.inlineHeading}>
+      <Ionicons name="lock-closed-outline" size={18} color={colors.warning} accessible={false} />
+      <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text, flex: 1 }]}>Build remains on hold</Text>
+    </View>
+    <Text style={text}>Review can continue, but no manufacturing package or production action is available from this workspace.</Text>
+    <View style={[phaseStyles.metricCard, desktopInspectorCard]}>
+      <Text style={[Typography.caption, { color: colors.mutedText }]}>Current readiness gate</Text>
+      <Text style={[Typography.bodyStrong, { color: colors.text }]}>{buildStep.label}</Text>
+      <View style={[phaseStyles.statusPill, { alignSelf: 'flex-start', backgroundColor: toneStyles[buildStep.tone].backgroundColor }]}>
+        <Text style={[Typography.caption, { color: toneStyles[buildStep.tone].color, fontWeight: '800' }]}>{buildStep.state}</Text>
+      </View>
+      <Text style={text}>{buildStep.detail}</Text>
+    </View>
+    <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
+    <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
+    <CadDetails title="Certification limits" testID="cad-build-certification-limits">
+      <Text style={text}>This review does not certify tolerances, materials, threads, wall thickness, orientation, supports, or fabrication readiness.</Text>
+      <Text style={text}>Production upload, provider dispatch, and manufacturing actions remain unavailable.</Text>
+    </CadDetails>
+  </View>;
+  const wrapBuild = (content: React.ReactNode) => desktop && !desktopTourActive
+    ? <CadDesktopPhaseLayout canvasTestID="cad-build-canvas" inspectorTestID="cad-build-inspector" inspector={buildInspector}>{content}</CadDesktopPhaseLayout>
+    : content;
   return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: compact ? Spacing.xs : Spacing.lg, gap: compact ? Spacing.sm : Spacing.md }}>
     {!compact && <View style={styles.header}>
       <View style={[styles.headerIcon, { backgroundColor: colors.primarySoft }]}><Ionicons name={icons[phase - 1]} size={24} color={colors.primary} accessible={false} /></View>
@@ -145,7 +224,13 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
           }}
         />}
       </>}
-      {phase === 2 && <>
+      {phase === 2 && desktop && !desktopTourActive ? <CadDesktopPhaseLayout
+        canvasTestID="cad-inventory-canvas"
+        inspectorTestID="cad-inventory-inspector"
+        inspector={inventoryInspector}
+      >
+        {inventoryCanvas}
+      </CadDesktopPhaseLayout> : phase === 2 && <>
         <Text accessibilityRole="header" style={[Typography.heading, { color: colors.text }]}>Auto-generated inventory</Text>
         <CadSourceFacts fixture={fixture} />
         <Text style={[Typography.bodyStrong, { color: colors.text }]}>{fixture.meshes} {fixture.previewGeometry.kind === 'stl' ? 'connected components' : 'mesh'}</Text>
@@ -162,6 +247,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
           ? <AuthenticatedIgsQualificationPanel adapter={authenticatedAdapter} state={authenticatedState!}
             onState={setAuthenticatedState} onReady={result => { setFixture(result); onPhase(3); }} />
           : <CadDesignReview fixture={fixture} onChangeSource={() => onPhase(1)} desktop={desktop}
+            desktopInspector={!desktopTourActive}
             onReadiness={authenticatedMode || authenticatedLiveMode ? undefined : () => onPhase(4)}
             qualificationArtifacts={authenticatedMode ? authenticatedAdapter?.artifacts() : null}
             authenticatedArtifacts={authenticatedArtifacts}
@@ -170,7 +256,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
             } : undefined} />}
         {!desktop && !authenticatedMode && !authenticatedLiveMode && <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={() => onPhase(4)} />}
       </>}
-      {phase === 4 && <>
+      {phase === 4 && wrapBuild(<>
         {authenticatedMode || authenticatedLiveMode ? <View testID="cad-auth-import-build-locked" style={{ gap: Spacing.sm,
           borderWidth: 1, borderColor: colors.border, borderRadius: Radii.lg, padding: Spacing.md,
           backgroundColor: colors.elevated }}>
@@ -181,7 +267,7 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
           <Text style={text}>{authenticatedLiveMode
             ? 'Review the private inspection geometry in Design. Manufacturing actions and production activation remain unavailable.'
             : 'Review the synthetic model in Design. Manufacturing actions are unavailable.'}</Text>
-          <CadAction label="Return to Design" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
+          {(!desktop || desktopTourActive) ? <CadAction label="Return to Design" primary icon="arrow-back-outline" onPress={() => onPhase(3)} /> : null}
         </View> : <><View testID="cad-build-locked" style={{ gap: Spacing.md }}>
           <View testID="cad-implementation-slide" style={{ gap: Spacing.md }}>
             <View testID="cad-commercialization-gates" style={{ borderWidth: 1, borderColor: colors.border, borderRadius: Radii.md, padding: Spacing.md, gap: Spacing.md, backgroundColor: colors.panel }}>
@@ -254,10 +340,22 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
           </View>
           <CadAction label="Prepare implementation package · Locked" accessibilityLabel="Prepare implementation package locked" icon="lock-closed-outline" disabled />
         </View>
-        <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
-        <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
+        {(!desktop || desktopTourActive) ? <>
+          <CadAction label="Return to Design review" primary icon="arrow-back-outline" onPress={() => onPhase(3)} />
+          <CadAction label="Review inventory prerequisites" icon="layers-outline" onPress={() => onPhase(2)} />
+        </> : null}
         </>}
-      </>}
+      </>)}
     </View>
   </View>;
 }
+
+const phaseStyles = StyleSheet.create({
+  titleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md },
+  statusPill: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: Spacing.sm, borderRadius: Radii.pill },
+  metricGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.md },
+  metricCard: { flexGrow: 1, flexBasis: 180, minWidth: 0, minHeight: 124, justifyContent: 'space-between', gap: Spacing.xs, padding: Spacing.md, borderWidth: 1, borderRadius: Radii.md },
+  reviewPanel: { gap: Spacing.sm, padding: Spacing.lg, borderWidth: 1, borderRadius: Radii.lg },
+  inlineHeading: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  inspectorStack: { gap: Spacing.md },
+});
