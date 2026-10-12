@@ -51,6 +51,7 @@ interface WelcomeScreenProps {
   userIsAuthenticated?: boolean;
   userAvatarUri?: string;
   bottomBarInset?: number;
+  desktop?: boolean;
 }
 
 const phases = [
@@ -125,6 +126,7 @@ export default function WelcomeScreen({
   userIsAuthenticated = false,
   userAvatarUri = '',
   bottomBarInset = 0,
+  desktop = false,
 }: WelcomeScreenProps) {
   const { colors: Colors, mode: themeMode, setMode: setThemeMode } = useAppTheme();
   const { width: viewportWidth } = useWindowDimensions();
@@ -255,7 +257,7 @@ export default function WelcomeScreen({
         { useNativeDriver: true },
       )}
     >
-      <View style={styles.topBar}>
+      {!desktop && <View style={styles.topBar}>
         <View style={styles.brandRow}>
           <ReversRLogoMark colors={Colors} size={44} />
           <View style={styles.brandTextWrap}>
@@ -358,7 +360,7 @@ export default function WelcomeScreen({
             </View>
           )}
         </View>
-      </View>
+      </View>}
 
       <View style={styles.hero} testID="reversr-tour-welcome">
         <Animated.View

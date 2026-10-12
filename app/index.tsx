@@ -512,13 +512,17 @@ export default function HomeScreen() {
   const { account, profile } = useCommercialization();
   const safeAreaInsets = useSafeAreaInsets();
   const styles = createStyles(Colors);
-  const { desktop: desktopWorkspace } = useDesktopWorkspace();
+  const { desktop: desktopWorkspace, width: viewportWidth } = useDesktopWorkspace();
   const routeCadInternalPreview = useMemo(() => getCadInternalTesterPreview(), []);
   const nativeEmbeddedCadPreview = useMemo(() => (
     Platform.OS === 'web'
     && typeof window !== 'undefined'
     && isCadNativeEmbeddedPreview(window.location)
   ), []);
+  const [requestedWorkspace] = useState(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
+    return new URLSearchParams(window.location.search).get('workspace');
+  });
   const [nativeCadUploadPreviewVisible, setNativeCadUploadPreviewVisible] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
   const [cadHighestPhase, setCadHighestPhase] = useState(3);
@@ -552,17 +556,17 @@ export default function HomeScreen() {
     return () => window.removeEventListener('popstate', onPop);
   }, [cadInternalPreview.enabled]);
 
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(requestedWorkspace === 'projects' || requestedWorkspace === 'new');
   const [welcomeIntroLoaded, setWelcomeIntroLoaded] = useState(!WELCOME_INTRO_ENABLED);
   const [welcomeIntroVisible, setWelcomeIntroVisible] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(requestedWorkspace === 'projects');
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [context, setContext] = useState<MutationContext>(createEmptyContext());
   const [isLoading, setIsLoading] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(requestedWorkspace === 'settings' || requestedWorkspace === 'profile');
   const [entryMode, setEntryMode] = useState<InputMode | undefined>(undefined);
   const [inventorySampleRefreshKey, setInventorySampleRefreshKey] = useState(0);
-  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>('account');
+  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>(requestedWorkspace === 'profile' ? 'profile' : 'account');
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [tourActive, setTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
@@ -637,6 +641,7 @@ export default function HomeScreen() {
   const workflowScrollRef = useRef<ScrollView>(null);
   const pendingWorkflowScrollResetRef = useRef(false);
   const tourOriginRef = useRef<TourOriginState | null>(null);
+  const requestedTourHandledRef = useRef(false);
   const [workflowInputActive, setWorkflowInputActive] = useState(false);
   
   const { generate2DVisualization } = useGemini();
@@ -654,9 +659,9 @@ export default function HomeScreen() {
       setWelcomeIntroLoaded(true);
       return;
     }
-    setWelcomeIntroVisible(true);
+    setWelcomeIntroVisible(requestedWorkspace === null);
     setWelcomeIntroLoaded(true);
-  }, [cadInternalPreview.enabled]);
+  }, [cadInternalPreview.enabled, requestedWorkspace]);
 
   useEffect(() => {
     if (!cadInternalPreview.enabled) return;
@@ -795,6 +800,13 @@ export default function HomeScreen() {
     setWorkflowMenuOpen(false);
     setWelcomeIntroVisible(false);
   }, [cadPhase, entryMode, showHistory, showSettings, started, tourActive, tourCompletedAt, tourStepIndex]);
+
+  useEffect(() => {
+    if (tourStateLoaded && requestedWorkspace === 'tour' && !requestedTourHandledRef.current) {
+      requestedTourHandledRef.current = true;
+      startTour();
+    }
+  }, [requestedWorkspace, startTour, tourStateLoaded]);
 
   const restartTour = useCallback(() => {
     setTourStepIndex(0);
@@ -1431,16 +1443,19 @@ export default function HomeScreen() {
     setStarted(false);
   }, []);
   const tabBarInset = desktopWorkspace ? 0 : safeAreaInsets.bottom + 84;
-  const desktopNavigation = desktopWorkspace && !desktopCadWorkspace ? (
-    <DesktopNavigation
-      active={showSettings ? 'more' : tourActive ? 'tour' : !started ? 'home' : showHistory ? 'projects' : null}
-      onHome={goHome}
-      onProjects={openHistory}
-      onNew={() => handleStartNew()}
-      onTour={startTour}
-      onMore={() => openSettings('account')}
-    />
-  ) : null;
+  const desktopShellCommon = {
+    userDisplayName,
+    userAvatarUri,
+    userHasProfileIdentity,
+    appearanceIcon: nextThemeMode === 'dark' ? 'moon-outline' as const : 'sunny-outline' as const,
+    onHome: goHome,
+    onProjects: openHistory,
+    onNew: () => handleStartNew(),
+    onTour: startTour,
+    onMore: () => openSettings('account'),
+    onProfile: () => openSettings('profile'),
+    onToggleAppearance: handleToggleTheme,
+  };
 
   const renderTourGuide = (docked = false) => (
     <ManufacturerTourGuide
@@ -1499,41 +1514,52 @@ export default function HomeScreen() {
   }
 
   if (!started) {
+    const homeSurface = (
+      <>
+        <WelcomeScreen
+          onStart={handleStartNew}
+          onHistory={openHistory}
+          onSettings={() => openSettings('account')}
+          onProfile={() => openSettings('profile')}
+          onTour={startTour}
+          onSupport={() => openSettings('support')}
+          onResume={handleResume}
+          userDisplayName={userDisplayName}
+          userIsAuthenticated={userIsAuthenticated}
+          userAvatarUri={userAvatarUri}
+          bottomBarInset={tabBarInset}
+          desktop={desktopWorkspace}
+        />
+        <SettingsModal
+          visible={showSettings}
+          onClose={closeSettings}
+          initialSection={settingsInitialSection}
+        />
+        {renderTourGuide()}
+        {!desktopWorkspace && <BottomTabBar
+          active="home"
+          onHome={goHome}
+          onProjects={openHistory}
+          onNew={() => handleStartNew()}
+          onTour={startTour}
+          onMore={() => openSettings('account')}
+          bottomInset={safeAreaInsets.bottom}
+        />}
+      </>
+    );
     return (
       <View style={styles.container}>
         <View
           style={styles.homeContentLayer}
           pointerEvents={welcomeIntroVisible ? 'none' : 'auto'}
         >
-          {desktopNavigation}
-          <WelcomeScreen
-            onStart={handleStartNew}
-            onHistory={openHistory}
-            onSettings={() => openSettings('account')}
-            onProfile={() => openSettings('profile')}
-            onTour={startTour}
-            onSupport={() => openSettings('support')}
-            onResume={handleResume}
-            userDisplayName={userDisplayName}
-            userIsAuthenticated={userIsAuthenticated}
-            userAvatarUri={userAvatarUri}
-            bottomBarInset={tabBarInset}
-          />
-          <SettingsModal
-            visible={showSettings}
-            onClose={closeSettings}
-            initialSection={settingsInitialSection}
-          />
-          {renderTourGuide()}
-          {!desktopWorkspace && <BottomTabBar
-            active="home"
-            onHome={goHome}
-            onProjects={openHistory}
-            onNew={() => handleStartNew()}
-            onTour={startTour}
-            onMore={() => openSettings('account')}
-            bottomInset={safeAreaInsets.bottom}
-          />}
+          {desktopWorkspace ? <DesktopCadWorkspace
+            {...desktopShellCommon}
+            active={showSettings ? 'more' : tourActive ? 'tour' : 'home'}
+            workspaceName="Home"
+            canvasScrollable={false}
+            paddedCanvas={false}
+          >{homeSurface}</DesktopCadWorkspace> : homeSurface}
         </View>
         {welcomeIntroVisible ? (
           <View style={styles.welcomeIntroOverlay}>
@@ -1545,14 +1571,15 @@ export default function HomeScreen() {
   }
 
   if (showHistory) {
-    return (
-      <View style={styles.container}>
-        {desktopNavigation}
+    const historySurface = (
+      <>
         <HistoryScreen
           onBack={() => setShowHistory(false)}
+          onStartNew={() => handleStartNew()}
           onResume={handleResume}
           refreshKey={historyRefreshKey}
           bottomBarInset={tabBarInset}
+          desktop={desktopWorkspace}
         />
         {renderTourGuide()}
         <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
@@ -1567,6 +1594,17 @@ export default function HomeScreen() {
             bottomInset={safeAreaInsets.bottom}
           />
         )}
+      </>
+    );
+    return (
+      <View style={styles.container}>
+        {desktopWorkspace ? <DesktopCadWorkspace
+          {...desktopShellCommon}
+          active={showSettings ? 'more' : tourActive ? 'tour' : 'projects'}
+          workspaceName="Projects"
+          canvasScrollable={false}
+          paddedCanvas={false}
+        >{historySurface}</DesktopCadWorkspace> : historySurface}
       </View>
     );
   }
@@ -1592,21 +1630,11 @@ export default function HomeScreen() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <DesktopCadWorkspace
+          {...desktopShellCommon}
           phaseRail={phaseRail}
           inspector={inspector}
           wideCanvas={cadPhase > 1 && !tourActive}
-          userDisplayName={userDisplayName}
           workspaceName={PHASE_STEP_LABELS[cadPhase - 1]}
-          userAvatarUri={userAvatarUri}
-          userHasProfileIdentity={userHasProfileIdentity}
-          appearanceIcon={nextThemeMode === 'dark' ? 'moon-outline' : 'sunny-outline'}
-          onHome={goHome}
-          onProjects={openHistory}
-          onNew={() => handleStartNew()}
-          onTour={startTour}
-          onMore={() => openSettings('account')}
-          onProfile={() => openSettings('profile')}
-          onToggleAppearance={handleToggleTheme}
         >
           <CadWorkflow preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop desktopTourActive={tourActive} />
         </DesktopCadWorkspace>
@@ -1618,19 +1646,31 @@ export default function HomeScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, desktopWorkspace && styles.desktopWorkflowShell]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? safeAreaInsets.top + 12 : 0}
     >
-      {desktopNavigation}
-      {!nativeEmbeddedCadPreview && <View style={styles.header} testID="reversr-workflow-header">
+      {desktopWorkspace && <DesktopNavigation
+        rail
+        compact={viewportWidth < 1280}
+        active={showSettings ? 'more' : tourActive ? 'tour' : null}
+        onHome={goHome}
+        onProjects={openHistory}
+        onNew={() => handleStartNew()}
+        onTour={startTour}
+        onMore={() => openSettings('account')}
+      />}
+      <View style={styles.workflowWorkspace}>
+      {!nativeEmbeddedCadPreview && <View style={[styles.header, desktopWorkspace && styles.desktopWorkflowHeader]} testID={desktopWorkspace ? 'desktop-workspace-header' : 'reversr-workflow-header'}>
         <View style={styles.logoContainer}>
           <ReversRLogoMark colors={Colors} size={40} />
           <View style={styles.brandTextWrap}>
             <Text style={styles.title} testID="reversr-workflow-wordmark">
               REVERS<Text style={styles.titleAccent}>R</Text>
             </Text>
-            <Text style={styles.subtitle} numberOfLines={1}>Machine Reconstruction</Text>
+            <Text style={styles.subtitle} numberOfLines={1}>
+              {desktopWorkspace ? `Machine Reconstruction · ${PHASE_STEP_LABELS[context.phase - 1]} workspace` : 'Machine Reconstruction'}
+            </Text>
           </View>
         </View>
         <View style={styles.headerControls}>
@@ -1675,16 +1715,16 @@ export default function HomeScreen() {
           <View style={styles.menuHost}>
             <TouchableOpacity
               style={[styles.menuButton, workflowMenuOpen && styles.menuButtonActive]}
-              onPress={() => setWorkflowMenuOpen(current => !current)}
+              onPress={() => desktopWorkspace ? openSettings('account') : setWorkflowMenuOpen(current => !current)}
               accessibilityRole="button"
-              accessibilityLabel={workflowMenuOpen ? 'Close reconstruction menu' : 'Open reconstruction menu'}
-              accessibilityState={{ expanded: workflowMenuOpen }}
+              accessibilityLabel={desktopWorkspace ? 'Open settings' : workflowMenuOpen ? 'Close reconstruction menu' : 'Open reconstruction menu'}
+              accessibilityState={desktopWorkspace ? undefined : { expanded: workflowMenuOpen }}
               testID="reversr-actions-menu-button"
             >
-              <Ionicons name={workflowMenuOpen ? 'close-outline' : 'menu-outline'} size={22} color={Colors.text} />
+              <Ionicons name={desktopWorkspace ? 'settings-outline' : workflowMenuOpen ? 'close-outline' : 'menu-outline'} size={22} color={Colors.text} />
             </TouchableOpacity>
 
-            {workflowMenuOpen && (
+            {!desktopWorkspace && workflowMenuOpen && (
               <View style={styles.menuPanel} testID="reversr-actions-menu">
                 <TouchableOpacity
                   style={styles.menuItem}
@@ -2007,6 +2047,7 @@ export default function HomeScreen() {
           bottomInset={safeAreaInsets.bottom}
         />
       )}
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -2018,6 +2059,15 @@ const createStyles = (Colors: AppColors) => {
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  desktopWorkflowShell: {
+    flexDirection: 'row',
+    minWidth: 0,
+  },
+  workflowWorkspace: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 0,
   },
   welcomeIntroOverlay: {
     ...StyleSheet.absoluteFill,
@@ -2041,6 +2091,11 @@ const createStyles = (Colors: AppColors) => {
     position: 'relative',
     zIndex: 60,
     elevation: 12,
+  },
+  desktopWorkflowHeader: {
+    minHeight: 68,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.sm,
   },
   logoContainer: {
     flexDirection: "row",

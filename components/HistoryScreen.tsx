@@ -122,12 +122,14 @@ const REVIEW_QUEUE_STATUS_META: Record<ReviewQueueStatus, {
 
 interface Props {
   onBack: () => void;
+  onStartNew?: () => void;
   onResume: (innovation: SavedInnovation) => void;
   refreshKey?: number;
   bottomBarInset?: number;
+  desktop?: boolean;
 }
 
-export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarInset = 0 }: Props) {
+export default function HistoryScreen({ onBack, onStartNew, onResume, refreshKey, bottomBarInset = 0, desktop = false }: Props) {
   const { colors: Colors } = useAppTheme();
   const styles = createStyles(Colors);
   const historyScrollRef = useRef<ScrollView>(null);
@@ -367,10 +369,10 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
 
   return (
     <View style={styles.container} testID="reversr-tour-history">
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
+      <View style={[styles.header, desktop && styles.desktopBoundedSection]}>
+        {!desktop && <TouchableOpacity onPress={onBack} style={styles.backButton} accessibilityRole="button" accessibilityLabel="Back to workspace">
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <View style={styles.headerText}>
           <Text style={styles.title}>{viewMode === 'history' ? 'Reconstruction History' : 'Review Queue'}</Text>
           <Text style={styles.subtitle}>
@@ -385,7 +387,7 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
       </View>
 
       {innovations.length > 0 && (
-        <View style={styles.searchSection}>
+        <View style={[styles.searchSection, desktop && styles.desktopBoundedSection]}>
           <View style={styles.viewSwitch}>
             <TouchableOpacity
               style={[styles.viewSwitchButton, viewMode === 'history' && styles.viewSwitchButtonActive]}
@@ -556,7 +558,7 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
       <ScrollView
         ref={historyScrollRef}
         style={styles.content}
-        contentContainerStyle={{ paddingBottom: bottomBarInset + keyboardInset }}
+        contentContainerStyle={[styles.contentInner, desktop && styles.desktopContentInner, { paddingBottom: bottomBarInset + keyboardInset }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
@@ -574,8 +576,8 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
             <Text style={styles.emptyText}>
               Start scanning machines to build your reconstruction history
             </Text>
-            <TouchableOpacity style={styles.startButton} onPress={onBack}>
-              <Text style={styles.startButtonText}>Start Scanning</Text>
+            <TouchableOpacity style={styles.startButton} onPress={onStartNew || onBack} accessibilityRole="button" accessibilityLabel="Start a new reconstruction">
+              <Text style={styles.startButtonText}>Start New Reconstruction</Text>
             </TouchableOpacity>
           </View>
         ) : viewMode === 'review_queue' && reviewQueueItems.length === 0 ? (
@@ -585,6 +587,9 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
             <Text style={styles.emptyText}>
               Build-phase reconstructions and saved reviewer decisions will appear here.
             </Text>
+            <TouchableOpacity style={styles.startButton} onPress={onStartNew || onBack} accessibilityRole="button" accessibilityLabel="Start a reconstruction for review">
+              <Text style={styles.startButtonText}>Start Reconstruction</Text>
+            </TouchableOpacity>
           </View>
         ) : viewMode === 'review_queue' ? (
           reviewQueueItems.map((item) => {
@@ -666,6 +671,8 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
                   <TouchableOpacity
                     style={styles.continueButton}
                     onPress={() => onResume({ ...item, phase: 4 })}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Open review for ${getInnovationTitle(item)}`}
                   >
                     <Text style={styles.continueText}>Open Review</Text>
                     <Ionicons name="arrow-forward" size={14} color={Colors.accent} />
@@ -704,6 +711,8 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
                     onPress={() => handleDelete(item.id, getInnovationTitle(item))}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     style={styles.deleteButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Delete ${getInnovationTitle(item)}`}
                   >
                     <Ionicons name="trash-outline" size={18} color={Colors.gray[600]} />
                   </TouchableOpacity>
@@ -773,6 +782,8 @@ export default function HistoryScreen({ onBack, onResume, refreshKey, bottomBarI
                 <TouchableOpacity 
                   style={styles.continueButton}
                   onPress={() => onResume(item)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Continue ${getInnovationTitle(item)}`}
                 >
                   <Text style={styles.continueText}>Continue</Text>
                   <Ionicons name="arrow-forward" size={14} color={Colors.accent} />
@@ -1034,7 +1045,21 @@ const createStyles = (Colors: AppColors) => StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  contentInner: {
+    flexGrow: 1,
     padding: Spacing.lg,
+  },
+  desktopBoundedSection: {
+    width: '100%',
+    maxWidth: 1320,
+    alignSelf: 'center',
+  },
+  desktopContentInner: {
+    width: '100%',
+    maxWidth: 1320,
+    alignSelf: 'center',
+    paddingHorizontal: Spacing.xl,
   },
   emptyState: {
     flex: 1,

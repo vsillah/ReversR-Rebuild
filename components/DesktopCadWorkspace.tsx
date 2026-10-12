@@ -8,9 +8,12 @@ import DesktopNavigation from './DesktopNavigation';
 
 type Props = {
   children: React.ReactNode;
-  phaseRail: React.ReactNode;
+  active?: 'home' | 'projects' | 'tour' | 'more' | null;
+  phaseRail?: React.ReactNode;
   inspector?: React.ReactNode;
   wideCanvas?: boolean;
+  canvasScrollable?: boolean;
+  paddedCanvas?: boolean;
   userDisplayName: string;
   workspaceName: string;
   userAvatarUri?: string;
@@ -27,9 +30,12 @@ type Props = {
 
 export default function DesktopCadWorkspace({
   children,
+  active = null,
   phaseRail,
   inspector,
   wideCanvas = false,
+  canvasScrollable = true,
+  paddedCanvas = true,
   userDisplayName,
   workspaceName,
   userAvatarUri,
@@ -54,7 +60,7 @@ export default function DesktopCadWorkspace({
       <DesktopNavigation
         rail
         compact={compactRail}
-        active={null}
+        active={active}
         onHome={onHome}
         onProjects={onProjects}
         onNew={onNew}
@@ -90,19 +96,24 @@ export default function DesktopCadWorkspace({
             </TouchableOpacity>
           </View>
         </View>
-        <View testID="desktop-workspace-phase-rail" style={styles.phaseRail}>
+        {phaseRail ? <View testID="desktop-workspace-phase-rail" style={styles.phaseRail}>
           <View style={styles.phaseRailInner}>{phaseRail}</View>
-        </View>
+        </View> : null}
         <View style={styles.workArea}>
-          <ScrollView
+          {canvasScrollable ? <ScrollView
             testID="desktop-workspace-canvas"
             style={styles.canvasScroll}
-            contentContainerStyle={[styles.canvasContent, wideCanvas && styles.canvasContentWide]}
+            contentContainerStyle={[styles.canvasContent, !paddedCanvas && styles.canvasContentFlush, wideCanvas && styles.canvasContentWide]}
             showsVerticalScrollIndicator
             keyboardShouldPersistTaps="handled"
           >
             {children}
-          </ScrollView>
+          </ScrollView> : <View
+            testID="desktop-workspace-canvas"
+            style={[styles.canvasView, paddedCanvas && styles.canvasViewPadded, wideCanvas && styles.canvasViewWide]}
+          >
+            {children}
+          </View>}
           {inspector ? <ScrollView
               testID="desktop-workspace-inspector"
               style={[styles.inspector, { width: inspectorWidth, minWidth: inspectorWidth, maxWidth: inspectorWidth }]}
@@ -148,7 +159,11 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   workArea: { flex: 1, minHeight: 0, minWidth: 0, flexDirection: 'row' },
   canvasScroll: { flex: 1, minWidth: 0 },
   canvasContent: { flexGrow: 1, width: '100%', maxWidth: 1120, alignSelf: 'center', padding: Spacing.lg },
+  canvasContentFlush: { maxWidth: '100%', padding: 0 },
   canvasContentWide: { maxWidth: 1600 },
+  canvasView: { flex: 1, minWidth: 0, minHeight: 0, width: '100%', maxWidth: '100%', alignSelf: 'stretch' },
+  canvasViewPadded: { maxWidth: 1120, padding: Spacing.lg },
+  canvasViewWide: { maxWidth: 1600 },
   inspector: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', borderLeftWidth: 1, borderLeftColor: colors.hairline, backgroundColor: colors.panel },
   inspectorContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md },
 });
