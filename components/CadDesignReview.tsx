@@ -1,6 +1,6 @@
 import { useCadDesktopWorkspace } from '../hooks/useCadDesktopWorkspace';
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadSourceFacts, CadProvenance } from './CadReviewUI';
@@ -13,14 +13,16 @@ import type { SyntheticArtifacts } from '../utils/cadAuthenticatedImportQualific
 const shortDigest = (digest: string) => `${digest.slice(0, 4)}…${digest.slice(-4)}`;
 
 export default function CadDesignReview({ fixture, onChangeSource, desktop = false, onReadiness,
-    qualificationArtifacts, onDeleteQualificationArtifacts, authenticatedArtifacts }: { fixture: CadInternalTesterFixture;
-  onChangeSource?: () => void; desktop?: boolean; onReadiness?: () => void;
+    desktopInspector = true, qualificationArtifacts, onDeleteQualificationArtifacts, authenticatedArtifacts }: { fixture: CadInternalTesterFixture;
+  onChangeSource?: () => void; desktop?: boolean; desktopInspector?: boolean; onReadiness?: () => void;
   qualificationArtifacts?: SyntheticArtifacts | null; onDeleteQualificationArtifacts?: () => void;
   authenticatedArtifacts?: { downloadOriginal: () => Promise<void>; downloadStl: () => Promise<void>;
     deleteAll: () => Promise<void> } | null }) {
   const { viewerHeight } = useCadDesktopWorkspace();
+  const { width } = useWindowDimensions();
   const { colors } = useAppTheme();
   const DetailsContainer = desktop ? ScrollView : View;
+  const inspectorWidth = width >= 1600 ? 360 : width >= 1280 ? 336 : 300;
   const text = [Typography.caption, { color: colors.mutedText, lineHeight: 20 }];
   const isDispenserReview = fixture.previewGeometry.kind === 'stl';
   const isLocalPreview = fixture.previewGeometry.kind === 'mesh';
@@ -132,11 +134,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
       </View>
       {onChangeSource ? <CadAction testID="cad-change-source-from-design" accessibilityLabel="Change CAD source" label="Change source" icon="arrow-back-outline" onPress={onChangeSource} /> : null}
       </View>
-      <View style={{ flexDirection: desktop ? 'row' : 'column', gap: Spacing.lg }}>
-      <View style={{ flex: desktop ? 1 : undefined, minWidth: 0 }}>
+      <View testID={desktop ? 'cad-design-desktop-layout' : undefined} style={{ flexDirection: desktop ? 'row' : 'column', gap: Spacing.lg }}>
+      <View testID={desktop ? 'cad-design-canvas' : undefined} style={{ flex: desktop ? 1 : undefined, minWidth: 0 }}>
         <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} height={desktop ? viewerHeight : undefined} />
       </View>
-      <DetailsContainer testID="cad-review-rail" style={desktop ? { width: 300, height: viewerHeight, flexGrow: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md }}>
+      {(!desktop || desktopInspector) ? <DetailsContainer testID="cad-review-rail" style={desktop ? { width: inspectorWidth, height: viewerHeight, flexGrow: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md }}>
       {desktop && onReadiness ? <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={onReadiness} /> : null}
       <CadSourceFacts fixture={fixture} />
       {(canDownloadSource || canDownloadDerived) ? <View ref={downloadMenuRef} style={downloadStyles.host}>
@@ -238,7 +240,7 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
             ? 'The interactive model was generated locally in this browser from the selected CAD file. It is an internal preview only and does not activate production upload or conversion.'
             : 'This interactive model represents the digest-verified public IGS file as a deterministic inspection mesh. It does not activate production upload or conversion.'}</Text>
       </CadDetails>
-      </DetailsContainer>
+      </DetailsContainer> : null}
       </View>
     </View>
   );
