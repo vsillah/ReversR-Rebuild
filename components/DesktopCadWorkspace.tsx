@@ -67,6 +67,7 @@ export default function DesktopCadWorkspace({
   const [narrowInspectorOpen, setNarrowInspectorOpen] = useState(false);
   const [resizeHandleFocused, setResizeHandleFocused] = useState(false);
   const resizeStartRef = useRef<{ x: number; width: number } | null>(null);
+  const previousWorkspaceWidthRef = useRef(width);
   const inspectorVisible = Boolean(inspector) && inspectorOpen && (width >= DESKTOP_INSPECTOR_COLLAPSE_WIDTH || narrowInspectorOpen);
   const workspaceWidth = width - (compactRail ? 72 : 216);
   const inspectorMaxWidth = clampDesktopInspectorWidth(Math.floor(workspaceWidth * 0.46));
@@ -93,7 +94,10 @@ export default function DesktopCadWorkspace({
   }, []);
 
   useEffect(() => {
-    if (width < DESKTOP_INSPECTOR_COLLAPSE_WIDTH) setNarrowInspectorOpen(false);
+    const wasWide = previousWorkspaceWidthRef.current >= DESKTOP_INSPECTOR_COLLAPSE_WIDTH;
+    const isNarrow = width < DESKTOP_INSPECTOR_COLLAPSE_WIDTH;
+    if (wasWide && isNarrow) setNarrowInspectorOpen(false);
+    previousWorkspaceWidthRef.current = width;
   }, [width]);
 
   useEffect(() => {
@@ -117,7 +121,7 @@ export default function DesktopCadWorkspace({
       if (!start) return;
       setInspectorWidth(Math.min(clampDesktopInspectorWidth(start.width + start.x - event.clientX), inspectorMaxWidth));
     };
-    const onPointerUp = () => {
+    const finishPointerResize = () => {
       if (!resizeStartRef.current) return;
       resizeStartRef.current = null;
       setInspectorWidth(current => {
@@ -127,10 +131,14 @@ export default function DesktopCadWorkspace({
       });
     };
     document.addEventListener('pointermove', onPointerMove);
-    document.addEventListener('pointerup', onPointerUp);
+    document.addEventListener('pointerup', finishPointerResize);
+    document.addEventListener('pointercancel', finishPointerResize);
+    window.addEventListener('blur', finishPointerResize);
     return () => {
       document.removeEventListener('pointermove', onPointerMove);
-      document.removeEventListener('pointerup', onPointerUp);
+      document.removeEventListener('pointerup', finishPointerResize);
+      document.removeEventListener('pointercancel', finishPointerResize);
+      window.removeEventListener('blur', finishPointerResize);
     };
   }, [inspectorMaxWidth, inspectorOpen, persistPresentation]);
 

@@ -54,6 +54,9 @@ test('desktop components expose modal suppression, accessible resize, collapse, 
   assert.match(workspace, /'aria-valuemax': inspectorMaxWidth/);
   assert.match(workspace, /nextDesktopInspectorWidth/);
   assert.match(workspace, /DESKTOP_INSPECTOR_COLLAPSE_WIDTH/);
+  assert.match(workspace, /wasWide && isNarrow/);
+  assert.match(workspace, /addEventListener\('pointercancel', finishPointerResize\)/);
+  assert.match(workspace, /addEventListener\('blur', finishPointerResize\)/);
   assert.match(workspace, /reversr-desktop-presentation:v1/);
   assert.doesNotMatch(`${navigation}\n${workspace}`, /fetch\s*\(|cadAuthenticatedIgs|uploadSession|R2|Sandbox|checkout|provider request/i);
 });

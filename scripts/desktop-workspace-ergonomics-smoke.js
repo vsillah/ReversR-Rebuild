@@ -103,6 +103,16 @@ async function noOverflow(page, label) {
           assert.equal(await page.getByTestId('desktop-workspace-inspector').count(), 0, 'narrow inspector toggle closes the revealed region');
           await page.getByTestId('desktop-workspace-inspector-toggle').click();
           await page.getByTestId('desktop-workspace-inspector').waitFor();
+          await page.setViewportSize({ width: 1100, height });
+          assert.equal(await page.getByTestId('desktop-workspace-inspector').count(), 1, 'narrow-range resizing preserves the user-open inspector');
+          await page.setViewportSize({ width: 1280, height });
+          await page.getByTestId('desktop-workspace-inspector').waitFor();
+          await page.setViewportSize({ width: 1100, height });
+          await page.getByTestId('desktop-workspace-inspector').waitFor({ state: 'detached' });
+          await page.getByTestId('desktop-workspace-inspector-toggle').click();
+          await page.getByTestId('desktop-workspace-inspector').waitFor();
+          await page.setViewportSize({ width, height });
+          assert.equal(await page.getByTestId('desktop-workspace-inspector').count(), 1, 'returning within the narrow range preserves the reopened inspector');
         }
         const handle = page.getByTestId('desktop-workspace-inspector-resize');
         await handle.focus();
@@ -127,6 +137,31 @@ async function noOverflow(page, label) {
         assert(pointerWidth >= 352 && pointerWidth <= viewportMaximum, 'pointer resize stays bounded');
         await page.getByTestId('desktop-workspace-inspector-reset').click();
         assert.equal(Number(await handle.getAttribute('aria-valuenow')), 336, 'reset action restores default');
+
+        const cancelHandleBox = await handle.boundingBox();
+        const beforeCancelResize = Number(await handle.getAttribute('aria-valuenow'));
+        await page.mouse.move(cancelHandleBox.x + 6, cancelHandleBox.y + 80);
+        await page.mouse.down();
+        await page.mouse.move(cancelHandleBox.x - 32, cancelHandleBox.y + 80, { steps: 2 });
+        assert.notEqual(Number(await handle.getAttribute('aria-valuenow')), beforeCancelResize, 'pointer resize is active before cancellation');
+        await page.evaluate(() => document.dispatchEvent(new PointerEvent('pointercancel')));
+        const cancelledWidth = Number(await handle.getAttribute('aria-valuenow'));
+        await page.mouse.move(cancelHandleBox.x - 80, cancelHandleBox.y + 80, { steps: 2 });
+        assert.equal(Number(await handle.getAttribute('aria-valuenow')), cancelledWidth, 'pointer cancel terminates the active resize');
+        await page.mouse.up();
+
+        const blurHandleBox = await handle.boundingBox();
+        const beforeBlurResize = Number(await handle.getAttribute('aria-valuenow'));
+        await page.mouse.move(blurHandleBox.x + 6, blurHandleBox.y + 80);
+        await page.mouse.down();
+        await page.mouse.move(blurHandleBox.x - 16, blurHandleBox.y + 80, { steps: 2 });
+        assert.notEqual(Number(await handle.getAttribute('aria-valuenow')), beforeBlurResize, 'pointer resize is active before window blur');
+        await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+        const blurredWidth = Number(await handle.getAttribute('aria-valuenow'));
+        await page.mouse.move(blurHandleBox.x - 64, blurHandleBox.y + 80, { steps: 2 });
+        assert.equal(Number(await handle.getAttribute('aria-valuenow')), blurredWidth, 'window blur terminates the active resize');
+        await page.mouse.up();
+        await page.getByTestId('desktop-workspace-inspector-reset').click();
 
         await page.getByTestId('desktop-workspace-header').click({ position: { x: 420, y: 30 } });
         await shortcut(page, 'i');
