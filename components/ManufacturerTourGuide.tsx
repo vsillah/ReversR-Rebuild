@@ -54,6 +54,7 @@ type Props = {
   onNext: () => void;
   onToggleSubtask: (subtaskId: string) => void;
   onExit: () => void;
+  docked?: boolean;
 };
 
 export default function ManufacturerTourGuide({
@@ -70,20 +71,23 @@ export default function ManufacturerTourGuide({
   onNext,
   onToggleSubtask,
   onExit,
+  docked = false,
 }: Props) {
   const { colors } = useAppTheme();
   const { width } = useWindowDimensions();
   const styles = createStyles(colors);
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollBodyRef = useRef<ScrollView>(null);
-  const isCompact = width < 900;
+  const isCompact = !docked && width < 900;
   const isLastStep = stepIndex === stepCount - 1;
   const completedSubtaskSet = new Set(completedSubtaskIds);
   const stepComplete = completedSubtaskIds.length === step.subtasks.length;
   const currentSubtaskId = step.subtasks.find(subtask => !completedSubtaskSet.has(subtask.id))?.id;
   const progress = Math.round((completedSubtaskCount / Math.max(1, totalSubtaskCount)) * 100);
   const progressWidth = `${progress}%` as `${number}%`;
-  const placementStyle: StyleProp<ViewStyle> = isCompact
+  const placementStyle: StyleProp<ViewStyle> = docked
+    ? styles.dockInspector
+    : isCompact
     ? styles.dockBottom
     : placement === 'top-right'
       ? styles.dockTopRight
@@ -279,6 +283,7 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
     elevation: 1000,
     gap: Spacing.sm,
   },
+  dockInspector: { position: 'relative', width: '100%', maxHeight: undefined, padding: 0, borderWidth: 0, borderRadius: 0, backgroundColor: 'transparent', shadowOpacity: 0, elevation: 0, zIndex: 1 },
   dockBottom: { left: Spacing.md, right: Spacing.md, bottom: Spacing.md, width: 'auto', maxWidth: 560, maxHeight: '68%' },
   dockBottomLeft: { left: Spacing.lg, bottom: Spacing.lg },
   dockTopRight: { top: 112, right: Spacing.lg },

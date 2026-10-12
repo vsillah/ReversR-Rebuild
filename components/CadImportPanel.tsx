@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { CadAction, CadDetails, CadNotice } from './CadReviewUI';
@@ -187,15 +187,15 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
     setMessage(`${fixture.sourceFileName} selected as the public sample. Generate the sample preview when you are ready.`);
   };
   return (
-    <View testID="cad-import-panel" style={{ gap: 14, maxWidth: desktop ? 840 : undefined, width: '100%', alignSelf: desktop ? 'flex-start' : undefined }}>
-      {desktop && <Text accessibilityRole="header" style={[Typography.title, { color: colors.text }]}>CAD source</Text>}
+    <View testID="cad-import-panel" style={{ gap: 14, maxWidth: desktop ? 960 : undefined, width: '100%', alignSelf: desktop ? 'flex-start' : undefined }}>
+      {desktop && <View style={{ gap: 4 }}><Text accessibilityRole="header" style={[Typography.title, { color: colors.text }]}>Choose the reconstruction source</Text><Text style={text}>Start from a device-local CAD file or the authorized public sample.</Text></View>}
       {supported && <input ref={picker} type="file" accept={CAD_FILE_ACCEPT} aria-label="Choose CAD file" data-testid="cad-file-input" style={{ display: 'none' }} onChange={event => {
         const file = event.currentTarget.files?.[0];
         event.currentTarget.value = '';
         if (!file) return;
         void handleFile(file);
       }} />}
-      {fixture ? <Text style={text}>Choose a CAD file from this device, or use the public sample.</Text> : null}
+      {fixture && !desktop ? <Text style={text}>Choose a CAD file from this device, or use the public sample.</Text> : null}
       {fixture ? (
         <View testID="cad-public-fixture-ready" style={{ gap: Spacing.md }}>
           <View testID="cad-source-choice-panel" style={{ gap: Spacing.md, borderWidth: desktop ? 0 : 1, borderColor: colors.border, borderRadius: Radii.lg, padding: desktop ? 0 : Spacing.md, backgroundColor: colors.surface }}>
@@ -210,13 +210,17 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
                     <Text style={text}>Start with a file or the sample.</Text>
                   </View>
                 </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: desktop ? Spacing.md : Spacing.sm, alignItems: 'stretch' }}>
                   {supported && localPreviewEnabled ? (
-                    <View style={{ flexGrow: 1, flexBasis: 220 }}>
+                    <View testID="cad-local-source-choice" style={{ flexGrow: 1, flexBasis: desktop ? 260 : 220, minWidth: 0, minHeight: desktop ? 286 : undefined, padding: desktop ? Spacing.lg : 0, gap: desktop ? Spacing.md : 0, borderWidth: desktop ? 1 : 0, borderColor: colors.border, borderRadius: Radii.lg, backgroundColor: desktop ? colors.panel : 'transparent' }}>
+                      {desktop && <>
+                        <View style={{ width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySoft }}><Ionicons name="document-attach-outline" size={25} color={colors.primary} /></View>
+                        <View style={{ gap: 5 }}><Text style={[Typography.heading, { color: colors.text }]}>Local CAD file</Text><Text style={text}>Select one IGES, STEP, or BREP source from this device. The browser checks metadata before preview.</Text></View>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}><Text style={[Typography.caption, { color: colors.mutedText }]}>Device-local</Text><Text style={[Typography.caption, { color: colors.mutedText }]}>·</Text><Text style={[Typography.caption, { color: colors.mutedText }]}>One picker</Text></View>
+                      </>}
                       <CadAction
                         testID="cad-choose-local-iges"
                         accessibilityLabel="Choose CAD file from this device"
-                        primary
                         disabled={renderingLocal}
                         icon="document-attach-outline"
                         label="Choose CAD file"
@@ -226,7 +230,11 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
                   ) : (
                     <Text testID="cad-local-preview-unavailable" style={text}>Local browser rendering is unavailable on this surface. Open this preview in the installed app or a supported desktop browser.</Text>
                   )}
-                  <View style={{ flexGrow: 1, flexBasis: 220 }}>
+                    <View testID="cad-public-source-choice" style={{ flexGrow: 1, flexBasis: desktop ? 260 : 220, minWidth: 0, minHeight: desktop ? 286 : undefined, padding: desktop ? Spacing.lg : 0, gap: desktop ? Spacing.md : 0, borderWidth: desktop ? 1 : 0, borderColor: colors.border, borderRadius: Radii.lg, backgroundColor: desktop ? colors.panel : 'transparent', overflow: 'hidden' }}>
+                      {desktop && <>
+                        <Image source={{ uri: fixture.referenceImageUrl }} resizeMode="contain" accessibilityLabel={`${fixture.fixtureName} public reference preview`} style={{ height: 94, width: '100%', borderRadius: Radii.md, backgroundColor: colors.elevated }} />
+                        <View style={{ gap: 5 }}><Text style={[Typography.heading, { color: colors.text }]}>Public sample</Text><Text style={text}>{fixture.sourceFileName} · {fixture.format} · {formatFileSize(fixture.bytes)}</Text></View>
+                      </>}
                     <CadAction
                       testID="cad-select-public-sample"
                       accessibilityLabel={`Use public sample ${fixture.sourceFileName}`}
@@ -254,6 +262,15 @@ export default function CadImportPanel({ internalPreview, onReviewQualifiedResul
                       : `${fixture.format} · ${formatFileSize(fixture.bytes)} · public sample`}</Text>
                   </View>
                 </View>
+
+                {desktop && fixtureSourceMode === 'sample' && (
+                  <View testID="cad-selected-source-preview" style={{ minHeight: 230, borderRadius: Radii.lg, overflow: 'hidden', borderWidth: 1, borderColor: colors.border, backgroundColor: colors.elevated }}>
+                    <Image source={{ uri: fixture.referenceImageUrl }} resizeMode="contain" accessibilityLabel={`${fixture.fixtureName} selected public reference`} style={{ width: '100%', height: 230 }} />
+                  </View>
+                )}
+                {desktop && fixtureSourceMode === 'local' && selected && (
+                  <View testID="cad-selected-source-preview"><CadImportGridPreview selected={selected} /></View>
+                )}
 
                 {fixtureSourceMode === 'local' && selected && !localPreview && selected.renderableLocalPreview && (
                   <CadAction

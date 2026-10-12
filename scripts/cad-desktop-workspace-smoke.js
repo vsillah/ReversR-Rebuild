@@ -23,12 +23,13 @@ fs.mkdirSync(out, { recursive: true });
       await page.goto(`${base}/?cadPreview=mark-dispenser-v1&cadPhase=design`);
       await page.getByTestId('cad-command-zoom').waitFor();
       await page.waitForFunction(() => !document.querySelector('[data-testid="cad-command-zoom"]').disabled);
-      assert.equal(await page.getByTestId('desktop-navigation').count(), 0, 'CAD retains its dedicated workspace header');
+      assert.equal(await page.getByTestId('desktop-navigation').count(), width >= 1024 ? 1 : 0, 'desktop CAD uses the shared workspace rail');
       const viewer = page.getByTestId('cad-fixture-canvas-host');
       const bounds = await viewer.boundingBox();
       if (width >= 1024) {
+        const navigation = await page.getByTestId('desktop-navigation').boundingBox();
         const rail = await page.getByTestId('cad-review-rail').boundingBox();
-        assert(bounds.width >= width - 380, `viewer too narrow: ${JSON.stringify(bounds)}`);
+        assert(bounds.width >= Math.min(680, width - navigation.width - 380), `viewer too narrow: ${JSON.stringify(bounds)}`);
         assert(bounds.x + bounds.width <= rail.x && rail.x + rail.width <= width, 'viewer and details rail fit without overlap');
         assert(bounds.y + bounds.height <= height, `viewer below fold: ${JSON.stringify(bounds)}`);
         assert.equal(await page.getByTestId('app-shell').evaluate(el => Math.round(el.getBoundingClientRect().width)), width);
