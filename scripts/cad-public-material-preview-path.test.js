@@ -51,7 +51,7 @@ test('all source and asset hashes match the packet', () => {
   }
 });
 
-test('preview remains non-production and public-material only', () => {
+test('preview remains explicit-query gated and public-material only', () => {
   const localPreview = inspectCadInternalTesterPreview({
     hostname: 'localhost',
     search: packet.route.query,
@@ -61,13 +61,18 @@ test('preview remains non-production and public-material only', () => {
     search: packet.route.query,
   });
   const productionPreview = inspectCadInternalTesterPreview({
-    hostname: packet.route.blockedProductionHostname,
+    hostname: packet.route.productionHostname,
     search: packet.route.query,
+  });
+  const productionDefault = inspectCadInternalTesterPreview({
+    hostname: packet.route.productionHostname,
+    search: '',
   });
 
   assert.equal(localPreview.enabled, true);
   assert.equal(vercelPreview.enabled, true);
-  assert.equal(productionPreview.enabled, false);
+  assert.equal(productionPreview.enabled, true);
+  assert.equal(productionDefault.enabled, false);
   assert.equal(localPreview.fixture, MARK_DISPENSER_RESULT);
   assert.equal(localPreview.fixture.sourceAssetUrl, '/cad-fixtures/mark-dispenser-v1/Dispenser.IGS');
   assert.equal(localPreview.fixture.previewGeometry.assetUrl,

@@ -10,7 +10,7 @@
   "humanProductDecision": {
     "authorized": true,
     "decision": "Authorize a bounded internal-tester or public-preview path using public materials only.",
-    "pathType": "anyone-with-link non-production Vercel preview",
+    "pathType": "public Dispenser preview through an explicit query on allowed ReversR hosts",
     "publicMaterialsOnly": true,
     "realUserEnrollmentAuthorized": false,
     "externalDeliveryAuthorized": false
@@ -22,16 +22,18 @@
     "requiresProductionConversion": false,
     "requiresPrivateCad": false,
     "requiresRealUserAccount": false,
-    "reason": "The approved path uses the existing non-production fixture preview, public Dispenser.IGS and matching public references. It does not require uploads, private CAD, provider mutations, production route activation or account enrollment."
+    "reason": "The approved path uses the existing public fixture preview, public Dispenser.IGS and matching public references. The explicit mark-dispenser-v1 query is already available on allowed ReversR hosts, including production, while an unrequested production root remains disabled. It does not require uploads, private CAD, provider mutations, production upload or conversion activation, or account enrollment."
   },
   "route": {
     "query": "?cadPreview=mark-dispenser-v1",
-    "allowedHostPolicy": "localhost, 127.0.0.1, ::1, or non-production *.vercel.app only",
-    "blockedProductionHostname": "reversr.vercel.app",
+    "allowedHostPolicy": "localhost, 127.0.0.1, ::1, or *.vercel.app; production requires the explicit mark-dispenser-v1 query",
+    "productionHostname": "reversr.vercel.app",
+    "productionDefaultEnabled": false,
+    "productionExplicitQueryEnabled": true,
     "source": "utils/cadInternalTesterPreview.js",
-    "sourceSha256": "fd5161b9cf966042bf3bdc36c2e08025f22f34bccf40b2544c16f5ca96a1e050",
+    "sourceSha256": "adcdb2477aa067f23cedc34d109b023c61d6f89079d359420d99bc1feb0b5b14",
     "test": "scripts/cad-internal-tester-preview.test.js",
-    "testSha256": "290825107c94110e7931d0b2445650d43c679cf7ba6532078d2ed078ca3609ee"
+    "testSha256": "d880ff69015183d71efa939f86300282a3db24650ef52821f1c2df3848b53e83"
   },
   "publicFixture": {
     "fixtureId": "mark-dispenser-v1",
@@ -84,7 +86,7 @@
     },
     "internalTesterPreviewDecision": {
       "source": "docs/cad-internal-tester-preview.md",
-      "sourceSha256": "10e016d4c521c507ba4debd9849ee02970b632f59dff82c8bce6190482f87d27"
+      "sourceSha256": "f24bcc4a60af44cbbd57b75581583eade6153a0d0adb14c24fccabda37d10749"
     },
     "phaseProgressionQa": {
       "source": "docs/qa/cad-phase-progression/README.md",
@@ -125,8 +127,8 @@
     "secondRunAuthorized": false
   },
   "nextGate": {
-    "type": "non-production-preview-deployment-and-human-qa",
-    "summary": "Use the PR or non-production Vercel preview URL with ?cadPreview=mark-dispenser-v1, run visual QA, attach a privacy-safe walkthrough, and stop before sending the URL externally.",
+    "type": "public-fixture-preview-observation-and-human-qa",
+    "summary": "Use an allowed ReversR host with ?cadPreview=mark-dispenser-v1, run visual QA against the public fixture, attach a privacy-safe walkthrough, and stop before sending the URL externally.",
     "allowedByThisPacket": [
       "source-only PR publication",
       "normal PR preview deployment",
