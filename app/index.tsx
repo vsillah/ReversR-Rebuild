@@ -27,6 +27,8 @@ import AlertModal from "../components/AlertModal";
 import WelcomeScreen from "../components/WelcomeScreen";
 import WelcomeIntroScreen from "../components/WelcomeIntroScreen";
 import CadWorkflow from "../components/CadWorkflow";
+import DesktopCadWorkspace from "../components/DesktopCadWorkspace";
+import CadWorkspaceInspector from "../components/CadWorkspaceInspector";
 import CadNativeInternalUploadPreview from "../components/CadNativeInternalUploadPreview";
 import { getCadReviewPhase, getCadReviewPhaseStates, getWorkflowPhaseStates } from "../utils/workflowPhases";
 import PhaseOne from "../components/PhaseOne";
@@ -1440,7 +1442,7 @@ export default function HomeScreen() {
     />
   ) : null;
 
-  const renderTourGuide = () => (
+  const renderTourGuide = (docked = false) => (
     <ManufacturerTourGuide
       active={tourActive}
       step={tourStep}
@@ -1455,6 +1457,7 @@ export default function HomeScreen() {
       onNext={goToNextTourStep}
       onToggleSubtask={toggleTourSubtask}
       onExit={closeTour}
+      docked={docked}
     />
   );
   const keyboardInset = useAndroidKeyboardInset(32);
@@ -1565,6 +1568,50 @@ export default function HomeScreen() {
           />
         )}
       </View>
+    );
+  }
+
+  if (desktopCadWorkspace) {
+    const phaseRail = (
+      <HorizontalStepper
+        steps={PHASE_STEP_LABELS}
+        currentStep={cadPhase}
+        phaseStates={getCadReviewPhaseStates({ selectedPhase: cadPhase, highestReachedPhase: integratedIgsPreview ? cadHighestPhase : undefined })}
+        selectedStep={cadPhase}
+        onStepPress={navigateCadPhase}
+        testID="reversr-tour-phase-nav"
+      />
+    );
+    const inspector = cadPhase === 1 || tourActive ? (
+      <CadWorkspaceInspector
+        phase={cadPhase}
+        fixture={activeCadPreview.fixture}
+        tour={tourActive ? renderTourGuide(true) : undefined}
+      />
+    ) : undefined;
+    return (
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <DesktopCadWorkspace
+          phaseRail={phaseRail}
+          inspector={inspector}
+          userDisplayName={userDisplayName}
+          workspaceName={PHASE_STEP_LABELS[cadPhase - 1]}
+          userAvatarUri={userAvatarUri}
+          userHasProfileIdentity={userHasProfileIdentity}
+          appearanceIcon={nextThemeMode === 'dark' ? 'moon-outline' : 'sunny-outline'}
+          onHome={goHome}
+          onProjects={openHistory}
+          onNew={() => handleStartNew()}
+          onTour={startTour}
+          onMore={() => openSettings('account')}
+          onProfile={() => openSettings('profile')}
+          onToggleAppearance={handleToggleTheme}
+        >
+          <CadWorkflow preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop />
+        </DesktopCadWorkspace>
+        <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
+        <CadNativeInternalUploadPreview visible={nativeCadUploadPreviewVisible} onClose={() => setNativeCadUploadPreviewVisible(false)} />
+      </KeyboardAvoidingView>
     );
   }
 

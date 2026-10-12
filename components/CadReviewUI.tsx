@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Radii, Spacing, Typography } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
+import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
 import type { CadInternalTesterFixture } from '../utils/cadInternalTesterPreview';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -12,9 +13,10 @@ export function CadAction({ label, onPress, primary = false, disabled = false, a
   accessibilityLabel?: string; testID?: string; icon?: IconName; role?: 'button' | 'link';
 }) {
   const { colors } = useAppTheme();
+  const { desktop } = useDesktopWorkspace();
   const color = disabled ? colors.mutedText : primary ? colors.onPrimary : colors.primary;
   return <TouchableOpacity testID={testID} accessibilityRole={role} accessibilityLabel={accessibilityLabel} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
-    style={[styles.action, { backgroundColor: disabled ? colors.elevated : primary ? colors.primary : 'transparent', borderColor: primary ? colors.primary : colors.border }]}>
+    style={[styles.action, desktop && styles.desktopAction, { backgroundColor: disabled ? colors.elevated : primary ? colors.primary : 'transparent', borderColor: primary ? colors.primary : colors.border }]}>
     <Text style={[Typography.label, { color, flex: 1, flexShrink: 1 }]}>{label}</Text>
     <Ionicons name={icon} size={18} color={color} accessible={false} />
   </TouchableOpacity>;
@@ -85,5 +87,6 @@ export const cadReviewStyles = StyleSheet.create({
 });
 const styles = StyleSheet.create({
   action: { minHeight: 48, borderWidth: 1, borderRadius: Radii.md, paddingHorizontal: Spacing.md, paddingVertical: 12, flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' },
+  desktopAction: { width: '100%', maxWidth: 280, alignSelf: 'flex-start' },
   disclosure: { minHeight: 48, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
 });
