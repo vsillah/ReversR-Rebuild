@@ -13,14 +13,17 @@ function inspectPublicMaterialPreviewPathAuthorization(packet, previewFixture) {
 
   const decisionValid = packet?.humanProductDecision?.authorized === true
     && packet?.humanProductDecision?.publicMaterialsOnly === true
-    && packet?.humanProductDecision?.pathType === 'anyone-with-link non-production Vercel preview'
+    && packet?.humanProductDecision?.pathType
+      === 'public Dispenser preview through an explicit query on allowed ReversR hosts'
     && packet?.humanProductDecision?.realUserEnrollmentAuthorized === false
     && packet?.humanProductDecision?.externalDeliveryAuthorized === false;
 
   const routeGuarded = packet?.route?.query === '?cadPreview=mark-dispenser-v1'
-    && packet?.route?.blockedProductionHostname === 'reversr.vercel.app'
-    && packet?.route?.sourceSha256 === 'fd5161b9cf966042bf3bdc36c2e08025f22f34bccf40b2544c16f5ca96a1e050'
-    && packet?.route?.testSha256 === '290825107c94110e7931d0b2445650d43c679cf7ba6532078d2ed078ca3609ee';
+    && packet?.route?.productionHostname === 'reversr.vercel.app'
+    && packet?.route?.productionDefaultEnabled === false
+    && packet?.route?.productionExplicitQueryEnabled === true
+    && packet?.route?.sourceSha256 === 'adcdb2477aa067f23cedc34d109b023c61d6f89079d359420d99bc1feb0b5b14'
+    && packet?.route?.testSha256 === 'd880ff69015183d71efa939f86300282a3db24650ef52821f1c2df3848b53e83';
 
   const fixtureManifestBound = previewFixture?.fixtureId === packet?.publicFixture?.fixtureId
     && previewFixture?.authorization?.scope === packet?.publicFixture?.redistributionScope
@@ -46,7 +49,7 @@ function inspectPublicMaterialPreviewPathAuthorization(packet, previewFixture) {
     && packet?.boundReadiness?.integratedUploadConversionReadiness?.sourceSha256
       === '428b71c9f161f4f8089191c7e61447c605cf8d2669e78c80eda31ec081a2e6e3'
     && packet?.boundReadiness?.internalTesterPreviewDecision?.sourceSha256
-      === '10e016d4c521c507ba4debd9849ee02970b632f59dff82c8bce6190482f87d27';
+      === 'f24bcc4a60af44cbbd57b75581583eade6153a0d0adb14c24fccabda37d10749';
 
   const qaEvidenceBound = packet?.boundReadiness?.phaseProgressionQa?.walkthroughSha256
       === 'dfd0e88d7678852d8fcbaaee050865e26f6c4f11b34fe8107b3aa21524e8f6be'

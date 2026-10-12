@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reversr.local/schemas/cad-phase3-windows-whale-observation.schema.json",
+  "title": "ReversR Phase 3 Windows Whale public fixture observation",
+  "description": "Privacy-safe observation record for the public Dispenser fixture. This schema records review outcomes and grants no compatibility, CAD, upload, conversion, provider, or manufacturing authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recordKind",
+    "observedAt",
+    "sourceCommit",
+    "environment",
+    "fixture",
+    "checks",
+    "privacy",
+    "claims",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "recordKind": { "const": "cad-phase3-public-fixture-observation" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["osFamily", "osVersion", "browserName", "browserVersion", "viewport"],
+      "properties": {
+        "osFamily": { "const": "Windows" },
+        "osVersion": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "browserName": { "const": "Whale" },
+        "browserVersion": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "viewport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 1024, "maximum": 7680 },
+            "height": { "type": "integer", "minimum": 600, "maximum": 4320 }
+          }
+        }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixtureId", "sourceFileName", "selectionMethod", "privateCadUsed"],
+      "properties": {
+        "fixtureId": { "const": "mark-dispenser-v1" },
+        "sourceFileName": { "const": "Dispenser.IGS" },
+        "selectionMethod": { "const": "use-public-sample" },
+        "privateCadUsed": { "const": false }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "browserAccess",
+        "publicFixtureSelection",
+        "render",
+        "dimensions",
+        "mouseControls",
+        "keyboardControls",
+        "downloads",
+        "buildHold"
+      ],
+      "properties": {
+        "browserAccess": { "$ref": "#/$defs/checkResult" },
+        "publicFixtureSelection": { "$ref": "#/$defs/checkResult" },
+        "render": { "$ref": "#/$defs/checkResult" },
+        "dimensions": { "$ref": "#/$defs/checkResult" },
+        "mouseControls": { "$ref": "#/$defs/checkResult" },
+        "keyboardControls": { "$ref": "#/$defs/checkResult" },
+        "downloads": { "$ref": "#/$defs/checkResult" },
+        "buildHold": { "$ref": "#/$defs/checkResult" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["telemetrySent", "externalWrites", "uploadAttempted", "providerContacted"],
+      "properties": {
+        "telemetrySent": { "const": false },
+        "externalWrites": { "const": 0 },
+        "uploadAttempted": { "const": false },
+        "providerContacted": { "const": false }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["whaleCompatibilityClaimed", "manufacturingReadinessClaimed", "externalValidationClaimed"],
+      "properties": {
+        "whaleCompatibilityClaimed": { "const": false },
+        "manufacturingReadinessClaimed": { "const": false },
+        "externalValidationClaimed": { "const": false }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overallOutcome", "unresolved"],
+      "properties": {
+        "overallOutcome": { "$ref": "#/$defs/outcome" },
+        "unresolved": {
+          "type": "array",
+          "maxItems": 24,
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "outcome": { "enum": ["pass", "fail", "blocked", "unclear"] },
+    "checkResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "notes", "evidenceRefs"],
+      "properties": {
+        "outcome": { "$ref": "#/$defs/outcome" },
+        "notes": { "type": "string", "maxLength": 500 },
+        "evidenceRefs": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "pattern": "^(rrb-ref|screenshot|clip|note):[A-Za-z0-9._/-]{1,180}$"
+          }
+        }
+      }
+    }
+  }
+}
