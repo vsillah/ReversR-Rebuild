@@ -17,6 +17,22 @@ const publicQaProjects = [
     analysis: { productName: 'FarmBot Genesis v1.8', components: [], neighborhoodResources: [], attributes: [], closedWorldBoundary: 'Public mock-tour fixture QA only.', rawAnalysis: 'Public mock-tour fixture QA only.' },
     selectedPattern: 'inventory_match', innovation: null, spec: null, threeDScene: null, imageUrl: null, bom: null, reviewerApprovalRecords: [],
   },
+  ...Array.from({ length: 8 }, (_, index) => ({
+    id: `qa-public-dispenser-${index + 2}`,
+    createdAt: now,
+    updatedAt: now,
+    phase: (index % 4) + 1,
+    input: `Dispenser public fixture QA ${index + 2}`,
+    capturedImage: null,
+    analysis: { productName: `Dispenser QA ${index + 2}`, components: [], neighborhoodResources: [], attributes: [], closedWorldBoundary: 'Public fixture QA only.', rawAnalysis: 'Public fixture QA only.' },
+    selectedPattern: index % 2 ? 'inventory_match' : null,
+    innovation: null,
+    spec: null,
+    threeDScene: null,
+    imageUrl: null,
+    bom: null,
+    reviewerApprovalRecords: [],
+  })),
 ];
 
 const installSafeState = async context => {
@@ -49,7 +65,7 @@ const installSafeState = async context => {
           return route.abort();
         }
         if (url.origin !== new URL(base).origin) {
-          externalRequests += 1;
+          if (!['localhost', '127.0.0.1', '::1'].includes(url.hostname)) externalRequests += 1;
           return route.abort();
         }
         if (url.pathname.startsWith('/api/')) return route.fulfill({ status: 503, json: { error: 'Offline layout QA' } });
@@ -115,10 +131,21 @@ const installSafeState = async context => {
       if (width >= 1280) {
         await page.getByTestId('desktop-nav-projects').click();
         await page.getByTestId('desktop-project-list').waitFor();
-        assert.equal(await page.locator('[role="treeitem"]').count(), 2);
+        assert.equal(await page.locator('[role="treeitem"]').count(), 3, 'recent projects are not bounded');
+        assert.equal(await page.getByTestId('desktop-project-show-more').getByText('Show 7 more', { exact: true }).count(), 1);
+        assert.equal(await page.getByTestId('desktop-project-view-all').count(), 1);
+        await page.getByTestId('desktop-project-show-more').click();
+        assert.equal(await page.locator('[role="treeitem"]').count(), 10, 'expanded project list did not expose all local records');
+        assert.equal(await page.getByTestId('desktop-project-show-more').getByText('Show fewer', { exact: true }).count(), 1);
+        for (const destination of ['account', 'ai', 'inventory', 'support', 'legal']) {
+          assert.equal(await page.getByTestId(`desktop-manage-${destination}`).count(), 1, `missing Manage destination ${destination}`);
+        }
         const newBox = await page.getByTestId('desktop-nav-new').boundingBox();
         const tourBox = await page.getByTestId('desktop-nav-tour').boundingBox();
+        const scrollRegionBox = await page.getByTestId('desktop-nav-scroll-region').boundingBox();
         assert(newBox && tourBox && newBox.y + newBox.height <= tourBox.y, 'New is not fixed directly above Tour');
+        assert(scrollRegionBox && newBox && scrollRegionBox.y + scrollRegionBox.height <= newBox.y, 'scrollable utilities displaced the fixed bottom actions');
+        assert.equal(await page.getByTestId('desktop-nav-bottom-actions').getByRole('button').count(), 2, 'bottom action group contains utilities');
         await page.getByTestId('desktop-nav-projects').focus();
         await page.keyboard.press('ArrowDown');
         assert.match(await page.evaluate(() => document.activeElement?.getAttribute('data-testid') || ''), /^desktop-project-/);
@@ -128,12 +155,19 @@ const installSafeState = async context => {
         await page.getByTestId('desktop-nav-projects').click();
         await page.getByTestId('desktop-project-qa-public-dispenser').click();
         await page.getByTestId('cad-review-rail').waitFor();
-        await page.getByTestId('desktop-nav-projects').click();
-        await page.getByTestId('desktop-project-list').waitFor();
         assert.equal(await page.getByTestId('desktop-project-qa-public-dispenser').getAttribute('aria-selected'), 'true');
+        await page.getByTestId('desktop-nav-manage').click();
+        assert.equal(await page.getByTestId('desktop-manage-account').count(), 0, 'Manage group did not collapse');
+        await page.getByTestId('desktop-nav-manage').click();
+        await page.getByTestId('desktop-manage-inventory').click();
+        await page.getByRole('button', { name: 'Show Inventory settings' }).waitFor();
+        await page.getByText('Inventory Source', { exact: true }).waitFor();
+        await page.getByRole('button', { name: 'Close settings' }).click();
       } else if (width >= 1024) {
         await page.getByTestId('desktop-nav-projects').click();
         assert.equal(await page.getByTestId('desktop-project-list').count(), 0, 'compact rail exposed project metadata');
+        assert.equal(await page.getByTestId('desktop-nav-settings').count(), 1, 'compact rail lacks explicit Settings action');
+        assert.equal(await page.getByTestId('desktop-nav-manage').count(), 0, 'compact rail exposed crowded Manage children');
       }
 
       await page.screenshot({ path: `${out}/${width}x${height}.png`, fullPage: false });
@@ -152,16 +186,22 @@ const installSafeState = async context => {
     await emptyPage.getByTestId('desktop-nav-projects').click();
     await emptyPage.getByTestId('desktop-project-empty').waitFor();
     assert.equal(await emptyPage.getByText('No saved projects', { exact: true }).count(), 1);
+    assert.equal(await emptyPage.getByTestId('desktop-manage-account').count(), 1);
+    assert.equal(await emptyPage.getByTestId('desktop-manage-legal').count(), 1);
     await emptyContext.close();
 
-    const singleContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
-    await singleContext.addInitScript(project => localStorage.setItem('reversr_innovations', JSON.stringify([project])), publicQaProjects[0]);
-    const singlePage = await singleContext.newPage();
-    await singlePage.goto(`${base}/?cadPreview=mark-dispenser-v1&cadPhase=design`);
-    await singlePage.getByTestId('cad-command-zoom').waitFor();
-    await singlePage.getByTestId('desktop-nav-projects').click();
-    assert.equal(await singlePage.locator('[role="treeitem"]').count(), 1);
-    await singleContext.close();
+    const fewContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    await fewContext.addInitScript(projects => localStorage.setItem('reversr_innovations', JSON.stringify(projects)), publicQaProjects.slice(0, 2));
+    const fewPage = await fewContext.newPage();
+    await fewPage.goto(`${base}/?cadPreview=mark-dispenser-v1&cadPhase=design`);
+    await fewPage.getByTestId('cad-command-zoom').waitFor();
+    await fewPage.getByTestId('desktop-nav-projects').click();
+    assert.equal(await fewPage.locator('[role="treeitem"]').count(), 2);
+    assert.equal(await fewPage.getByTestId('desktop-project-show-more').count(), 0);
+    assert.equal(await fewPage.getByTestId('desktop-project-view-all').count(), 1);
+    await fewPage.getByTestId('desktop-project-view-all').click();
+    await fewPage.getByTestId('reversr-tour-history').waitFor();
+    await fewContext.close();
 
     fs.writeFileSync(`${out}/results.json`, JSON.stringify(results, null, 2));
   } finally {

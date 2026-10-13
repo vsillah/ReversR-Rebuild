@@ -541,6 +541,13 @@ export default function HomeScreen() {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
     return new URLSearchParams(window.location.search).get('workspace');
   });
+  const [requestedSettingsSection] = useState<SettingsSection | null>(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
+    const section = new URLSearchParams(window.location.search).get('settingsSection');
+    return section === 'account' || section === 'ai' || section === 'inventory' || section === 'support' || section === 'legal'
+      ? section
+      : null;
+  });
   const [nativeCadUploadPreviewVisible, setNativeCadUploadPreviewVisible] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
   const [cadHighestPhase, setCadHighestPhase] = useState(3);
@@ -585,7 +592,7 @@ export default function HomeScreen() {
   const [showSettings, setShowSettings] = useState(requestedWorkspace === 'settings' || requestedWorkspace === 'profile');
   const [entryMode, setEntryMode] = useState<InputMode | undefined>(undefined);
   const [inventorySampleRefreshKey, setInventorySampleRefreshKey] = useState(0);
-  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>(requestedWorkspace === 'profile' ? 'profile' : 'account');
+  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>(requestedWorkspace === 'profile' ? 'profile' : requestedSettingsSection ?? 'account');
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [tourActive, setTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
@@ -1490,6 +1497,7 @@ export default function HomeScreen() {
     onNew: () => handleStartNew(),
     onTour: startTour,
     onMore: () => openSettings('account'),
+    onOpenSettings: openSettings,
     onProfile: () => openSettings('profile'),
     onToggleAppearance: handleToggleTheme,
     projects: desktopProjectItems,
@@ -1701,7 +1709,10 @@ export default function HomeScreen() {
         onProjects={openHistory}
         onNew={() => handleStartNew()}
         onTour={startTour}
-        onMore={() => openSettings('account')}
+        onOpenSettings={openSettings}
+        projects={desktopProjectItems}
+        selectedProjectId={desktopProjects.some(item => item.id === context.id) ? context.id : undefined}
+        onSelectProject={selectDesktopProject}
       />}
       <View style={styles.workflowWorkspace}>
       {!nativeEmbeddedCadPreview && <View style={[styles.header, desktopWorkspace && styles.desktopWorkflowHeader]} testID={desktopWorkspace ? 'desktop-workspace-header' : 'reversr-workflow-header'}>

@@ -30,21 +30,45 @@ test('saved active tour progress stays resumable without replacing first-arrival
   assert.match(app, /key=\{`desktop-cad:\$\{activeCadPreview\.fixture\.sha256\}`\}/);
   assert.match(app, /canvasScrollable=\{cadPhase !== 3 \|\| tourActive\}/);
 });
-test('labeled desktop rail exposes a local-data project tree and keeps New directly above Tour', () => {
+test('labeled desktop rail bounds local projects and preserves keyboard tree behavior', () => {
   const app = read('app/index.tsx');
   const navigation = read('components/DesktopNavigation.tsx');
-  const newIndex = navigation.indexOf('testID="desktop-nav-new"');
-  const tourIndex = navigation.indexOf("item('tour', 'Tour'");
 
   assert.match(app, /getAllInnovations/);
   assert.match(app, /desktopProjects\.map\(toDesktopProjectNavItem\)/);
+  assert.match(navigation, /const INLINE_PROJECT_LIMIT = 3/);
+  assert.match(navigation, /projects\.slice\(0, INLINE_PROJECT_LIMIT\)/);
+  assert.match(navigation, /selectedProject[\s\S]*collapsedProjects/);
   assert.match(navigation, /role="tree"/);
   assert.match(navigation, /role="treeitem"/);
   assert.match(navigation, /aria-expanded=\{compact \? undefined : projectsExpanded\}/);
+  assert.match(navigation, /Show \$\{hiddenProjectCount\} more/);
+  assert.match(navigation, /Show fewer/);
+  assert.match(navigation, /View all projects/);
   assert.match(navigation, /ArrowDown/);
   assert.match(navigation, /ArrowUp/);
   assert.match(navigation, /ArrowLeft/);
-  assert.match(navigation, /styles\.projectList/);
+  assert.match(navigation, /visibleProjects\.length - 1/);
+});
+test('desktop rail uses explicit Manage destinations and reserves the bottom pair for New and Tour', () => {
+  const app = read('app/index.tsx');
+  const account = read('app/account.tsx');
+  const navigation = read('components/DesktopNavigation.tsx');
+  const manageIndex = navigation.indexOf('testID="desktop-nav-manage"');
+  const shortcutsIndex = navigation.indexOf('testID="desktop-nav-shortcuts"');
+  const newIndex = navigation.indexOf('testID="desktop-nav-new"');
+  const tourIndex = navigation.indexOf("item('tour', 'Tour'");
+
+  for (const destination of ['Plan', 'AI', 'Inventory', 'Support', 'Legal']) {
+    assert.match(navigation, new RegExp(`label: '${destination}'`));
+  }
+  assert.match(navigation, /onOpenSettings\(destination\.id\)/);
+  assert.match(navigation, /accessibilityLabel="Settings"[\s\S]*testID="desktop-nav-settings"/);
+  assert.match(app, /onOpenSettings: openSettings/);
+  assert.match(account, /settingsSection=\$\{section\}/);
+  assert.doesNotMatch(navigation, /label: 'Admin'|label: 'Profile'|'More'|>More</);
+  assert.ok(manageIndex >= 0 && shortcutsIndex > manageIndex && newIndex > shortcutsIndex,
+    'Manage and Shortcuts must remain above the fixed bottom actions');
   assert.ok(newIndex >= 0 && tourIndex > newIndex, 'New must precede Tour in the fixed rail actions');
   assert.doesNotMatch(`${app}\n${navigation}`, /fetch\s*\(|cadAuthenticatedIgs|uploadSession|R2|Sandbox|provider request/i);
 });

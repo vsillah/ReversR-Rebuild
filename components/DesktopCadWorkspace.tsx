@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppColors, Fonts, Radii, Spacing } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import ReversRLogoMark from './ReversRLogoMark';
-import DesktopNavigation, { type DesktopProjectNavItem } from './DesktopNavigation';
+import DesktopNavigation, { type DesktopProjectNavItem, type DesktopSettingsDestination } from './DesktopNavigation';
 import {
   DESKTOP_INSPECTOR_COLLAPSE_WIDTH,
   DESKTOP_INSPECTOR_DEFAULT,
@@ -34,6 +34,7 @@ type Props = {
   onNew: () => void;
   onTour: () => void;
   onMore: () => void;
+  onOpenSettings: (section: DesktopSettingsDestination) => void;
   onProfile: () => void;
   onToggleAppearance: () => void;
   projects?: readonly DesktopProjectNavItem[];
@@ -59,6 +60,7 @@ export default function DesktopCadWorkspace({
   onNew,
   onTour,
   onMore,
+  onOpenSettings,
   onProfile,
   onToggleAppearance,
   projects,
@@ -202,7 +204,7 @@ export default function DesktopCadWorkspace({
         onProjects={onProjects}
         onNew={onNew}
         onTour={onTour}
-        onMore={onMore}
+        onOpenSettings={onOpenSettings}
         projects={projects}
         selectedProjectId={selectedProjectId}
         onSelectProject={onSelectProject}
