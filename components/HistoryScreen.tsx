@@ -127,9 +127,10 @@ interface Props {
   refreshKey?: number;
   bottomBarInset?: number;
   desktop?: boolean;
+  onProjectsChange?: (innovations: SavedInnovation[]) => void;
 }
 
-export default function HistoryScreen({ onBack, onStartNew, onResume, refreshKey, bottomBarInset = 0, desktop = false }: Props) {
+export default function HistoryScreen({ onBack, onStartNew, onResume, refreshKey, bottomBarInset = 0, desktop = false, onProjectsChange }: Props) {
   const { colors: Colors } = useAppTheme();
   const styles = createStyles(Colors);
   const historyScrollRef = useRef<ScrollView>(null);
@@ -162,6 +163,7 @@ export default function HistoryScreen({ onBack, onStartNew, onResume, refreshKey
     setLoading(true);
     const data = await getAllInnovations();
     setInnovations(data);
+    onProjectsChange?.(data);
     setLoading(false);
   };
 

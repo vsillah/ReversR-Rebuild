@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
+import { Modal, View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Fonts, Radii, Spacing } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
@@ -15,18 +15,39 @@ type Props = {
   onNew: () => void;
   onTour: () => void;
   onMore: () => void;
+  projects?: readonly DesktopProjectNavItem[];
+  selectedProjectId?: string;
+  onSelectProject?: (projectId: string) => void;
+};
+
+export type DesktopProjectNavItem = {
+  id: string;
+  title: string;
+  phaseLabel: string;
+  inventoryLabel?: string;
+  updatedLabel?: string;
 };
 
 /** In-flow workspace navigation for wide web: never covers content or depends on bottom padding. */
-export default function DesktopNavigation({ active, rail = false, compact = false, onHome, onProjects, onNew, onTour, onMore }: Props) {
+export default function DesktopNavigation({ active, rail = false, compact = false, onHome, onProjects, onNew, onTour, onMore,
+  projects = [], selectedProjectId, onSelectProject }: Props) {
   const { colors } = useAppTheme();
   const [shortcutReferenceOpen, setShortcutReferenceOpen] = useState(false);
+  const [projectsExpanded, setProjectsExpanded] = useState(active === 'projects');
+  const [focusedProjectId, setFocusedProjectId] = useState<string | null>(null);
+  const [projectsButtonFocused, setProjectsButtonFocused] = useState(false);
   const actionsRef = useRef({ onHome, onProjects, onNew, onTour, onMore });
+  const projectsButtonRef = useRef<any>(null);
+  const projectRowRefs = useRef<Array<any>>([]);
   const referenceOpenRef = useRef(shortcutReferenceOpen);
   const prefixActiveRef = useRef(false);
   const prefixTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   actionsRef.current = { onHome, onProjects, onNew, onTour, onMore };
   referenceOpenRef.current = shortcutReferenceOpen;
+
+  useEffect(() => {
+    if (active === 'projects' && !compact) setProjectsExpanded(true);
+  }, [active, compact]);
 
   useEffect(() => {
     if (!rail || typeof window === 'undefined') return undefined;
@@ -111,24 +132,118 @@ export default function DesktopNavigation({ active, rail = false, compact = fals
       {!compact && <Text style={[styles.label, { color: active === key ? colors.primary : colors.text }]}>{label}</Text>}
     </Pressable>
   );
+  const openProjects = () => {
+    if (!compact && active === 'projects') setProjectsExpanded(expanded => !expanded);
+    else if (!compact) setProjectsExpanded(true);
+    onProjects();
+  };
+  const focusProjectRow = (index: number) => {
+    const bounded = Math.max(0, Math.min(projects.length - 1, index));
+    projectRowRefs.current[bounded]?.focus?.();
+  };
+  const onProjectRowKeyDown = (event: React.KeyboardEvent, index: number) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      focusProjectRow(index + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      focusProjectRow(index - 1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      focusProjectRow(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      focusProjectRow(projects.length - 1);
+    } else if (event.key === 'ArrowLeft' || event.key === 'Escape') {
+      event.preventDefault();
+      setProjectsExpanded(false);
+      projectsButtonRef.current?.focus?.();
+    }
+  };
   return (
     <View testID="desktop-navigation" role="navigation" accessibilityLabel="Workspace" style={[styles.bar, rail && styles.rail, compact && styles.compactRail, { backgroundColor: colors.panel, borderBottomColor: colors.hairline, borderRightColor: colors.hairline }]}>
-      <View style={[styles.group, rail && styles.railGroup]}>
-        {item('home', 'Home', 'home-outline', onHome)}
-        {item('projects', 'Projects', 'albums-outline', onProjects)}
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="New Reconstruction"
-        onPress={onNew}
-        testID="desktop-nav-new"
-        style={({ pressed }) => [styles.item, rail && styles.railItem, compact && styles.compactItem, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
-      >
-        <Ionicons name="add" size={20} color={colors.onPrimary} />
-        {!compact && <Text style={[styles.label, { color: colors.onPrimary }]}>{rail ? 'New' : 'New Reconstruction'}</Text>}
-      </Pressable>
-      <View style={[styles.group, rail && styles.railGroup, { justifyContent: 'flex-end' }]}>
-        {item('tour', 'Tour', 'compass-outline', onTour)}
+      {rail ? <>
+        <View style={styles.railPrimary}>
+          {item('home', 'Home', 'home-outline', onHome)}
+          <Pressable
+            ref={projectsButtonRef}
+            accessibilityRole="button"
+            accessibilityLabel="Projects"
+            accessibilityState={{ selected: active === 'projects', expanded: compact ? undefined : projectsExpanded }}
+            aria-expanded={compact ? undefined : projectsExpanded}
+            aria-controls={compact ? undefined : 'desktop-project-tree'}
+            onPress={openProjects}
+            onFocus={() => setProjectsButtonFocused(true)}
+            onBlur={() => setProjectsButtonFocused(false)}
+            {...({ onKeyDown: (event: React.KeyboardEvent) => {
+              if (compact) return;
+              if (event.key === 'ArrowRight') { event.preventDefault(); setProjectsExpanded(true); }
+              if (event.key === 'ArrowLeft') { event.preventDefault(); setProjectsExpanded(false); }
+              if (event.key === 'ArrowDown' && projectsExpanded && projects.length) { event.preventDefault(); focusProjectRow(0); }
+            } } as any)}
+            testID="desktop-nav-projects"
+            style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, {
+              backgroundColor: active === 'projects' || pressed ? colors.primarySoft : 'transparent',
+              borderColor: projectsButtonFocused || active === 'projects' ? colors.primary : 'transparent',
+            }]}
+          >
+            <Ionicons name="albums-outline" size={18} color={active === 'projects' ? colors.primary : colors.mutedText} />
+            {!compact ? <>
+              <Text style={[styles.label, styles.projectDisclosureLabel, { color: active === 'projects' ? colors.primary : colors.text }]}>Projects</Text>
+              <Ionicons name={projectsExpanded ? 'chevron-down' : 'chevron-forward'} size={15} color={colors.mutedText} />
+            </> : null}
+          </Pressable>
+          {!compact && projectsExpanded ? <View nativeID="desktop-project-tree" role="tree" accessibilityLabel="Saved projects" style={styles.projectTree}>
+            {projects.length ? <ScrollView
+              testID="desktop-project-list"
+              style={styles.projectList}
+              contentContainerStyle={styles.projectListContent}
+              showsVerticalScrollIndicator
+              nestedScrollEnabled
+            >
+              {projects.map((project, index) => {
+                const selected = project.id === selectedProjectId;
+                return <Pressable
+                  key={project.id}
+                  ref={(node: any) => { projectRowRefs.current[index] = node; }}
+                  role="treeitem"
+                  accessibilityRole="button"
+                  accessibilityLabel={`${project.title}, ${project.phaseLabel}${project.inventoryLabel ? `, ${project.inventoryLabel}` : ''}${project.updatedLabel ? `, updated ${project.updatedLabel}` : ''}`}
+                  accessibilityState={{ selected }}
+                  aria-selected={selected}
+                  onPress={() => onSelectProject?.(project.id)}
+                  onFocus={() => setFocusedProjectId(project.id)}
+                  onBlur={() => setFocusedProjectId(current => current === project.id ? null : current)}
+                  {...({ onKeyDown: (event: React.KeyboardEvent) => onProjectRowKeyDown(event, index) } as any)}
+                  testID={`desktop-project-${project.id}`}
+                  style={({ pressed }) => [styles.projectRow, {
+                    backgroundColor: selected || pressed ? colors.primarySoft : 'transparent',
+                    borderColor: focusedProjectId === project.id || selected ? colors.primary : 'transparent',
+                  }]}
+                >
+                  <Text numberOfLines={1} style={[styles.projectTitle, { color: selected ? colors.primary : colors.text }]}>{project.title}</Text>
+                  <Text numberOfLines={1} style={[styles.projectMeta, { color: colors.mutedText }]}>
+                    {[project.phaseLabel, project.inventoryLabel, project.updatedLabel].filter(Boolean).join(' · ')}
+                  </Text>
+                </Pressable>;
+              })}
+            </ScrollView> : <View testID="desktop-project-empty" style={styles.projectEmpty}>
+              <Text style={[styles.projectEmptyText, { color: colors.mutedText }]}>No saved projects</Text>
+            </View>}
+          </View> : null}
+        </View>
+        <View style={styles.railBottom}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="New Reconstruction"
+            onPress={onNew}
+            testID="desktop-nav-new"
+            style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Ionicons name="add" size={20} color={colors.onPrimary} />
+            {!compact && <Text style={[styles.label, { color: colors.onPrimary }]}>New</Text>}
+          </Pressable>
+          {item('tour', 'Tour', 'compass-outline', onTour)}
         {rail ? <Pressable
           accessibilityRole="button"
           accessibilityLabel="Keyboard shortcuts"
@@ -143,7 +258,27 @@ export default function DesktopNavigation({ active, rail = false, compact = fals
           {!compact && <Text style={[styles.label, { color: colors.text }]}>Shortcuts</Text>}
         </Pressable> : null}
         {item('more', 'More', 'ellipsis-horizontal', onMore)}
-      </View>
+        </View>
+      </> : <>
+        <View style={styles.group}>
+          {item('home', 'Home', 'home-outline', onHome)}
+          {item('projects', 'Projects', 'albums-outline', onProjects)}
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="New Reconstruction"
+          onPress={onNew}
+          testID="desktop-nav-new"
+          style={({ pressed }) => [styles.item, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
+        >
+          <Ionicons name="add" size={20} color={colors.onPrimary} />
+          <Text style={[styles.label, { color: colors.onPrimary }]}>New Reconstruction</Text>
+        </Pressable>
+        <View style={[styles.group, { justifyContent: 'flex-end' }]}>
+          {item('tour', 'Tour', 'compass-outline', onTour)}
+          {item('more', 'More', 'ellipsis-horizontal', onMore)}
+        </View>
+      </>}
       <Modal visible={shortcutReferenceOpen} transparent animationType="fade" onRequestClose={() => setShortcutReferenceOpen(false)}>
         <View style={[styles.modalOverlay, { backgroundColor: colors.overlay }]} accessibilityViewIsModal>
           <View role="dialog" aria-modal={true} aria-label="Desktop keyboard shortcuts" testID="desktop-shortcut-reference" style={[styles.shortcutPanel, { backgroundColor: colors.panel, borderColor: colors.border }]}>
@@ -179,8 +314,19 @@ const styles = StyleSheet.create({
   rail: { width: 216, flexDirection: 'column', alignItems: 'stretch', gap: Spacing.md, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.md, borderBottomWidth: 0, borderRightWidth: 1 },
   compactRail: { width: 72, paddingHorizontal: 8 },
   railGroup: { width: '100%', flexDirection: 'column', alignItems: 'stretch' },
+  railPrimary: { flex: 1, minHeight: 0, width: '100%', gap: Spacing.xs },
+  railBottom: { width: '100%', gap: Spacing.xs },
   railItem: { width: '100%', justifyContent: 'flex-start', minHeight: 46, paddingHorizontal: Spacing.md },
   compactItem: { width: 54, paddingHorizontal: 0, justifyContent: 'center' },
+  projectDisclosureLabel: { flex: 1, minWidth: 0 },
+  projectTree: { flex: 1, minHeight: 0, marginLeft: Spacing.sm, borderLeftWidth: 1, borderLeftColor: 'transparent' },
+  projectList: { flex: 1, minHeight: 0 },
+  projectListContent: { gap: 2, paddingLeft: Spacing.sm, paddingBottom: Spacing.sm },
+  projectRow: { minHeight: 48, justifyContent: 'center', gap: 2, paddingHorizontal: Spacing.sm, paddingVertical: 6, borderWidth: 1, borderRadius: Radii.sm },
+  projectTitle: { fontFamily: Fonts.semibold, fontSize: 12 },
+  projectMeta: { fontSize: 10, lineHeight: 14 },
+  projectEmpty: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm },
+  projectEmptyText: { fontSize: 11, lineHeight: 16 },
   modalOverlay: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: Spacing.lg },
   shortcutPanel: { width: '100%', maxWidth: 520, maxHeight: '88%', borderWidth: 1, borderRadius: Radii.lg, padding: Spacing.lg },
   shortcutHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.md, marginBottom: Spacing.sm },

@@ -186,7 +186,8 @@ export default function CadWorkflow({ preview, phase, onPhase, compact = false, 
   const wrapBuild = (content: React.ReactNode) => desktop && !desktopTourActive
     ? <CadDesktopPhaseLayout canvasTestID="cad-build-canvas" inspectorTestID="cad-build-inspector" inspector={buildInspector}>{content}</CadDesktopPhaseLayout>
     : content;
-  return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: compact ? Spacing.xs : Spacing.lg, gap: compact ? Spacing.sm : Spacing.md }}>
+  return <View testID={`cad-phase-${phase}`} style={{ paddingVertical: compact ? Spacing.xs : Spacing.lg, gap: compact ? Spacing.sm : Spacing.md,
+    ...(desktop ? { flex: 1, minHeight: 0 } : {}) }}>
     {!compact && <View style={styles.header}>
       <View style={[styles.headerIcon, { backgroundColor: colors.primarySoft }]}><Ionicons name={icons[phase - 1]} size={24} color={colors.primary} accessible={false} /></View>
       <View style={{ flex: 1, gap: Spacing.xs }}>
