@@ -1,4 +1,4 @@
-import DesktopNavigation from '../components/DesktopNavigation';
+import DesktopNavigation, { type DesktopProjectNavItem } from '../components/DesktopNavigation';
 import { useDesktopWorkspace } from '../hooks/useDesktopWorkspace';
 import { InputMode } from '../utils/inputModes';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
@@ -57,6 +57,7 @@ import {
   SavedInnovation,
   saveInnovation,
   createNewInnovation,
+  getAllInnovations,
 } from "../hooks/useStorage";
 import { ReviewerApprovalRecord } from "../utils/reviewerApprovalRecords";
 import { useCommercialization } from "../hooks/useCommercialization";
@@ -109,6 +110,23 @@ const createEmptyContext = (): MutationContext => {
 
 const PHASE_LABELS = ['INPUT', 'INVENTORY', 'DESIGN', 'BUILD'];
 const PHASE_STEP_LABELS = ['Input', 'Inventory', 'Design', 'Build'];
+const getSavedInnovationTitle = (item: SavedInnovation) => item.innovation?.conceptName
+  || item.analysis?.productName
+  || (item.input ? `${item.input.slice(0, 30)}${item.input.length > 30 ? '…' : ''}` : 'Untitled Reconstruction');
+const toDesktopProjectNavItem = (item: SavedInnovation): DesktopProjectNavItem => {
+  const updated = new Date(item.updatedAt);
+  return {
+    id: item.id,
+    title: getSavedInnovationTitle(item),
+    phaseLabel: PHASE_STEP_LABELS[item.phase - 1] ?? 'Input',
+    inventoryLabel: item.selectedPattern === 'inventory_match' || item.innovation?.patternUsed === 'inventory_match'
+      ? 'Inventory match'
+      : undefined,
+    updatedLabel: Number.isNaN(updated.getTime())
+      ? undefined
+      : updated.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+  };
+};
 const PHASE_ICONS: Record<number, keyof typeof Ionicons.glyphMap> = {
   1: 'search',
   2: 'repeat-sharp',
@@ -523,6 +541,13 @@ export default function HomeScreen() {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
     return new URLSearchParams(window.location.search).get('workspace');
   });
+  const [requestedSettingsSection] = useState<SettingsSection | null>(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
+    const section = new URLSearchParams(window.location.search).get('settingsSection');
+    return section === 'account' || section === 'ai' || section === 'inventory' || section === 'support' || section === 'legal'
+      ? section
+      : null;
+  });
   const [nativeCadUploadPreviewVisible, setNativeCadUploadPreviewVisible] = useState(false);
   const [cadPhase, setCadPhase] = useState(() => getCadReviewPhase(typeof window !== 'undefined' ? window.location?.search : ''));
   const [cadHighestPhase, setCadHighestPhase] = useState(3);
@@ -562,11 +587,12 @@ export default function HomeScreen() {
   const [showHistory, setShowHistory] = useState(requestedWorkspace === 'projects');
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [context, setContext] = useState<MutationContext>(createEmptyContext());
+  const [desktopProjects, setDesktopProjects] = useState<SavedInnovation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(requestedWorkspace === 'settings' || requestedWorkspace === 'profile');
   const [entryMode, setEntryMode] = useState<InputMode | undefined>(undefined);
   const [inventorySampleRefreshKey, setInventorySampleRefreshKey] = useState(0);
-  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>(requestedWorkspace === 'profile' ? 'profile' : 'account');
+  const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSection>(requestedWorkspace === 'profile' ? 'profile' : requestedSettingsSection ?? 'account');
   const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [tourActive, setTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
@@ -581,6 +607,13 @@ export default function HomeScreen() {
   const [imageGenStatus, setImageGenStatus] = useState<ImageGenStatus>('idle');
   const [generatedImageBase64, setGeneratedImageBase64] = useState<string | null>(null);
   const [generatedMultiAngleImages, setGeneratedMultiAngleImages] = useState<AngleImage[]>([]);
+  const refreshDesktopProjects = useCallback(async () => {
+    setDesktopProjects(await getAllInnovations());
+  }, []);
+  useEffect(() => {
+    if (!desktopWorkspace) return;
+    void refreshDesktopProjects();
+  }, [desktopWorkspace, historyRefreshKey, refreshDesktopProjects]);
   const userIsAuthenticated = Boolean(account?.access);
   const savedDisplayName = profile.name?.trim();
   const userHasSavedName = Boolean(savedDisplayName && savedDisplayName !== 'Repair shop user');
@@ -642,6 +675,7 @@ export default function HomeScreen() {
   const pendingWorkflowScrollResetRef = useRef(false);
   const tourOriginRef = useRef<TourOriginState | null>(null);
   const requestedTourHandledRef = useRef(false);
+  const pendingTourStartRef = useRef(false);
   const [workflowInputActive, setWorkflowInputActive] = useState(false);
   
   const { generate2DVisualization } = useGemini();
@@ -714,25 +748,20 @@ export default function HomeScreen() {
         const stepIndex = Number.isInteger(parsed.stepIndex)
           ? Math.min(Math.max(parsed.stepIndex ?? 0, 0), TOUR_STEPS.length - 1)
           : 0;
-        const shouldResume = parsed.active === true;
+        const hasSavedActiveTour = parsed.active === true;
         const completedSubtaskKeys = Array.isArray(parsed.completedSubtaskKeys)
           ? [...new Set(parsed.completedSubtaskKeys.filter((key): key is string => (
               typeof key === 'string' && TOUR_SUBTASK_KEYS.has(key)
             )))]
           : [];
 
-        setTourActive(shouldResume);
+        // Persisted progress remains resumable, but a previous active flag must
+        // never replace the normal workspace or inspector on a later visit.
+        // Only an explicit Tour action (or ?workspace=tour) activates it.
         setTourStepIndex(stepIndex);
         setTourCompletedSubtaskKeys(completedSubtaskKeys);
         setTourCompletedAt(typeof parsed.completedAt === 'string' ? parsed.completedAt : null);
-        if (shouldResume) {
-          setManufacturerTourPreviewActive(true);
-          setStarted(true);
-          setShowSettings(false);
-          setShowHistory(false);
-          setEntryMode('import');
-          setCadPhase(TOUR_STEPS[stepIndex].phase);
-        }
+        setTourHistoryResumeDetected(hasSavedActiveTour);
       } catch (error) {
         console.warn('Failed to load guided tour state', error);
       } finally {
@@ -784,6 +813,11 @@ export default function HomeScreen() {
   }, [cadInternalPreview.enabled, integratedIgsPreview]);
 
   const startTour = useCallback(() => {
+    if (!tourStateLoaded) {
+      pendingTourStartRef.current = true;
+      return;
+    }
+    pendingTourStartRef.current = false;
     if (!tourActive) {
       tourOriginRef.current = { started, showHistory, showSettings, cadPhase, entryMode };
     }
@@ -799,7 +833,11 @@ export default function HomeScreen() {
     setEntryMode('import');
     setWorkflowMenuOpen(false);
     setWelcomeIntroVisible(false);
-  }, [cadPhase, entryMode, showHistory, showSettings, started, tourActive, tourCompletedAt, tourStepIndex]);
+  }, [cadPhase, entryMode, showHistory, showSettings, started, tourActive, tourCompletedAt, tourStateLoaded, tourStepIndex]);
+
+  useEffect(() => {
+    if (tourStateLoaded && pendingTourStartRef.current) startTour();
+  }, [startTour, tourStateLoaded]);
 
   useEffect(() => {
     if (tourStateLoaded && requestedWorkspace === 'tour' && !requestedTourHandledRef.current) {
@@ -932,8 +970,9 @@ export default function HomeScreen() {
         reviewerApprovalRecords: ctx.reviewerApprovalRecords,
       };
       await saveInnovation(toSave);
+      await refreshDesktopProjects();
     }
-  }, []);
+  }, [refreshDesktopProjects]);
 
   const startBackgroundImageGeneration = useCallback(async (innovation: InnovationResult, innovationId: string) => {
     const generationToken = `${innovationId}-${Date.now()}`;
@@ -1413,6 +1452,11 @@ export default function HomeScreen() {
     setShowHistory(false);
     setStarted(true);
   };
+  const desktopProjectItems = useMemo(() => desktopProjects.map(toDesktopProjectNavItem), [desktopProjects]);
+  const selectDesktopProject = useCallback((projectId: string) => {
+    const project = desktopProjects.find(item => item.id === projectId);
+    if (project) handleResume(project);
+  }, [desktopProjects]);
 
   const openHistory = useCallback(() => {
     setHistoryRefreshKey(prev => prev + 1);
@@ -1453,8 +1497,12 @@ export default function HomeScreen() {
     onNew: () => handleStartNew(),
     onTour: startTour,
     onMore: () => openSettings('account'),
+    onOpenSettings: openSettings,
     onProfile: () => openSettings('profile'),
     onToggleAppearance: handleToggleTheme,
+    projects: desktopProjectItems,
+    selectedProjectId: desktopProjects.some(item => item.id === context.id) ? context.id : undefined,
+    onSelectProject: selectDesktopProject,
   };
 
   const renderTourGuide = (docked = false) => (
@@ -1580,6 +1628,7 @@ export default function HomeScreen() {
           refreshKey={historyRefreshKey}
           bottomBarInset={tabBarInset}
           desktop={desktopWorkspace}
+          onProjectsChange={setDesktopProjects}
         />
         {renderTourGuide()}
         <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
@@ -1631,12 +1680,14 @@ export default function HomeScreen() {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <DesktopCadWorkspace
           {...desktopShellCommon}
+          active={tourActive ? 'tour' : null}
           phaseRail={phaseRail}
           inspector={inspector}
           wideCanvas={cadPhase > 1 && !tourActive}
+          canvasScrollable={cadPhase !== 3 || tourActive}
           workspaceName={PHASE_STEP_LABELS[cadPhase - 1]}
         >
-          <CadWorkflow preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop desktopTourActive={tourActive} />
+          <CadWorkflow key={`desktop-cad:${activeCadPreview.fixture.sha256}`} preview={activeCadPreview} phase={cadPhase} onPhase={navigateCadPhase} compact desktop desktopTourActive={tourActive} />
         </DesktopCadWorkspace>
         <SettingsModal visible={showSettings} onClose={closeSettings} initialSection={settingsInitialSection} />
         <CadNativeInternalUploadPreview visible={nativeCadUploadPreviewVisible} onClose={() => setNativeCadUploadPreviewVisible(false)} />
@@ -1658,7 +1709,10 @@ export default function HomeScreen() {
         onProjects={openHistory}
         onNew={() => handleStartNew()}
         onTour={startTour}
-        onMore={() => openSettings('account')}
+        onOpenSettings={openSettings}
+        projects={desktopProjectItems}
+        selectedProjectId={desktopProjects.some(item => item.id === context.id) ? context.id : undefined}
+        onSelectProject={selectDesktopProject}
       />}
       <View style={styles.workflowWorkspace}>
       {!nativeEmbeddedCadPreview && <View style={[styles.header, desktopWorkspace && styles.desktopWorkflowHeader]} testID={desktopWorkspace ? 'desktop-workspace-header' : 'reversr-workflow-header'}>

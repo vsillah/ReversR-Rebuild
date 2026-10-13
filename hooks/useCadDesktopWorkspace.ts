@@ -7,5 +7,8 @@ export function useCadDesktopWorkspace() {
   const desktop = desktopWeb
     && getCadInternalTesterPreview().enabled
     && typeof window !== 'undefined' && window.location.pathname === '/';
-  return { desktop, viewerHeight: Math.max(320, height - 296) };
+  // Reserve the complete desktop chrome, title row, gaps, and a bottom safety
+  // margin. The viewer must fit the work area without relying on page scroll,
+  // especially in reduced-height laptop windows.
+  return { desktop, viewerHeight: Math.max(300, Math.min(720, height - 344)) };
 }

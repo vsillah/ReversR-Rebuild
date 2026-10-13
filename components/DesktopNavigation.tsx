@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
+import { Modal, View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Fonts, Radii, Spacing } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
@@ -14,19 +14,64 @@ type Props = {
   onProjects: () => void;
   onNew: () => void;
   onTour: () => void;
-  onMore: () => void;
+  onOpenSettings: (section: DesktopSettingsDestination) => void;
+  projects?: readonly DesktopProjectNavItem[];
+  selectedProjectId?: string;
+  onSelectProject?: (projectId: string) => void;
 };
 
+export type DesktopSettingsDestination = 'account' | 'ai' | 'inventory' | 'support' | 'legal';
+
+export type DesktopProjectNavItem = {
+  id: string;
+  title: string;
+  phaseLabel: string;
+  inventoryLabel?: string;
+  updatedLabel?: string;
+};
+
+const INLINE_PROJECT_LIMIT = 3;
+const MANAGE_DESTINATIONS: ReadonlyArray<{
+  id: DesktopSettingsDestination;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}> = [
+  { id: 'account', label: 'Plan', icon: 'briefcase-outline' },
+  { id: 'ai', label: 'AI', icon: 'hardware-chip-outline' },
+  { id: 'inventory', label: 'Inventory', icon: 'git-branch-outline' },
+  { id: 'support', label: 'Support', icon: 'help-circle-outline' },
+  { id: 'legal', label: 'Legal', icon: 'document-text-outline' },
+];
+
 /** In-flow workspace navigation for wide web: never covers content or depends on bottom padding. */
-export default function DesktopNavigation({ active, rail = false, compact = false, onHome, onProjects, onNew, onTour, onMore }: Props) {
+export default function DesktopNavigation({ active, rail = false, compact = false, onHome, onProjects, onNew, onTour, onOpenSettings,
+  projects = [], selectedProjectId, onSelectProject }: Props) {
   const { colors } = useAppTheme();
   const [shortcutReferenceOpen, setShortcutReferenceOpen] = useState(false);
-  const actionsRef = useRef({ onHome, onProjects, onNew, onTour, onMore });
+  const [projectsExpanded, setProjectsExpanded] = useState(active === 'projects');
+  const [showAllInlineProjects, setShowAllInlineProjects] = useState(false);
+  const [manageExpanded, setManageExpanded] = useState(true);
+  const [focusedProjectId, setFocusedProjectId] = useState<string | null>(null);
+  const [projectsButtonFocused, setProjectsButtonFocused] = useState(false);
+  const actionsRef = useRef({ onHome, onProjects, onNew, onTour, onOpenSettings });
+  const projectsButtonRef = useRef<any>(null);
+  const projectRowRefs = useRef<Array<any>>([]);
   const referenceOpenRef = useRef(shortcutReferenceOpen);
   const prefixActiveRef = useRef(false);
   const prefixTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  actionsRef.current = { onHome, onProjects, onNew, onTour, onMore };
+  actionsRef.current = { onHome, onProjects, onNew, onTour, onOpenSettings };
   referenceOpenRef.current = shortcutReferenceOpen;
+  const recentProjects = projects.slice(0, INLINE_PROJECT_LIMIT);
+  const selectedProject = selectedProjectId ? projects.find(project => project.id === selectedProjectId) : undefined;
+  const collapsedProjects = selectedProject && !recentProjects.some(project => project.id === selectedProject.id)
+    ? [...recentProjects.slice(0, INLINE_PROJECT_LIMIT - 1), selectedProject]
+    : recentProjects;
+  const visibleProjects = showAllInlineProjects ? projects : collapsedProjects;
+  const hiddenProjectCount = Math.max(0, projects.length - INLINE_PROJECT_LIMIT);
+
+  useEffect(() => {
+    if (active === 'projects' && !compact) setProjectsExpanded(true);
+  }, [active, compact]);
 
   useEffect(() => {
     if (!rail || typeof window === 'undefined') return undefined;
@@ -81,7 +126,7 @@ export default function DesktopNavigation({ active, rail = false, compact = fals
       else if (shortcut === 'projects') actions.onProjects();
       else if (shortcut === 'new') actions.onNew();
       else if (shortcut === 'tour') actions.onTour();
-      else if (shortcut === 'settings') actions.onMore();
+      else if (shortcut === 'settings') actions.onOpenSettings('account');
       else if (shortcut === 'canvas') focusRegion('desktop-workspace-canvas');
       else if (shortcut === 'inspector') {
         const inspector = document.querySelector('[data-testid="desktop-workspace-inspector"]');
@@ -111,39 +156,217 @@ export default function DesktopNavigation({ active, rail = false, compact = fals
       {!compact && <Text style={[styles.label, { color: active === key ? colors.primary : colors.text }]}>{label}</Text>}
     </Pressable>
   );
+  const openProjects = () => {
+    if (compact) {
+      onProjects();
+      return;
+    }
+    setProjectsExpanded(expanded => !expanded);
+  };
+  const focusProjectRow = (index: number) => {
+    const bounded = Math.max(0, Math.min(visibleProjects.length - 1, index));
+    projectRowRefs.current[bounded]?.focus?.();
+  };
+  const onProjectRowKeyDown = (event: React.KeyboardEvent, index: number) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      focusProjectRow(index + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      focusProjectRow(index - 1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      focusProjectRow(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      focusProjectRow(visibleProjects.length - 1);
+    } else if (event.key === 'ArrowLeft' || event.key === 'Escape') {
+      event.preventDefault();
+      setProjectsExpanded(false);
+      projectsButtonRef.current?.focus?.();
+    }
+  };
   return (
     <View testID="desktop-navigation" role="navigation" accessibilityLabel="Workspace" style={[styles.bar, rail && styles.rail, compact && styles.compactRail, { backgroundColor: colors.panel, borderBottomColor: colors.hairline, borderRightColor: colors.hairline }]}>
-      <View style={[styles.group, rail && styles.railGroup]}>
-        {item('home', 'Home', 'home-outline', onHome)}
-        {item('projects', 'Projects', 'albums-outline', onProjects)}
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="New Reconstruction"
-        onPress={onNew}
-        testID="desktop-nav-new"
-        style={({ pressed }) => [styles.item, rail && styles.railItem, compact && styles.compactItem, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
-      >
-        <Ionicons name="add" size={20} color={colors.onPrimary} />
-        {!compact && <Text style={[styles.label, { color: colors.onPrimary }]}>{rail ? 'New' : 'New Reconstruction'}</Text>}
-      </Pressable>
-      <View style={[styles.group, rail && styles.railGroup, { justifyContent: 'flex-end' }]}>
-        {item('tour', 'Tour', 'compass-outline', onTour)}
-        {rail ? <Pressable
+      {rail ? <>
+        <View testID="desktop-nav-scroll-region" style={styles.railPrimary}>
+          <ScrollView style={styles.railScroll} contentContainerStyle={styles.railScrollContent} showsVerticalScrollIndicator={false}>
+            {item('home', 'Home', 'home-outline', onHome)}
+            <Pressable
+              ref={projectsButtonRef}
+              accessibilityRole="button"
+              accessibilityLabel="Projects"
+              accessibilityState={{ selected: active === 'projects', expanded: compact ? undefined : projectsExpanded }}
+              aria-expanded={compact ? undefined : projectsExpanded}
+              aria-controls={compact ? undefined : 'desktop-project-region'}
+              onPress={openProjects}
+              onFocus={() => setProjectsButtonFocused(true)}
+              onBlur={() => setProjectsButtonFocused(false)}
+              {...({ onKeyDown: (event: React.KeyboardEvent) => {
+                if (compact) return;
+                if (event.key === 'ArrowRight') { event.preventDefault(); setProjectsExpanded(true); }
+                if (event.key === 'ArrowLeft') { event.preventDefault(); setProjectsExpanded(false); }
+                if (event.key === 'ArrowDown' && projectsExpanded && visibleProjects.length) { event.preventDefault(); focusProjectRow(0); }
+              } } as any)}
+              testID="desktop-nav-projects"
+              style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, {
+                backgroundColor: active === 'projects' || pressed ? colors.primarySoft : 'transparent',
+                borderColor: projectsButtonFocused || active === 'projects' ? colors.primary : 'transparent',
+              }]}
+            >
+              <Ionicons name="albums-outline" size={18} color={active === 'projects' ? colors.primary : colors.mutedText} />
+              {!compact ? <>
+                <Text style={[styles.label, styles.projectDisclosureLabel, { color: active === 'projects' ? colors.primary : colors.text }]}>Projects</Text>
+                <Ionicons name={projectsExpanded ? 'chevron-down' : 'chevron-forward'} size={15} color={colors.mutedText} />
+              </> : null}
+            </Pressable>
+            {!compact && projectsExpanded ? <View nativeID="desktop-project-region" style={styles.projectTree}>
+              {projects.length ? <>
+                <View testID="desktop-project-list" role="tree" accessibilityLabel="Recent saved projects" style={styles.projectList}>
+                  {visibleProjects.map((project, index) => {
+                    const selected = project.id === selectedProjectId;
+                    return <Pressable
+                      key={project.id}
+                      ref={(node: any) => { projectRowRefs.current[index] = node; }}
+                      role="treeitem"
+                      accessibilityRole="button"
+                      accessibilityLabel={`${project.title}, ${project.phaseLabel}${project.inventoryLabel ? `, ${project.inventoryLabel}` : ''}${project.updatedLabel ? `, updated ${project.updatedLabel}` : ''}`}
+                      accessibilityState={{ selected }}
+                      aria-selected={selected}
+                      onPress={() => onSelectProject?.(project.id)}
+                      onFocus={() => setFocusedProjectId(project.id)}
+                      onBlur={() => setFocusedProjectId(current => current === project.id ? null : current)}
+                      {...({ onKeyDown: (event: React.KeyboardEvent) => onProjectRowKeyDown(event, index) } as any)}
+                      testID={`desktop-project-${project.id}`}
+                      style={({ pressed }) => [styles.projectRow, {
+                        backgroundColor: selected || pressed ? colors.primarySoft : 'transparent',
+                        borderColor: focusedProjectId === project.id || selected ? colors.primary : 'transparent',
+                      }]}
+                    >
+                      <Text numberOfLines={1} style={[styles.projectTitle, { color: selected ? colors.primary : colors.text }]}>{project.title}</Text>
+                      <Text numberOfLines={1} style={[styles.projectMeta, { color: colors.mutedText }]}>
+                        {[project.phaseLabel, project.inventoryLabel, project.updatedLabel].filter(Boolean).join(' · ')}
+                      </Text>
+                    </Pressable>;
+                  })}
+                </View>
+                <View style={styles.projectActions}>
+                  {hiddenProjectCount ? <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={showAllInlineProjects ? 'Show fewer projects' : `Show ${hiddenProjectCount} more projects`}
+                    accessibilityState={{ expanded: showAllInlineProjects }}
+                    onPress={() => setShowAllInlineProjects(showAll => !showAll)}
+                    testID="desktop-project-show-more"
+                    style={({ pressed }) => [styles.projectUtility, { backgroundColor: pressed ? colors.primarySoft : 'transparent' }]}
+                  >
+                    <Text style={[styles.projectUtilityText, { color: colors.primary }]}>{showAllInlineProjects ? 'Show fewer' : `Show ${hiddenProjectCount} more`}</Text>
+                  </Pressable> : null}
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="View all projects"
+                    onPress={onProjects}
+                    testID="desktop-project-view-all"
+                    style={({ pressed }) => [styles.projectUtility, { backgroundColor: pressed ? colors.primarySoft : 'transparent' }]}
+                  >
+                    <Text style={[styles.projectUtilityText, { color: colors.primary }]}>View all projects</Text>
+                  </Pressable>
+                </View>
+              </> : <View testID="desktop-project-empty" style={styles.projectEmpty}>
+                <Text style={[styles.projectEmptyText, { color: colors.mutedText }]}>No saved projects</Text>
+              </View>}
+            </View> : null}
+
+            {compact ? <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Settings"
+              onPress={() => onOpenSettings('account')}
+              testID="desktop-nav-settings"
+              style={({ pressed }) => [styles.item, styles.railItem, styles.compactItem, {
+                backgroundColor: active === 'more' || pressed ? colors.primarySoft : 'transparent',
+                borderColor: active === 'more' ? colors.primary : 'transparent',
+              }]}
+            >
+              <Ionicons name="settings-outline" size={18} color={active === 'more' ? colors.primary : colors.mutedText} />
+            </Pressable> : <>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Manage settings"
+                accessibilityState={{ expanded: manageExpanded }}
+                aria-expanded={manageExpanded}
+                aria-controls="desktop-manage-destinations"
+                onPress={() => setManageExpanded(expanded => !expanded)}
+                testID="desktop-nav-manage"
+                style={({ pressed }) => [styles.item, styles.railItem, {
+                  backgroundColor: active === 'more' || pressed ? colors.primarySoft : 'transparent',
+                  borderColor: active === 'more' ? colors.primary : 'transparent',
+                }]}
+              >
+                <Ionicons name="settings-outline" size={18} color={active === 'more' ? colors.primary : colors.mutedText} />
+                <Text style={[styles.label, styles.projectDisclosureLabel, { color: active === 'more' ? colors.primary : colors.text }]}>Manage</Text>
+                <Ionicons name={manageExpanded ? 'chevron-down' : 'chevron-forward'} size={15} color={colors.mutedText} />
+              </Pressable>
+              {manageExpanded ? <View nativeID="desktop-manage-destinations" style={styles.manageList}>
+                {MANAGE_DESTINATIONS.map(destination => <Pressable
+                  key={destination.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Open ${destination.label} settings`}
+                  onPress={() => onOpenSettings(destination.id)}
+                  testID={`desktop-manage-${destination.id}`}
+                  style={({ pressed }) => [styles.manageItem, { backgroundColor: pressed ? colors.primarySoft : 'transparent' }]}
+                >
+                  <Ionicons name={destination.icon} size={16} color={colors.mutedText} />
+                  <Text style={[styles.manageLabel, { color: colors.text }]}>{destination.label}</Text>
+                </Pressable>)}
+              </View> : null}
+            </>}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Keyboard shortcuts"
+              accessibilityHint="Open the desktop shortcut reference. Press question mark from the workspace to open it."
+              onPress={() => setShortcutReferenceOpen(true)}
+              testID="desktop-nav-shortcuts"
+              style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, {
+                backgroundColor: pressed ? colors.primarySoft : 'transparent', borderColor: 'transparent',
+              }]}
+            >
+              <Ionicons name="keypad-outline" size={18} color={colors.mutedText} />
+              {!compact && <Text style={[styles.label, { color: colors.text }]}>Shortcuts</Text>}
+            </Pressable>
+          </ScrollView>
+        </View>
+        <View testID="desktop-nav-bottom-actions" style={styles.railBottom}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="New Reconstruction"
+            onPress={onNew}
+            testID="desktop-nav-new"
+            style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Ionicons name="add" size={20} color={colors.onPrimary} />
+            {!compact && <Text style={[styles.label, { color: colors.onPrimary }]}>New</Text>}
+          </Pressable>
+          {item('tour', 'Tour', 'compass-outline', onTour)}
+        </View>
+      </> : <>
+        <View style={styles.group}>
+          {item('home', 'Home', 'home-outline', onHome)}
+          {item('projects', 'Projects', 'albums-outline', onProjects)}
+        </View>
+        <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Keyboard shortcuts"
-          accessibilityHint="Open the desktop shortcut reference. Press question mark from the workspace to open it."
-          onPress={() => setShortcutReferenceOpen(true)}
-          testID="desktop-nav-shortcuts"
-          style={({ pressed }) => [styles.item, styles.railItem, compact && styles.compactItem, {
-            backgroundColor: pressed ? colors.primarySoft : 'transparent', borderColor: 'transparent',
-          }]}
+          accessibilityLabel="New Reconstruction"
+          onPress={onNew}
+          testID="desktop-nav-new"
+          style={({ pressed }) => [styles.item, { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 }]}
         >
-          <Ionicons name="keypad-outline" size={18} color={colors.mutedText} />
-          {!compact && <Text style={[styles.label, { color: colors.text }]}>Shortcuts</Text>}
-        </Pressable> : null}
-        {item('more', 'More', 'ellipsis-horizontal', onMore)}
-      </View>
+          <Ionicons name="add" size={20} color={colors.onPrimary} />
+          <Text style={[styles.label, { color: colors.onPrimary }]}>New Reconstruction</Text>
+        </Pressable>
+        <View style={[styles.group, { justifyContent: 'flex-end' }]}>
+          {item('tour', 'Tour', 'compass-outline', onTour)}
+          {item('more', 'Settings', 'settings-outline', () => onOpenSettings('account'))}
+        </View>
+      </>}
       <Modal visible={shortcutReferenceOpen} transparent animationType="fade" onRequestClose={() => setShortcutReferenceOpen(false)}>
         <View style={[styles.modalOverlay, { backgroundColor: colors.overlay }]} accessibilityViewIsModal>
           <View role="dialog" aria-modal={true} aria-label="Desktop keyboard shortcuts" testID="desktop-shortcut-reference" style={[styles.shortcutPanel, { backgroundColor: colors.panel, borderColor: colors.border }]}>
@@ -179,8 +402,26 @@ const styles = StyleSheet.create({
   rail: { width: 216, flexDirection: 'column', alignItems: 'stretch', gap: Spacing.md, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.md, borderBottomWidth: 0, borderRightWidth: 1 },
   compactRail: { width: 72, paddingHorizontal: 8 },
   railGroup: { width: '100%', flexDirection: 'column', alignItems: 'stretch' },
+  railPrimary: { flex: 1, minHeight: 0, width: '100%' },
+  railScroll: { flex: 1, minHeight: 0 },
+  railScrollContent: { gap: Spacing.xs, paddingBottom: Spacing.sm },
+  railBottom: { width: '100%', gap: Spacing.xs },
   railItem: { width: '100%', justifyContent: 'flex-start', minHeight: 46, paddingHorizontal: Spacing.md },
   compactItem: { width: 54, paddingHorizontal: 0, justifyContent: 'center' },
+  projectDisclosureLabel: { flex: 1, minWidth: 0 },
+  projectTree: { marginLeft: Spacing.sm, paddingLeft: Spacing.sm },
+  projectList: { gap: 2 },
+  projectRow: { minHeight: 48, justifyContent: 'center', gap: 2, paddingHorizontal: Spacing.sm, paddingVertical: 6, borderWidth: 1, borderRadius: Radii.sm },
+  projectTitle: { fontFamily: Fonts.semibold, fontSize: 12 },
+  projectMeta: { fontSize: 10, lineHeight: 14 },
+  projectEmpty: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm },
+  projectEmptyText: { fontSize: 11, lineHeight: 16 },
+  projectActions: { gap: 2, paddingTop: 2 },
+  projectUtility: { minHeight: 36, justifyContent: 'center', paddingHorizontal: Spacing.sm, borderRadius: Radii.sm },
+  projectUtilityText: { fontFamily: Fonts.semibold, fontSize: 11 },
+  manageList: { gap: 2, marginLeft: Spacing.sm, paddingLeft: Spacing.sm },
+  manageItem: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.sm, borderRadius: Radii.sm },
+  manageLabel: { fontFamily: Fonts.medium, fontSize: 12 },
   modalOverlay: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: Spacing.lg },
   shortcutPanel: { width: '100%', maxWidth: 520, maxHeight: '88%', borderWidth: 1, borderRadius: Radii.lg, padding: Spacing.lg },
   shortcutHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.md, marginBottom: Spacing.sm },

@@ -120,7 +120,7 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
     void download();
   };
   return (
-    <View testID="cad-qualified-result" style={{ gap: Spacing.md }}>
+    <View testID="cad-qualified-result" style={{ gap: Spacing.md, ...(desktop ? { flex: 1, minHeight: 0 } : {}) }}>
       <View style={{ flexDirection: desktop ? 'row' : 'column', gap: Spacing.sm, alignItems: desktop ? 'center' : undefined }}>
       <View style={{ gap: Spacing.xs, flex: desktop ? 1 : undefined }}>
         <Text style={[Typography.heading, { color: colors.text }]}>{fixture.fixtureName}</Text>
@@ -134,11 +134,11 @@ export default function CadDesignReview({ fixture, onChangeSource, desktop = fal
       </View>
       {onChangeSource ? <CadAction testID="cad-change-source-from-design" accessibilityLabel="Change CAD source" label="Change source" icon="arrow-back-outline" onPress={onChangeSource} /> : null}
       </View>
-      <View testID={desktop ? 'cad-design-desktop-layout' : undefined} style={{ flexDirection: desktop ? 'row' : 'column', gap: Spacing.lg }}>
-      <View testID={desktop ? 'cad-design-canvas' : undefined} style={{ flex: desktop ? 1 : undefined, minWidth: 0 }}>
+      <View testID={desktop ? 'cad-design-desktop-layout' : undefined} style={{ flexDirection: desktop ? 'row' : 'column', gap: Spacing.lg, ...(desktop ? { flex: 1, minHeight: 0 } : {}) }}>
+      <View testID={desktop ? 'cad-design-canvas' : undefined} style={{ flex: desktop ? 1 : undefined, minWidth: 0, minHeight: 0 }}>
         <CadFixtureViewer geometry={fixture.previewGeometry} label={fixture.fixtureName} height={desktop ? viewerHeight : undefined} />
       </View>
-      {(!desktop || desktopInspector) ? <DetailsContainer testID="cad-review-rail" style={desktop ? { width: inspectorWidth, height: viewerHeight, flexGrow: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md }}>
+      {(!desktop || desktopInspector) ? <DetailsContainer testID="cad-review-rail" style={desktop ? { width: inspectorWidth, height: viewerHeight, flexGrow: 0, minHeight: 0 } : { gap: Spacing.md }} contentContainerStyle={{ gap: Spacing.md, paddingBottom: desktop ? Spacing.xl : 0 }}>
       {desktop && onReadiness ? <CadAction label="View implementation readiness" icon="lock-closed-outline" onPress={onReadiness} /> : null}
       <CadSourceFacts fixture={fixture} />
       {(canDownloadSource || canDownloadDerived) ? <View ref={downloadMenuRef} style={downloadStyles.host}>

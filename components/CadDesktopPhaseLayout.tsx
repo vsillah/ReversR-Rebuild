@@ -38,8 +38,8 @@ export default function CadDesktopPhaseLayout({
 }
 
 const styles = StyleSheet.create({
-  layout: { flex: 1, minWidth: 0, minHeight: 0, flexDirection: 'row', gap: Spacing.lg },
+  layout: { flex: 1, minWidth: 0, minHeight: 0, flexDirection: 'row', overflow: 'hidden', gap: Spacing.lg },
   canvas: { flex: 1, minWidth: 0, gap: Spacing.md },
-  inspector: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', borderLeftWidth: 1 },
-  inspectorContent: { flexGrow: 1, paddingLeft: Spacing.md, gap: Spacing.md },
+  inspector: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', minHeight: 0, borderLeftWidth: 1 },
+  inspectorContent: { flexGrow: 1, paddingLeft: Spacing.md, paddingBottom: Spacing.xl, gap: Spacing.md },
 });

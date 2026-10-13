@@ -18,7 +18,7 @@ test('desktop CAD route owns a rail, bounded phase rail, canvas, and inspector',
   assert.match(shell, /maxWidth: 980/);
   assert.match(shell, /testID="desktop-workspace-canvas"/);
   assert.match(shell, /testID="desktop-workspace-inspector"/);
-  assert.match(shell, /width >= 1600 \? 360 : width >= 1280 \? 336 : 300/);
+  assert.match(shell, /const inspectorMaxWidth = clampDesktopInspectorWidth\(Math\.floor\(workspaceWidth \* 0\.46\)\)/);
 });
 
 test('Input keeps one picker and presents equal local and public source choices', () => {

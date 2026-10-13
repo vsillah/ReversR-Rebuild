@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppColors, Fonts, Radii, Spacing } from '../constants/theme';
 import { useAppTheme } from '../hooks/useAppTheme';
 import ReversRLogoMark from './ReversRLogoMark';
-import DesktopNavigation from './DesktopNavigation';
+import DesktopNavigation, { type DesktopProjectNavItem, type DesktopSettingsDestination } from './DesktopNavigation';
 import {
   DESKTOP_INSPECTOR_COLLAPSE_WIDTH,
   DESKTOP_INSPECTOR_DEFAULT,
@@ -34,8 +34,12 @@ type Props = {
   onNew: () => void;
   onTour: () => void;
   onMore: () => void;
+  onOpenSettings: (section: DesktopSettingsDestination) => void;
   onProfile: () => void;
   onToggleAppearance: () => void;
+  projects?: readonly DesktopProjectNavItem[];
+  selectedProjectId?: string;
+  onSelectProject?: (projectId: string) => void;
 };
 
 export default function DesktopCadWorkspace({
@@ -56,8 +60,12 @@ export default function DesktopCadWorkspace({
   onNew,
   onTour,
   onMore,
+  onOpenSettings,
   onProfile,
   onToggleAppearance,
+  projects,
+  selectedProjectId,
+  onSelectProject,
 }: Props) {
   const { colors } = useAppTheme();
   const { width } = useWindowDimensions();
@@ -68,6 +76,7 @@ export default function DesktopCadWorkspace({
   const [resizeHandleFocused, setResizeHandleFocused] = useState(false);
   const resizeStartRef = useRef<{ x: number; width: number } | null>(null);
   const previousWorkspaceWidthRef = useRef(width);
+  const hasInspector = Boolean(inspector);
   const inspectorVisible = Boolean(inspector) && inspectorOpen && (width >= DESKTOP_INSPECTOR_COLLAPSE_WIDTH || narrowInspectorOpen);
   const workspaceWidth = width - (compactRail ? 72 : 216);
   const inspectorMaxWidth = clampDesktopInspectorWidth(Math.floor(workspaceWidth * 0.46));
@@ -99,6 +108,12 @@ export default function DesktopCadWorkspace({
     if (wasWide && isNarrow) setNarrowInspectorOpen(false);
     previousWorkspaceWidthRef.current = width;
   }, [width]);
+
+  useEffect(() => {
+    if (active !== 'tour' || !hasInspector) return;
+    setInspectorOpen(true);
+    if (width < DESKTOP_INSPECTOR_COLLAPSE_WIDTH) setNarrowInspectorOpen(true);
+  }, [active, hasInspector, width]);
 
   useEffect(() => {
     if (!inspector || typeof document === 'undefined') return undefined;
@@ -189,7 +204,10 @@ export default function DesktopCadWorkspace({
         onProjects={onProjects}
         onNew={onNew}
         onTour={onTour}
-        onMore={onMore}
+        onOpenSettings={onOpenSettings}
+        projects={projects}
+        selectedProjectId={selectedProjectId}
+        onSelectProject={onSelectProject}
       />
       <View style={styles.workspace}>
         <View testID="desktop-workspace-header" style={styles.header}>
@@ -305,8 +323,8 @@ export default function DesktopCadWorkspace({
 }
 
 const createStyles = (colors: AppColors) => StyleSheet.create({
-  shell: { flex: 1, minWidth: 0, flexDirection: 'row', backgroundColor: colors.background },
-  workspace: { flex: 1, minWidth: 0 },
+  shell: { flex: 1, minWidth: 0, minHeight: 0, flexDirection: 'row', overflow: 'hidden', backgroundColor: colors.background },
+  workspace: { flex: 1, minWidth: 0, minHeight: 0, overflow: 'hidden' },
   header: {
     minHeight: 68, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.md,
     paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline,
@@ -332,7 +350,7 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   iconButtonActive: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
   phaseRail: { paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline, backgroundColor: colors.background },
   phaseRailInner: { width: '100%', maxWidth: 980, alignSelf: 'flex-start' },
-  workArea: { flex: 1, minHeight: 0, minWidth: 0, flexDirection: 'row' },
+  workArea: { flex: 1, minHeight: 0, minWidth: 0, flexDirection: 'row', overflow: 'hidden' },
   canvasScroll: { flex: 1, minWidth: 0 },
   canvasContent: { flexGrow: 1, width: '100%', maxWidth: 1120, alignSelf: 'center', padding: Spacing.lg },
   canvasContentFlush: { maxWidth: '100%', padding: 0 },
@@ -340,11 +358,11 @@ const createStyles = (colors: AppColors) => StyleSheet.create({
   canvasView: { flex: 1, minWidth: 0, minHeight: 0, width: '100%', maxWidth: '100%', alignSelf: 'stretch' },
   canvasViewPadded: { maxWidth: 1120, padding: Spacing.lg },
   canvasViewWide: { maxWidth: 1600 },
-  inspectorPane: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', minHeight: 0, backgroundColor: colors.panel },
+  inspectorPane: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', minHeight: 0, overflow: 'hidden', backgroundColor: colors.panel },
   inspectorToolbar: { minHeight: 42, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm, paddingHorizontal: Spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline },
   inspectorSizeLabel: { color: colors.mutedText, fontSize: 11, fontWeight: '700' },
   resetButton: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: Spacing.sm, borderRadius: Radii.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
   resetButtonText: { color: colors.primary, fontSize: 11, fontWeight: '800' },
   inspector: { flex: 1, minHeight: 0 },
-  inspectorContent: { flexGrow: 1, padding: Spacing.md, gap: Spacing.md },
+  inspectorContent: { flexGrow: 1, padding: Spacing.md, paddingBottom: Spacing.xl, gap: Spacing.md },
 });

@@ -267,6 +267,7 @@ export default function AccountScreen() {
       onNew={() => router.replace('/?workspace=new')}
       onTour={() => router.replace('/?workspace=tour')}
       onMore={() => router.replace('/?workspace=settings')}
+      onOpenSettings={section => router.replace(`/?workspace=settings&settingsSection=${section}`)}
       onProfile={() => router.replace('/?workspace=profile')}
       onToggleAppearance={() => { void setMode(mode === 'dark' ? 'light' : 'dark'); }}
     >
